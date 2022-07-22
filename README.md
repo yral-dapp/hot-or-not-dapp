@@ -1,1 +1,1 @@
-# hot-or-not-dapp
+# hot-or-not-dapp v2
