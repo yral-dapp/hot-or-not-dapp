@@ -9,9 +9,10 @@ export let canvasEl: HTMLCanvasElement;
 
 let isLoaded = false;
 let dataUrl = '';
+let loadThumbnail = false;
 
 async function generateThumbnail(target: EventTarget | null) {
-	if (false && target && !isLoaded) {
+	if (loadThumbnail && target && !isLoaded) {
 		const videoEl = target as HTMLVideoElement;
 		isLoaded = true;
 		await tick();
