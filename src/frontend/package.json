@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "set NODE_ENV=development && vite dev --host",
-		"build": "set NODE_ENV=production && vite build",
+		"build:ic": "BUILD_ENV=ic vite build",
+		"build:cloud": "BUILD_ENV=cloud vite build",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
@@ -20,6 +21,7 @@
 		"@dfinity/principal": "0.12.0"
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-node": "next",
 		"@sveltejs/adapter-static": "next",
 		"@sveltejs/kit": "next",
 		"@tailwindcss/forms": "0.5.2",
