@@ -1,5 +1,8 @@
-import adapter from '@sveltejs/adapter-static';
+import staticAdapter from '@sveltejs/adapter-static';
+import nodeAdapter from '@sveltejs/adapter-node';
 import preprocess from 'svelte-preprocess';
+
+const isEnvIc = process.env.NODE_ENV === 'ic';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,7 +15,7 @@ const config = {
 	},
 
 	kit: {
-		adapter: adapter()
+		adapter: isEnvIc ? staticAdapter() : nodeAdapter()
 	}
 };
 
