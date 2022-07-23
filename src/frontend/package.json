@@ -1,0 +1,41 @@
+{
+	"name": "hot-or-not-frontend",
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "set NODE_ENV=development && vite dev --host",
+		"build": "set NODE_ENV=production && vite build",
+		"preview": "vite preview",
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
+		"format": "prettier --write --plugin-search-dir=. ."
+	},
+	"dependencies": {
+		"@dfinity/agent": "0.12.0",
+		"@dfinity/auth-client": "0.12.0",
+		"@dfinity/authentication": "0.12.0",
+		"@dfinity/candid": "0.12.0",
+		"@dfinity/identity": "0.12.0",
+		"@dfinity/principal": "0.12.0"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-static": "next",
+		"@sveltejs/kit": "next",
+		"@tailwindcss/forms": "0.5.2",
+		"@types/gtag.js": "^0.0.10",
+		"@types/lodash-es": "4.17.5",
+		"autoprefixer": "10.4.7",
+		"buffer": "6.0.3",
+		"date-fns": "2.27.0",
+		"lodash-es": "4.17.21",
+		"postcss": "8.4.14",
+		"svelte": "3.48.0",
+		"svelte-check": "2.2.6",
+		"svelte-preprocess": "4.10.6",
+		"tailwindcss": "3.0.24",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4",
+		"vite": "3.0.1"
+	}
+}
