@@ -4,7 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run frontend:build",
-		"frontend:build": "npm run --prefix ./src/frontend build",
+		"frontend:build:ic": "npm run --prefix ./src/frontend build:ic",
+		"frontend:build:cloud": "npm run --prefix ./src/frontend build:cloud",
 		"frontend:preview": "npm run --prefix ./src/frontend preview",
 		"frontend:dev": "npm run --prefix ./src/frontend dev",
 		"postinstall": "find ./src/* -maxdepth 2 -name package.json -execdir npm install \\;"
@@ -18,7 +19,7 @@
 		"eslint-plugin-svelte3": "4.0.0",
 		"prettier": "2.5.1",
 		"prettier-plugin-tailwindcss": "0.1.11",
-		"svelte": "3.48.0",
+		"svelte": "3.49.0",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
 	}
