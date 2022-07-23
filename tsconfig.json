@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+    "preserveSymlinks": true,
+    "incremental": true,
+    "baseUrl": "./src",
+    "rootDir": "."
+  },
+  "exclude": ["node_modules", "build"],
+	"references": [
+    { "path": "src/frontend" }
+	]
+}

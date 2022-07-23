@@ -1,0 +1,25 @@
+{
+	"name": "hot-or-not",
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"build": "npm run frontend:build",
+		"frontend:build": "npm run --prefix ./src/frontend build",
+		"frontend:preview": "npm run --prefix ./src/frontend preview",
+		"frontend:dev": "npm run --prefix ./src/frontend dev",
+		"postinstall": "find ./src/* -maxdepth 2 -name package.json -execdir npm install \\;"
+	},
+	"devDependencies": {
+		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
+		"@typescript-eslint/eslint-plugin": "5.10.1",
+		"@typescript-eslint/parser": "5.10.1",
+		"eslint": "8.12.0",
+		"eslint-config-prettier": "8.3.0",
+		"eslint-plugin-svelte3": "4.0.0",
+		"prettier": "2.5.1",
+		"prettier-plugin-tailwindcss": "0.1.11",
+		"svelte": "3.48.0",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4"
+	}
+}
