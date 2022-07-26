@@ -1,0 +1,6 @@
+.vscode/
+.DS_Store
+.dfx
+node_modules
+.env.*
+*.wasm

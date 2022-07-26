@@ -1,0 +1,14 @@
+name: Deploy functions
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/functions/**'
+      - '.github/workflows/workers-deploy.yml'
+
+jobs:
+  worker-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2

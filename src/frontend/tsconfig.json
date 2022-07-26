@@ -1,0 +1,27 @@
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"composite": true,
+		"paths": {
+			"$lib": ["src/lib"],
+			"$lib/*": ["src/lib/*"],
+			"$canisters/*": ["declarations/*"],
+			"$components/*": ["src/components/*"],
+			"$routes/*": ["src/routes/*"],
+			"$icons/*": ["src/icons/*"],
+			"$stores/*": ["src/stores/*"]
+		},
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"outDir": "./",
+		"strict": true,
+		"types": ["gtag.js"]
+	},
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "declarations"],
+	"exclude": ["node_modules", "build"],
+}
