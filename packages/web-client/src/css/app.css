@@ -1,4 +1,6 @@
-/* Write your global styles here, in PostCSS syntax */
+/* Import Kumbh Sans */
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
