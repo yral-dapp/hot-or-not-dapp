@@ -1,4 +1,5 @@
 <script lang="ts">
+import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
 import Video from '../components/video/Video.svelte';
 
@@ -134,7 +135,7 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 		}}"
 		class="{isDragging
 			? 'transition-none'
-			: 'transition-all duration-200'} absolute bottom-0 z-[6] flex h-1/2 w-full flex-col items-center rounded-t-2xl border-2 bg-white p-4 "
+			: 'transition-all duration-200'} absolute bottom-0 z-[6] flex h-1/2 w-full flex-col items-center rounded-t-2xl border-2 bg-black p-4 "
 	>
 		<div
 			draggable
@@ -142,8 +143,8 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 			on:mousedown="{() => (isDragging = true)}"
 			class="flex w-full cursor-grab select-none items-center justify-center border-2 border-black/10 py-2 active:cursor-grabbing"
 		>
-			<div class="h-[2px] w-24 rounded-full	 bg-black"></div>
+			<div class="h-[2px] w-24 rounded-full bg-black"></div>
 		</div>
-		<button on:click="{() => (showDrawer = false)}">close</button>
+		<Button type="secondary" class="w-full max-w-md" on:click>Close</Button>
 	</div>
 </div>
