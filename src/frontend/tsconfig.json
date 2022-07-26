@@ -23,5 +23,5 @@
 		"types": ["gtag.js"]
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "declarations"],
-	"exclude": ["node_modules", "build"],
+	"exclude": ["node_modules", "build"]
 }
