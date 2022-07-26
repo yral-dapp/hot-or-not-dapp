@@ -2,6 +2,7 @@ import path from 'path';
 // import { createRequire } from 'module';
 // const require = createRequire(import.meta.url);
 const dfxJson = require('./../../dfx.json');
+import { sveltekit } from '@sveltejs/kit/vite';
 
 const isDev = process.env.NODE_ENV === 'development';
 // Gets the port dfx is running on from dfx.json
@@ -56,7 +57,8 @@ const config = {
 				target: `http://localhost:${DFX_PORT}`
 			}
 		}
-	}
+	},
+	plugins: [sveltekit()]
 };
 
 export default config;
