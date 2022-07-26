@@ -4,15 +4,15 @@
 			"main": "packages/backend/main.mo",
 			"type": "motoko",
 			"declarations": {
-				"output": "packages/frontend/declarations/backend"
+				"output": "packages/web-client/declarations/backend"
 			}
 		},
-		"frontend": {
+		"web-client": {
 			"dependencies": ["backend"],
-			"frontend": {
-				"entrypoint": "packages/frontend/build/index.html"
+			"web-client": {
+				"entrypoint": "packages/web-client/build/index.html"
 			},
-			"source": ["packages/frontend/build"],
+			"source": ["packages/web-client/build"],
 			"type": "assets"
 		}
 	},

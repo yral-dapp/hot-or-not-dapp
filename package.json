@@ -3,10 +3,10 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "npm run frontend:build",
-		"frontend:build": "npm run --prefix ./packages/frontend build",
-		"frontend:preview": "npm run --prefix ./packages/frontend preview",
-		"frontend:dev": "npm run --prefix ./packages/frontend dev",
+		"build": "npm run web-client:build",
+		"web-client:build": "npm run --prefix ./packages/web-client build",
+		"web-client:preview": "npm run --prefix ./packages/web-client preview",
+		"web-client:dev": "npm run --prefix ./packages/web-client dev",
 		"postinstall": "find ./packages/* -maxdepth 2 -name package.json -execdir npm install \\;"
 	},
 	"devDependencies": {
