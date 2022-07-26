@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import Video from './Video.svelte';
+import Video from '../components/video/Video.svelte';
 
 let db = {
 	videos: [
