@@ -8,12 +8,14 @@ export { exportClass as class };
 let exportClass: any = '';
 
 const classes = c(
-	'flex items-center rounded-full justify-center px-4 py-3 font-bold text-white',
+	'flex items-center rounded-full select-none justify-center px-4 py-3 font-bold text-white',
 	{
 		'bg-orange-500 shadow-button-primary': type === 'primary' && !disabled,
-		'bg-gray-500': type === 'primary' && disabled,
-		'border-2 border-white bg-transparent': type === 'secondary' && !disabled,
-		'border-2 border-white/20 bg-transparent text-gray-500': type === 'secondary' && disabled
+		'bg-zinc-800': type === 'primary' && disabled,
+		'border-2 bg-transparent': type === 'secondary',
+		'border-white': type === 'secondary' && !disabled,
+		'border-white/20': type === 'secondary' && disabled,
+		'text-zinc-500 pointer-events-none': disabled
 	},
 	exportClass
 );
