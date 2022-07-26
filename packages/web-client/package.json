@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
+		"prepare": "svelte-kit sync",
 		"dev": "set NODE_ENV=development && vite dev --host",
 		"build": "set NODE_ENV=production && vite build",
 		"preview": "vite preview",
