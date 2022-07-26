@@ -1,12 +1,10 @@
 {
 	"compilerOptions": {
-    "preserveSymlinks": true,
-    "incremental": true,
-    "baseUrl": "./src",
-    "rootDir": "."
-  },
-  "exclude": ["node_modules", "build"],
-	"references": [
-    { "path": "src/frontend" }
-	]
+		"preserveSymlinks": true,
+		"incremental": true,
+		"baseUrl": "./packages",
+		"rootDir": "."
+	},
+	"exclude": ["node_modules", "build"],
+	"references": [{ "path": "packages/web-client" }]
 }
