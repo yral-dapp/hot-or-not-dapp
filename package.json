@@ -4,10 +4,10 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run frontend:build",
-		"frontend:build": "npm run --prefix ./src/frontend build",
-		"frontend:preview": "npm run --prefix ./src/frontend preview",
-		"frontend:dev": "npm run --prefix ./src/frontend dev",
-		"postinstall": "find ./src/* -maxdepth 2 -name package.json -execdir npm install \\;"
+		"frontend:build": "npm run --prefix ./packages/frontend build",
+		"frontend:preview": "npm run --prefix ./packages/frontend preview",
+		"frontend:dev": "npm run --prefix ./packages/frontend dev",
+		"postinstall": "find ./packages/* -maxdepth 2 -name package.json -execdir npm install \\;"
 	},
 	"devDependencies": {
 		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
