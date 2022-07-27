@@ -141,10 +141,11 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 			draggable
 			bind:this="{dragEl}"
 			on:mousedown="{() => (isDragging = true)}"
-			class="flex w-full cursor-grab select-none items-center justify-center border-2 border-black/10 py-2 active:cursor-grabbing"
+			class="flex w-full cursor-grab select-none items-center justify-center border-2 border-white/10 py-2 active:cursor-grabbing"
 		>
-			<div class="h-[2px] w-24 rounded-full bg-black"></div>
+			<div class="h-[2px] w-24 rounded-full bg-white/50"></div>
 		</div>
+
 		<Button type="secondary" class="w-full max-w-md" on:click>Close</Button>
 	</div>
 </div>
