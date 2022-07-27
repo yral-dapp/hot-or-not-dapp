@@ -1,4 +1,5 @@
 <script lang="ts">
+import Avatar from '$components/avatar/Avatar.svelte';
 import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
 import Video from '../components/video/Video.svelte';
@@ -145,7 +146,10 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 		>
 			<div class="h-[2px] w-24 rounded-full bg-white/50"></div>
 		</div>
-
+		<Avatar
+			src="https://images.pexels.com/photos/11306305/pexels-photo-11306305.jpeg"
+			class="h-8 w-8"
+		/>
 		<Button type="secondary" class="w-full max-w-md" on:click>Close</Button>
 	</div>
 </div>
