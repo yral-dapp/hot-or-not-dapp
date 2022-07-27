@@ -1,14 +1,17 @@
 {
+	"version": 1,
+	"dfx": "0.11.0",
 	"canisters": {
-		"backend": {
-			"main": "packages/backend/main.mo",
-			"type": "motoko",
+		"users": {
+			"type": "rust",
+			"package": "users",
+			"candid": "packages/canisters/users/users.did",
 			"declarations": {
-				"output": "packages/web-client/declarations/backend"
+				"output": "packages/web-client/declarations/users"
 			}
 		},
 		"web-client": {
-			"dependencies": ["backend"],
+			"dependencies": ["users"],
 			"web-client": {
 				"entrypoint": "packages/web-client/build/index.html"
 			},
@@ -18,18 +21,14 @@
 	},
 	"defaults": {
 		"build": {
-			"packtool": ""
+			"packtool": "",
+			"args": ""
 		}
 	},
 	"networks": {
 		"local": {
 			"bind": "127.0.0.1:8000",
 			"type": "ephemeral"
-		},
-		"ic": {
-			"providers": ["https://mainnet.dfinity.network"],
-			"type": "persistent"
 		}
-	},
-	"version": 1
+	}
 }
