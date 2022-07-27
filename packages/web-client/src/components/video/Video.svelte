@@ -5,10 +5,9 @@ import { fade } from 'svelte/transition';
 export let src = '';
 export let load = false;
 export let paused: boolean = true;
-export let canvasEl: HTMLCanvasElement;
 
 let isLoaded = false;
-let dataUrl = '';
+let dataUrl = 'https://i.ibb.co/HTbgGym/image.png';
 let loadThumbnail = false;
 
 async function generateThumbnail(target: EventTarget | null) {
@@ -29,7 +28,10 @@ async function generateThumbnail(target: EventTarget | null) {
 }
 </script>
 
-<div class="relative flex h-full w-auto snap-center items-center justify-center">
+<div
+	on:click="{() => console.log('click!')}"
+	class="relative flex h-full w-auto snap-center items-center justify-center"
+>
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
@@ -47,6 +49,8 @@ async function generateThumbnail(target: EventTarget | null) {
 		>
 		</overlay>
 	{/if}
+
+	<!-- TODO: Add two types of backgrounds -->
 	{#if dataUrl}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<img

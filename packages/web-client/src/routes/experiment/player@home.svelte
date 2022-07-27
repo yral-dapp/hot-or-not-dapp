@@ -2,7 +2,7 @@
 import Avatar from '$components/avatar/Avatar.svelte';
 import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
-import Video from '../components/video/Video.svelte';
+import Video from '$components/video/Video.svelte';
 
 let db = {
 	videos: [
@@ -129,8 +129,17 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 				offsetY = e.offsetY;
 			}
 		}}"
+		on:touchmove="{(e) => {
+			if (isDragging && e.touches[0]) {
+				offsetY = e.touches[0].clientY;
+			}
+		}}"
 		style="transform: translateY({showDrawer ? (isDragging ? `${offsetY}px` : '0%') : '100%'});"
 		on:mouseup="{() => {
+			isDragging = false;
+			offsetY = 0;
+		}}"
+		on:touchend="{() => {
 			isDragging = false;
 			offsetY = 0;
 		}}"
@@ -142,6 +151,7 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 			draggable
 			bind:this="{dragEl}"
 			on:mousedown="{() => (isDragging = true)}"
+			on:touchstart="{() => (isDragging = true)}"
 			class="flex w-full cursor-grab select-none items-center justify-center border-2 border-white/10 py-2 active:cursor-grabbing"
 		>
 			<div class="h-[2px] w-24 rounded-full bg-white/50"></div>
