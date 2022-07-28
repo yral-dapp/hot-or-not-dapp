@@ -51,22 +51,22 @@ async function generateThumbnail(target: EventTarget | null) {
 		</overlay>
 	{/if}
 
-	<!-- TODO: Add two types of backgrounds -->
-	{#if thumbnail}
+	{#if thumbnail || generatedThumbnail}
 		<img
 			transition:fade
 			alt="blur"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
-			src="{thumbnail}"
+			src="{thumbnail || generatedThumbnail}"
 		/>
 	{/if}
-	{#if generatedThumbnail}
+
+	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
-		<img
-			transition:fade
-			alt="blur"
+		<video
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
-			src="{generatedThumbnail}"
-		/>
+			paused="{paused}"
+			src="{src}"
+		>
+		</video>
 	{/if}
 </div>
