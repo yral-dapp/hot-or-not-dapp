@@ -51,15 +51,6 @@ async function generateThumbnail(target: EventTarget | null) {
 		</overlay>
 	{/if}
 
-	{#if thumbnail || generatedThumbnail}
-		<img
-			transition:fade
-			alt="blur"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
-			src="{thumbnail || generatedThumbnail}"
-		/>
-	{/if}
-
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
@@ -68,5 +59,12 @@ async function generateThumbnail(target: EventTarget | null) {
 			src="{src}"
 		>
 		</video>
+	{:else if thumbnail || generatedThumbnail}
+		<img
+			transition:fade
+			alt="blur"
+			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
+			src="{thumbnail || generatedThumbnail}"
+		/>
 	{/if}
 </div>
