@@ -33,4 +33,4 @@ jobs:
           dfx identity import --disable-encryption actions actions_identity.pem 
           rm actions_identity.pem
           dfx identity use actions
-      - run: dfx deploy --network ic webclient --no-wallet
+      - run: dfx deploy webclient --network ic --no-wallet
