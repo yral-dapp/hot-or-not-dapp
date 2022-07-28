@@ -12,7 +12,7 @@ let videos = db.getVideos(videosPage);
 <Home>
 	<svelte:fragment slot="video">
 		<div
-			class="hide-scrollbar relative h-screen w-full snap-y snap-mandatory overflow-hidden overflow-y-auto bg-black"
+			class="hide-scrollbar relative h-screen w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 		>
 			{#each videos as video, i}
 				<Video paused="{i != currentVideoIndex}" load src="{video}" />
