@@ -23,7 +23,7 @@ jobs:
         working-directory: packages/web-client/
         env:
           VITE_INTERNET_IDENTITY_URL: 'https://identity.ic0.app/#authorize'
-          VITE_GA_TRACKING_ID: 'TODO-UPDATE'
+          VITE_GA_TRACKING_ID: 'TODO'
       - run: npm run build
       - run: DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
