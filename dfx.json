@@ -2,8 +2,15 @@
 	"version": 1,
 	"dfx": "0.11.0",
 	"canisters": {
+		"users": {
+			"type": "rust",
+			"package": "users",
+			"candid": "packages/canisters/users/users.did",
+			"declarations": {
+				"output": "packages/web-client/declarations/users"
+			}
+		},
 		"webclient": {
-			"dependencies": ["users"],
 			"web-client": {
 				"entrypoint": "packages/web-client/build/index.html"
 			},
