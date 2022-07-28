@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/functions/**'
+      - 'packages/functions/**'
       - '.github/workflows/workers-deploy.yml'
 
 jobs:

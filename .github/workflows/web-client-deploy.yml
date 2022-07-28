@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/web-client/**'
+      - 'packages/web-client/**'
       - '.github/workflows/web-client-deploy.yml'
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
           echo "VITE_CLOUDFLARE_WORKERS_API_URL=\"$VITE_CLOUDFLARE_WORKERS_API_URL\"" >> .env
           echo "VITE_INTERNET_IDENTITY_URL=\"$VITE_INTERNET_IDENTITY_URL\"" >> .env
           echo "VITE_GA_TRACKING_ID=\"$VITE_GA_TRACKING_ID\"" >> .env
-        working-directory: src/web-client/
+        working-directory: packages/web-client/
         env:
           VITE_INTERNET_IDENTITY_URL: 'https://identity.ic0.app/#authorize'
           VITE_GA_TRACKING_ID: 'TODO'
