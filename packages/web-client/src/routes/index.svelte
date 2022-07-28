@@ -23,11 +23,7 @@ let currentVideoIndex = 0;
 			class="hide-scrollbar relative h-screen w-full snap-y snap-mandatory overflow-hidden overflow-y-auto bg-black"
 		>
 			{#each videos as video, i}
-				<Video
-					paused="{i != currentVideoIndex}"
-					load="{currentVideoIndex - 2 < i && currentVideoIndex + 2 > i}"
-					src="{video}"
-				/>
+				<Video paused="{i != currentVideoIndex}" load src="{video}" />
 			{/each}
 		</div>
 	</svelte:fragment>
