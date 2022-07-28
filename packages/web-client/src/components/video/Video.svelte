@@ -3,11 +3,12 @@ import { tick } from 'svelte';
 import { fade } from 'svelte/transition';
 
 export let src = '';
+export let thumbnail = '';
 export let load = false;
 export let paused: boolean = true;
 
 let isLoaded = false;
-let dataUrl = 'https://i.ibb.co/HTbgGym/image.png';
+let generatedThumbnail = 'https://i.ibb.co/HTbgGym/image.png';
 let loadThumbnail = false;
 
 async function generateThumbnail(target: EventTarget | null) {
@@ -21,8 +22,8 @@ async function generateThumbnail(target: EventTarget | null) {
 		canvas.width = videoEl.videoWidth / 6;
 		if (context) {
 			context.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-			dataUrl = canvas.toDataURL();
-			console.log({ dataUrl });
+			generatedThumbnail = canvas.toDataURL();
+			console.log({ generatedThumbnail });
 		}
 	}
 }
@@ -50,14 +51,20 @@ async function generateThumbnail(target: EventTarget | null) {
 		</overlay>
 	{/if}
 
-	<!-- TODO: Add two types of backgrounds -->
-	{#if dataUrl}
+	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
+		<video
+			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
+			paused="{paused}"
+			src="{src}"
+		>
+		</video>
+	{:else if thumbnail || generatedThumbnail}
 		<img
 			transition:fade
 			alt="blur"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
-			src="{dataUrl}"
+			src="{thumbnail || generatedThumbnail}"
 		/>
 	{/if}
 </div>
