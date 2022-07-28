@@ -1,11 +1,11 @@
-name: Deploy Web Client
+name: Deploy Web-Client
 on:
   push:
     branches:
       - main
     paths:
       - 'packages/web-client/**'
-      - '.github/workflows/web-client-deploy.yml'
+      - '.github/workflows/webclient-deploy.yml'
 
 jobs:
   web-client-deploy:
@@ -18,7 +18,6 @@ jobs:
       - run: npm install
       - run: |
           touch .env
-          echo "VITE_CLOUDFLARE_WORKERS_API_URL=\"$VITE_CLOUDFLARE_WORKERS_API_URL\"" >> .env
           echo "VITE_INTERNET_IDENTITY_URL=\"$VITE_INTERNET_IDENTITY_URL\"" >> .env
           echo "VITE_GA_TRACKING_ID=\"$VITE_GA_TRACKING_ID\"" >> .env
         working-directory: packages/web-client/
@@ -34,4 +33,4 @@ jobs:
           dfx identity import actions actions_identity.pem
           rm actions_identity.pem
           dfx identity use actions
-      - run: dfx deploy --network ic web-client --no-wallet
+      - run: dfx deploy --network ic webclient --no-wallet
