@@ -2,19 +2,11 @@
 import Avatar from '$components/avatar/Avatar.svelte';
 import Home from '$components/layout/HomeLayout.svelte';
 import Video from '$components/video/Video.svelte';
-
-let videos = [
-	'https://assets.mixkit.co/videos/preview/mixkit-weeds-waving-in-the-breeze-1178-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-stunning-sunset-seen-from-the-sea-4119-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-metal-surface-engraved-with-ornaments-34505-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-a-brush-painting-on-a-blue-wall-2308-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-computer-fan-with-neon-lights-2382-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-fountain-in-a-garden-2674-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-old-street-at-night-3456-large.mp4',
-	'https://assets.mixkit.co/videos/preview/mixkit-tourists-skiing-on-a-snowy-slope-in-canada-3351-large.mp4'
-];
+import { db } from '$lib/mockDb';
 
 let currentVideoIndex = 0;
+let videosPage = 1;
+let videos = db.getVideos(videosPage);
 </script>
 
 <Home>
