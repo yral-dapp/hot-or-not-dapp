@@ -30,7 +30,7 @@ jobs:
       - run: |
           touch actions_identity.pem
           echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
-          dfx identity import actions actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem 
           rm actions_identity.pem
           dfx identity use actions
       - run: dfx deploy --network ic webclient --no-wallet
