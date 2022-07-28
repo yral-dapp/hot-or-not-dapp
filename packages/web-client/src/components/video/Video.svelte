@@ -8,7 +8,7 @@ export let load = false;
 export let paused: boolean = true;
 
 let isLoaded = false;
-let generatedThumbnail = 'https://i.ibb.co/HTbgGym/image.png';
+let generatedThumbnail = '';
 let loadThumbnail = false;
 
 async function generateThumbnail(target: EventTarget | null) {
@@ -27,35 +27,32 @@ async function generateThumbnail(target: EventTarget | null) {
 		}
 	}
 }
+
+$: console.log('thumbnail', generatedThumbnail);
 </script>
 
 <div
-	on:click="{() => console.log('click!')}"
+	on:click="{() => (paused = !paused)}"
 	class="relative flex h-full w-auto snap-center items-center justify-center"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
+			loop
+			autoplay
 			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"
 			class="object-fit z-[3] h-full w-full"
 			bind:paused
 			src="{src}"></video>
 	{/if}
 
-	{#if isLoaded}
-		<overlay
-			on:click="{() => (paused = !paused)}"
-			transition:fade
-			class="absolute top-0 z-[4] h-full w-full border-2 border-red-500 text-red-500"
-		>
-		</overlay>
-	{/if}
-
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
-			paused="{paused}"
+			bind:paused
+			autoplay
+			loop
 			src="{src}"
 		>
 		</video>
