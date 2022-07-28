@@ -10,7 +10,7 @@
 				"output": "packages/web-client/declarations/users"
 			}
 		},
-		"web-client": {
+		"webclient": {
 			"dependencies": ["users"],
 			"web-client": {
 				"entrypoint": "packages/web-client/build/index.html"
