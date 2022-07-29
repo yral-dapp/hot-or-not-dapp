@@ -1,34 +1,13 @@
 <script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte';
 import Home from '$components/layout/HomeLayout.svelte';
-import Video from '$components/video/Video.svelte';
-import { db } from '$lib/mockDb';
-import { onMount } from 'svelte';
-
-let currentVideoIndex = 0;
-let nextVideoCount = 1;
-let videos: string[] = [];
-
-async function fetchNextVideos() {
-	console.log('fetching', { nextVideoCount, videos });
-	const res = db.getVideos(nextVideoCount, 4);
-	videos = [...videos, ...res.videos];
-	nextVideoCount = res.nextCount;
-	console.log('fetched', { nextVideoCount, videos });
-}
-
-onMount(async () => await fetchNextVideos());
+import Video from '$components/video/VideoPlayer.svelte';
+import Videos from '$components/video/Videos.svelte';
 </script>
 
 <Home>
 	<svelte:fragment slot="video">
-		<div
-			class="hide-scrollbar relative h-screen w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
-		>
-			{#each videos as video, i}
-				<Video paused="{i != currentVideoIndex}" load src="{video}" />
-			{/each}
-		</div>
+		<Videos />
 	</svelte:fragment>
 	<div slot="top">All videos</div>
 	<div slot="bottom-navigation">Bottom</div>
