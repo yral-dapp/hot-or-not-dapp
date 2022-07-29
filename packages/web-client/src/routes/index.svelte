@@ -1,12 +1,23 @@
-<script>
+<script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte';
 import Home from '$components/layout/HomeLayout.svelte';
 import Video from '$components/video/Video.svelte';
 import { db } from '$lib/mockDb';
+import { onMount } from 'svelte';
 
 let currentVideoIndex = 0;
-let videosPage = 1;
-let videos = db.getVideos(videosPage);
+let nextVideoCount = 1;
+let videos: string[] = [];
+
+async function fetchNextVideos() {
+	console.log('fetching', { nextVideoCount, videos });
+	const res = db.getVideos(nextVideoCount, 4);
+	videos = [...videos, ...res.videos];
+	nextVideoCount = res.nextCount;
+	console.log('fetched', { nextVideoCount, videos });
+}
+
+onMount(async () => await fetchNextVideos());
 </script>
 
 <Home>
