@@ -48,9 +48,11 @@ const videos = [
 
 export const db = {
 	getVideos: (skipCount: number, count: number) => {
+		console.log('returning', videos.slice(skipCount - 1, skipCount + count));
 		return {
-			videos: videos.slice(skipCount - 1, count),
-			nextCount: count + 1
+			videos: videos.slice(skipCount - 1, skipCount - 1 + count),
+			nextCount: skipCount + count,
+			total: videos.length
 		};
 	}
 };
