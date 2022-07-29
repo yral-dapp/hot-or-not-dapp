@@ -27,8 +27,6 @@ async function generateThumbnail(target: EventTarget | null) {
 		}
 	}
 }
-
-$: console.log('thumbnail', generatedThumbnail);
 </script>
 
 <div
