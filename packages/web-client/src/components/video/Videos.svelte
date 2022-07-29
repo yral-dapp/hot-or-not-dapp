@@ -38,6 +38,7 @@ function selectLastElement() {
 				// console.log('intersecting last video');
 				currentVideoIndex > 0 && currentVideoIndex--;
 				selectLastElement();
+				updateURL();
 				selectNextElement();
 			}
 		},
@@ -61,6 +62,7 @@ function selectNextElement() {
 				// console.log('intersecting next video');
 				currentVideoIndex++;
 				selectLastElement();
+				updateURL();
 				selectNextElement();
 				fetchNextVideos();
 			}
@@ -72,7 +74,13 @@ function selectNextElement() {
 	observeNextVideo.observe(parentEl.children[currentVideoIndex + 1]);
 }
 
+function updateURL() {
+	console.log('udpating url');
+	window.history.pushState('', '', `/${currentVideoIndex}`);
+}
+
 onMount(async () => {
+	updateURL();
 	await fetchNextVideos();
 	await selectLastElement();
 	await selectNextElement();
