@@ -28,7 +28,7 @@ async function generateThumbnail(target: EventTarget | null) {
 	}
 }
 
-$: console.log('thumbnail', generatedThumbnail);
+// $: console.log({ src, load, paused });
 </script>
 
 <div
@@ -39,7 +39,7 @@ $: console.log('thumbnail', generatedThumbnail);
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			loop
-			autoplay
+			autoplay="{!paused}"
 			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"
 			class="object-fit z-[3] h-full w-full"
 			bind:paused
@@ -51,7 +51,7 @@ $: console.log('thumbnail', generatedThumbnail);
 		<video
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
 			bind:paused
-			autoplay
+			autoplay="{!paused}"
 			loop
 			src="{src}"
 		>

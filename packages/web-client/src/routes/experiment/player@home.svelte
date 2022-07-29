@@ -2,7 +2,7 @@
 import Avatar from '$components/avatar/Avatar.svelte';
 import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
-import Video from '$components/video/Video.svelte';
+import Video from '$components/video/VideoPlayer.svelte';
 
 let db = {
 	videos: [
@@ -106,7 +106,6 @@ $: console.log({ currentVideoIndex, observeLastVideo, observeNextVideo });
 	>
 		{#each db.videos as video, i}
 			<Video
-				canvasEl="{canvasEl}"
 				paused="{i != currentVideoIndex}"
 				load="{currentVideoIndex - 2 < i && currentVideoIndex + 2 > i}"
 				src="{video}"
