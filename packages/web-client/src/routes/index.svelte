@@ -1,16 +1,13 @@
-<script>
+<script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte';
 import Home from '$components/layout/HomeLayout.svelte';
-import Video from '$components/video/Video.svelte';
+import Video from '$components/video/VideoPlayer.svelte';
+import Videos from '$components/video/Videos.svelte';
 </script>
 
 <Home>
 	<svelte:fragment slot="video">
-		<Video
-			paused="{false}"
-			load="{true}"
-			src="{'https://assets.mixkit.co/videos/preview/mixkit-weeds-waving-in-the-breeze-1178-large.mp4'}"
-		/>
+		<Videos />
 	</svelte:fragment>
 	<div slot="top">All videos</div>
 	<div slot="bottom-navigation">Bottom</div>
