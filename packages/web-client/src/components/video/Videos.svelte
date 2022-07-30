@@ -3,10 +3,10 @@ import { db } from '$lib/mockDb';
 import { onMount } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 
-let currentVideoIndex = 0;
-let nextVideoCount = 1;
-let videos: string[] = [];
-let videosCount = 0;
+export let currentVideoIndex = 0;
+export let nextVideoCount = 1;
+export let videos: string[] = [];
+export let totalVideosCount = 0;
 
 let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
@@ -20,7 +20,7 @@ async function fetchNextVideos() {
 
 		videos = [...videos, ...res.videos];
 		nextVideoCount = res.nextCount;
-		videosCount = res.total;
+		totalVideosCount = res.total;
 		console.log('fetched', { nextVideoCount, videos });
 	}
 }
@@ -53,7 +53,7 @@ function selectNextElement() {
 	if (observeNextVideo) {
 		observeNextVideo.disconnect();
 	}
-	if (currentVideoIndex == videosCount - 1) return;
+	if (currentVideoIndex == totalVideosCount - 1) return;
 	// console.log('next video is: ', parentEl.children[currentVideoIndex + 1]);
 	observeNextVideo = new IntersectionObserver(
 		async (entries) => {
@@ -75,8 +75,7 @@ function selectNextElement() {
 }
 
 function updateURL() {
-	console.log('udpating url');
-	window.history.replaceState('', '', `/${currentVideoIndex}`);
+	window.history.replaceState('', '', `${currentVideoIndex}`);
 }
 
 onMount(async () => {
