@@ -76,7 +76,7 @@ function selectNextElement() {
 
 function updateURL() {
 	console.log('udpating url');
-	window.history.pushState('', '', `/${currentVideoIndex}`);
+	window.history.replaceState('', '', `/${currentVideoIndex}`);
 }
 
 onMount(async () => {
