@@ -14,7 +14,7 @@ let parentEl: HTMLElement;
 
 async function fetchNextVideos() {
 	console.log('to fetch', nextVideoCount - currentVideoIndex, '<', 4);
-	if (currentVideoIndex == 0 || nextVideoCount - currentVideoIndex < 4) {
+	if (currentVideoIndex == 0 || totalVideosCount == 0 || nextVideoCount - currentVideoIndex < 4) {
 		console.log('fetching', { nextVideoCount, videos });
 		const res = db.getVideos(nextVideoCount, 3);
 
@@ -29,7 +29,7 @@ function selectLastElement() {
 	if (observeLastVideo) {
 		observeLastVideo.disconnect();
 	}
-	if (currentVideoIndex == 0) return;
+	if (currentVideoIndex == 0 || totalVideosCount == 0) return;
 	// console.log('prev video is: ', parentEl.children[currentVideoIndex - 1]);
 	observeLastVideo = new IntersectionObserver(
 		async (entries) => {
