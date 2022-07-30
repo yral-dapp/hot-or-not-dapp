@@ -49,7 +49,7 @@ async function generateThumbnail(target: EventTarget | null) {
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
+			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			bind:paused
 			autoplay="{!paused}"
 			loop
@@ -60,7 +60,7 @@ async function generateThumbnail(target: EventTarget | null) {
 		<img
 			transition:fade
 			alt="blur"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-lg"
+			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			src="{thumbnail || generatedThumbnail}"
 		/>
 	{/if}

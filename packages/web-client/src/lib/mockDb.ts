@@ -1,4 +1,9 @@
-const videos = [
+export type VideoDB = {
+	id: number;
+	url: string;
+};
+
+const videos: VideoDB[] = [
 	{
 		id: 1,
 		url: 'https://assets.mixkit.co/videos/preview/mixkit-weeds-waving-in-the-breeze-1178-large.mp4'
@@ -181,9 +186,9 @@ const videos = [
 export const db = {
 	getVideos: (skipId: number, count: number = 4) => {
 		return {
-			videos: videos.filter((o) => o.id > skipId && o.id < skipId + count),
+			videos: videos.filter((o) => o.id >= skipId && o.id < skipId + count),
 			nextCount: skipId + count,
-			videosLeft: videos.filter((o) => o.id > skipId).length ? true : false
+			videosLeft: videos.filter((o) => o.id >= skipId).length ? true : false
 		};
 	}
 };
