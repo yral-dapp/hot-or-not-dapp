@@ -2,11 +2,11 @@
 import type { Load } from '@sveltejs/kit';
 
 export const load: Load = async ({ params }) => {
-	console.log('fetch video with id', params.id);
-
+	// console.log('fetch video with id', params.id);
+	const id = Number(params.id);
 	return {
 		props: {
-			startingVideoIndex: params.id
+			startingVideoIndex: isNaN(id) ? 0 : id
 		}
 	};
 };
@@ -22,7 +22,7 @@ export let startingVideoIndex: number;
 
 <HomeLayout>
 	<svelte:fragment slot="video">
-		<Videos currentVideoIndex="{startingVideoIndex}" nextVideoCount="{startingVideoIndex + 1}" />
+		<Videos fetchFromId="{startingVideoIndex}" />
 	</svelte:fragment>
 	<div slot="top">All videos</div>
 	<div slot="bottom-navigation">Bottom</div>
