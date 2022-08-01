@@ -5,16 +5,18 @@ import VideoPlayer from './VideoPlayer.svelte';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
-export let moreVideos = true;
+export let fetchCount: number = 5;
+export let keepVideosLoadedCount: number = 4;
 
 let currentVideoIndex = 0;
 let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
+let moreVideos = true;
 let parentEl: HTMLElement;
 
 async function fetchNextVideos() {
-	console.log('to fetch', videos.length, '-', currentVideoIndex, '<', 3);
-	if (moreVideos && videos.length - currentVideoIndex < 3) {
+	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
+	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		console.log('fetching', { fetchFromId });
 		const res = db.getVideos(fetchFromId);
 
@@ -57,7 +59,7 @@ function selectNextElement() {
 			// console.log('nextVideoEntries', entries);
 			if (entries[0].isIntersecting) {
 				// console.log('intersecting next video');
-				currentVideoIndex++;
+				if (currentVideoIndex < videos.length) currentVideoIndex++;
 				selectLastElement();
 				updateURL();
 				selectNextElement();
@@ -96,7 +98,8 @@ onMount(async () => {
 	{#each videos as video, i (video.url)}
 		<VideoPlayer
 			paused="{i != currentVideoIndex}"
-			load="{currentVideoIndex - 2 < i && currentVideoIndex + 2 > i}"
+			load="{currentVideoIndex - keepVideosLoadedCount < i &&
+				currentVideoIndex + keepVideosLoadedCount > i}"
 			src="{video.url}"
 		/>
 	{/each}
