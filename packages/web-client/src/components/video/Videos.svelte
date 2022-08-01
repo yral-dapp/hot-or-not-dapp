@@ -86,7 +86,8 @@ onMount(async () => {
 
 <all-videos
 	bind:this="{parentEl}"
-	class="hide-scrollbar relative block h-screen w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
+	style="height: 100vh; {window?.innerHeight ? `height: ${window?.innerHeight}px` : ''}"
+	class="hide-scrollbar relative block w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
 	{#each videos as video, i (video.url)}
 		<VideoPlayer
