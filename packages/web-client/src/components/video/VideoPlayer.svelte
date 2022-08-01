@@ -41,7 +41,7 @@ async function generateThumbnail(target: EventTarget | null) {
 			loop
 			autoplay="{!paused}"
 			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"
-			class="object-fit z-[3] h-full w-full"
+			class="object-fit absolute z-[3] h-full w-full"
 			bind:paused
 			src="{src}"></video>
 	{/if}
