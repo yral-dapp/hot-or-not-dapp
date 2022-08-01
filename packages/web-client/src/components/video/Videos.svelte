@@ -76,6 +76,8 @@ function updateURL() {
 		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
 }
 
+$: innerHeight = window?.innerHeight;
+
 onMount(async () => {
 	updateURL();
 	await fetchNextVideos();
@@ -84,9 +86,11 @@ onMount(async () => {
 });
 </script>
 
+<svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
+
 <all-videos
 	bind:this="{parentEl}"
-	style="height: 100vh; {window?.innerHeight ? `height: ${window?.innerHeight}px` : ''}"
+	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
 	class="hide-scrollbar relative block w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
 	{#each videos as video, i (video.url)}
