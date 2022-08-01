@@ -13,6 +13,7 @@ let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
 let moreVideos = true;
 let parentEl: HTMLElement;
+$: innerHeight = window?.innerHeight;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -42,7 +43,7 @@ function selectLastElement() {
 			}
 		},
 		{
-			threshold: 0.9
+			threshold: 0.7
 		}
 	);
 
@@ -67,7 +68,7 @@ function selectNextElement() {
 			}
 		},
 		{
-			threshold: 0.9
+			threshold: 0.7
 		}
 	);
 	observeNextVideo.observe(parentEl.children[currentVideoIndex + 1]);
@@ -77,8 +78,6 @@ function updateURL() {
 	if (videos[currentVideoIndex])
 		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
 }
-
-$: innerHeight = window?.innerHeight;
 
 onMount(async () => {
 	updateURL();
