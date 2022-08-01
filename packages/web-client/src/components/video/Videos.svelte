@@ -1,42 +1,39 @@
 <script lang="ts">
-import { db } from '$lib/mockDb';
+import { db, type VideoDB } from '$lib/mockDb';
 import { onMount } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 
-let currentVideoIndex = 0;
-let nextVideoCount = 1;
-let videos: string[] = [];
-let videosCount = 0;
+export let fetchFromId: number = 0;
+export let videos: VideoDB[] = [];
+export let moreVideos = true;
 
+let currentVideoIndex = 0;
 let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
 let parentEl: HTMLElement;
 
 async function fetchNextVideos() {
-	console.log('to fetch', nextVideoCount - currentVideoIndex, '<', 4);
-	if (currentVideoIndex == 0 || nextVideoCount - currentVideoIndex < 4) {
-		console.log('fetching', { nextVideoCount, videos });
-		const res = db.getVideos(nextVideoCount, 3);
+	console.log('to fetch', videos.length, '-', currentVideoIndex, '<', 3);
+	if (moreVideos && videos.length - currentVideoIndex < 3) {
+		console.log('fetching', { fetchFromId });
+		const res = db.getVideos(fetchFromId);
 
 		videos = [...videos, ...res.videos];
-		nextVideoCount = res.nextCount;
-		videosCount = res.total;
-		console.log('fetched', { nextVideoCount, videos });
+		fetchFromId = res.nextCount;
+		moreVideos = res.videosLeft;
+		console.log('fetched', { fetchFromId, videos });
 	}
 }
 
 function selectLastElement() {
-	if (observeLastVideo) {
-		observeLastVideo.disconnect();
-	}
-	if (currentVideoIndex == 0) return;
-	// console.log('prev video is: ', parentEl.children[currentVideoIndex - 1]);
+	if (observeLastVideo) observeLastVideo.disconnect();
+
+	if (!parentEl.children[currentVideoIndex - 1]) return;
+
 	observeLastVideo = new IntersectionObserver(
 		async (entries) => {
-			// console.log('lastVideoEntries', entries);
 			if (entries[0].isIntersecting) {
-				// console.log('intersecting last video');
-				currentVideoIndex > 0 && currentVideoIndex--;
+				if (currentVideoIndex > 0) currentVideoIndex--;
 				selectLastElement();
 				updateURL();
 				selectNextElement();
@@ -46,6 +43,7 @@ function selectLastElement() {
 			threshold: 0.9
 		}
 	);
+
 	observeLastVideo.observe(parentEl.children[currentVideoIndex - 1]);
 }
 
@@ -53,8 +51,7 @@ function selectNextElement() {
 	if (observeNextVideo) {
 		observeNextVideo.disconnect();
 	}
-	if (currentVideoIndex == videosCount - 1) return;
-	// console.log('next video is: ', parentEl.children[currentVideoIndex + 1]);
+	if (!parentEl.children[currentVideoIndex + 1]) return;
 	observeNextVideo = new IntersectionObserver(
 		async (entries) => {
 			// console.log('nextVideoEntries', entries);
@@ -75,9 +72,11 @@ function selectNextElement() {
 }
 
 function updateURL() {
-	console.log('udpating url');
-	window.history.pushState('', '', `/${currentVideoIndex}`);
+	if (videos[currentVideoIndex])
+		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
 }
+
+$: innerHeight = window?.innerHeight;
 
 onMount(async () => {
 	updateURL();
@@ -87,15 +86,18 @@ onMount(async () => {
 });
 </script>
 
+<svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
+
 <all-videos
 	bind:this="{parentEl}"
-	class="hide-scrollbar relative block h-screen w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
+	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
+	class="hide-scrollbar relative block w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
-	{#each videos as video, i (video)}
+	{#each videos as video, i (video.url)}
 		<VideoPlayer
 			paused="{i != currentVideoIndex}"
 			load="{currentVideoIndex - 2 < i && currentVideoIndex + 2 > i}"
-			src="{video}"
+			src="{video.url}"
 		/>
 	{/each}
 </all-videos>
