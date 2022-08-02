@@ -8,7 +8,9 @@ type LoginType = 'nfid' | 'ii';
 const DFINITY_LOGO =
 	'https://aws1.discourse-cdn.com/business4/uploads/dfn/original/1X/c6f5dd4f7a21c825f82566b7c7528e5505734f77.png';
 const APPLICATION_NAME = encodeURI('Hot or Not');
-const APPLICATION_LOGO_URL = encodeURI(DFINITY_LOGO);
+const APPLICATION_LOGO_URL = encodeURI(
+	'https://static.wixstatic.com/media/1f4d25_d43585ecba2d4eeeb72a344a1b5896ea~mv2.png'
+);
 const NFID_AUTH_URL =
 	'https://nfid.one/authenticate/?applicationName=' +
 	APPLICATION_NAME +
