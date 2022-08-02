@@ -1,7 +1,6 @@
 <script lang="ts">
-import { AuthClient } from '@dfinity/auth-client';
 import Button from '$components/button/Button.svelte';
-import { onMount } from 'svelte';
+import { auth } from '$stores/auth';
 
 export let hideNfid = false;
 
@@ -16,7 +15,6 @@ const NFID_AUTH_URL =
 	'&applicationLogo=' +
 	APPLICATION_LOGO_URL +
 	'#authorize';
-let authClient: AuthClient;
 
 function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
@@ -32,7 +30,7 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
-	await authClient?.login({
+	await $auth.client?.login({
 		onSuccess: () => handleSuccessfulLogin(type),
 		onError: () => handleError(type),
 		identityProvider: getIdentityProviderURL(type)
@@ -46,10 +44,6 @@ function handleSuccessfulLogin(type: LoginType) {
 function handleError(type: LoginType) {
 	console.log('error on login successfull', type);
 }
-
-onMount(async () => {
-	authClient = await AuthClient.create();
-});
 </script>
 
 <login class="absolute z-[10] block h-full w-full bg-black/90 text-white">
