@@ -1,4 +1,4 @@
-<ul>
+<ul class="text-white">
 	<li>
 		<a href="/test/routes">All routes</a>
 	</li>

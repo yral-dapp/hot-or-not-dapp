@@ -8,7 +8,7 @@ export { exportClass as class };
 let exportClass: any = '';
 
 const classes = c(
-	'flex items-center rounded-full select-none justify-center px-4 py-3 font-bold text-white',
+	'flex items-center rounded-full select-none justify-center px-4 py-3 font-semibold text-white',
 	{
 		'bg-orange-500 shadow-button-primary': type === 'primary' && !disabled,
 		'bg-zinc-800': type === 'primary' && disabled,
