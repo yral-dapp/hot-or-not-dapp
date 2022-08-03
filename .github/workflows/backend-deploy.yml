@@ -7,6 +7,10 @@ on:
       - 'packages/backend/**'
       - '.github/workflows/backend-deploy.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backend-deploy:
     runs-on: ubuntu-latest
