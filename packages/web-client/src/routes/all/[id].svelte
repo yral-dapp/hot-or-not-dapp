@@ -16,12 +16,10 @@ export const load: Load = async ({ params }) => {
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import Videos from '$components/video/Videos.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
-import Login from '$components/login/Login.svelte';
 
 export let startingVideoIndex: number;
 </script>
 
-<Login />
 <HomeLayout>
 	<svelte:fragment slot="content">
 		<Videos fetchFromId="{startingVideoIndex}" />
