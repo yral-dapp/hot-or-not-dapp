@@ -19,6 +19,9 @@ export let avatarPhotoUrl =
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
+$: _paused = paused;
+$: !load && (_paused = false);
+
 let isLoaded = false;
 let generatedThumbnail = '';
 let loadThumbnail = false;
@@ -40,31 +43,31 @@ async function generateThumbnail(target: EventTarget | null) {
 	}
 }
 
-$: console.log({ paused, src });
+$: console.log({ paused, src, _paused });
 </script>
 
 <div
-	on:click="{() => (paused = !paused)}"
+	on:click="{() => (_paused = !_paused)}"
 	class="relative flex h-full w-auto snap-center items-center justify-center"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			loop
-			autoplay="{!paused}"
-			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"
+			autoplay="{_paused}"
+			bind:paused="{_paused}"
+			src="{src}"
 			class="object-fit absolute z-[3] h-full w-full"
-			bind:paused
-			src="{src}"></video>
+			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"></video>
 	{/if}
 
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
-			bind:paused
-			autoplay="{!paused}"
 			loop
+			autoplay="{_paused}"
+			bind:paused="{_paused}"
+			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			src="{src}"
 		>
 		</video>
@@ -77,7 +80,7 @@ $: console.log({ paused, src });
 		/>
 	{/if}
 
-	{#if paused}
+	{#if _paused}
 		<div
 			transition:fade="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
