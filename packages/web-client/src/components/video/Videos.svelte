@@ -1,5 +1,6 @@
 <script lang="ts">
 import { db, type VideoDB } from '$lib/mockDb';
+import { playerInitialized } from '$stores/playerInitialization';
 import { onMount } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 
@@ -81,6 +82,7 @@ function updateURL() {
 
 onMount(async () => {
 	updateURL();
+	$playerInitialized = false;
 	await fetchNextVideos();
 	await selectLastElement();
 	await selectNextElement();
