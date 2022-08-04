@@ -5,22 +5,54 @@ import FlashIcon from '$components/icons/FlashIcon.svelte';
 import FlipIcon from '$components/icons/FlipIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import CameraLayout from '$components/layout/CameraLayout.svelte';
+import { getMediaStream } from '$lib/cameraPermissions';
+import { onMount } from 'svelte';
+
+let videoEl: HTMLVideoElement;
+let videoOverlayEl: HTMLVideoElement;
+let mediaStream: MediaStream;
+
+$: mediaStream && updateVideoStream();
+
+function updateVideoStream() {
+	videoEl.srcObject = mediaStream;
+	videoOverlayEl.srcObject = mediaStream;
+}
+
+onMount(async () => {
+	const res = await getMediaStream();
+	if (res.error == 'none' && res.stream) {
+		mediaStream = res.stream;
+	}
+});
 </script>
 
 <CameraLayout>
 	<svelte:fragment slot="content">
-		<img
-			alt="Sunset"
-			class="h-full w-full object-fill"
-			src="https://images.pexels.com/photos/1212600/pexels-photo-1212600.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-		/>
+		<div class="realtive h-full w-full">
+			<!-- svelte-ignore a11y-media-has-caption -->
+			<video
+				muted
+				bind:this="{videoEl}"
+				autoplay
+				class="object-fit absolute z-[5] h-full w-full object-center"
+			>
+			</video>
+			<video
+				muted
+				bind:this="{videoOverlayEl}"
+				autoplay
+				class="absolute z-[1] h-full w-full object-cover object-center blur-lg"
+			>
+			</video>
+		</div>
 	</svelte:fragment>
 	<div class="flex h-full w-full items-center justify-center space-x-16" slot="bottom-navigation">
 		<button class="focus:outline-none">Gallery</button>
 		<button class="focus:outline-none">Camera</button>
 	</div>
-	<div class="flex w-full items-start justify-end px-5" slot="top">
-		<IconButton class="h-10 w-10 rounded-full bg-black/50">
+	<div class="pointer-events-auto flex w-full items-start justify-end px-5" slot="top">
+		<IconButton href="/" class="h-10 w-10 rounded-full bg-black/50">
 			<CloseIcon class="h-6 w-6 text-white" />
 		</IconButton>
 	</div>
@@ -37,7 +69,7 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 		<div class="h-12 w-12 rounded-full bg-pink-200"></div>
 	</div>
 	<div
-		class="pointer-events-auto flex h-full flex-col items-center justify-center"
+		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
 		slot="right-camera-controls"
 	>
 		<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
