@@ -6,9 +6,9 @@ import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import PlayIcon from '$components/icons/PlayIcon.svelte';
 import ShareIcon from '$components/icons/ShareIcon.svelte';
-
 import { tick } from 'svelte';
 import { fade } from 'svelte/transition';
+import { playerInitialized } from '$stores/playerInitialization';
 
 export let src = '';
 export let thumbnail = '';
@@ -42,12 +42,11 @@ async function generateThumbnail(target: EventTarget | null) {
 		}
 	}
 }
-
-$: console.log({ paused, src, _paused });
 </script>
 
 <div
 	on:click="{() => (_paused = !_paused)}"
+	on:click|once="{() => ($playerInitialized = true)}"
 	class="relative flex h-full w-auto snap-center items-center justify-center"
 >
 	{#if load}
@@ -80,7 +79,7 @@ $: console.log({ paused, src, _paused });
 		/>
 	{/if}
 
-	{#if _paused}
+	{#if !$playerInitialized || _paused}
 		<div
 			transition:fade="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
