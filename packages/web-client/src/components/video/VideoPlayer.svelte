@@ -4,6 +4,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
+import PlayIcon from '$components/icons/PlayIcon.svelte';
 import ShareIcon from '$components/icons/ShareIcon.svelte';
 
 import { tick } from 'svelte';
@@ -39,7 +40,7 @@ async function generateThumbnail(target: EventTarget | null) {
 	}
 }
 
-// $: console.log({ src, load, paused });
+$: console.log({ paused, src });
 </script>
 
 <div
@@ -74,6 +75,19 @@ async function generateThumbnail(target: EventTarget | null) {
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			src="{thumbnail || generatedThumbnail}"
 		/>
+	{/if}
+
+	{#if paused}
+		<div
+			transition:fade="{{ duration: 100 }}"
+			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
+		>
+			<div class="flex h-full items-center justify-center">
+				<IconButton>
+					<PlayIcon class="h-32 w-32 text-white/90 drop-shadow-lg" />
+				</IconButton>
+			</div>
+		</div>
 	{/if}
 
 	<div class="max-w-16 absolute right-4 bottom-20 z-[5]">
