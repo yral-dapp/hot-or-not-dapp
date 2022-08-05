@@ -49,6 +49,8 @@ onMount(async () => {
 	const res = await getMediaStream();
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
+	} else {
+		initState = 'denied';
 	}
 });
 </script>
