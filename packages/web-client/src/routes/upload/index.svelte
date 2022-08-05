@@ -1,17 +1,21 @@
 <script lang="ts">
+import Button from '$components/button/Button.svelte';
+
 import IconButton from '$components/button/IconButton.svelte';
+import CameraAccessIcon from '$components/icons/CameraAccessIcon.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
 import FlashIcon from '$components/icons/FlashIcon.svelte';
 import FlipIcon from '$components/icons/FlipIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import CameraLayout from '$components/layout/CameraLayout.svelte';
 import { applyConstraintsOnVideoStream, getMediaStream } from '$lib/cameraPermissions';
-import { onMount } from 'svelte';
-
+import { onMount, tick } from 'svelte';
+import { fade } from 'svelte/transition';
 let videoEl: HTMLVideoElement;
 let videoOverlayEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
+let initState: 'init' | 'denied' | 'allowed' = 'init';
 
 let cameraControls = {
 	flash: false
@@ -19,7 +23,9 @@ let cameraControls = {
 
 $: mediaStream && updateVideoStream();
 
-function updateVideoStream() {
+async function updateVideoStream() {
+	initState = 'allowed';
+	await tick();
 	videoEl.srcObject = mediaStream;
 	videoOverlayEl.srcObject = mediaStream;
 }
@@ -49,22 +55,38 @@ onMount(async () => {
 
 <CameraLayout>
 	<svelte:fragment slot="content">
-		<div class="realtive h-full w-full">
-			<!-- svelte-ignore a11y-media-has-caption -->
-			<video
-				muted
-				bind:this="{videoEl}"
-				autoplay
-				class="object-fit absolute z-[5] h-full w-full object-center"
-			>
-			</video>
-			<video
-				muted
-				bind:this="{videoOverlayEl}"
-				autoplay
-				class="absolute z-[1] h-full w-full object-cover object-center blur-lg"
-			>
-			</video>
+		<div class="realtive h-full w-full bg-black">
+			{#if initState != 'allowed'}
+				<div
+					transition:fade|local
+					class="flex h-full flex-col items-center justify-center space-y-8 px-10"
+				>
+					<CameraAccessIcon class="h-56" />
+					{#if initState == 'denied'}
+						<span class="font-semibold">Enable Camera Access</span>
+						<span class="text-center text-white/60">
+							Please provide us access to your camera, whch is required for recording video
+						</span>
+						<Button class="px-8">Request access again</Button>
+					{/if}
+				</div>
+			{:else}
+				<!-- svelte-ignore a11y-media-has-caption -->
+				<video
+					muted
+					bind:this="{videoEl}"
+					autoplay
+					class="object-fit absolute z-[5] h-full w-full object-center"
+				>
+				</video>
+				<video
+					muted
+					bind:this="{videoOverlayEl}"
+					autoplay
+					class="absolute z-[1] h-full w-full object-cover object-center blur-lg"
+				>
+				</video>
+			{/if}
 		</div>
 	</svelte:fragment>
 	<div class="flex h-full w-full items-center justify-center space-x-16" slot="bottom-navigation">
@@ -80,42 +102,46 @@ onMount(async () => {
 		class="pointer-events-auto flex w-full items-center justify-center space-x-3 px-4 pb-6"
 		slot="bottom-camera-controls"
 	>
-		<div class="h-12 w-12 rounded-full bg-blue-200"></div>
-		<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-		<button class="px-4">
-			<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
-		</button>
-		<div class="h-12 w-12 rounded-full bg-green-200"></div>
-		<div class="h-12 w-12 rounded-full bg-pink-200"></div>
+		{#if initState == 'allowed'}
+			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
+			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
+			<button class="px-4">
+				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
+			</button>
+			<div class="h-12 w-12 rounded-full bg-green-200"></div>
+			<div class="h-12 w-12 rounded-full bg-pink-200"></div>
+		{/if}
 	</div>
 	<div
 		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
 		slot="right-camera-controls"
 	>
-		<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
-			<div class="flex flex-col items-center justify-center space-y-1">
-				<IconButton
-					on:click="{toggleTorch}"
-					class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
-				>
-					<FlashIcon class="h-5 w-5 text-white" />
-				</IconButton>
-				<span class="text-xs">Flash</span>
-			</div>
+		{#if initState == 'allowed'}
+			<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
+				<div class="flex flex-col items-center justify-center space-y-1">
+					<IconButton
+						on:click="{toggleTorch}"
+						class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
+					>
+						<FlashIcon class="h-5 w-5 text-white" />
+					</IconButton>
+					<span class="text-xs">Flash</span>
+				</div>
 
-			<div class="flex flex-col items-center justify-center space-y-1">
-				<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-					<FlipIcon class="h-5 w-5 text-white" />
-				</IconButton>
-				<span class="text-xs">Flip</span>
+				<div class="flex flex-col items-center justify-center space-y-1">
+					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
+						<FlipIcon class="h-5 w-5 text-white" />
+					</IconButton>
+					<span class="text-xs">Flip</span>
+				</div>
+				<div class="flex flex-col items-center justify-center space-y-1">
+					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
+						<TimerIcon class="h-6 w-6 text-white" />
+					</IconButton>
+					<span class="text-xs">Timer</span>
+				</div>
 			</div>
-			<div class="flex flex-col items-center justify-center space-y-1">
-				<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-					<TimerIcon class="h-6 w-6 text-white" />
-				</IconButton>
-				<span class="text-xs">Timer</span>
-			</div>
-		</div>
+		{/if}
 	</div>
 </CameraLayout>
 
