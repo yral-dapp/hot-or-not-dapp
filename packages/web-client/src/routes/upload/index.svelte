@@ -52,7 +52,7 @@ async function requestMediaAccess() {
 	}
 }
 
-onMount(async () => await requestMediaAccess);
+onMount(async () => await requestMediaAccess());
 </script>
 
 <CameraLayout>
