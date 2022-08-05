@@ -16,7 +16,14 @@ let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
 
 let cameraControls = {
-	flash: false
+	flash: {
+		show: false,
+		enabled: false
+	},
+	flip: {
+		show: false,
+		track: undefined
+	}
 };
 
 $: mediaStream && updateVideoStream();
@@ -35,18 +42,28 @@ function handleFileUpload(files: FileList | null) {
 async function toggleTorch() {
 	const success = await applyConstraintsOnVideoStream(mediaStream, {
 		//@ts-ignore
-		advanced: [{ torch: !cameraControls.flash }]
+		advanced: [{ torch: !cameraControls.flash.enabled }]
 	});
 	console.log('success', success);
 	if (success) {
-		cameraControls.flash = !cameraControls.flash;
+		cameraControls.flash.enabled = !cameraControls.flash.enabled;
 	}
+}
+
+async function checkFeatures() {
+	const videoTracks = await mediaStream.getVideoTracks();
+	// @ts-ignore
+	const imageCapture = new ImageCapture(videoTracks[0]);
+	const capablities = await imageCapture.getPhotoCapabilities();
+	cameraControls.flash.show = capablities.fillLightMode ? true : false;
+	cameraControls.flip.show = videoTracks.length > 1 ? true : false;
 }
 
 async function requestMediaAccess() {
 	const res = await getMediaStream();
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
+		checkFeatures();
 	} else {
 		initState = 'denied';
 	}
@@ -119,22 +136,26 @@ onMount(async () => await requestMediaAccess());
 	>
 		{#if initState == 'allowed'}
 			<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
-				<div class="flex flex-col items-center justify-center space-y-1">
-					<IconButton
-						on:click="{toggleTorch}"
-						class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
-					>
-						<FlashIcon class="h-5 w-5 text-white" />
-					</IconButton>
-					<span class="text-xs">Flash</span>
-				</div>
+				{#if cameraControls.flash.show}
+					<div class="flex flex-col items-center justify-center space-y-1">
+						<IconButton
+							on:click="{toggleTorch}"
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
+						>
+							<FlashIcon class="h-5 w-5 text-white" />
+						</IconButton>
+						<span class="text-xs">Flash</span>
+					</div>
+				{/if}
 
-				<div class="flex flex-col items-center justify-center space-y-1">
-					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-						<FlipIcon class="h-5 w-5 text-white" />
-					</IconButton>
-					<span class="text-xs">Flip</span>
-				</div>
+				{#if cameraControls.flip.show}
+					<div class="flex flex-col items-center justify-center space-y-1">
+						<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
+							<FlipIcon class="h-5 w-5 text-white" />
+						</IconButton>
+						<span class="text-xs">Flip</span>
+					</div>
+				{/if}
 				<div class="flex flex-col items-center justify-center space-y-1">
 					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
 						<TimerIcon class="h-6 w-6 text-white" />
