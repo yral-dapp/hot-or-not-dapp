@@ -57,6 +57,7 @@ async function checkFeatures() {
 	const capablities = await imageCapture.getPhotoCapabilities();
 	cameraControls.flash.show = capablities.fillLightMode ? true : false;
 	cameraControls.flip.show = videoTracks.length > 1 ? true : false;
+	console.log({ capablities, videoTracks });
 }
 
 async function requestMediaAccess() {
