@@ -14,7 +14,7 @@ import WalletIcon from '$components/icons/WalletIcon.svelte';
 	<IconButton class="flex items-center p-2">
 		<TrophyIcon class="h-6 w-6 text-white" />
 	</IconButton>
-	<IconButton class="flex items-center rounded-full bg-primary p-3">
+	<IconButton href="/upload" class="flex items-center rounded-full bg-primary p-3">
 		<PlusIcon class="h-4 w-4 text-white" />
 	</IconButton>
 	<IconButton class="flex items-center p-2">
