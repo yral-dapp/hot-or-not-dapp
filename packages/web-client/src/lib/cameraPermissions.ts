@@ -6,17 +6,19 @@ type CameraPermissionRequest = {
 };
 
 type DevicesListRequest = {
-	devices?: MediaDeviceInfo[];
+	videoDevices?: MediaDeviceInfo[];
 	error: 'none' | 'denied' | 'no-stream';
 };
 
-export async function getMediaStream(): Promise<CameraPermissionRequest> {
+export type FacingMode = 'user' | 'environment';
+
+export async function getMediaStream(facingMode: FacingMode): Promise<CameraPermissionRequest> {
 	if (browser && 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
 		try {
 			let stream: MediaStream | undefined = undefined;
 			stream = await navigator.mediaDevices.getUserMedia({
 				audio: true,
-				video: { facingMode: ['user', 'environment'] }
+				video: { facingMode }
 			});
 			return { stream, error: 'none' };
 		} catch (err) {
@@ -29,8 +31,8 @@ export async function getDevicesList(): Promise<DevicesListRequest> {
 	if (browser && 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
 		try {
 			const devices = await navigator.mediaDevices.enumerateDevices();
-			// const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-			return { devices, error: 'none' };
+			const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+			return { videoDevices, error: 'none' };
 		} catch (err) {
 			return { error: 'denied' };
 		}
