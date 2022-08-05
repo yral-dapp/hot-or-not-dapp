@@ -14,7 +14,6 @@ let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
 let moreVideos = true;
 let parentEl: HTMLElement;
-$: innerHeight = window?.innerHeight;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -89,12 +88,8 @@ onMount(async () => {
 });
 </script>
 
-<svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
-
 <all-videos
-	bind:this="{parentEl}"
-	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
-	class="hide-scrollbar relative block w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
+	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
 	{#each videos as video, i (video.url)}
 		<VideoPlayer
