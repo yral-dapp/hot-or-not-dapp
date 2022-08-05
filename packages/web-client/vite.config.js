@@ -51,6 +51,9 @@ const config = {
 		fs: {
 			allow: ['../']
 		},
+		hmr: {
+			port: 443
+		},
 		proxy: {
 			// This proxies all http requests made to /api to our running dfx instance
 			'/api': {
