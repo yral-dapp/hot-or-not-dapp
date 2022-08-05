@@ -1,3 +1,16 @@
+<script lang="ts" context="module">
+interface CameraControls {
+	flash: {
+		show: boolean;
+		enabled: boolean;
+	};
+	flip: {
+		show: boolean;
+		facingMode: FacingMode;
+	};
+}
+</script>
+
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CameraAccessIcon from '$components/icons/CameraAccessIcon.svelte';
@@ -6,23 +19,29 @@ import FlashIcon from '$components/icons/FlashIcon.svelte';
 import FlipIcon from '$components/icons/FlipIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import CameraLayout from '$components/layout/CameraLayout.svelte';
-import { applyConstraintsOnVideoStream, getMediaStream } from '$lib/cameraPermissions';
+import {
+	applyConstraintsOnVideoStream,
+	getDevicesList,
+	getMediaStream,
+	type FacingMode
+} from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
 import { fade } from 'svelte/transition';
+
 let videoEl: HTMLVideoElement;
 let videoOverlayEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
 
-let cameraControls = {
+let cameraControls: CameraControls = {
 	flash: {
 		show: false,
 		enabled: false
 	},
 	flip: {
 		show: false,
-		track: undefined
+		facingMode: 'user'
 	}
 };
 
@@ -39,6 +58,12 @@ function handleFileUpload(files: FileList | null) {
 	console.log('file selected', files);
 }
 
+async function switchCamera() {
+	cameraControls.flip.facingMode =
+		cameraControls.flip.facingMode == 'user' ? 'environment' : 'user';
+	await requestMediaAccess();
+}
+
 async function toggleTorch() {
 	const success = await applyConstraintsOnVideoStream(mediaStream, {
 		//@ts-ignore
@@ -50,21 +75,26 @@ async function toggleTorch() {
 	}
 }
 
-async function checkFeatures() {
-	const videoTracks = await mediaStream.getVideoTracks();
-	// @ts-ignore
-	const imageCapture = new ImageCapture(videoTracks[0]);
+async function checkIfFlashAvailable() {
+	//@ts-ignore
+	const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
 	const capablities = await imageCapture.getPhotoCapabilities();
 	cameraControls.flash.show = capablities.fillLightMode ? true : false;
-	cameraControls.flip.show = videoTracks.length > 1 ? true : false;
-	console.log({ capablities, videoTracks });
+	console.log({ capablities });
+}
+
+async function checkIfFlipAvailable() {
+	const { videoDevices } = await await getDevicesList();
+	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
+	console.log({ videoDevices });
 }
 
 async function requestMediaAccess() {
-	const res = await getMediaStream();
+	const res = await getMediaStream(cameraControls.flip.facingMode);
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
-		checkFeatures();
+		checkIfFlipAvailable();
+		checkIfFlashAvailable();
 	} else {
 		initState = 'denied';
 	}
@@ -151,7 +181,10 @@ onMount(async () => await requestMediaAccess());
 
 				{#if cameraControls.flip.show}
 					<div class="flex flex-col items-center justify-center space-y-1">
-						<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
+						<IconButton
+							on:click="{switchCamera}"
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
+						>
 							<FlipIcon class="h-5 w-5 text-white" />
 						</IconButton>
 						<span class="text-xs">Flip</span>
