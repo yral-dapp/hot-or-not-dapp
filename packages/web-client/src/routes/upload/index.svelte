@@ -11,12 +11,17 @@ import { onMount } from 'svelte';
 let videoEl: HTMLVideoElement;
 let videoOverlayEl: HTMLVideoElement;
 let mediaStream: MediaStream;
+let inputEl: HTMLInputElement;
 
 $: mediaStream && updateVideoStream();
 
 function updateVideoStream() {
 	videoEl.srcObject = mediaStream;
 	videoOverlayEl.srcObject = mediaStream;
+}
+
+function handleFileUpload(files: FileList | null) {
+	console.log('file selected', files);
 }
 
 onMount(async () => {
@@ -27,6 +32,12 @@ onMount(async () => {
 });
 </script>
 
+<input
+	type="image/*"
+	bind:this="{inputEl}"
+	class="hidden"
+	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
+/>
 <CameraLayout>
 	<svelte:fragment slot="content">
 		<div class="realtive h-full w-full">
@@ -48,7 +59,7 @@ onMount(async () => {
 		</div>
 	</svelte:fragment>
 	<div class="flex h-full w-full items-center justify-center space-x-16" slot="bottom-navigation">
-		<button class="focus:outline-none">Gallery</button>
+		<button class="focus:outline-none" on:click="{() => inputEl.click()}">Gallery</button>
 		<button class="focus:outline-none">Camera</button>
 	</div>
 	<div class="pointer-events-auto flex w-full items-start justify-end px-5" slot="top">
