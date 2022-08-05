@@ -1,6 +1,4 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte';
-
 import IconButton from '$components/button/IconButton.svelte';
 import CameraAccessIcon from '$components/icons/CameraAccessIcon.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
@@ -45,14 +43,16 @@ async function toggleTorch() {
 	}
 }
 
-onMount(async () => {
+async function requestMediaAccess() {
 	const res = await getMediaStream();
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
 	} else {
 		initState = 'denied';
 	}
-});
+}
+
+onMount(async () => await requestMediaAccess);
 </script>
 
 <CameraLayout>
