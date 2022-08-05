@@ -69,7 +69,6 @@ onMount(async () => {
 						<span class="text-center text-white/60">
 							Please provide us access to your camera, whch is required for recording video
 						</span>
-						<Button class="px-8">Request access again</Button>
 					{/if}
 				</div>
 			{:else}
