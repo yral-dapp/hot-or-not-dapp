@@ -5,13 +5,17 @@ import FlashIcon from '$components/icons/FlashIcon.svelte';
 import FlipIcon from '$components/icons/FlipIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import CameraLayout from '$components/layout/CameraLayout.svelte';
-import { getMediaStream } from '$lib/cameraPermissions';
+import { applyConstraintsOnVideoStream, getMediaStream } from '$lib/cameraPermissions';
 import { onMount } from 'svelte';
 
 let videoEl: HTMLVideoElement;
 let videoOverlayEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
+
+let cameraControls = {
+	flash: false
+};
 
 $: mediaStream && updateVideoStream();
 
@@ -22,6 +26,17 @@ function updateVideoStream() {
 
 function handleFileUpload(files: FileList | null) {
 	console.log('file selected', files);
+}
+
+async function toggleTorch() {
+	const success = await applyConstraintsOnVideoStream(mediaStream, {
+		//@ts-ignore
+		advanced: [{ torch: !cameraControls.flash }]
+	});
+	console.log('success', success);
+	if (success) {
+		cameraControls.flash = !cameraControls.flash;
+	}
 }
 
 onMount(async () => {
@@ -79,7 +94,10 @@ onMount(async () => {
 	>
 		<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
 			<div class="flex flex-col items-center justify-center space-y-1">
-				<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
+				<IconButton
+					on:click="{toggleTorch}"
+					class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
+				>
 					<FlashIcon class="h-5 w-5 text-white" />
 				</IconButton>
 				<span class="text-xs">Flash</span>
