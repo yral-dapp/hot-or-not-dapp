@@ -38,3 +38,16 @@ export async function getDevicesList(): Promise<DevicesListRequest> {
 		return { error: 'no-stream' };
 	}
 }
+
+export async function applyConstraintsOnVideoStream(
+	stream: MediaStream,
+	constraints: MediaTrackConstraints
+) {
+	try {
+		const track = stream.getVideoTracks()[0];
+		await track.applyConstraints(constraints);
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
