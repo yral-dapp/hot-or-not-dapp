@@ -90,6 +90,7 @@ onMount(async () => {
 
 <all-videos
 	bind:this="{parentEl}"
+	on:click|once="{() => ($playerInitialized = true)}"
 	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
 	{#each videos as video, i (video.url)}
