@@ -6,6 +6,8 @@ import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import PlayIcon from '$components/icons/PlayIcon.svelte';
 import ShareIcon from '$components/icons/ShareIcon.svelte';
+import SoundIcon from '$components/icons/SoundIcon.svelte';
+
 import { tick } from 'svelte';
 import { fade } from 'svelte/transition';
 import { playerInitialized } from '$stores/playerInitialization';
@@ -13,18 +15,16 @@ import { playerInitialized } from '$stores/playerInitialization';
 export let src = '';
 export let thumbnail = '';
 export let load = false;
-export let paused: boolean = true;
+export let paused = false;
 export let avatarPhotoUrl =
 	'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
-$: _paused = paused;
-$: !load && (_paused = false);
-
 let isLoaded = false;
 let generatedThumbnail = '';
 let loadThumbnail = false;
+let showPausedButton = false;
 
 async function generateThumbnail(target: EventTarget | null) {
 	if (loadThumbnail && target && !isLoaded) {
@@ -42,34 +42,33 @@ async function generateThumbnail(target: EventTarget | null) {
 		}
 	}
 }
+
+$: console.log({ src, paused, $playerInitialized });
 </script>
 
 <div
-	on:click="{() => (_paused = !_paused)}"
-	on:click|once="{() => ($playerInitialized = true)}"
+	on:click="{() => $playerInitialized && (paused = !paused)}"
 	class="relative flex h-full w-auto snap-center items-center justify-center"
 >
 	{#if load}
-		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			loop
-			autoplay="{_paused}"
-			bind:paused="{_paused}"
+			muted="{!$playerInitialized}"
+			autoplay
+			on:pause="{() => (showPausedButton = true)}"
+			on:play="{() => (showPausedButton = false)}"
+			bind:paused
 			src="{src}"
 			class="object-fit absolute z-[3] h-full w-full"
 			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"></video>
-	{/if}
 
-	{#if load}
-		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			loop
-			autoplay="{_paused}"
-			bind:paused="{_paused}"
+			muted
+			autoplay
+			bind:paused
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
-			src="{src}"
-		>
-		</video>
+			src="{src}"></video>
 	{:else if thumbnail || generatedThumbnail}
 		<img
 			transition:fade
@@ -79,7 +78,18 @@ async function generateThumbnail(target: EventTarget | null) {
 		/>
 	{/if}
 
-	{#if !$playerInitialized || _paused}
+	{#if !$playerInitialized}
+		<div
+			transition:fade="{{ duration: 100 }}"
+			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
+		>
+			<div class="flex h-full items-center justify-center">
+				<IconButton>
+					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+				</IconButton>
+			</div>
+		</div>
+	{:else if load && showPausedButton}
 		<div
 			transition:fade="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
