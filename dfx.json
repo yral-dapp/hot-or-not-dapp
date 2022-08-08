@@ -1,17 +1,30 @@
 {
 	"version": 1,
-	"dfx": "0.11.0",
+	"dfx": "0.11.1",
 	"canisters": {
-		"users": {
+		"individual_user_template": {
 			"type": "rust",
-			"package": "users",
-			"candid": "packages/canisters/users/users.did",
+			"package": "individual_user_template",
+			"candid": "packages/canisters/individual_user_template/individual_user_template.did",
 			"declarations": {
-				"output": "packages/web-client/declarations/users"
+				"output": "packages/web-client/declarations/individual_user_template"
+			}
+		},
+		"internet_identity": {
+			"type": "custom",
+			"candid": "internet_identity.did",
+			"wasm": "internet_identity.wasm",
+			"build": "./scripts/local_internet_identity_install.sh"
+		},
+		"user_index": {
+			"type": "rust",
+			"package": "user_index",
+			"candid": "packages/canisters/user_index/user_index.did",
+			"declarations": {
+				"output": "packages/web-client/declarations/user_index"
 			}
 		},
 		"web-client": {
-			"dependencies": ["users"],
 			"web-client": {
 				"entrypoint": "packages/web-client/build/index.html"
 			},

@@ -1,2 +1,5 @@
 [workspace]
-members = ["packages/canisters/users"]
+members = [
+  "packages/canisters/user_index",
+  "packages/canisters/individual_user_template",
+]

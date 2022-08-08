@@ -1,0 +1,17 @@
+[package]
+name = "individual_user_template"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+ic-kit = "0.4.7"
+candid = "0.7.15"
+ic-cdk = "0.5.5"
+ic-cdk-macros = "0.5.5"
+ic-stable-memory = "0.2.2"
+speedy = "0.8.2"
