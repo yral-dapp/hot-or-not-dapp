@@ -6,7 +6,10 @@ interface CameraControls {
 	};
 	flip: {
 		show: boolean;
-		facingMode: FacingMode;
+	};
+	device: {
+		selectedDeviceId: string;
+		allIds: string[];
 	};
 }
 </script>
@@ -22,8 +25,7 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 import {
 	applyConstraintsOnVideoStream,
 	getDevicesList,
-	getMediaStream,
-	type FacingMode
+	getMediaStream
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
 import { fade } from 'svelte/transition';
@@ -40,8 +42,11 @@ let cameraControls: CameraControls = {
 		enabled: false
 	},
 	flip: {
-		show: false,
-		facingMode: 'user'
+		show: false
+	},
+	device: {
+		selectedDeviceId: '',
+		allIds: []
 	}
 };
 
@@ -59,8 +64,9 @@ function handleFileUpload(files: FileList | null) {
 }
 
 async function switchCamera() {
-	cameraControls.flip.facingMode =
-		cameraControls.flip.facingMode == 'user' ? 'environment' : 'user';
+	let nextId = cameraControls.device.allIds.indexOf(cameraControls.device.selectedDeviceId) + 1;
+	if (nextId == cameraControls.device.allIds.length) nextId = 0;
+	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[nextId];
 	await requestMediaAccess();
 }
 
@@ -86,15 +92,16 @@ async function checkIfFlashAvailable() {
 async function checkIfFlipAvailable() {
 	const { videoDevices } = await await getDevicesList();
 	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
-	console.log({ videoDevices });
+	cameraControls.device.allIds = videoDevices ? videoDevices?.map((o) => o.deviceId) : [];
+	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[0] ?? '';
 }
 
 async function requestMediaAccess() {
-	const res = await getMediaStream(cameraControls.flip.facingMode);
+	const res = await getMediaStream(cameraControls.device.selectedDeviceId);
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
-		checkIfFlipAvailable();
-		checkIfFlashAvailable();
+		await checkIfFlashAvailable();
+		!cameraControls.device.selectedDeviceId && (await checkIfFlipAvailable());
 	} else {
 		initState = 'denied';
 	}
