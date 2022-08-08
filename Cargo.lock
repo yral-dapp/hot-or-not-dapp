@@ -678,9 +678,9 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-memory"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "876af49439b4c9e21cbbb19ab92e3f49ab99762a48b66b6b56aa447fe6b8870f"
+checksum = "6957a46a9fbbcad38426190b5c4a69b3a03c7b4e3db9b5f5aeacccce23dade05"
 dependencies = [
  "candid",
  "ic-cdk",
