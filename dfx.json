@@ -25,7 +25,7 @@
 			}
 		},
 		"webclient": {
-			"web-client": {
+			"frontend": {
 				"entrypoint": "packages/web-client/build/index.html"
 			},
 			"source": ["packages/web-client/build"],
