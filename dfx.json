@@ -24,7 +24,7 @@
 				"output": "packages/web-client/declarations/user_index"
 			}
 		},
-		"web-client": {
+		"webclient": {
 			"web-client": {
 				"entrypoint": "packages/web-client/build/index.html"
 			},

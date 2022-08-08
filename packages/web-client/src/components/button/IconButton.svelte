@@ -7,7 +7,7 @@ export { exportClass as class };
 let exportClass: any = '';
 
 const classes = c(
-	'flex items-center rounded-full select-none justify-center',
+	'flex items-center select-none justify-center focus:outline-none',
 	{
 		'text-zinc-500 pointer-events-none': disabled
 	},
