@@ -29,7 +29,6 @@ import { onMount, tick } from 'svelte';
 import { fade } from 'svelte/transition';
 
 let videoEl: HTMLVideoElement;
-let videoOverlayEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
@@ -51,7 +50,6 @@ async function updateVideoStream() {
 	initState = 'allowed';
 	await tick();
 	videoEl.srcObject = mediaStream;
-	videoOverlayEl.srcObject = mediaStream;
 }
 
 function handleFileUpload(files: FileList | null) {
@@ -125,14 +123,7 @@ onMount(async () => await requestMediaAccess());
 					muted
 					bind:this="{videoEl}"
 					autoplay
-					class="object-fit absolute z-[5] h-full w-full object-center"
-				>
-				</video>
-				<video
-					muted
-					bind:this="{videoOverlayEl}"
-					autoplay
-					class="absolute z-[1] h-full w-full object-cover object-center blur-lg"
+					class="absolute z-[5] h-full w-full object-cover object-center"
 				>
 				</video>
 			{/if}
