@@ -6,7 +6,10 @@ interface CameraControls {
 	};
 	flip: {
 		show: boolean;
-		facingMode: FacingMode;
+	};
+	device: {
+		selectedDeviceId: string;
+		allIds: string[];
 	};
 }
 </script>
@@ -22,14 +25,12 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 import {
 	applyConstraintsOnVideoStream,
 	getDevicesList,
-	getMediaStream,
-	type FacingMode
+	getMediaStream
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
 import { fade } from 'svelte/transition';
 
 let videoEl: HTMLVideoElement;
-let videoOverlayEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
@@ -40,8 +41,11 @@ let cameraControls: CameraControls = {
 		enabled: false
 	},
 	flip: {
-		show: false,
-		facingMode: 'user'
+		show: false
+	},
+	device: {
+		selectedDeviceId: '',
+		allIds: []
 	}
 };
 
@@ -51,7 +55,6 @@ async function updateVideoStream() {
 	initState = 'allowed';
 	await tick();
 	videoEl.srcObject = mediaStream;
-	videoOverlayEl.srcObject = mediaStream;
 }
 
 function handleFileUpload(files: FileList | null) {
@@ -59,8 +62,9 @@ function handleFileUpload(files: FileList | null) {
 }
 
 async function switchCamera() {
-	cameraControls.flip.facingMode =
-		cameraControls.flip.facingMode == 'user' ? 'environment' : 'user';
+	let nextId = cameraControls.device.allIds.indexOf(cameraControls.device.selectedDeviceId) + 1;
+	if (nextId == cameraControls.device.allIds.length) nextId = 0;
+	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[nextId];
 	await requestMediaAccess();
 }
 
@@ -86,15 +90,16 @@ async function checkIfFlashAvailable() {
 async function checkIfFlipAvailable() {
 	const { videoDevices } = await await getDevicesList();
 	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
-	console.log({ videoDevices });
+	cameraControls.device.allIds = videoDevices ? videoDevices?.map((o) => o.deviceId) : [];
+	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[0] ?? '';
 }
 
 async function requestMediaAccess() {
-	const res = await getMediaStream(cameraControls.flip.facingMode);
+	const res = await getMediaStream(cameraControls.device.selectedDeviceId);
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
-		checkIfFlipAvailable();
-		checkIfFlashAvailable();
+		await checkIfFlashAvailable();
+		!cameraControls.device.selectedDeviceId && (await checkIfFlipAvailable());
 	} else {
 		initState = 'denied';
 	}
@@ -125,14 +130,7 @@ onMount(async () => await requestMediaAccess());
 					muted
 					bind:this="{videoEl}"
 					autoplay
-					class="object-fit absolute z-[5] h-full w-full object-center"
-				>
-				</video>
-				<video
-					muted
-					bind:this="{videoOverlayEl}"
-					autoplay
-					class="absolute z-[1] h-full w-full object-cover object-center blur-lg"
+					class="absolute z-[5] h-full w-full object-cover object-center"
 				>
 				</video>
 			{/if}
@@ -203,7 +201,7 @@ onMount(async () => await requestMediaAccess());
 
 <input
 	type="file"
-	accept="image/*"
+	accept="video/*"
 	bind:this="{inputEl}"
 	class="hidden"
 	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"

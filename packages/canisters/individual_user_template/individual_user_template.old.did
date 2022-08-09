@@ -1,0 +1,1 @@
+service : { say_hello : (text) -> (text) query }

@@ -31,7 +31,7 @@ async function fetchNextVideos() {
 function selectLastElement() {
 	if (observeLastVideo) observeLastVideo.disconnect();
 
-	if (!parentEl.children[currentVideoIndex - 1]) return;
+	if (currentVideoIndex == 0 || !parentEl.children[currentVideoIndex - 1]) return;
 
 	observeLastVideo = new IntersectionObserver(
 		async (entries) => {
@@ -89,6 +89,7 @@ onMount(async () => {
 </script>
 
 <all-videos
+	bind:this="{parentEl}"
 	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
 	{#each videos as video, i (video.url)}
