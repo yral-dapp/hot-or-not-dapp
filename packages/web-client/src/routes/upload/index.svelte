@@ -11,6 +11,7 @@ interface CameraControls {
 		selectedDeviceId: string;
 		allIds: string[];
 	};
+	timer: 'off' | '5s' | '10s';
 }
 </script>
 
@@ -29,6 +30,7 @@ import {
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
 import { fade } from 'svelte/transition';
+import c from 'clsx';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -46,7 +48,8 @@ let cameraControls: CameraControls = {
 	device: {
 		selectedDeviceId: '',
 		allIds: []
-	}
+	},
+	timer: 'off'
 };
 
 $: mediaStream && updateVideoStream();
@@ -59,6 +62,12 @@ async function updateVideoStream() {
 
 function handleFileUpload(files: FileList | null) {
 	console.log('file selected', files);
+}
+
+function toggleTimer() {
+	if (cameraControls.timer === 'off') cameraControls.timer = '5s';
+	else if (cameraControls.timer === '5s') cameraControls.timer = '10s';
+	else cameraControls.timer = 'off';
 }
 
 async function switchCamera() {
@@ -189,8 +198,18 @@ onMount(async () => await requestMediaAccess());
 					</div>
 				{/if}
 				<div class="flex flex-col items-center justify-center space-y-1">
-					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-						<TimerIcon class="h-6 w-6 text-white" />
+					<IconButton
+						on:click="{toggleTimer}"
+						class="{c('flex h-10 w-10 items-center justify-center rounded-full', {
+							'bg-black text-white': cameraControls.timer === 'off',
+							'bg-white text-primary': cameraControls.timer !== 'off'
+						})}"
+					>
+						{#if cameraControls.timer === 'off'}
+							<TimerIcon class="h-6 w-6 " />
+						{:else}
+							{cameraControls.timer}
+						{/if}
 					</IconButton>
 					<span class="text-xs">Timer</span>
 				</div>
