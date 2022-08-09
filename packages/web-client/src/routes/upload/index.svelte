@@ -34,6 +34,7 @@ let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
+let canvasEl: HTMLCanvasElement;
 
 let cameraControls: CameraControls = {
 	flash: {
@@ -105,8 +106,43 @@ async function requestMediaAccess() {
 	}
 }
 
-onMount(async () => await requestMediaAccess());
+function updateCanvas() {
+	canvasEl.height = window.innerHeight;
+	canvasEl.width = window.innerWidth;
+}
+
+function computeFrame() {
+	const ctx = canvasEl.getContext('2d');
+	if (ctx) {
+		console.log('drawing image');
+		ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+		const length = frame.data.length;
+		const data = frame.data;
+
+		for (let i = 0; i < length; i += 4) {
+			const red = data[i + 0];
+			const green = data[i + 1];
+			const blue = data[i + 2];
+			if (green > 100 && red > 100 && blue < 43) {
+				data[i + 3] = 0;
+			}
+		}
+		ctx.putImageData(frame, 0, 0);
+	}
+}
+
+function startCapturing() {
+	setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
+}
+
+onMount(async () => {
+	await requestMediaAccess();
+	updateCanvas();
+});
 </script>
+
+<svelte:window on:resize="{updateCanvas}" />
 
 <CameraLayout>
 	<svelte:fragment slot="content">
@@ -127,12 +163,14 @@ onMount(async () => await requestMediaAccess());
 			{:else}
 				<!-- svelte-ignore a11y-media-has-caption -->
 				<video
+					on:play="{startCapturing}"
 					muted
 					bind:this="{videoEl}"
 					autoplay
-					class="absolute z-[5] h-full w-full object-cover object-center"
+					class="absolute z-[4] h-full w-full object-cover object-center"
 				>
 				</video>
+				<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
 			{/if}
 		</div>
 	</svelte:fragment>
