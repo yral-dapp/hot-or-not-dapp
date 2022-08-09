@@ -11,6 +11,7 @@ interface CameraControls {
 		selectedDeviceId: string;
 		allIds: string[];
 	};
+	timer: 'off' | '5s' | '10s';
 }
 </script>
 
@@ -28,12 +29,15 @@ import {
 	getMediaStream
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
-import { fade } from 'svelte/transition';
+import { fade, scale } from 'svelte/transition';
+import c from 'clsx';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
+let timerInterval: any = undefined;
+let timerCountdown = 0;
 
 let cameraControls: CameraControls = {
 	flash: {
@@ -46,7 +50,8 @@ let cameraControls: CameraControls = {
 	device: {
 		selectedDeviceId: '',
 		allIds: []
-	}
+	},
+	timer: 'off'
 };
 
 $: mediaStream && updateVideoStream();
@@ -59,6 +64,12 @@ async function updateVideoStream() {
 
 function handleFileUpload(files: FileList | null) {
 	console.log('file selected', files);
+}
+
+function toggleTimer() {
+	if (cameraControls.timer === 'off') cameraControls.timer = '5s';
+	else if (cameraControls.timer === '5s') cameraControls.timer = '10s';
+	else cameraControls.timer = 'off';
 }
 
 async function switchCamera() {
@@ -105,6 +116,28 @@ async function requestMediaAccess() {
 	}
 }
 
+function setTimer() {
+	timerInterval = setInterval(() => {
+		timerCountdown--;
+		if (timerCountdown == 0) {
+			clearInterval(timerInterval);
+			timerInterval = undefined;
+			startRecording(true);
+		}
+	}, 1000);
+}
+
+$: console.log({ timerCountdown, timerInterval });
+
+async function startRecording(ignoreTimer: boolean = false) {
+	if (cameraControls.timer !== 'off' && !ignoreTimer) {
+		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
+		setTimer();
+	} else {
+		console.log('start recording');
+	}
+}
+
 onMount(async () => await requestMediaAccess());
 </script>
 
@@ -133,6 +166,20 @@ onMount(async () => await requestMediaAccess());
 					class="absolute z-[5] h-full w-full object-cover object-center"
 				>
 				</video>
+				{#if timerInterval}
+					{#key timerCountdown}
+						<div
+							in:fade|local="{{ duration: 500, delay: 100 }}"
+							out:fade|local="{{ duration: 100 }}"
+							class="{c(
+								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
+								timerCountdown > 3 ? 'text-white' : 'text-primary'
+							)}"
+						>
+							{timerCountdown}
+						</div>
+					{/key}
+				{/if}
 			{/if}
 		</div>
 	</svelte:fragment>
@@ -152,7 +199,7 @@ onMount(async () => await requestMediaAccess());
 		{#if initState == 'allowed'}
 			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
 			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-			<button class="px-4">
+			<button on:click="{() => startRecording()}" class="px-4">
 				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
 			</button>
 			<div class="h-12 w-12 rounded-full bg-green-200"></div>
@@ -189,8 +236,18 @@ onMount(async () => await requestMediaAccess());
 					</div>
 				{/if}
 				<div class="flex flex-col items-center justify-center space-y-1">
-					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-						<TimerIcon class="h-6 w-6 text-white" />
+					<IconButton
+						on:click="{toggleTimer}"
+						class="{c('flex h-10 w-10 items-center justify-center rounded-full', {
+							'bg-black text-white': cameraControls.timer === 'off',
+							'bg-white text-primary': cameraControls.timer !== 'off'
+						})}"
+					>
+						{#if cameraControls.timer === 'off'}
+							<TimerIcon class="h-6 w-6 " />
+						{:else}
+							{cameraControls.timer}
+						{/if}
 					</IconButton>
 					<span class="text-xs">Timer</span>
 				</div>
