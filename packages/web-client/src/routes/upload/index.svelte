@@ -29,13 +29,15 @@ import {
 	getMediaStream
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
-import { fade } from 'svelte/transition';
+import { fade, scale } from 'svelte/transition';
 import c from 'clsx';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
+let timerInterval: any = undefined;
+let timerCountdown = 0;
 
 let cameraControls: CameraControls = {
 	flash: {
@@ -114,6 +116,28 @@ async function requestMediaAccess() {
 	}
 }
 
+function setTimer() {
+	timerInterval = setInterval(() => {
+		timerCountdown--;
+		if (timerCountdown == 0) {
+			clearInterval(timerInterval);
+			timerInterval = undefined;
+			startRecording(true);
+		}
+	}, 1000);
+}
+
+$: console.log({ timerCountdown, timerInterval });
+
+async function startRecording(ignoreTimer: boolean = false) {
+	if (cameraControls.timer !== 'off' && !ignoreTimer) {
+		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
+		setTimer();
+	} else {
+		console.log('start recording');
+	}
+}
+
 onMount(async () => await requestMediaAccess());
 </script>
 
@@ -142,6 +166,19 @@ onMount(async () => await requestMediaAccess());
 					class="absolute z-[5] h-full w-full object-cover object-center"
 				>
 				</video>
+				{#if timerInterval}
+					{#key timerCountdown}
+						<div
+							in:fade|local="{{ duration: 500 }}"
+							class="{c(
+								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-8xl font-bold',
+								timerCountdown > 3 ? 'text-white' : 'text-primary'
+							)}"
+						>
+							{timerCountdown}
+						</div>
+					{/key}
+				{/if}
 			{/if}
 		</div>
 	</svelte:fragment>
@@ -161,7 +198,7 @@ onMount(async () => await requestMediaAccess());
 		{#if initState == 'allowed'}
 			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
 			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-			<button class="px-4">
+			<button on:click="{() => startRecording()}" class="px-4">
 				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
 			</button>
 			<div class="h-12 w-12 rounded-full bg-green-200"></div>
