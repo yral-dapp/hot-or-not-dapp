@@ -201,7 +201,7 @@ onMount(async () => await requestMediaAccess());
 
 <input
 	type="file"
-	accept="image/*"
+	accept="video/*"
 	bind:this="{inputEl}"
 	class="hidden"
 	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
