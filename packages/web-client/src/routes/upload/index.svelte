@@ -5,11 +5,8 @@ interface CameraControls {
 		enabled: boolean;
 	};
 	flip: {
+		facingMode: FacingMode;
 		show: boolean;
-	};
-	device: {
-		selectedDeviceId: string;
-		allIds: string[];
 	};
 }
 </script>
@@ -25,7 +22,8 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 import {
 	applyConstraintsOnVideoStream,
 	getDevicesList,
-	getMediaStream
+	getMediaStream,
+	type FacingMode
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
 import { fade } from 'svelte/transition';
@@ -41,11 +39,8 @@ let cameraControls: CameraControls = {
 		enabled: false
 	},
 	flip: {
-		show: false
-	},
-	device: {
-		selectedDeviceId: '',
-		allIds: []
+		show: false,
+		facingMode: 'user'
 	}
 };
 
@@ -62,9 +57,8 @@ function handleFileUpload(files: FileList | null) {
 }
 
 async function switchCamera() {
-	let nextId = cameraControls.device.allIds.indexOf(cameraControls.device.selectedDeviceId) + 1;
-	if (nextId == cameraControls.device.allIds.length) nextId = 0;
-	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[nextId];
+	cameraControls.flip.facingMode =
+		cameraControls.flip.facingMode === 'user' ? 'environment' : 'user';
 	await requestMediaAccess();
 }
 
@@ -73,7 +67,6 @@ async function toggleTorch() {
 		//@ts-ignore
 		advanced: [{ torch: !cameraControls.flash.enabled }]
 	});
-	console.log('success', success);
 	if (success) {
 		cameraControls.flash.enabled = !cameraControls.flash.enabled;
 	}
@@ -84,22 +77,23 @@ async function checkIfFlashAvailable() {
 	const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
 	const capablities = await imageCapture.getPhotoCapabilities();
 	cameraControls.flash.show = capablities.fillLightMode ? true : false;
-	console.log({ capablities });
 }
 
 async function checkIfFlipAvailable() {
 	const { videoDevices } = await await getDevicesList();
 	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
-	cameraControls.device.allIds = videoDevices ? videoDevices?.map((o) => o.deviceId) : [];
-	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[0] ?? '';
 }
 
 async function requestMediaAccess() {
-	const res = await getMediaStream(cameraControls.device.selectedDeviceId);
+	if (mediaStream) {
+		const tracks = mediaStream.getTracks();
+		tracks.forEach((track) => track.stop());
+	}
+	const res = await getMediaStream(cameraControls.flip.facingMode);
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
 		await checkIfFlashAvailable();
-		!cameraControls.device.selectedDeviceId && (await checkIfFlipAvailable());
+		await checkIfFlipAvailable();
 	} else {
 		initState = 'denied';
 	}
