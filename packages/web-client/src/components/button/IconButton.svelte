@@ -4,9 +4,9 @@ import c from 'clsx';
 export let disabled = false;
 export let href = '';
 export { exportClass as class };
-let exportClass: any = '';
+let exportClass: string = '';
 
-const classes = c(
+$: classes = c(
 	'flex items-center select-none justify-center focus:outline-none',
 	{
 		'text-zinc-500 pointer-events-none': disabled

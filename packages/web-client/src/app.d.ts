@@ -15,6 +15,10 @@ namespace svelte.JSX {
 		onbeforeinstallprompt?: EventHandler<BeforeInstallPromptEvent, Window> | undefined | null;
 		onappinstalled?: EventHandler<Event, Window> | undefined | null;
 	}
+
+	interface HTMLProps<T> {
+		disableremoteplayback?: boolean;
+	}
 }
 
 interface BeforeInstallPromptEvent extends Event {

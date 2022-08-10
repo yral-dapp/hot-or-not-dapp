@@ -5,12 +5,10 @@ interface CameraControls {
 		enabled: boolean;
 	};
 	flip: {
+		facingMode: FacingMode;
 		show: boolean;
 	};
-	device: {
-		selectedDeviceId: string;
-		allIds: string[];
-	};
+	timer: 'off' | '5s' | '10s';
 }
 </script>
 
@@ -25,15 +23,20 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 import {
 	applyConstraintsOnVideoStream,
 	getDevicesList,
-	getMediaStream
+	getMediaStream,
+	type FacingMode
 } from '$lib/cameraPermissions';
 import { onMount, tick } from 'svelte';
-import { fade } from 'svelte/transition';
+import { fade, scale } from 'svelte/transition';
+import c from 'clsx';
+import { onDestroy } from 'svelte/types/runtime/internal/lifecycle';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
 let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
+let timerInterval: any = undefined;
+let timerCountdown = 0;
 let canvasEl: HTMLCanvasElement;
 
 let cameraControls: CameraControls = {
@@ -42,12 +45,10 @@ let cameraControls: CameraControls = {
 		enabled: false
 	},
 	flip: {
-		show: false
+		show: false,
+		facingMode: 'user'
 	},
-	device: {
-		selectedDeviceId: '',
-		allIds: []
-	}
+	timer: 'off'
 };
 
 $: mediaStream && updateVideoStream();
@@ -62,10 +63,18 @@ function handleFileUpload(files: FileList | null) {
 	console.log('file selected', files);
 }
 
+function toggleTimer() {
+	if (cameraControls.timer === 'off') cameraControls.timer = '5s';
+	else if (cameraControls.timer === '5s') cameraControls.timer = '10s';
+	else cameraControls.timer = 'off';
+}
+
 async function switchCamera() {
-	let nextId = cameraControls.device.allIds.indexOf(cameraControls.device.selectedDeviceId) + 1;
-	if (nextId == cameraControls.device.allIds.length) nextId = 0;
-	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[nextId];
+	cameraControls.flip.facingMode =
+		cameraControls.flip.facingMode === 'user' ? 'environment' : 'user';
+	if (cameraControls.flash.enabled) {
+		await toggleTorch();
+	}
 	await requestMediaAccess();
 }
 
@@ -74,7 +83,6 @@ async function toggleTorch() {
 		//@ts-ignore
 		advanced: [{ torch: !cameraControls.flash.enabled }]
 	});
-	console.log('success', success);
 	if (success) {
 		cameraControls.flash.enabled = !cameraControls.flash.enabled;
 	}
@@ -85,24 +93,47 @@ async function checkIfFlashAvailable() {
 	const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
 	const capablities = await imageCapture.getPhotoCapabilities();
 	cameraControls.flash.show = capablities.fillLightMode ? true : false;
-	console.log({ capablities });
 }
 
 async function checkIfFlipAvailable() {
 	const { videoDevices } = await await getDevicesList();
 	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
-	cameraControls.device.allIds = videoDevices ? videoDevices?.map((o) => o.deviceId) : [];
-	cameraControls.device.selectedDeviceId = cameraControls.device.allIds[0] ?? '';
 }
 
 async function requestMediaAccess() {
-	const res = await getMediaStream(cameraControls.device.selectedDeviceId);
+	if (mediaStream) {
+		const tracks = mediaStream.getTracks();
+		tracks.forEach((track) => track.stop());
+	}
+	const res = await getMediaStream(cameraControls.flip.facingMode);
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
 		await checkIfFlashAvailable();
-		!cameraControls.device.selectedDeviceId && (await checkIfFlipAvailable());
+		await checkIfFlipAvailable();
 	} else {
 		initState = 'denied';
+	}
+}
+
+function setTimer() {
+	timerInterval = setInterval(() => {
+		timerCountdown--;
+		if (timerCountdown == 0) {
+			clearInterval(timerInterval);
+			timerInterval = undefined;
+			startRecording(true);
+		}
+	}, 1000);
+}
+
+$: console.log({ timerCountdown, timerInterval });
+
+async function startRecording(ignoreTimer: boolean = false) {
+	if (cameraControls.timer !== 'off' && !ignoreTimer) {
+		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
+		setTimer();
+	} else {
+		console.log('start recording');
 	}
 }
 
@@ -140,6 +171,12 @@ onMount(async () => {
 	await requestMediaAccess();
 	updateCanvas();
 });
+
+onDestroy(async () => {
+	if (cameraControls.flash.enabled) {
+		await toggleTorch();
+	}
+});
 </script>
 
 <svelte:window on:resize="{updateCanvas}" />
@@ -170,6 +207,20 @@ onMount(async () => {
 					class="absolute z-[4] h-full w-full object-cover object-center"
 				>
 				</video>
+				{#if timerInterval}
+					{#key timerCountdown}
+						<div
+							in:fade|local="{{ duration: 500, delay: 100 }}"
+							out:fade|local="{{ duration: 100 }}"
+							class="{c(
+								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
+								timerCountdown > 3 ? 'text-white' : 'text-primary'
+							)}"
+						>
+							{timerCountdown}
+						</div>
+					{/key}
+				{/if}
 				<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
 			{/if}
 		</div>
@@ -190,7 +241,7 @@ onMount(async () => {
 		{#if initState == 'allowed'}
 			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
 			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-			<button class="px-4">
+			<button on:click="{() => startRecording()}" class="px-4">
 				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
 			</button>
 			<div class="h-12 w-12 rounded-full bg-green-200"></div>
@@ -227,8 +278,18 @@ onMount(async () => {
 					</div>
 				{/if}
 				<div class="flex flex-col items-center justify-center space-y-1">
-					<IconButton class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-						<TimerIcon class="h-6 w-6 text-white" />
+					<IconButton
+						on:click="{toggleTimer}"
+						class="{c('flex h-10 w-10 items-center justify-center rounded-full', {
+							'bg-black text-white': cameraControls.timer === 'off',
+							'bg-white text-primary': cameraControls.timer !== 'off'
+						})}"
+					>
+						{#if cameraControls.timer === 'off'}
+							<TimerIcon class="h-6 w-6 " />
+						{:else}
+							{cameraControls.timer}
+						{/if}
 					</IconButton>
 					<span class="text-xs">Timer</span>
 				</div>

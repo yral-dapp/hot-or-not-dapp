@@ -1,6 +1,6 @@
 <script lang="ts">
 import { db, type VideoDB } from '$lib/mockDb';
-import { playerInitialized } from '$stores/playerInitialization';
+import { playerState } from '$stores/playerState';
 import { onMount } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 
@@ -81,7 +81,8 @@ function updateURL() {
 
 onMount(async () => {
 	updateURL();
-	$playerInitialized = false;
+	$playerState.initialized = false;
+	$playerState.muted = true;
 	await fetchNextVideos();
 	await selectLastElement();
 	await selectNextElement();
@@ -89,6 +90,7 @@ onMount(async () => {
 </script>
 
 <all-videos
+	on:click|once="{() => ($playerState.initialized = true)}"
 	bind:this="{parentEl}"
 	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
 >
