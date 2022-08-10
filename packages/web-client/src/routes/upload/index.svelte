@@ -26,10 +26,9 @@ import {
 	getMediaStream,
 	type FacingMode
 } from '$lib/cameraPermissions';
-import { onMount, tick } from 'svelte';
-import { fade, scale } from 'svelte/transition';
+import { onMount, tick, onDestroy } from 'svelte';
+import { fade } from 'svelte/transition';
 import c from 'clsx';
-import { onDestroy } from 'svelte/types/runtime/internal/lifecycle';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -141,6 +140,10 @@ onMount(async () => await requestMediaAccess());
 onDestroy(async () => {
 	if (cameraControls.flash.enabled) {
 		await toggleTorch();
+	}
+	if (mediaStream) {
+		const tracks = mediaStream.getTracks();
+		tracks.forEach((track) => track.stop());
 	}
 });
 </script>
