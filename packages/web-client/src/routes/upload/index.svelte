@@ -29,6 +29,7 @@ import {
 import { onMount, tick } from 'svelte';
 import { fade, scale } from 'svelte/transition';
 import c from 'clsx';
+import { onDestroy } from 'svelte/types/runtime/internal/lifecycle';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -70,6 +71,9 @@ function toggleTimer() {
 async function switchCamera() {
 	cameraControls.flip.facingMode =
 		cameraControls.flip.facingMode === 'user' ? 'environment' : 'user';
+	if (cameraControls.flash.enabled) {
+		await toggleTorch();
+	}
 	await requestMediaAccess();
 }
 
@@ -133,6 +137,12 @@ async function startRecording(ignoreTimer: boolean = false) {
 }
 
 onMount(async () => await requestMediaAccess());
+
+onDestroy(async () => {
+	if (cameraControls.flash.enabled) {
+		await toggleTorch();
+	}
+});
 </script>
 
 <CameraLayout>
