@@ -6,23 +6,23 @@ export type VideoDB = {
 const videos: VideoDB[] = [
 	{
 		id: 1,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-weeds-waving-in-the-breeze-1178-large.mp4'
+		url: 'https://cdn3.sharechat.com/542130_new_attributed_529356_23e1ce8d_1656749447451_.mp4'
 	},
 	{
 		id: 2,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-stunning-sunset-seen-from-the-sea-4119-large.mp4'
+		url: 'https://cdn3.sharechat.com/51165_new_attributed_36961_309e124a_1658632001423_w.mp4'
 	},
 	{
 		id: 3,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-metal-surface-engraved-with-ornaments-34505-large.mp4'
+		url: 'https://cdn3.sharechat.com/759334_new_attributed_732416_1f30d9b7_1655461662962_.mp4'
 	},
 	{
 		id: 4,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-a-brush-painting-on-a-blue-wall-2308-large.mp4'
+		url: 'https://cdn3.sharechat.com/553810_new_attributed_530322_1f7bb168_1655883498574_.mp4'
 	},
 	{
 		id: 5,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-computer-fan-with-neon-lights-2382-large.mp4'
+		url: 'https://cdn3.sharechat.com/358818_new_attributed_323906_2c209d2e_1656758294702_.mp4'
 	},
 	{
 		id: 6,
