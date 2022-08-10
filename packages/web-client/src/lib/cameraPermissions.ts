@@ -10,13 +10,15 @@ type DevicesListRequest = {
 	error: 'none' | 'denied' | 'no-stream';
 };
 
-export async function getMediaStream(deviceId?: string): Promise<CameraPermissionRequest> {
+export type FacingMode = 'user' | 'environment';
+
+export async function getMediaStream(facingMode: FacingMode): Promise<CameraPermissionRequest> {
 	if (browser && 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
 		try {
 			let stream: MediaStream | undefined = undefined;
 			stream = await navigator.mediaDevices.getUserMedia({
 				audio: true,
-				video: deviceId ? { deviceId } : { facingMode: 'user' }
+				video: { facingMode }
 			});
 			return { stream, error: 'none' };
 		} catch (err) {
