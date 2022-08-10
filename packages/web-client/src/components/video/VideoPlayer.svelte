@@ -4,7 +4,6 @@ import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
-import PlayIcon from '$components/icons/PlayIcon.svelte';
 import ShareIcon from '$components/icons/ShareIcon.svelte';
 import { tick } from 'svelte';
 import { fade } from 'svelte/transition';
@@ -44,7 +43,6 @@ async function generateThumbnail(target: EventTarget | null) {
 
 <div
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
-	on:click="{() => (paused = !paused)}"
 	class="relative flex h-full w-auto snap-center items-center justify-center"
 >
 	{#if load}
@@ -52,12 +50,12 @@ async function generateThumbnail(target: EventTarget | null) {
 		<video
 			loop
 			playsinline
-			muted="{$playerState.muted}"
+			muted="{$playerState.muted || paused}"
 			disableremoteplayback
 			x-webkit-airplay="deny"
 			autoplay
 			preload="metadata"
-			bind:paused
+			paused="{paused}"
 			src="{src}"
 			poster="{thumbnail}"
 			class="object-fit absolute z-[3] h-full w-full"
@@ -67,7 +65,7 @@ async function generateThumbnail(target: EventTarget | null) {
 			loop
 			autoplay
 			muted
-			bind:paused
+			paused="{paused}"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			src="{src}"
 		>
