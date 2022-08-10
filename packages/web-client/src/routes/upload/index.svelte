@@ -141,6 +141,10 @@ onDestroy(async () => {
 	if (cameraControls.flash.enabled) {
 		await toggleTorch();
 	}
+	if (mediaStream) {
+		const tracks = mediaStream.getTracks();
+		tracks.forEach((track) => track.stop());
+	}
 });
 </script>
 
