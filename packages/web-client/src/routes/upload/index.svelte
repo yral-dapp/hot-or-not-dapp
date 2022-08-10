@@ -142,19 +142,27 @@ function updateCanvas() {
 function computeFrame() {
 	const ctx = canvasEl.getContext('2d');
 	if (ctx) {
-		console.log('drawing image');
-		ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+		ctx.drawImage(
+			videoEl,
+			0,
+			0,
+			window.innerWidth,
+			window.innerHeight,
+			0,
+			0,
+			window.innerWidth,
+			window.innerHeight
+		);
 		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-		const length = frame.data.length;
-		const data = frame.data;
 
-		for (let i = 0; i < length; i += 4) {
-			const red = data[i + 0];
-			const green = data[i + 1];
-			const blue = data[i + 2];
-			if (green > 100 && red > 100 && blue < 43) {
-				data[i + 3] = 0;
-			}
+		for (let i = 0; i < frame.data.length; i += 4) {
+			// const red = frame.data[i + 0];
+			// const green = frame.data[i + 1];
+			// const blue = frame.data[i + 2];
+
+			frame.data[i + 0] += 50;
+			frame.data[i + 1] -= 30;
+			frame.data[i + 2] -= 30;
 		}
 		ctx.putImageData(frame, 0, 0);
 	}
