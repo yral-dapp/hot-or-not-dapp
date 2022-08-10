@@ -81,7 +81,7 @@ async function generateThumbnail(target: EventTarget | null) {
 		>
 			<div class="flex h-full items-center justify-center">
 				<IconButton>
-					<SoundIcon class="h-32 w-32 text-white/90 drop-shadow-lg" />
+					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
 				</IconButton>
 			</div>
 		</div>
