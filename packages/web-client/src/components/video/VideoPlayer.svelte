@@ -4,11 +4,11 @@ import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
-import PlayIcon from '$components/icons/PlayIcon.svelte';
 import ShareIcon from '$components/icons/ShareIcon.svelte';
 import { tick } from 'svelte';
 import { fade } from 'svelte/transition';
-import { playerInitialized } from '$stores/playerInitialization';
+import { playerState } from '$stores/playerState';
+import SoundIcon from '$components/icons/SoundIcon.svelte';
 
 export let src = '';
 export let thumbnail = '';
@@ -18,9 +18,6 @@ export let avatarPhotoUrl =
 	'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 export let userName = 'Natasha';
 export let videoViews = 254000;
-
-$: _paused = paused;
-$: !load && (_paused = false);
 
 let isLoaded = false;
 let generatedThumbnail = '';
@@ -45,48 +42,44 @@ async function generateThumbnail(target: EventTarget | null) {
 </script>
 
 <div
-	on:click="{() => (_paused = !_paused)}"
-	on:click|once="{() => ($playerInitialized = true)}"
+	on:click="{() => ($playerState.muted = !$playerState.muted)}"
 	class="relative flex h-full w-auto snap-center items-center justify-center"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			loop
-			autoplay="{_paused}"
-			bind:paused="{_paused}"
+			playsinline
+			muted="{$playerState.muted || paused}"
+			disableremoteplayback
+			x-webkit-airplay="deny"
+			autoplay
+			preload="metadata"
+			paused="{paused}"
 			src="{src}"
+			poster="{thumbnail}"
 			class="object-fit absolute z-[3] h-full w-full"
 			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"></video>
-	{/if}
-
-	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			loop
-			autoplay="{_paused}"
-			bind:paused="{_paused}"
+			autoplay
+			muted
+			paused="{paused}"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			src="{src}"
 		>
 		</video>
-	{:else if thumbnail || generatedThumbnail}
-		<img
-			transition:fade
-			alt="blur"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
-			src="{thumbnail || generatedThumbnail}"
-		/>
 	{/if}
 
-	{#if !$playerInitialized || _paused}
+	{#if $playerState.muted}
 		<div
 			transition:fade="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
 		>
 			<div class="flex h-full items-center justify-center">
 				<IconButton>
-					<PlayIcon class="h-32 w-32 text-white/90 drop-shadow-lg" />
+					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
 				</IconButton>
 			</div>
 		</div>
