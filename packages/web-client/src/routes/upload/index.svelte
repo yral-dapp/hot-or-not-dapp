@@ -125,8 +125,6 @@ function setTimer() {
 	}, 1000);
 }
 
-$: console.log({ timerCountdown, timerInterval });
-
 async function startRecording(ignoreTimer: boolean = false) {
 	if (cameraControls.timer !== 'off' && !ignoreTimer) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
