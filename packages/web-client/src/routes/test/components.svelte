@@ -71,6 +71,8 @@ const imgSrc =
 			<EyeIcon class="h-6 w-6" />
 			<FireIcon class="h-6 w-6" />
 			<FlashIcon class="h-6 w-6" />
+			<FlashIcon class="h-6 w-6" variant="on" />
+			<FlashIcon class="h-6 w-6" variant="not-available" />
 			<FlipIcon class="h-6 w-6" />
 			<GiftBoxIcon class="h-6 w-6" />
 			<HeartIcon class="h-6 w-6" />
