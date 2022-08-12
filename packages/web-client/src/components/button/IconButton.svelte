@@ -9,7 +9,7 @@ let exportClass: string = '';
 $: classes = c(
 	'flex items-center select-none justify-center focus:outline-none',
 	{
-		'text-zinc-500 pointer-events-none': disabled
+		'pointer-events-none': disabled
 	},
 	exportClass
 );
