@@ -16,12 +16,14 @@ export const load: Load = async ({ params }) => {
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import Videos from '$components/video/Videos.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
+import SplashScreen from '$components/layout/SplashScreen.svelte';
 
 export let startingVideoIndex: number;
 </script>
 
 <HomeLayout>
 	<svelte:fragment slot="content">
+		<SplashScreen />
 		<Videos fetchFromId="{startingVideoIndex}" />
 	</svelte:fragment>
 	<div slot="top">All videos</div>
