@@ -29,6 +29,7 @@ import {
 import { onMount, onDestroy, tick } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
+import { debounce } from 'throttle-debounce';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -37,6 +38,8 @@ let initState: 'init' | 'denied' | 'allowed' = 'init';
 let timerInterval: any = undefined;
 let timerCountdown = 0;
 let canvasEl: HTMLCanvasElement;
+let cameraEl: HTMLElement;
+let filtersEl: HTMLElement;
 
 let cameraControls: CameraControls = {
 	flash: {
@@ -135,8 +138,10 @@ async function startRecording(ignoreTimer: boolean = false) {
 }
 
 function updateCanvas() {
-	canvasEl.height = window.innerHeight;
-	canvasEl.width = window.innerWidth;
+	if (canvasEl) {
+		canvasEl.height = window.innerHeight;
+		canvasEl.width = window.innerWidth;
+	}
 }
 
 function computeFrame() {
@@ -172,9 +177,20 @@ function startCapturing() {
 	setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
 }
 
+const checkWhichEl = debounce(500, () => {
+	const captureArea = cameraEl.getBoundingClientRect();
+	for (let i = 0; i < filtersEl.children.length - 1; i++) {
+		const filter = filtersEl.children[i].getBoundingClientRect();
+		if (filter.left > captureArea.left && captureArea.right > filter.right) {
+			console.log(filtersEl.children[i].getAttribute('data-id'));
+			break;
+		}
+	}
+});
+
 onMount(async () => {
-	await requestMediaAccess();
-	updateCanvas();
+	// await requestMediaAccess();
+	// updateCanvas();
 });
 
 onDestroy(async () => {
@@ -205,7 +221,7 @@ onDestroy(async () => {
 			{:else}
 				<!-- svelte-ignore a11y-media-has-caption -->
 				<video
-					on:play="{startCapturing}"
+					on:play
 					muted
 					bind:this="{videoEl}"
 					autoplay
@@ -240,18 +256,37 @@ onDestroy(async () => {
 		</IconButton>
 	</div>
 	<div
-		class="pointer-events-auto flex w-full items-center justify-center space-x-3 px-4 pb-6"
+		class="pointer-events-auto flex h-36 w-full items-end justify-center space-x-3 overflow-hidden px-4 pb-6"
 		slot="bottom-camera-controls"
 	>
-		{#if initState == 'allowed'}
-			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
-			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-			<button on:click="{() => startRecording()}" class="px-4">
+		{#if initState != 'allowed'}
+			<button bind:this="{cameraEl}" on:click="{() => startRecording()}" class="px-4">
 				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
 			</button>
-			<div class="h-12 w-12 rounded-full bg-green-200"></div>
-			<div class="h-12 w-12 rounded-full bg-pink-200"></div>
 		{/if}
+		<div class="absolute left-0 w-full pb-1">
+			<div
+				bind:this="{filtersEl}"
+				on:scroll="{checkWhichEl}"
+				class="hide-scrollbar relative flex w-full snap-x snap-mandatory space-x-[2.125em] overflow-scroll pl-[10.7em] pr-[24em]"
+			>
+				{#each new Array(10) as _, i}
+					{#if i == 0 || i == 9}
+						<div
+							data-id="clear"
+							class="pointer-events-none h-12 w-12 flex-shrink-0 snap-center rounded-full bg-transparent"
+						></div>
+					{:else}
+						<div
+							data-id="{i}"
+							class="pointer-events-none flex h-12 w-12 flex-shrink-0 snap-center items-center justify-center rounded-full bg-blue-200 text-black"
+						>
+							{i}
+						</div>
+					{/if}
+				{/each}
+			</div>
+		</div>
 	</div>
 	<div
 		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
