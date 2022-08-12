@@ -1,9 +1,6 @@
 <script lang="ts" context="module">
 interface CameraControls {
-	flash: {
-		show: boolean;
-		enabled: boolean;
-	};
+	flash: 'on' | 'off' | 'not-available';
 	flip: {
 		facingMode: FacingMode;
 		show: boolean;
@@ -38,10 +35,7 @@ let timerInterval: any = undefined;
 let timerCountdown = 0;
 
 let cameraControls: CameraControls = {
-	flash: {
-		show: false,
-		enabled: false
-	},
+	flash: 'off',
 	flip: {
 		show: false,
 		facingMode: 'user'
@@ -70,7 +64,7 @@ function toggleTimer() {
 async function switchCamera() {
 	cameraControls.flip.facingMode =
 		cameraControls.flip.facingMode === 'user' ? 'environment' : 'user';
-	if (cameraControls.flash.enabled) {
+	if (cameraControls.flash !== 'not-available') {
 		await toggleTorch();
 	}
 	await requestMediaAccess();
@@ -79,10 +73,10 @@ async function switchCamera() {
 async function toggleTorch() {
 	const success = await applyConstraintsOnVideoStream(mediaStream, {
 		//@ts-ignore
-		advanced: [{ torch: !cameraControls.flash.enabled }]
+		advanced: [{ torch: cameraControls.flash === 'on' ? false : true }]
 	});
 	if (success) {
-		cameraControls.flash.enabled = !cameraControls.flash.enabled;
+		cameraControls.flash = cameraControls.flash === 'on' ? 'off' : 'on';
 	}
 }
 
@@ -90,7 +84,7 @@ async function checkIfFlashAvailable() {
 	//@ts-ignore
 	const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
 	const capablities = await imageCapture.getPhotoCapabilities();
-	cameraControls.flash.show = capablities.fillLightMode ? true : false;
+	cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available';
 }
 
 async function checkIfFlipAvailable() {
@@ -138,7 +132,7 @@ async function startRecording(ignoreTimer: boolean = false) {
 onMount(async () => await requestMediaAccess());
 
 onDestroy(async () => {
-	if (cameraControls.flash.enabled) {
+	if (cameraControls.flash == 'on') {
 		await toggleTorch();
 	}
 	if (mediaStream) {
@@ -219,18 +213,19 @@ onDestroy(async () => {
 	>
 		{#if initState == 'allowed'}
 			<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
-				{#if cameraControls.flash.show}
-					<div class="flex flex-col items-center justify-center space-y-1">
-						<IconButton
-							on:click="{toggleTorch}"
-							class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
-						>
-							<FlashIcon class="h-5 w-5 text-white" />
-						</IconButton>
-						<span class="text-xs">Flash</span>
-					</div>
-				{/if}
-
+				<div class="flex flex-col items-center justify-center space-y-1">
+					<IconButton
+						on:click="{toggleTorch}"
+						disabled="{cameraControls.flash === 'not-available'}"
+						class="{c(
+							'flex h-10 w-10 items-center justify-center rounded-full',
+							cameraControls.flash === 'on' ? 'bg-white text-primary' : 'bg-black text-white'
+						)}"
+					>
+						<FlashIcon variant="{cameraControls.flash}" class="h-5 w-5" />
+					</IconButton>
+					<span class="text-xs">Flash</span>
+				</div>
 				{#if cameraControls.flip.show}
 					<div class="flex flex-col items-center justify-center space-y-1">
 						<IconButton
