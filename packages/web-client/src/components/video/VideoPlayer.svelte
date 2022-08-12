@@ -43,7 +43,7 @@ async function generateThumbnail(target: EventTarget | null) {
 
 <div
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
-	class="relative flex h-full w-auto snap-center items-center justify-center"
+	class="relative flex h-full w-auto snap-center snap-always items-center justify-center"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
