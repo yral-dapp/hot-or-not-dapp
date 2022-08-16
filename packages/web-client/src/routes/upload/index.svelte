@@ -29,6 +29,7 @@ import {
 import { onMount, onDestroy, tick } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
+import filtersMap from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
 
 let videoEl: HTMLVideoElement;
@@ -159,16 +160,7 @@ function computeFrame() {
 			window.innerHeight
 		);
 		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-
-		for (let i = 0; i < frame.data.length; i += 4) {
-			// const red = frame.data[i + 0];
-			// const green = frame.data[i + 1];
-			// const blue = frame.data[i + 2];
-
-			frame.data[i + 0] += 50;
-			frame.data[i + 1] -= 30;
-			frame.data[i + 2] -= 30;
-		}
+		ctx.filter = filtersMap('aden');
 		ctx.putImageData(frame, 0, 0);
 	}
 }
