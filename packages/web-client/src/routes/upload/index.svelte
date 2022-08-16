@@ -29,6 +29,7 @@ import {
 import { onMount, onDestroy, tick } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
+import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
 
 let videoEl: HTMLVideoElement;
@@ -40,6 +41,7 @@ let timerCountdown = 0;
 let canvasEl: HTMLCanvasElement;
 let cameraEl: HTMLElement;
 let filtersEl: HTMLElement;
+let selectedFilter: keyof typeof allFilters | 'clear' = 'clear';
 
 let cameraControls: CameraControls = {
 	flash: {
@@ -159,16 +161,8 @@ function computeFrame() {
 			window.innerHeight
 		);
 		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-
-		for (let i = 0; i < frame.data.length; i += 4) {
-			// const red = frame.data[i + 0];
-			// const green = frame.data[i + 1];
-			// const blue = frame.data[i + 2];
-
-			frame.data[i + 0] += 50;
-			frame.data[i + 1] -= 30;
-			frame.data[i + 2] -= 30;
-		}
+		if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
+		else ctx.filter = '';
 		ctx.putImageData(frame, 0, 0);
 	}
 }
@@ -180,9 +174,11 @@ function startCapturing() {
 const checkWhichEl = debounce(500, () => {
 	const captureArea = cameraEl.getBoundingClientRect();
 	for (let i = 0; i < filtersEl.children.length - 1; i++) {
-		const filter = filtersEl.children[i].getBoundingClientRect();
-		if (filter.left > captureArea.left && captureArea.right > filter.right) {
-			console.log(filtersEl.children[i].getAttribute('data-id'));
+		const filterEl = filtersEl.children[i].getBoundingClientRect();
+		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
+			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
+			console.log({ filterElSelected });
+			selectedFilter = filterElSelected ?? 'clear';
 			break;
 		}
 	}
@@ -190,7 +186,8 @@ const checkWhichEl = debounce(500, () => {
 
 onMount(async () => {
 	await requestMediaAccess();
-	// updateCanvas();
+	updateCanvas();
+	startCapturing();
 });
 
 onDestroy(async () => {
@@ -272,18 +269,20 @@ onDestroy(async () => {
 				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
 			>
 				<!-- Begin Dumb item -->
-				<div data-id="clear" class="shrink-0 snap-center">
+				<div data-filter="clear" class="shrink-0 snap-center">
 					<div class="w-dumb-start shrink-0"></div>
 				</div>
 				<!-- End Dumb item -->
-				{#each new Array(10) as _, i}
+				{#each Object.keys(allFilters) as filter, i}
 					<div
-						data-id="{i}"
-						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full bg-slate-800"
-					></div>
+						data-filter="{filter}"
+						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full bg-slate-800 text-xs"
+					>
+						{filter}
+					</div>
 				{/each}
 
-				<div data-id="clear" class="shrink-0 snap-center">
+				<div data-filter="clear" class="shrink-0 snap-center">
 					<div class="w-dumb-end shrink-0"></div>
 				</div>
 			</div>
