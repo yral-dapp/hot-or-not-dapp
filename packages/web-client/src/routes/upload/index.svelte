@@ -29,6 +29,7 @@ import {
 import { onMount, onDestroy, tick } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
+import { debounce } from 'throttle-debounce';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -37,6 +38,8 @@ let initState: 'init' | 'denied' | 'allowed' = 'init';
 let timerInterval: any = undefined;
 let timerCountdown = 0;
 let canvasEl: HTMLCanvasElement;
+let cameraEl: HTMLElement;
+let filtersEl: HTMLElement;
 
 let cameraControls: CameraControls = {
 	flash: {
@@ -135,8 +138,10 @@ async function startRecording(ignoreTimer: boolean = false) {
 }
 
 function updateCanvas() {
-	canvasEl.height = window.innerHeight;
-	canvasEl.width = window.innerWidth;
+	if (canvasEl) {
+		canvasEl.height = window.innerHeight;
+		canvasEl.width = window.innerWidth;
+	}
 }
 
 function computeFrame() {
@@ -172,9 +177,20 @@ function startCapturing() {
 	setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
 }
 
+const checkWhichEl = debounce(500, () => {
+	const captureArea = cameraEl.getBoundingClientRect();
+	for (let i = 0; i < filtersEl.children.length - 1; i++) {
+		const filter = filtersEl.children[i].getBoundingClientRect();
+		if (filter.left > captureArea.left && captureArea.right > filter.right) {
+			console.log(filtersEl.children[i].getAttribute('data-id'));
+			break;
+		}
+	}
+});
+
 onMount(async () => {
 	await requestMediaAccess();
-	updateCanvas();
+	// updateCanvas();
 });
 
 onDestroy(async () => {
@@ -205,7 +221,7 @@ onDestroy(async () => {
 			{:else}
 				<!-- svelte-ignore a11y-media-has-caption -->
 				<video
-					on:play="{startCapturing}"
+					on:play
 					muted
 					bind:this="{videoEl}"
 					autoplay
@@ -239,20 +255,41 @@ onDestroy(async () => {
 			<CloseIcon class="h-6 w-6 text-white" />
 		</IconButton>
 	</div>
-	<div
-		class="pointer-events-auto flex w-full items-center justify-center space-x-3 px-4 pb-6"
-		slot="bottom-camera-controls"
-	>
+	<svelte:fragment slot="bottom-camera-controls">
 		{#if initState == 'allowed'}
-			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
-			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-			<button on:click="{() => startRecording()}" class="px-4">
-				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
-			</button>
-			<div class="h-12 w-12 rounded-full bg-green-200"></div>
-			<div class="h-12 w-12 rounded-full bg-pink-200"></div>
+			<!-- Snap Point -->
+			<div transition:fade class="flex items-end justify-start pt-7">
+				<div
+					bind:this="{cameraEl}"
+					class="mx-auto h-14 w-14 rounded-full bg-white outline outline-2 outline-offset-8 outline-white"
+				></div>
+			</div>
+			<div
+				transition:fade
+				bind:this="{filtersEl}"
+				on:scroll="{checkWhichEl}"
+				on:click="{(e) => e.stopImmediatePropagation()}"
+				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
+			>
+				<!-- Begin Dumb item -->
+				<div data-id="clear" class="shrink-0 snap-center">
+					<div class="w-dumb-start shrink-0"></div>
+				</div>
+				<!-- End Dumb item -->
+				{#each new Array(10) as _, i}
+					<div
+						data-id="{i}"
+						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full bg-slate-800"
+					></div>
+				{/each}
+
+				<div data-id="clear" class="shrink-0 snap-center">
+					<div class="w-dumb-end shrink-0"></div>
+				</div>
+			</div>
 		{/if}
-	</div>
+	</svelte:fragment>
+
 	<div
 		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
 		slot="right-camera-controls"
@@ -310,3 +347,13 @@ onDestroy(async () => {
 	class="hidden"
 	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
 />
+
+<style>
+.w-dumb-start {
+	width: calc((100vw / 2) + 2rem);
+}
+
+.w-dumb-end {
+	width: calc((100vw / 2) - 3rem);
+}
+</style>
