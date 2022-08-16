@@ -1,4 +1,4 @@
-const allFilters: Record<string, Record<string, number>> = {
+export const allFilters: Record<string, Record<string, number>> = {
 	aden: {
 		'hue-rotate': -20,
 		contrast: 0.9,
@@ -145,11 +145,11 @@ const allFilters: Record<string, Record<string, number>> = {
 	}
 };
 
-export default (filterName: keyof typeof allFilters) => {
+export function getFilterCss(filterName: keyof typeof allFilters) {
 	const settings = allFilters[filterName];
 	return Object.keys(settings)
 		.map((key) => {
 			return `${key}(${settings[key]}${key === 'hue-rotate' ? 'deg' : key === 'blur' ? 'px' : ''})`;
 		})
 		.join(' ');
-};
+}
