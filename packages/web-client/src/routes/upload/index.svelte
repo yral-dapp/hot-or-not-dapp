@@ -189,7 +189,7 @@ const checkWhichEl = debounce(500, () => {
 });
 
 onMount(async () => {
-	// await requestMediaAccess();
+	await requestMediaAccess();
 	// updateCanvas();
 });
 
@@ -255,39 +255,41 @@ onDestroy(async () => {
 			<CloseIcon class="h-6 w-6 text-white" />
 		</IconButton>
 	</div>
-	<div
-		class="pointer-events-auto flex h-36 w-full items-end justify-center space-x-3 overflow-hidden px-4 pb-6"
-		slot="bottom-camera-controls"
-	>
-		{#if initState != 'allowed'}
-			<button bind:this="{cameraEl}" on:click="{() => startRecording()}" class="px-4">
-				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
-			</button>
-		{/if}
-		<div class="absolute left-0 w-full pb-1">
+	<svelte:fragment slot="bottom-camera-controls">
+		{#if initState == 'allowed'}
+			<!-- Snap Point -->
+			<div transition:fade class="flex items-end justify-start pt-7">
+				<div
+					bind:this="{cameraEl}"
+					class="mx-auto h-14 w-14 rounded-full bg-white outline outline-2 outline-offset-8 outline-white"
+				></div>
+			</div>
 			<div
+				transition:fade
 				bind:this="{filtersEl}"
 				on:scroll="{checkWhichEl}"
-				class="hide-scrollbar relative flex w-full snap-x snap-mandatory space-x-[2.125em] overflow-scroll pl-[10.7em] pr-[24em]"
+				on:click="{(e) => e.stopImmediatePropagation()}"
+				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
 			>
+				<!-- Begin Dumb item -->
+				<div data-id="clear" class="shrink-0 snap-center">
+					<div class="w-dumb-start shrink-0"></div>
+				</div>
+				<!-- End Dumb item -->
 				{#each new Array(10) as _, i}
-					{#if i == 0 || i == 9}
-						<div
-							data-id="clear"
-							class="pointer-events-none h-12 w-12 flex-shrink-0 snap-center rounded-full bg-transparent"
-						></div>
-					{:else}
-						<div
-							data-id="{i}"
-							class="pointer-events-none flex h-12 w-12 flex-shrink-0 snap-center items-center justify-center rounded-full bg-blue-200 text-black"
-						>
-							{i}
-						</div>
-					{/if}
+					<div
+						data-id="{i}"
+						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full bg-slate-800"
+					></div>
 				{/each}
+
+				<div data-id="clear" class="shrink-0 snap-center">
+					<div class="w-dumb-end shrink-0"></div>
+				</div>
 			</div>
-		</div>
-	</div>
+		{/if}
+	</svelte:fragment>
+
 	<div
 		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
 		slot="right-camera-controls"
@@ -345,3 +347,13 @@ onDestroy(async () => {
 	class="hidden"
 	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
 />
+
+<style>
+.w-dumb-start {
+	width: calc((100vw / 2) + 2rem);
+}
+
+.w-dumb-end {
+	width: calc((100vw / 2) - 3rem);
+}
+</style>
