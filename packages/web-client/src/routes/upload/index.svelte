@@ -100,7 +100,7 @@ async function checkIfFlashAvailable() {
 }
 
 async function checkIfFlipAvailable() {
-	const { videoDevices } = await await getDevicesList();
+	const { videoDevices } = await getDevicesList();
 	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
 }
 
