@@ -1,7 +1,7 @@
 <script lang="ts">
 import { db, type VideoDB } from '$lib/mockDb';
 import { playerState } from '$stores/playerState';
-import { onMount } from 'svelte';
+import { onMount, tick } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 
 export let fetchFromId: number = 0;
@@ -18,13 +18,13 @@ let parentEl: HTMLElement;
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
-		console.log('fetching', { fetchFromId });
+		// console.log('fetching', { fetchFromId });
 		const res = db.getVideos(fetchFromId);
 
 		videos = [...videos, ...res.videos];
 		fetchFromId = res.nextCount;
 		moreVideos = res.videosLeft;
-		console.log('fetched', { fetchFromId, videos });
+		// console.log('fetched', { fetchFromId, videos });
 	}
 }
 
@@ -35,10 +35,14 @@ function selectLastElement() {
 
 	observeLastVideo = new IntersectionObserver(
 		async (entries) => {
+			// console.log('prevVideoEntries', entries);
 			if (entries[0].isIntersecting) {
+				// console.log('intersecting prev video');
 				if (currentVideoIndex > 0) currentVideoIndex--;
+				await tick();
 				selectLastElement();
 				updateURL();
+				setTimeout(() => selectLastElement(), 25);
 				selectNextElement();
 			}
 		},
@@ -61,9 +65,10 @@ function selectNextElement() {
 			if (entries[0].isIntersecting) {
 				// console.log('intersecting next video');
 				if (currentVideoIndex < videos.length) currentVideoIndex++;
-				selectLastElement();
+				await tick();
 				updateURL();
 				selectNextElement();
+				setTimeout(() => selectLastElement(), 25);
 				fetchNextVideos();
 			}
 		},
@@ -96,7 +101,7 @@ onMount(async () => {
 >
 	{#each videos as video, i (video.url)}
 		<VideoPlayer
-			paused="{i != currentVideoIndex}"
+			paused="{currentVideoIndex != i}"
 			load="{currentVideoIndex - keepVideosLoadedCount < i &&
 				currentVideoIndex + keepVideosLoadedCount > i}"
 			src="{video.url}"
