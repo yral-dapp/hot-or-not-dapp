@@ -6,7 +6,7 @@ export type inputAutocomplete = typeof autocompleteTypes[number];
 <script lang="ts">
 import { onMount } from 'svelte';
 
-export let autocomplete: inputAutocomplete = '';
+export let autocomplete: inputAutocomplete = 'off';
 export let disabled = false;
 export let placeholder = '';
 export let value: string | number = '';
