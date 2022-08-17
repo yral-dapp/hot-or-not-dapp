@@ -26,6 +26,8 @@ import {
 import { onMount, tick, onDestroy } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
+import { allFilters, getFilterCss } from '$lib/filtersMap';
+import { debounce } from 'throttle-debounce';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -33,6 +35,10 @@ let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
 let timerInterval: any = undefined;
 let timerCountdown = 0;
+let canvasEl: HTMLCanvasElement;
+let cameraEl: HTMLElement;
+let filtersEl: HTMLElement;
+let selectedFilter: keyof typeof allFilters | 'clear' = 'clear';
 
 let cameraControls: CameraControls = {
 	flash: 'off',
@@ -88,7 +94,7 @@ async function checkIfFlashAvailable() {
 }
 
 async function checkIfFlipAvailable() {
-	const { videoDevices } = await await getDevicesList();
+	const { videoDevices } = await getDevicesList();
 	cameraControls.flip.show = videoDevices && videoDevices.length > 1 ? true : false;
 }
 
@@ -118,8 +124,6 @@ function setTimer() {
 	}, 1000);
 }
 
-$: console.log({ timerCountdown, timerInterval });
-
 async function startRecording(ignoreTimer: boolean = false) {
 	if (cameraControls.timer !== 'off' && !ignoreTimer) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
@@ -129,7 +133,56 @@ async function startRecording(ignoreTimer: boolean = false) {
 	}
 }
 
-onMount(async () => await requestMediaAccess());
+function updateCanvas() {
+	if (canvasEl) {
+		canvasEl.height = window.innerHeight;
+		canvasEl.width = window.innerWidth;
+	}
+}
+
+function computeFrame() {
+	const ctx = canvasEl.getContext('2d');
+	if (ctx) {
+		ctx.drawImage(
+			videoEl,
+			0,
+			0,
+			window.innerWidth,
+			window.innerHeight,
+			0,
+			0,
+			window.innerWidth,
+			window.innerHeight
+		);
+		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+		if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
+		else ctx.filter = '';
+		ctx.putImageData(frame, 0, 0);
+	}
+}
+
+function startCapturing() {
+	setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
+}
+
+const checkWhichEl = debounce(500, () => {
+	const captureArea = cameraEl.getBoundingClientRect();
+	for (let i = 0; i < filtersEl.children.length - 1; i++) {
+		const filterEl = filtersEl.children[i].getBoundingClientRect();
+		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
+			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
+			console.log({ filterElSelected });
+			selectedFilter = filterElSelected ?? 'clear';
+			break;
+		}
+	}
+});
+
+onMount(async () => {
+	await requestMediaAccess();
+	updateCanvas();
+	startCapturing();
+});
 
 onDestroy(async () => {
 	if (cameraControls.flash == 'on') {
@@ -141,6 +194,8 @@ onDestroy(async () => {
 	}
 });
 </script>
+
+<svelte:window on:resize="{updateCanvas}" />
 
 <CameraLayout>
 	<svelte:fragment slot="content">
@@ -161,10 +216,11 @@ onDestroy(async () => {
 			{:else}
 				<!-- svelte-ignore a11y-media-has-caption -->
 				<video
+					on:play
 					muted
 					bind:this="{videoEl}"
 					autoplay
-					class="absolute z-[5] h-full w-full object-cover object-center"
+					class="absolute z-[4] h-full w-full object-cover object-center"
 				>
 				</video>
 				{#if timerInterval}
@@ -181,6 +237,7 @@ onDestroy(async () => {
 						</div>
 					{/key}
 				{/if}
+				<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
 			{/if}
 		</div>
 	</svelte:fragment>
@@ -193,20 +250,43 @@ onDestroy(async () => {
 			<CloseIcon class="h-6 w-6 text-white" />
 		</IconButton>
 	</div>
-	<div
-		class="pointer-events-auto flex w-full items-center justify-center space-x-3 px-4 pb-6"
-		slot="bottom-camera-controls"
-	>
+	<svelte:fragment slot="bottom-camera-controls">
 		{#if initState == 'allowed'}
-			<div class="h-12 w-12 rounded-full bg-blue-200"></div>
-			<div class="h-12 w-12 rounded-full bg-orange-200"></div>
-			<button on:click="{() => startRecording()}" class="px-4">
-				<div class="h-14 w-14 rounded-full bg-white ring-[0.8rem] ring-white/50"></div>
-			</button>
-			<div class="h-12 w-12 rounded-full bg-green-200"></div>
-			<div class="h-12 w-12 rounded-full bg-pink-200"></div>
+			<!-- Snap Point -->
+			<div transition:fade class="flex items-end justify-start pt-7">
+				<div
+					bind:this="{cameraEl}"
+					class="mx-auto h-14 w-14 rounded-full bg-white outline outline-2 outline-offset-8 outline-white"
+				></div>
+			</div>
+			<div
+				transition:fade
+				bind:this="{filtersEl}"
+				on:scroll="{checkWhichEl}"
+				on:click="{(e) => e.stopImmediatePropagation()}"
+				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
+			>
+				<!-- Begin Dumb item -->
+				<div data-filter="clear" class="shrink-0 snap-center">
+					<div class="w-dumb-start shrink-0"></div>
+				</div>
+				<!-- End Dumb item -->
+				{#each Object.keys(allFilters) as filter, i}
+					<div
+						data-filter="{filter}"
+						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full bg-slate-800 text-xs"
+					>
+						{filter}
+					</div>
+				{/each}
+
+				<div data-filter="clear" class="shrink-0 snap-center">
+					<div class="w-dumb-end shrink-0"></div>
+				</div>
+			</div>
 		{/if}
-	</div>
+	</svelte:fragment>
+
 	<div
 		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
 		slot="right-camera-controls"
@@ -265,3 +345,13 @@ onDestroy(async () => {
 	class="hidden"
 	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
 />
+
+<style>
+.w-dumb-start {
+	width: calc((100vw / 2) + 2rem);
+}
+
+.w-dumb-end {
+	width: calc((100vw / 2) - 3rem);
+}
+</style>
