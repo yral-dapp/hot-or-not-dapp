@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - harsh/fix/fix-continous-frontend-reloading
     paths:
       - 'packages/web-client/**'
       - '.github/workflows/webclient-deploy.yml'
