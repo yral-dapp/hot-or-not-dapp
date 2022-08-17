@@ -10,10 +10,10 @@ import { fade } from 'svelte/transition';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 
+export let paused = true;
 export let src = '';
 export let thumbnail = '';
 export let load = false;
-export let paused: boolean = true;
 export let avatarPhotoUrl =
 	'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 export let userName = 'Natasha';
@@ -22,6 +22,21 @@ export let videoViews = 254000;
 let isLoaded = false;
 let generatedThumbnail = '';
 let loadThumbnail = false;
+let videoEl: HTMLVideoElement;
+let videoEl2: HTMLVideoElement;
+let muted = true;
+
+$: if (videoEl && videoEl2 && !paused) {
+	videoEl.play();
+	videoEl2.play();
+	muted = false;
+} else if (videoEl && videoEl2) {
+	videoEl.currentTime = 0;
+	videoEl.pause();
+	videoEl2.currentTime = 0;
+	videoEl2.pause();
+	muted = true;
+}
 
 async function generateThumbnail(target: EventTarget | null) {
 	if (loadThumbnail && target && !isLoaded) {
@@ -48,24 +63,27 @@ async function generateThumbnail(target: EventTarget | null) {
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
+			bind:this="{videoEl}"
 			loop
 			playsinline
-			muted="{$playerState.muted || paused}"
+			muted="{$playerState.muted || muted}"
 			disableremoteplayback
 			x-webkit-airplay="deny"
 			autoplay
 			preload="metadata"
-			paused="{paused}"
 			src="{src}"
 			poster="{thumbnail}"
 			class="object-fit absolute z-[3] h-full w-full"
 			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"></video>
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
+			bind:this="{videoEl2}"
 			loop
 			autoplay
+			playsinline
 			muted
-			paused="{paused}"
+			preload="metadata"
+			x-webkit-airplay="deny"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
 			src="{src}"
 		>
