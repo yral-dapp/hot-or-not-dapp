@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fade } from 'svelte/transition';
-import { onMount } from 'svelte/types/runtime/internal/lifecycle';
+import { onMount } from 'svelte';
 
 export let showSplash = true;
 
