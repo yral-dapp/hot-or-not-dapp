@@ -46,4 +46,4 @@ export const autocompleteTypes = [
 	'photo',
 	'tel',
 	'email'
-];
+] as const;
