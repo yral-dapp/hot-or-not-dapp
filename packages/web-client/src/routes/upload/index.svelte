@@ -40,6 +40,9 @@ let cameraEl: HTMLElement;
 let filtersEl: HTMLElement;
 let selectedFilter: keyof typeof allFilters | 'clear' = 'clear';
 
+const filterPreviewImage =
+	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
+
 let cameraControls: CameraControls = {
 	flash: 'off',
 	flip: {
@@ -272,12 +275,13 @@ onDestroy(async () => {
 				</div>
 				<!-- End Dumb item -->
 				{#each Object.keys(allFilters) as filter, i}
-					<div
+					<img
 						data-filter="{filter}"
-						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full bg-slate-800 text-xs"
-					>
-						{filter}
-					</div>
+						style="filter: {getFilterCss(filter)}"
+						alt="{filter}"
+						src="{filterPreviewImage}"
+						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full"
+					/>
 				{/each}
 
 				<div data-filter="clear" class="shrink-0 snap-center">
