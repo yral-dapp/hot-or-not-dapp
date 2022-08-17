@@ -11,7 +11,7 @@ $: innerHeight = window?.innerHeight;
 	class="relative flex h-full w-full flex-col overflow-hidden text-white"
 >
 	<div class="relative flex h-12 w-full items-center justify-center {testClasses}">
-		<div class="absolute left-0">
+		<div class="absolute left-1 top-1">
 			<slot name="top-left" />
 		</div>
 		<slot name="top-center" />
