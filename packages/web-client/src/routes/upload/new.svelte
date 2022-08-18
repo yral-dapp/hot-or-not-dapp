@@ -35,10 +35,10 @@ async function showShareDialog() {
 			<CaretLeftIcon class="h-6 w-6 text-white" />
 		</IconButton>
 	</div>
-	<div slot="top-center" class="mt-5">Upload</div>
+	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="mb-40 mt-6 flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
+		class="mb-40 flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
 	>
 		<div class="h-max-64 relative max-w-lg">
 			<video
