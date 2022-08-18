@@ -9,6 +9,8 @@ import UploadLayout from '$components/layout/UploadLayout.svelte';
 
 let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'uploaded';
 let previewPaused = true;
+let uploadVideoUrl =
+	'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4';
 
 async function showShareDialog() {
 	try {
@@ -42,8 +44,8 @@ async function showShareDialog() {
 			<video
 				on:click="{() => (previewPaused = true)}"
 				bind:paused="{previewPaused}"
-				class="w-full rounded-xl"
-				src="https://assets.mixkit.co/videos/preview/mixkit-gummy-bears-lined-up-on-a-white-background-30382-large.mp4"
+				class="h-64 w-full rounded-xl"
+				src="{uploadVideoUrl}"
 			>
 				<track kind="captions" />
 			</video>
