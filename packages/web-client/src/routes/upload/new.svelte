@@ -1,3 +1,7 @@
+<script lang="ts" context="module">
+export type UploadStatus = 'to-upload' | 'uploading' | 'uploaded';
+</script>
+
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
@@ -8,8 +12,9 @@ import InputBox from '$components/input/InputBox.svelte';
 import UploadLayout from '$components/layout/UploadLayout.svelte';
 import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
+import UploadStep from '$components/upload/UploadStep.svelte';
 
-let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'uploaded';
+let uploadStatus: UploadStatus = 'uploaded';
 let previewPaused = true;
 let uploadVideoUrl =
 	'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4';
@@ -66,7 +71,7 @@ async function showShareDialog() {
 				</div>
 			{/if}
 		</div>
-		{#if uploadState === 'to-upload'}
+		{#if uploadStatus === 'to-upload'}
 			<InputBox
 				placeholder="Write your description here ..."
 				rows="{6}"
@@ -76,21 +81,16 @@ async function showShareDialog() {
 				<span class="text-white/60">Add Hashtags</span>
 				<Input
 					type="text"
-					placeholder="#Hastag, #Hastag2, #Hastag3 ..."
+					placeholder="#hastag, #hastag2, #hastag3 ..."
 					class="w-full rounded-xl bg-white/10"
 				/>
 			</div>
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
 				<div class="flex w-full items-start space-x-4">
-					<div
-						class="-mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2"
-					>
-						1
-					</div>
+					<UploadStep step="{1}" status="active" />
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Upload Progress</span>
-						<span class="pt-1">Dance India Dance</span>
 						<div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-white/20">
 							<div style="width:{$uploadProgress}%" class="h-full rounded-full bg-primary"></div>
 						</div>
@@ -98,11 +98,7 @@ async function showShareDialog() {
 					</div>
 				</div>
 				<div class="flex w-full items-start space-x-4">
-					<div
-						class="-mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2"
-					>
-						2
-					</div>
+					<UploadStep step="{2}" status="queued" />
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Processing Checks</span>
 						<span class="text-white/60">
@@ -112,17 +108,10 @@ async function showShareDialog() {
 					</div>
 				</div>
 				<div class="flex w-full items-start space-x-4">
-					<div
-						class="-mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2"
-					>
-						3
-					</div>
+					<UploadStep step="{3}" status="finished" />
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Final Verification</span>
-						<span class="text-white/60">
-							Before you publish we'll check your video for issues that may restrict it's visibility
-							and other quality checks. We'll notify you when it's done
-						</span>
+						<span class="text-white/60"> Your video has passed all the checks. </span>
 					</div>
 				</div>
 			</div>
@@ -133,11 +122,11 @@ async function showShareDialog() {
 			<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 			deleted.
 		</div>
-		{#if uploadState === 'to-upload'}
-			<Button class="w-full" on:click="{() => (uploadState = 'uploaded')}">Upload Video</Button>
-		{:else if uploadState === 'uploading'}
+		{#if uploadStatus === 'to-upload'}
+			<Button class="w-full" on:click="{() => (uploadStatus = 'uploaded')}">Upload Video</Button>
+		{:else if uploadStatus === 'uploading'}
 			<Button class="w-full">Continue Browsing</Button>
-		{:else if uploadState === 'uploaded'}
+		{:else if uploadStatus === 'uploaded'}
 			<div class="flex items-center justify-between space-x-4">
 				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
 				<Button href="#" class="w-full">View Video</Button>
