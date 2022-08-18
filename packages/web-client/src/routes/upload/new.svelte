@@ -7,8 +7,24 @@ import Input from '$components/input/Input.svelte';
 import InputBox from '$components/input/InputBox.svelte';
 import UploadLayout from '$components/layout/UploadLayout.svelte';
 
-let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'uploading';
+let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'uploaded';
 let previewPaused = true;
+
+async function showShareDialog() {
+	try {
+		if (!navigator.canShare) {
+			console.error('Browser does not support share dialog');
+			return;
+		}
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: 'https://v2.gobazzinga.io/all/2'
+		});
+	} catch (err) {
+		console.error('Cannot open share dialog', err);
+	}
+}
 </script>
 
 <UploadLayout>
@@ -56,7 +72,7 @@ let previewPaused = true;
 					class="w-full rounded-xl bg-white/10"
 				/>
 			</div>
-		{:else if uploadState === 'uploading'}
+		{:else}
 			<div class="flex w-full flex-col space-y-10">
 				<div class="flex w-full items-start space-x-4">
 					<div
@@ -108,13 +124,13 @@ let previewPaused = true;
 			deleted.
 		</div>
 		{#if uploadState === 'to-upload'}
-			<Button class="w-full" on:click="{() => (uploadState = 'uploading')}">Upload Video</Button>
+			<Button class="w-full" on:click="{() => (uploadState = 'uploaded')}">Upload Video</Button>
 		{:else if uploadState === 'uploading'}
 			<Button class="w-full">Continue Browsing</Button>
 		{:else if uploadState === 'uploaded'}
 			<div class="flex items-center justify-between space-x-4">
-				<Button type="secondary" class="w-full">Share Video</Button>
-				<Button class="w-full">View Video</Button>
+				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
+				<Button href="#" class="w-full">View Video</Button>
 			</div>
 		{/if}
 	</div>
