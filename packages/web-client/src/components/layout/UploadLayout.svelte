@@ -10,7 +10,9 @@ $: innerHeight = window?.innerHeight;
 	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
 	class="relative flex h-full w-full flex-col overflow-hidden text-white"
 >
-	<div class="relative flex h-12 w-full items-center justify-center {testClasses}">
+	<div
+		class="relative z-[2] flex h-12 w-full items-center justify-center bg-black py-8 shadow-xl shadow-black/50 {testClasses}"
+	>
 		<div class="absolute left-1 top-1">
 			<slot name="top-left" />
 		</div>
