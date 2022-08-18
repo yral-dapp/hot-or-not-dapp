@@ -2,11 +2,13 @@
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import PlayIcon from '$components/icons/PlayIcon.svelte';
 import Input from '$components/input/Input.svelte';
 import InputBox from '$components/input/InputBox.svelte';
 import UploadLayout from '$components/layout/UploadLayout.svelte';
 
 let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'to-upload';
+let previewPaused = true;
 </script>
 
 <UploadLayout>
@@ -20,15 +22,25 @@ let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'to-upload';
 		slot="content"
 		class="mt-8 flex h-full w-full flex-col items-center justify-start space-y-8 overflow-auto px-8"
 	>
-		<div class="row-span-4 h-64">
+		<div class="h-max-64 relative max-w-lg">
 			<video
-				muted
-				autoplay
-				class="h-full rounded-3xl"
+				on:click="{() => (previewPaused = true)}"
+				bind:paused="{previewPaused}"
+				class="w-full rounded-xl"
 				src="https://assets.mixkit.co/videos/preview/mixkit-gummy-bears-lined-up-on-a-white-background-30382-large.mp4"
 			>
 				<track kind="captions" />
 			</video>
+			{#if previewPaused}
+				<div
+					on:click="{() => (previewPaused = false)}"
+					class="absolute inset-0 flex items-center justify-center"
+				>
+					<IconButton class="rounded-full bg-black/50 p-4">
+						<PlayIcon class="h-4 w-4" />
+					</IconButton>
+				</div>
+			{/if}
 		</div>
 		{#if uploadState === 'to-upload'}
 			<InputBox
