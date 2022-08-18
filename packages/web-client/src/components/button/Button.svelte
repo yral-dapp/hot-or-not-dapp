@@ -13,8 +13,8 @@ const classes = c(
 		'bg-orange-500 shadow-button-primary': type === 'primary' && !disabled,
 		'bg-zinc-800': type === 'primary' && disabled,
 		'border-2 bg-transparent': type === 'secondary',
-		'border-white': type === 'secondary' && !disabled,
-		'border-white/20': type === 'secondary' && disabled,
+		'border-white/40': type === 'secondary' && !disabled,
+		'border-white/10': type === 'secondary' && disabled,
 		'text-zinc-500 pointer-events-none': disabled
 	},
 	exportClass
