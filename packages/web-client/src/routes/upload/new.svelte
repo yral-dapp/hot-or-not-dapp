@@ -6,11 +6,17 @@ import PlayIcon from '$components/icons/PlayIcon.svelte';
 import Input from '$components/input/Input.svelte';
 import InputBox from '$components/input/InputBox.svelte';
 import UploadLayout from '$components/layout/UploadLayout.svelte';
+import { tweened } from 'svelte/motion';
+import { cubicInOut } from 'svelte/easing';
 
 let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'uploaded';
 let previewPaused = true;
 let uploadVideoUrl =
 	'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4';
+const uploadProgress = tweened(5, {
+	duration: 200,
+	easing: cubicInOut
+});
 
 async function showShareDialog() {
 	try {
@@ -85,7 +91,9 @@ async function showShareDialog() {
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Upload Progress</span>
 						<span class="pt-1">Dance India Dance</span>
-						<div class="mt-2 h-2 w-full rounded-full bg-white/20"></div>
+						<div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-white/20">
+							<div style="width:{$uploadProgress}%" class="h-full rounded-full bg-primary"></div>
+						</div>
 						<span class="text-white/60">33% video is uploaded</span>
 					</div>
 				</div>
