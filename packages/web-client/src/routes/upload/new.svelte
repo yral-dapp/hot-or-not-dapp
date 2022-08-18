@@ -7,7 +7,7 @@ import Input from '$components/input/Input.svelte';
 import InputBox from '$components/input/InputBox.svelte';
 import UploadLayout from '$components/layout/UploadLayout.svelte';
 
-let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'to-upload';
+let uploadState: 'to-upload' | 'uploading' | 'uploaded' = 'uploading';
 let previewPaused = true;
 </script>
 
@@ -20,7 +20,7 @@ let previewPaused = true;
 	<div slot="top-center" class="mt-5">Upload</div>
 	<div
 		slot="content"
-		class="mt-8 flex h-full w-full flex-col items-center justify-start space-y-8 overflow-auto px-8"
+		class="mb-40 mt-6 flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
 	>
 		<div class="h-max-64 relative max-w-lg">
 			<video
@@ -57,19 +57,56 @@ let previewPaused = true;
 				/>
 			</div>
 		{:else if uploadState === 'uploading'}
-			<div class="flex w-full flex-col space-y-2">
-				<div class="flex w-full items-center space-x-4">
-					<div class="flex h-6 w-6 items-center justify-center rounded-full border-2 text-xs">
+			<div class="flex w-full flex-col space-y-10">
+				<div class="flex w-full items-start space-x-4">
+					<div
+						class="-mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2"
+					>
 						1
 					</div>
-					<span>Upload Progress</span>
+					<div class="flex w-full flex-col space-y-2">
+						<span class="text-lg">Upload Progress</span>
+						<span class="pt-1">Dance India Dance</span>
+						<div class="mt-2 h-2 w-full rounded-full bg-white/20"></div>
+						<span class="text-white/60">33% video is uploaded</span>
+					</div>
 				</div>
-				<div>Dance India Dance</div>
-				<div class="h-2 w-full rounded-full bg-white/20"></div>
+				<div class="flex w-full items-start space-x-4">
+					<div
+						class="-mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2"
+					>
+						2
+					</div>
+					<div class="flex w-full flex-col space-y-2">
+						<span class="text-lg">Processing Checks</span>
+						<span class="text-white/60">
+							Before you publish we'll check your video for issues that may restrict it's visibility
+							and other quality checks. We'll notify you when it's done
+						</span>
+					</div>
+				</div>
+				<div class="flex w-full items-start space-x-4">
+					<div
+						class="-mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2"
+					>
+						3
+					</div>
+					<div class="flex w-full flex-col space-y-2">
+						<span class="text-lg">Final Verification</span>
+						<span class="text-white/60">
+							Before you publish we'll check your video for issues that may restrict it's visibility
+							and other quality checks. We'll notify you when it's done
+						</span>
+					</div>
+				</div>
 			</div>
 		{/if}
 	</div>
-	<div slot="bottom" class="px-8">
+	<div slot="bottom" class="border-t-2 border-white/10 bg-black px-8">
+		<div class="py-4">
+			<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
+			deleted.
+		</div>
 		{#if uploadState === 'to-upload'}
 			<Button class="w-full" on:click="{() => (uploadState = 'uploading')}">Upload Video</Button>
 		{:else if uploadState === 'uploading'}
