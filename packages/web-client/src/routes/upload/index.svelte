@@ -28,6 +28,8 @@ import { fade } from 'svelte/transition';
 import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
+import { fileList, fileBlob } from '$stores/fileUpload';
+import { goto } from '$app/navigation';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -39,6 +41,11 @@ let canvasEl: HTMLCanvasElement;
 let cameraEl: HTMLElement;
 let filtersEl: HTMLElement;
 let selectedFilter: keyof typeof allFilters | 'clear' = 'clear';
+let recordStream: MediaStream;
+let mediaRecorder: MediaRecorder;
+let recordedChunks: Blob[] = [];
+let captureInterval: any;
+let recording = false;
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -61,7 +68,8 @@ async function updateVideoStream() {
 }
 
 function handleFileUpload(files: FileList | null) {
-	console.log('file selected', files);
+	$fileList = files;
+	goto('/upload/new');
 }
 
 function toggleTimer() {
@@ -128,11 +136,33 @@ function setTimer() {
 }
 
 async function startRecording(ignoreTimer: boolean = false) {
-	if (cameraControls.timer !== 'off' && !ignoreTimer) {
+	if (recording) {
+		mediaRecorder.stop();
+		recording = false;
+	} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
 		setTimer();
 	} else {
-		console.log('start recording');
+		console.log('starting recoridng');
+		recordStream = canvasEl.captureStream(30);
+		mediaRecorder = new MediaRecorder(recordStream, { mimeType: 'video/webm; codecs=vp9' });
+		mediaRecorder.ondataavailable = handleDataAvailable;
+		mediaRecorder.start();
+		recording = true;
+	}
+}
+
+function handleDataAvailable(event: any) {
+	console.log('data-available');
+	if (event.data.size > 0) {
+		recordedChunks.push(event.data);
+		console.log({ recordedChunks }, typeof recordedChunks);
+		$fileBlob = new Blob(recordedChunks, {
+			type: 'video/webm'
+		});
+		goto('/upload/new');
+	} else {
+		console.log('else');
 	}
 }
 
@@ -165,7 +195,7 @@ function computeFrame() {
 }
 
 function startCapturing() {
-	setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
+	captureInterval = setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
 }
 
 const checkWhichEl = debounce(500, () => {
@@ -195,6 +225,8 @@ onDestroy(async () => {
 		const tracks = mediaStream.getTracks();
 		tracks.forEach((track) => track.stop());
 	}
+	captureInterval && clearInterval(captureInterval);
+	timerInterval && clearInterval(timerInterval);
 });
 </script>
 
@@ -259,35 +291,44 @@ onDestroy(async () => {
 			<div transition:fade class="flex items-end justify-start pt-7">
 				<div
 					bind:this="{cameraEl}"
-					class="mx-auto h-14 w-14 rounded-full bg-white outline outline-2 outline-offset-8 outline-white"
-				></div>
-			</div>
-			<div
-				transition:fade
-				bind:this="{filtersEl}"
-				on:scroll="{checkWhichEl}"
-				on:click="{(e) => e.stopImmediatePropagation()}"
-				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
-			>
-				<!-- Begin Dumb item -->
-				<div data-filter="clear" class="shrink-0 snap-center">
-					<div class="w-dumb-start shrink-0"></div>
+					on:click="{() => startRecording()}"
+					class="{c(
+						'mx-auto flex h-14 w-14 items-center justify-center rounded-full outline outline-2 outline-offset-8 outline-white transition-all duration-300',
+						recording ? 'z-[5] bg-red-500' : 'bg-white'
+					)}"
+				>
+					<div class="h-4 w-4 rounded-sm bg-white"></div>
 				</div>
-				<!-- End Dumb item -->
-				{#each Object.keys(allFilters) as filter, i}
-					<img
-						data-filter="{filter}"
-						style="filter: {getFilterCss(filter)}"
-						alt="{filter}"
-						src="{filterPreviewImage}"
-						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full"
-					/>
-				{/each}
+			</div>
+			{#if !recording}
+				<div
+					transition:fade
+					bind:this="{filtersEl}"
+					on:scroll="{checkWhichEl}"
+					on:click="{(e) => e.stopImmediatePropagation()}"
+					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
+				>
+					<!-- Begin Dumb item -->
+					<div data-filter="clear" class=" shrink-0 snap-center">
+						<div class="w-dumb-start shrink-0"></div>
+					</div>
+					<!-- End Dumb item -->
+					{#each Object.keys(allFilters) as filter, i}
+						<img
+							on:click="{() => selectedFilter == filter && startRecording()}"
+							data-filter="{filter}"
+							style="filter: {getFilterCss(filter)}"
+							alt="{filter}"
+							src="{filterPreviewImage}"
+							class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
+						/>
+					{/each}
 
-				<div data-filter="clear" class="shrink-0 snap-center">
-					<div class="w-dumb-end shrink-0"></div>
+					<div data-filter="clear" class="shrink-0 snap-center">
+						<div class="w-dumb-end shrink-0"></div>
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
 	</svelte:fragment>
 

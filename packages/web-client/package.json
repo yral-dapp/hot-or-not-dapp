@@ -18,9 +18,10 @@
 		"@dfinity/candid": "0.12.2",
 		"@dfinity/identity": "0.12.2",
 		"@dfinity/principal": "0.12.2",
+		"buffer": "6.0.3",
 		"clsx": "1.2.1",
-		"throttle-debounce": "^5.0.0",
-		"buffer": "6.0.3"
+		"firebase": "9.9.3",
+		"throttle-debounce": "5.0.0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "1.0.0-next.39",
@@ -28,7 +29,7 @@
 		"@tailwindcss/forms": "0.5.2",
 		"@types/gtag.js": "0.0.10",
 		"@types/lodash-es": "4.17.6",
-		"@types/throttle-debounce": "^5.0.0",
+		"@types/throttle-debounce": "5.0.0",
 		"autoprefixer": "10.4.8",
 		"postcss": "8.4.16",
 		"svelte": "3.49.0",
