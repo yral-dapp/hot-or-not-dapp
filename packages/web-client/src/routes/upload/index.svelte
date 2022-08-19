@@ -45,6 +45,7 @@ let recordStream: MediaStream;
 let mediaRecorder: MediaRecorder;
 let recordedChunks: Blob[] = [];
 let captureInterval: any;
+let recording = false;
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -135,7 +136,10 @@ function setTimer() {
 }
 
 async function startRecording(ignoreTimer: boolean = false) {
-	if (cameraControls.timer !== 'off' && !ignoreTimer) {
+	if (recording) {
+		mediaRecorder.stop();
+		recording = false;
+	} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
 		setTimer();
 	} else {
@@ -144,10 +148,7 @@ async function startRecording(ignoreTimer: boolean = false) {
 		mediaRecorder = new MediaRecorder(recordStream, { mimeType: 'video/webm; codecs=vp9' });
 		mediaRecorder.ondataavailable = handleDataAvailable;
 		mediaRecorder.start();
-		setTimeout((event) => {
-			console.log('stopping');
-			mediaRecorder.stop();
-		}, 3000);
+		recording = true;
 	}
 }
 
@@ -291,15 +292,20 @@ onDestroy(async () => {
 				<div
 					bind:this="{cameraEl}"
 					on:click="{() => startRecording()}"
-					class="mx-auto h-14 w-14 rounded-full bg-white outline outline-2 outline-offset-8 outline-white"
-				></div>
+					class="{c(
+						'mx-auto flex h-14 w-14 items-center justify-center rounded-full outline outline-2 outline-offset-8 outline-white transition-all duration-300',
+						recording ? 'z-[5] bg-red-500' : 'bg-white'
+					)}"
+				>
+					<div class="h-4 w-4 rounded-sm bg-white"></div>
+				</div>
 			</div>
 			<div
 				transition:fade
 				bind:this="{filtersEl}"
 				on:scroll="{checkWhichEl}"
 				on:click="{(e) => e.stopImmediatePropagation()}"
-				class="hide-scrollbar pointer-events-none absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
+				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
 			>
 				<!-- Begin Dumb item -->
 				<div data-filter="clear" class=" shrink-0 snap-center">
@@ -308,11 +314,12 @@ onDestroy(async () => {
 				<!-- End Dumb item -->
 				{#each Object.keys(allFilters) as filter, i}
 					<img
+						on:click="{() => selectedFilter == filter && startRecording()}"
 						data-filter="{filter}"
 						style="filter: {getFilterCss(filter)}"
 						alt="{filter}"
 						src="{filterPreviewImage}"
-						class="h-12 w-12 shrink-0 snap-center snap-always rounded-full"
+						class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
 					/>
 				{/each}
 
