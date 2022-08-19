@@ -13,8 +13,10 @@ import UploadLayout from '$components/layout/UploadLayout.svelte';
 import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
+import { onMount } from 'svelte';
+import { fileList } from '$stores/fileUpload';
 
-let uploadStatus: UploadStatus = 'uploaded';
+let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
 let uploadVideoUrl =
 	'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4';
@@ -22,6 +24,9 @@ const uploadProgress = tweened(5, {
 	duration: 200,
 	easing: cubicInOut
 });
+let videoEl: HTMLVideoElement;
+let videoDescription = '';
+let videoHashtags = '';
 
 async function showShareDialog() {
 	try {
@@ -38,6 +43,12 @@ async function showShareDialog() {
 		console.error('Cannot open share dialog', err);
 	}
 }
+onMount(async () => {
+	console.log({ $fileList });
+	if ($fileList && $fileList[0]) {
+		videoEl.src = window.URL.createObjectURL($fileList[0]);
+	}
+});
 </script>
 
 <UploadLayout>
@@ -53,10 +64,10 @@ async function showShareDialog() {
 	>
 		<div class="h-max-64 relative max-w-lg">
 			<video
+				bind:this="{videoEl}"
 				on:click="{() => (previewPaused = true)}"
 				bind:paused="{previewPaused}"
 				class="h-64 w-full rounded-xl"
-				src="{uploadVideoUrl}"
 			>
 				<track kind="captions" />
 			</video>
@@ -75,11 +86,13 @@ async function showShareDialog() {
 			<InputBox
 				placeholder="Write your description here ..."
 				rows="{6}"
+				bind:value="{videoDescription}"
 				class="rounded-xl bg-white/10"
 			/>
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Add Hashtags</span>
 				<Input
+					bind:value="{videoHashtags}"
 					type="text"
 					placeholder="#hastag, #hastag2, #hastag3 ..."
 					class="w-full rounded-xl bg-white/10"
@@ -123,9 +136,11 @@ async function showShareDialog() {
 			deleted.
 		</div>
 		{#if uploadStatus === 'to-upload'}
-			<Button class="w-full" on:click="{() => (uploadStatus = 'uploaded')}">Upload Video</Button>
+			<Button class="w-full" on:click="{() => (uploadStatus = 'uploading')}">Upload Video</Button>
 		{:else if uploadStatus === 'uploading'}
-			<Button class="w-full">Continue Browsing</Button>
+			<Button class="w-full" on:click="{() => (uploadStatus = 'uploaded')}"
+				>Continue Browsing</Button
+			>
 		{:else if uploadStatus === 'uploaded'}
 			<div class="flex items-center justify-between space-x-4">
 				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
