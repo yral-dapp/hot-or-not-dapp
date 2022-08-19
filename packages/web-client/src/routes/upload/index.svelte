@@ -28,6 +28,8 @@ import { fade } from 'svelte/transition';
 import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
+import { fileList } from '$stores/fileUpload';
+import { goto } from '$app/navigation';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -61,7 +63,8 @@ async function updateVideoStream() {
 }
 
 function handleFileUpload(files: FileList | null) {
-	console.log('file selected', files);
+	$fileList = files;
+	goto('/upload/new');
 }
 
 function toggleTimer() {
