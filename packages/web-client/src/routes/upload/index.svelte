@@ -28,7 +28,7 @@ import { fade } from 'svelte/transition';
 import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
-import { fileList } from '$stores/fileUpload';
+import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 
 let videoEl: HTMLVideoElement;
@@ -41,6 +41,10 @@ let canvasEl: HTMLCanvasElement;
 let cameraEl: HTMLElement;
 let filtersEl: HTMLElement;
 let selectedFilter: keyof typeof allFilters | 'clear' = 'clear';
+let recordStream: MediaStream;
+let mediaRecorder: MediaRecorder;
+let recordedChunks: Blob[] = [];
+let captureInterval: any;
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -135,7 +139,29 @@ async function startRecording(ignoreTimer: boolean = false) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
 		setTimer();
 	} else {
-		console.log('start recording');
+		console.log('starting recoridng');
+		recordStream = canvasEl.captureStream(30);
+		mediaRecorder = new MediaRecorder(recordStream, { mimeType: 'video/webm; codecs=vp9' });
+		mediaRecorder.ondataavailable = handleDataAvailable;
+		mediaRecorder.start();
+		setTimeout((event) => {
+			console.log('stopping');
+			mediaRecorder.stop();
+		}, 3000);
+	}
+}
+
+function handleDataAvailable(event: any) {
+	console.log('data-available');
+	if (event.data.size > 0) {
+		recordedChunks.push(event.data);
+		console.log({ recordedChunks }, typeof recordedChunks);
+		$fileBlob = new Blob(recordedChunks, {
+			type: 'video/webm'
+		});
+		goto('/upload/new');
+	} else {
+		console.log('else');
 	}
 }
 
@@ -168,7 +194,7 @@ function computeFrame() {
 }
 
 function startCapturing() {
-	setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
+	captureInterval = setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
 }
 
 const checkWhichEl = debounce(500, () => {
@@ -198,6 +224,8 @@ onDestroy(async () => {
 		const tracks = mediaStream.getTracks();
 		tracks.forEach((track) => track.stop());
 	}
+	captureInterval && clearInterval(captureInterval);
+	timerInterval && clearInterval(timerInterval);
 });
 </script>
 
@@ -262,6 +290,7 @@ onDestroy(async () => {
 			<div transition:fade class="flex items-end justify-start pt-7">
 				<div
 					bind:this="{cameraEl}"
+					on:click="{() => startRecording()}"
 					class="mx-auto h-14 w-14 rounded-full bg-white outline outline-2 outline-offset-8 outline-white"
 				></div>
 			</div>
@@ -270,10 +299,10 @@ onDestroy(async () => {
 				bind:this="{filtersEl}"
 				on:scroll="{checkWhichEl}"
 				on:click="{(e) => e.stopImmediatePropagation()}"
-				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
+				class="hide-scrollbar pointer-events-none absolute bottom-4 -mt-20 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto"
 			>
 				<!-- Begin Dumb item -->
-				<div data-filter="clear" class="shrink-0 snap-center">
+				<div data-filter="clear" class=" shrink-0 snap-center">
 					<div class="w-dumb-start shrink-0"></div>
 				</div>
 				<!-- End Dumb item -->
