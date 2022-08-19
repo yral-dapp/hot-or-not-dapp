@@ -13,21 +13,65 @@ import UploadLayout from '$components/layout/UploadLayout.svelte';
 import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
-import { onMount } from 'svelte';
+import { onMount, onDestroy } from 'svelte';
 import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
+import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
+import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
-let uploadVideoUrl =
-	'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4';
-const uploadProgress = tweened(5, {
-	duration: 200,
+const uploadProgress = tweened(0, {
+	duration: 500,
 	easing: cubicInOut
 });
 let videoEl: HTMLVideoElement;
 let videoDescription = '';
 let videoHashtags = '';
+let fileToUpload: Blob | File;
+
+async function nextStep() {
+	if (uploadStatus === 'to-upload') {
+		//perform checks
+		uploadStatus = 'uploading';
+		startUploading();
+	}
+}
+
+async function startUploading() {
+	if (!fileToUpload) return;
+	const uploadRes = await uploadToBucketResumable(fileToUpload);
+
+	if (uploadRes.status === 'error') {
+		handleUploadError(uploadRes.error);
+		return;
+	}
+
+	uploadRes.uploadTask.on('state_changed', handleUploadProgress, handleUploadError, () =>
+		handleUploadSuccess(uploadRes.uploadTask)
+	);
+}
+
+async function handleUploadSuccess(uploadTask: UploadTask) {
+	console.log('gcsUri', gcsBucket + uploadTask.snapshot.ref.fullPath);
+}
+
+async function handleUploadError(error: StorageError | string) {
+	console.error(error);
+}
+
+async function handleUploadProgress(snapshot: UploadTaskSnapshot) {
+	const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+	uploadProgress.set(Math.ceil(progress));
+	switch (snapshot.state) {
+		case 'paused':
+			console.log('Upload is paused');
+			break;
+		case 'running':
+			console.log('Upload is running');
+			break;
+	}
+}
 
 async function showShareDialog() {
 	try {
@@ -46,10 +90,16 @@ async function showShareDialog() {
 }
 onMount(async () => {
 	if ($fileList && $fileList[0]) {
-		videoEl.src = URL.createObjectURL($fileList[0]);
+		fileToUpload = $fileList[0];
+		videoEl.src = URL.createObjectURL(fileToUpload);
 	} else if ($fileBlob) {
+		fileToUpload = $fileBlob;
 		videoEl.src = URL.createObjectURL($fileBlob);
 	} else goto('/upload');
+});
+
+onDestroy(() => {
+	$fileList = $fileBlob = null;
 });
 </script>
 
@@ -109,7 +159,7 @@ onMount(async () => {
 						<div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-white/20">
 							<div style="width:{$uploadProgress}%" class="h-full rounded-full bg-primary"></div>
 						</div>
-						<span class="text-white/60">33% video is uploaded</span>
+						<span class="text-white/60">{Math.ceil($uploadProgress)}% video is uploaded</span>
 					</div>
 				</div>
 				<div class="flex w-full items-start space-x-4">
@@ -138,11 +188,9 @@ onMount(async () => {
 			deleted.
 		</div>
 		{#if uploadStatus === 'to-upload'}
-			<Button class="w-full" on:click="{() => (uploadStatus = 'uploading')}">Upload Video</Button>
+			<Button class="w-full" on:click="{nextStep}">Upload Video</Button>
 		{:else if uploadStatus === 'uploading'}
-			<Button class="w-full" on:click="{() => (uploadStatus = 'uploaded')}"
-				>Continue Browsing</Button
-			>
+			<Button class="w-full" on:click="{nextStep}">Continue Browsing</Button>
 		{:else if uploadStatus === 'uploaded'}
 			<div class="flex items-center justify-between space-x-4">
 				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
