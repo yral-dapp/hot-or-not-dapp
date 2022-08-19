@@ -29,6 +29,7 @@ let videoEl: HTMLVideoElement;
 let videoDescription = '';
 let videoHashtags = '';
 let fileToUpload: Blob | File;
+let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
 
 async function nextStep() {
 	if (uploadStatus === 'to-upload') {
@@ -54,6 +55,11 @@ async function startUploading() {
 
 async function handleUploadSuccess(uploadTask: UploadTask) {
 	console.log('gcsUri', gcsBucket + uploadTask.snapshot.ref.fullPath);
+	uploadStep = 'processing';
+	setTimeout(() => {
+		uploadStep = 'verified';
+		uploadStatus = 'uploaded';
+	}, 2000);
 }
 
 async function handleUploadError(error: StorageError | string) {
@@ -154,7 +160,7 @@ onDestroy(() => {
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
 				<div class="flex w-full items-start space-x-4">
-					<UploadStep step="{1}" status="active" />
+					<UploadStep step="{1}" status="{uploadStep === 'uploading' ? 'active' : 'finished'}" />
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Upload Progress</span>
 						<div class="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-white/20">
@@ -164,20 +170,31 @@ onDestroy(() => {
 					</div>
 				</div>
 				<div class="flex w-full items-start space-x-4">
-					<UploadStep step="{2}" status="queued" />
+					<UploadStep
+						step="{2}"
+						status="{uploadStep === 'uploading'
+							? 'queued'
+							: uploadStep === 'processing'
+							? 'active'
+							: 'finished'}"
+					/>
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Processing Checks</span>
-						<span class="text-white/60">
-							Before you publish we'll check your video for issues that may restrict it's visibility
-							and other quality checks. We'll notify you when it's done
-						</span>
+						{#if uploadStep === 'processing' || uploadStep == 'verified'}
+							<span class="text-white/60">
+								Before you publish we'll check your video for issues that may restrict it's
+								visibility and other quality checks. We'll notify you when it's done
+							</span>
+						{/if}
 					</div>
 				</div>
 				<div class="flex w-full items-start space-x-4">
-					<UploadStep step="{3}" status="finished" />
+					<UploadStep step="{3}" status="{uploadStep === 'verified' ? 'finished' : 'queued'}" />
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Final Verification</span>
-						<span class="text-white/60"> Your video has passed all the checks. </span>
+						{#if uploadStep === 'verified'}
+							<span class="text-white/60"> Your video has passed all the checks. </span>
+						{/if}
 					</div>
 				</div>
 			</div>
