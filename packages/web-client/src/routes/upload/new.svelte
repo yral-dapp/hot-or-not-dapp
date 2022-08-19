@@ -14,7 +14,7 @@ import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount } from 'svelte';
-import { fileList } from '$stores/fileUpload';
+import { fileList, fileBlob } from '$stores/fileUpload';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -46,7 +46,9 @@ async function showShareDialog() {
 onMount(async () => {
 	console.log({ $fileList });
 	if ($fileList && $fileList[0]) {
-		videoEl.src = window.URL.createObjectURL($fileList[0]);
+		videoEl.src = URL.createObjectURL($fileList[0]);
+	} else if ($fileBlob) {
+		videoEl.src = URL.createObjectURL($fileBlob);
 	}
 });
 </script>
