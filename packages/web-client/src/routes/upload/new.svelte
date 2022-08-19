@@ -89,6 +89,7 @@ async function showShareDialog() {
 	}
 }
 onMount(async () => {
+	console.log({ $fileList });
 	if ($fileList && $fileList[0]) {
 		fileToUpload = $fileList[0];
 		videoEl.src = URL.createObjectURL(fileToUpload);
