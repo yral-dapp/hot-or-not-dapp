@@ -1,11 +1,23 @@
 import type { FirebaseApp } from 'firebase/app';
 import { initializeApp } from 'firebase/app';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import {
+	getDownloadURL,
+	getStorage,
+	ref,
+	uploadBytes,
+	uploadBytesResumable,
+	type UploadTask
+} from 'firebase/storage';
 
 interface UploadResponseSuccess {
 	status: 'success';
 	gcsUri: string;
 	downloadUrl: string;
+}
+
+interface UploadResponseResumableSuccess {
+	status: 'success';
+	uploadTask: UploadTask;
 }
 
 interface UploadResponseError {
@@ -14,6 +26,7 @@ interface UploadResponseError {
 }
 
 type UploadResponse = UploadResponseError | UploadResponseSuccess;
+type UploadResponseResumable = UploadResponseError | UploadResponseResumableSuccess;
 
 let app: FirebaseApp;
 
@@ -27,7 +40,9 @@ const config = {
 	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-const gcsBucket = `gs://${import.meta.env.VITE_GCS_BUCKET_NAME}`;
+export const gcsBucket = `gs://${import.meta.env.VITE_FIREBASE_STORAGE_BUCKET}`;
+
+console.log({ config });
 
 function getFirebaseApp(): FirebaseApp {
 	if (!app) {
@@ -49,9 +64,9 @@ export async function analyzeText(text: string) {
 	return await result.json();
 }
 
-export async function uploadToBucket(file: File): Promise<UploadResponse> {
+export async function uploadToBucket(file: File | Blob): Promise<UploadResponse> {
 	try {
-		const fileExt = file.name.split('.').pop();
+		const fileExt = file instanceof File ? file.name.split('.').pop() : 'webm';
 		const fileName = Date.now().toString() + '.' + fileExt;
 		const storage = getStorage(getFirebaseApp(), gcsBucket);
 		const storageRef = ref(storage, fileName);
@@ -61,6 +76,19 @@ export async function uploadToBucket(file: File): Promise<UploadResponse> {
 		const pathReference = ref(storage, gcsUri);
 		const downloadUrl = await getDownloadURL(pathReference);
 		return { status: 'success', gcsUri, downloadUrl };
+	} catch (e) {
+		return { status: 'error', error: JSON.stringify(e) };
+	}
+}
+
+export async function uploadToBucketResumable(file: File | Blob): Promise<UploadResponseResumable> {
+	try {
+		const fileExt = file instanceof File ? file.name.split('.').pop() : 'webm';
+		const fileName = Date.now().toString() + '.' + fileExt;
+		const storage = getStorage(getFirebaseApp(), gcsBucket);
+		const storageRef = ref(storage, fileName);
+		const uploadTask = uploadBytesResumable(storageRef, file);
+		return { status: 'success', uploadTask };
 	} catch (e) {
 		return { status: 'error', error: JSON.stringify(e) };
 	}
