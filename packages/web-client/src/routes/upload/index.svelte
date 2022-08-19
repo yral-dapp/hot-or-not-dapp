@@ -300,33 +300,35 @@ onDestroy(async () => {
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
 				</div>
 			</div>
-			<div
-				transition:fade
-				bind:this="{filtersEl}"
-				on:scroll="{checkWhichEl}"
-				on:click="{(e) => e.stopImmediatePropagation()}"
-				class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
-			>
-				<!-- Begin Dumb item -->
-				<div data-filter="clear" class=" shrink-0 snap-center">
-					<div class="w-dumb-start shrink-0"></div>
-				</div>
-				<!-- End Dumb item -->
-				{#each Object.keys(allFilters) as filter, i}
-					<img
-						on:click="{() => selectedFilter == filter && startRecording()}"
-						data-filter="{filter}"
-						style="filter: {getFilterCss(filter)}"
-						alt="{filter}"
-						src="{filterPreviewImage}"
-						class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
-					/>
-				{/each}
+			{#if !recording}
+				<div
+					transition:fade
+					bind:this="{filtersEl}"
+					on:scroll="{checkWhichEl}"
+					on:click="{(e) => e.stopImmediatePropagation()}"
+					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
+				>
+					<!-- Begin Dumb item -->
+					<div data-filter="clear" class=" shrink-0 snap-center">
+						<div class="w-dumb-start shrink-0"></div>
+					</div>
+					<!-- End Dumb item -->
+					{#each Object.keys(allFilters) as filter, i}
+						<img
+							on:click="{() => selectedFilter == filter && startRecording()}"
+							data-filter="{filter}"
+							style="filter: {getFilterCss(filter)}"
+							alt="{filter}"
+							src="{filterPreviewImage}"
+							class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
+						/>
+					{/each}
 
-				<div data-filter="clear" class="shrink-0 snap-center">
-					<div class="w-dumb-end shrink-0"></div>
+					<div data-filter="clear" class="shrink-0 snap-center">
+						<div class="w-dumb-end shrink-0"></div>
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
 	</svelte:fragment>
 
