@@ -282,6 +282,7 @@ onDestroy(async () => {
 					bind:this="{videoEl}"
 					autoplay
 					playsinline
+					style="{useCanvas ? '' : 'transform: scaleX(-1);'}"
 					class="absolute z-[4] h-full w-full object-cover object-center"
 				>
 				</video>
