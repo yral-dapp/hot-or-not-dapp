@@ -150,7 +150,10 @@ async function startRecording(ignoreTimer: boolean = false) {
 	} else {
 		console.log('starting recoridng');
 		recordStream = canvasEl.captureStream(30);
-		mediaRecorder = new MediaRecorder(recordStream, { mimeType: 'video/webm; codecs=vp9' });
+		const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
+			? 'video/webm; codecs=vp9'
+			: 'video/mp4;';
+		mediaRecorder = new MediaRecorder(recordStream, { mimeType });
 		mediaRecorder.ondataavailable = handleDataAvailable;
 		mediaRecorder.start();
 		recording = true;
