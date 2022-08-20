@@ -42,8 +42,6 @@ const config = {
 
 export const gcsBucket = `gs://${import.meta.env.VITE_FIREBASE_STORAGE_BUCKET}`;
 
-console.log({ config });
-
 function getFirebaseApp(): FirebaseApp {
 	if (!app) {
 		app = initializeApp(config);
