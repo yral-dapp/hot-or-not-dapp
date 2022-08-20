@@ -125,7 +125,8 @@ onDestroy(() => {
 			<video
 				bind:this="{videoEl}"
 				on:click="{() => (previewPaused = true)}"
-				bind:paused="{previewPaused}"
+				paused="{previewPaused}"
+				playsinline
 				class="h-64 w-full rounded-xl"
 			>
 				<track kind="captions" />
