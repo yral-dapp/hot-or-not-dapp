@@ -25,7 +25,6 @@ export let startingVideoIndex: number;
 	<svelte:fragment slot="content">
 		<Videos fetchFromId="{startingVideoIndex}" />
 	</svelte:fragment>
-	<div slot="top">All videos</div>
 	<div class="w-full" slot="bottom-navigation">
 		<BottomNavigation />
 	</div>
