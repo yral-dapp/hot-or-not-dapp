@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
 interface CameraControls {
-	flash: 'on' | 'off' | 'not-available';
+	flash: 'on' | 'off' | 'not-available' | 'hide';
 	flip: {
 		facingMode: FacingMode;
 		show: boolean;
@@ -98,10 +98,15 @@ async function toggleTorch() {
 }
 
 async function checkIfFlashAvailable() {
-	//@ts-ignore
-	const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
-	const capablities = await imageCapture.getPhotoCapabilities();
-	cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available';
+	try {
+		//@ts-ignore
+		const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
+		const capablities = await imageCapture.getPhotoCapabilities();
+		cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available';
+	} catch (e) {
+		console.error('Flash not available');
+		cameraControls.flash = 'hide';
+	}
 }
 
 async function checkIfFlipAvailable() {
@@ -338,19 +343,21 @@ onDestroy(async () => {
 	>
 		{#if initState == 'allowed'}
 			<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
-				<div class="flex flex-col items-center justify-center space-y-1">
-					<IconButton
-						on:click="{toggleTorch}"
-						disabled="{cameraControls.flash === 'not-available'}"
-						class="{c(
-							'flex h-10 w-10 items-center justify-center rounded-full',
-							cameraControls.flash === 'on' ? 'bg-white text-primary' : 'bg-black text-white'
-						)}"
-					>
-						<FlashIcon variant="{cameraControls.flash}" class="h-5 w-5" />
-					</IconButton>
-					<span class="text-xs">Flash</span>
-				</div>
+				{#if cameraControls.flash !== 'hide'}
+					<div class="flex flex-col items-center justify-center space-y-1">
+						<IconButton
+							on:click="{toggleTorch}"
+							disabled="{cameraControls.flash === 'not-available'}"
+							class="{c(
+								'flex h-10 w-10 items-center justify-center rounded-full',
+								cameraControls.flash === 'on' ? 'bg-white text-primary' : 'bg-black text-white'
+							)}"
+						>
+							<FlashIcon variant="{cameraControls.flash}" class="h-5 w-5" />
+						</IconButton>
+						<span class="text-xs">Flash</span>
+					</div>
+				{/if}
 				{#if cameraControls.flip.show}
 					<div class="flex flex-col items-center justify-center space-y-1">
 						<IconButton
