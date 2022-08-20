@@ -337,8 +337,9 @@ onDestroy(async () => {
 					<!-- End Dumb item -->
 					{#each Object.keys(allFilters) as filter, i}
 						<img
+							draggable="false"
 							data-filter="{filter}"
-							style="filter: {getFilterCss(filter)}"
+							style="filter: {getFilterCss(filter)}; -webkit-touch-callout: none;"
 							alt="{filter}"
 							src="{filterPreviewImage}"
 							class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
