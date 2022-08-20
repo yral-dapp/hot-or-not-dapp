@@ -125,7 +125,7 @@ onDestroy(() => {
 			<video
 				bind:this="{videoEl}"
 				on:click="{() => (previewPaused = true)}"
-				paused="{previewPaused}"
+				bind:paused="{previewPaused}"
 				playsinline
 				class="h-64 w-full rounded-xl"
 			>
@@ -145,9 +145,8 @@ onDestroy(() => {
 		{#if uploadStatus === 'to-upload'}
 			<InputBox
 				placeholder="Write your description here ..."
-				rows="{6}"
 				bind:value="{videoDescription}"
-				class="rounded-xl bg-white/10"
+				class="shrink-0 rounded-xl bg-white/10"
 			/>
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Add Hashtags</span>
