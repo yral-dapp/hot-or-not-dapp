@@ -26,7 +26,6 @@ export let startingVideoIndex: number;
 		<SplashScreen />
 		<Videos fetchFromId="{startingVideoIndex}" />
 	</svelte:fragment>
-	<div slot="top">All videos</div>
 	<div class="w-full" slot="bottom-navigation">
 		<BottomNavigation />
 	</div>
