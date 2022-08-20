@@ -299,7 +299,10 @@ onDestroy(async () => {
 	</svelte:fragment>
 	<div class="flex h-full w-full items-center justify-center space-x-16" slot="bottom-navigation">
 		<button class="focus:outline-none" on:click="{() => inputEl.click()}">Gallery</button>
-		<button class="focus:outline-none">Camera</button>
+		<div class="relative">
+			<button class="focus:outline-none">Camera</button>
+			<div class="absolute inset-x-0 -bottom-2 h-0.5 w-full rounded-full bg-primary"></div>
+		</div>
 	</div>
 	<div class="pointer-events-auto flex w-full items-start justify-end px-5" slot="top">
 		<IconButton href="/" class="h-10 w-10 rounded-full bg-black/50">
