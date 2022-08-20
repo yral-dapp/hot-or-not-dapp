@@ -26,6 +26,8 @@ const uploadProgress = tweened(0, {
 	easing: cubicInOut
 });
 let videoEl: HTMLVideoElement;
+let videoWidth = 0;
+let videoHeight = 0;
 let videoDescription = '';
 let videoHashtags = '';
 let fileToUpload: Blob | File;
@@ -102,7 +104,9 @@ onMount(async () => {
 	} else if ($fileBlob) {
 		fileToUpload = $fileBlob;
 		videoEl.src = URL.createObjectURL($fileBlob);
-	} else goto('/upload');
+	} else
+		videoEl.src =
+			'https://assets.mixkit.co/videos/preview/mixkit-going-down-a-curved-highway-through-a-mountain-range-41576-large.mp4';
 });
 
 onDestroy(() => {
@@ -119,15 +123,20 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
+		class="hide-scrollbar mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
 	>
-		<div class="h-max-64 relative max-w-lg">
+		<div
+			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
+			class="relative flex max-h-64 max-w-lg items-center justify-center"
+		>
 			<video
 				bind:this="{videoEl}"
 				on:click="{() => (previewPaused = true)}"
 				bind:paused="{previewPaused}"
+				bind:videoHeight
+				bind:videoWidth
 				playsinline
-				class="h-64 w-full rounded-xl"
+				class="h-full w-full rounded-xl"
 			>
 				<track kind="captions" />
 			</video>
