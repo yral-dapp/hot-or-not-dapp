@@ -2,6 +2,7 @@
 import { fade } from 'svelte/transition';
 import { onMount } from 'svelte';
 import { showSplashScreen } from '$stores/splashScreen';
+import FireIcon from '$components/icons/FireIcon.svelte';
 
 onMount(() =>
 	setTimeout(() => {
@@ -15,6 +16,6 @@ onMount(() =>
 		out:fade|local="{{ duration: 500 }}"
 		class="absolute z-[15] flex h-full w-full items-center justify-center bg-primary text-9xl"
 	>
-		H.o.N
+		<FireIcon class="h-36 w-36" />
 	</splash-screen>
 {/if}
