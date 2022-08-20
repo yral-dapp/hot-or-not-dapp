@@ -142,7 +142,7 @@ function setTimer() {
 	}, 1000);
 }
 
-async function startRecording(ignoreTimer: boolean = false) {
+async function startRecording(ignoreTimer = false) {
 	if (recording) {
 		mediaRecorder.stop();
 		recording = false;
@@ -151,7 +151,9 @@ async function startRecording(ignoreTimer: boolean = false) {
 		setTimer();
 	} else {
 		console.log('starting recoridng');
-		recordStream = canvasEl.captureStream(30);
+		if (useCanvas) {
+			recordStream = canvasEl.captureStream(30);
+		} else recordStream = mediaStream;
 		const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
 			? 'video/webm; codecs=vp9'
 			: 'video/mp4;';
@@ -221,7 +223,7 @@ const checkWhichEl = debounce(500, () => {
 	}
 });
 
-async function checkClickAndStartRecording(e: PointerEvent) {
+async function checkClickAndStartRecording(e: MouseEvent) {
 	const captureArea = cameraEl.getBoundingClientRect();
 	if (
 		e.x > captureArea.left &&
@@ -323,7 +325,7 @@ onDestroy(async () => {
 					bind:this="{cameraEl}"
 					on:click="{() => startRecording()}"
 					class="{c(
-						'mx-auto flex h-14 w-14 items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
+						'mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
 						recording ? 'z-[5] bg-red-500' : 'bg-white'
 					)}"
 				>
@@ -336,7 +338,6 @@ onDestroy(async () => {
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
-					on:click="{(e) => e.stopImmediatePropagation()}"
 					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
 				>
 					<!-- Begin Dumb item -->
