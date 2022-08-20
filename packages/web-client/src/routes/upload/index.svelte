@@ -263,6 +263,7 @@ onDestroy(async () => {
 					muted
 					bind:this="{videoEl}"
 					autoplay
+					playsinline
 					class="absolute z-[4] h-full w-full object-cover object-center"
 				>
 				</video>
