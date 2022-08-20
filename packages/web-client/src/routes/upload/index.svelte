@@ -168,9 +168,9 @@ function handleDataAvailable(event: any) {
 	console.log('data-available');
 	if (event.data.size > 0) {
 		recordedChunks.push(event.data);
-		console.log({ recordedChunks }, typeof recordedChunks);
+		const type = MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4;';
 		$fileBlob = new Blob(recordedChunks, {
-			type: 'video/webm'
+			type
 		});
 		goto('/upload/new');
 	} else {
