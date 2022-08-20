@@ -219,6 +219,18 @@ const checkWhichEl = debounce(500, () => {
 	}
 });
 
+async function checkClickAndStartRecording(e: PointerEvent) {
+	const captureArea = cameraEl.getBoundingClientRect();
+	if (
+		e.x > captureArea.left &&
+		e.x < captureArea.right &&
+		e.y > captureArea.top &&
+		e.y < captureArea.bottom
+	) {
+		startRecording();
+	}
+}
+
 onMount(async () => {
 	await requestMediaAccess();
 	updateCanvas();
@@ -302,7 +314,7 @@ onDestroy(async () => {
 					bind:this="{cameraEl}"
 					on:click="{() => startRecording()}"
 					class="{c(
-						'mx-auto flex h-14 w-14 items-center justify-center rounded-full outline outline-2 outline-offset-8 outline-white transition-all duration-300',
+						'mx-auto flex h-14 w-14 items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
 						recording ? 'z-[5] bg-red-500' : 'bg-white'
 					)}"
 				>
@@ -311,6 +323,7 @@ onDestroy(async () => {
 			</div>
 			{#if !recording}
 				<div
+					on:click="{checkClickAndStartRecording}"
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
@@ -318,13 +331,12 @@ onDestroy(async () => {
 					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
 				>
 					<!-- Begin Dumb item -->
-					<div data-filter="clear" class=" shrink-0 snap-center">
+					<div data-filter="clear" class="shrink-0 snap-center">
 						<div class="w-dumb-start shrink-0"></div>
 					</div>
 					<!-- End Dumb item -->
 					{#each Object.keys(allFilters) as filter, i}
 						<img
-							on:click="{() => selectedFilter == filter && startRecording()}"
 							data-filter="{filter}"
 							style="filter: {getFilterCss(filter)}"
 							alt="{filter}"
