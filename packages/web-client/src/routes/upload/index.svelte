@@ -30,6 +30,7 @@ import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
+import { isSafari } from '$lib/isSafari';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -46,6 +47,7 @@ let mediaRecorder: MediaRecorder;
 let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
+const useCanvas = !isSafari();
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -104,7 +106,7 @@ async function checkIfFlashAvailable() {
 		const capablities = await imageCapture.getPhotoCapabilities();
 		cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available';
 	} catch (e) {
-		console.error('Flash not available');
+		console.warn('flash not available on this device');
 		cameraControls.flash = 'hide';
 	}
 }
@@ -175,7 +177,7 @@ function handleDataAvailable(event: any) {
 }
 
 function updateCanvas() {
-	if (canvasEl) {
+	if (canvasEl && useCanvas) {
 		canvasEl.height = window.innerHeight;
 		canvasEl.width = window.innerWidth;
 	}
@@ -233,8 +235,10 @@ async function checkClickAndStartRecording(e: PointerEvent) {
 
 onMount(async () => {
 	await requestMediaAccess();
-	updateCanvas();
-	startCapturing();
+	if (useCanvas) {
+		updateCanvas();
+		startCapturing();
+	}
 });
 
 onDestroy(async () => {
@@ -293,7 +297,9 @@ onDestroy(async () => {
 						</div>
 					{/key}
 				{/if}
-				<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
+				{#if useCanvas}
+					<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
+				{/if}
 			{/if}
 		</div>
 	</svelte:fragment>
@@ -324,7 +330,7 @@ onDestroy(async () => {
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
 				</div>
 			</div>
-			{#if !recording}
+			{#if !recording && useCanvas}
 				<div
 					on:click="{checkClickAndStartRecording}"
 					transition:fade
