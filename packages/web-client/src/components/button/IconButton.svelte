@@ -3,6 +3,7 @@ import c from 'clsx';
 
 export let disabled = false;
 export let href = '';
+export let prefetch = false;
 export { exportClass as class };
 let exportClass: string = '';
 
@@ -15,8 +16,12 @@ $: classes = c(
 );
 </script>
 
-{#if href}
+{#if href && !prefetch}
 	<a href="{href}" class="{classes}">
+		<slot />
+	</a>
+{:else if href && prefetch}
+	<a sveltekit:prefetch href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else}
