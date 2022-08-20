@@ -23,7 +23,6 @@ export let startingVideoIndex: number;
 
 <HomeLayout>
 	<svelte:fragment slot="content">
-		<SplashScreen />
 		<Videos fetchFromId="{startingVideoIndex}" />
 	</svelte:fragment>
 	<div slot="top">All videos</div>

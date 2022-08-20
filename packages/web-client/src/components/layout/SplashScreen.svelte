@@ -1,17 +1,21 @@
 <script lang="ts">
 import { fade } from 'svelte/transition';
 import { onMount } from 'svelte';
+import { showSplashScreen } from '$stores/splashScreen';
+import FireIcon from '$components/icons/FireIcon.svelte';
 
-export let showSplash = true;
-
-onMount(() => setTimeout(() => (showSplash = false), 3000));
+onMount(() =>
+	setTimeout(() => {
+		$showSplashScreen = false;
+	}, 3000)
+);
 </script>
 
-{#if showSplash}
+{#if $showSplashScreen}
 	<splash-screen
 		out:fade|local="{{ duration: 500 }}"
 		class="absolute z-[15] flex h-full w-full items-center justify-center bg-primary text-9xl"
 	>
-		H.o.N
+		<FireIcon class="h-36 w-36" />
 	</splash-screen>
 {/if}
