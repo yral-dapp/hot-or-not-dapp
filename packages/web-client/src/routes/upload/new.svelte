@@ -119,7 +119,7 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="mb-40 flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
+		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
 	>
 		<div class="h-max-64 relative max-w-lg">
 			<video
