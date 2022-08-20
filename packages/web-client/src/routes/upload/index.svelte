@@ -30,6 +30,7 @@ import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
+import { isSafari } from '$lib/isSafari';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -46,6 +47,7 @@ let mediaRecorder: MediaRecorder;
 let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
+const useCanvas = !isSafari();
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -104,7 +106,7 @@ async function checkIfFlashAvailable() {
 		const capablities = await imageCapture.getPhotoCapabilities();
 		cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available';
 	} catch (e) {
-		console.error('Flash not available');
+		console.warn('flash not available on this device');
 		cameraControls.flash = 'hide';
 	}
 }
@@ -140,7 +142,7 @@ function setTimer() {
 	}, 1000);
 }
 
-async function startRecording(ignoreTimer: boolean = false) {
+async function startRecording(ignoreTimer = false) {
 	if (recording) {
 		mediaRecorder.stop();
 		recording = false;
@@ -149,7 +151,9 @@ async function startRecording(ignoreTimer: boolean = false) {
 		setTimer();
 	} else {
 		console.log('starting recoridng');
-		recordStream = canvasEl.captureStream(30);
+		if (useCanvas) {
+			recordStream = canvasEl.captureStream(30);
+		} else recordStream = mediaStream;
 		const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
 			? 'video/webm; codecs=vp9'
 			: 'video/mp4;';
@@ -175,7 +179,7 @@ function handleDataAvailable(event: any) {
 }
 
 function updateCanvas() {
-	if (canvasEl) {
+	if (canvasEl && useCanvas) {
 		canvasEl.height = window.innerHeight;
 		canvasEl.width = window.innerWidth;
 	}
@@ -219,7 +223,7 @@ const checkWhichEl = debounce(500, () => {
 	}
 });
 
-async function checkClickAndStartRecording(e: PointerEvent) {
+async function checkClickAndStartRecording(e: MouseEvent) {
 	const captureArea = cameraEl.getBoundingClientRect();
 	if (
 		e.x > captureArea.left &&
@@ -233,8 +237,10 @@ async function checkClickAndStartRecording(e: PointerEvent) {
 
 onMount(async () => {
 	await requestMediaAccess();
-	updateCanvas();
-	startCapturing();
+	if (useCanvas) {
+		updateCanvas();
+		startCapturing();
+	}
 });
 
 onDestroy(async () => {
@@ -276,6 +282,7 @@ onDestroy(async () => {
 					bind:this="{videoEl}"
 					autoplay
 					playsinline
+					style="{useCanvas ? '' : 'transform: scaleX(-1);'}"
 					class="absolute z-[4] h-full w-full object-cover object-center"
 				>
 				</video>
@@ -293,7 +300,9 @@ onDestroy(async () => {
 						</div>
 					{/key}
 				{/if}
-				<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
+				{#if useCanvas}
+					<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
+				{/if}
 			{/if}
 		</div>
 	</svelte:fragment>
@@ -317,20 +326,19 @@ onDestroy(async () => {
 					bind:this="{cameraEl}"
 					on:click="{() => startRecording()}"
 					class="{c(
-						'mx-auto flex h-14 w-14 items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
+						'mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
 						recording ? 'z-[5] bg-red-500' : 'bg-white'
 					)}"
 				>
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
 				</div>
 			</div>
-			{#if !recording}
+			{#if !recording && useCanvas}
 				<div
 					on:click="{checkClickAndStartRecording}"
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
-					on:click="{(e) => e.stopImmediatePropagation()}"
 					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
 				>
 					<!-- Begin Dumb item -->
