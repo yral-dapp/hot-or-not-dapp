@@ -216,7 +216,7 @@ onDestroy(() => {
 		{#if uploadStatus === 'to-upload'}
 			<Button class="w-full" on:click="{nextStep}">Upload Video</Button>
 		{:else if uploadStatus === 'uploading'}
-			<Button class="w-full" on:click="{nextStep}">Continue Browsing</Button>
+			<Button class="w-full" disabled on:click="{nextStep}">Uploading</Button>
 		{:else if uploadStatus === 'uploaded'}
 			<div class="flex items-center justify-between space-x-4">
 				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
