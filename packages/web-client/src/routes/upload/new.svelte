@@ -100,13 +100,11 @@ onMount(async () => {
 	console.log({ $fileList });
 	if ($fileList && $fileList[0]) {
 		fileToUpload = $fileList[0];
-		videoEl.src = URL.createObjectURL(fileToUpload);
+		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
 	} else if ($fileBlob) {
 		fileToUpload = $fileBlob;
-		videoEl.src = URL.createObjectURL($fileBlob);
-	} else
-		videoEl.src =
-			'https://assets.mixkit.co/videos/preview/mixkit-going-down-a-curved-highway-through-a-mountain-range-41576-large.mp4';
+		videoEl.src = URL.createObjectURL($fileBlob) + '#t=0.01';
+	} else goto('/upload');
 });
 
 onDestroy(() => {
@@ -123,13 +121,14 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="hide-scrollbar mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
+		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-4 lg:px-8"
 	>
 		<div
 			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
 			class="relative flex max-h-64 max-w-lg items-center justify-center"
 		>
 			<video
+				preload="metadata"
 				bind:this="{videoEl}"
 				on:click="{() => (previewPaused = true)}"
 				bind:paused="{previewPaused}"
