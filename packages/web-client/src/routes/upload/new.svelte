@@ -26,6 +26,8 @@ const uploadProgress = tweened(0, {
 	easing: cubicInOut
 });
 let videoEl: HTMLVideoElement;
+let videoWidth = 0;
+let videoHeight = 0;
 let videoDescription = '';
 let videoHashtags = '';
 let fileToUpload: Blob | File;
@@ -98,10 +100,10 @@ onMount(async () => {
 	console.log({ $fileList });
 	if ($fileList && $fileList[0]) {
 		fileToUpload = $fileList[0];
-		videoEl.src = URL.createObjectURL(fileToUpload);
+		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
 	} else if ($fileBlob) {
 		fileToUpload = $fileBlob;
-		videoEl.src = URL.createObjectURL($fileBlob);
+		videoEl.src = URL.createObjectURL($fileBlob) + '#t=0.01';
 	} else goto('/upload');
 });
 
@@ -119,15 +121,21 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-8"
+		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-4 lg:px-8"
 	>
-		<div class="h-max-64 relative max-w-lg">
+		<div
+			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
+			class="relative flex max-h-64 max-w-lg items-center justify-center"
+		>
 			<video
+				preload="metadata"
 				bind:this="{videoEl}"
 				on:click="{() => (previewPaused = true)}"
 				bind:paused="{previewPaused}"
+				bind:videoHeight
+				bind:videoWidth
 				playsinline
-				class="h-64 w-full rounded-xl"
+				class="h-full w-full rounded-xl"
 			>
 				<track kind="captions" />
 			</video>
