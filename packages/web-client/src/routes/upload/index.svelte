@@ -81,7 +81,7 @@ function toggleTimer() {
 async function switchCamera() {
 	cameraControls.flip.facingMode =
 		cameraControls.flip.facingMode === 'user' ? 'environment' : 'user';
-	if (cameraControls.flash !== 'not-available') {
+	if (cameraControls.flash !== 'not-available' && cameraControls.flash !== 'hide') {
 		await toggleTorch();
 	}
 	await requestMediaAccess();
