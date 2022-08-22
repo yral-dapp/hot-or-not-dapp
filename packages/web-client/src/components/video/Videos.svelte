@@ -2,6 +2,7 @@
 import { db, type VideoDB } from '$lib/mockDb';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
+import { debounce } from 'throttle-debounce';
 import VideoPlayer from './VideoPlayer.svelte';
 
 export let fetchFromId: number = 0;
@@ -14,6 +15,8 @@ let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
 let moreVideos = true;
 let parentEl: HTMLElement;
+let videoPlayers: VideoPlayer[] = [];
+let playingIndex: number | null = 0;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -38,7 +41,12 @@ function selectLastElement() {
 			// console.log('prevVideoEntries', entries);
 			if (entries[0].isIntersecting) {
 				// console.log('intersecting prev video');
-				if (currentVideoIndex > 0) currentVideoIndex--;
+				if (currentVideoIndex > 0) {
+					currentVideoIndex--;
+					await pausePrevVideo();
+					await tick();
+					await playNextVideo();
+				}
 				await tick();
 				selectLastElement();
 				updateURL();
@@ -61,10 +69,13 @@ function selectNextElement() {
 	if (!parentEl.children[currentVideoIndex + 1]) return;
 	observeNextVideo = new IntersectionObserver(
 		async (entries) => {
-			// console.log('nextVideoEntries', entries);
 			if (entries[0].isIntersecting) {
-				// console.log('intersecting next video');
-				if (currentVideoIndex < videos.length) currentVideoIndex++;
+				if (currentVideoIndex < videos.length) {
+					currentVideoIndex++;
+					await pausePrevVideo();
+					await tick();
+					await playNextVideo();
+				}
 				await tick();
 				updateURL();
 				selectNextElement();
@@ -78,6 +89,18 @@ function selectNextElement() {
 	);
 	observeNextVideo.observe(parentEl.children[currentVideoIndex + 1]);
 }
+
+const pausePrevVideo = debounce(100, async () => {
+	if (playingIndex) {
+		videoPlayers[playingIndex].stop();
+		playingIndex = null;
+	}
+});
+
+const playNextVideo = debounce(100, async () => {
+	videoPlayers[currentVideoIndex].play();
+	playingIndex = currentVideoIndex;
+});
 
 function updateURL() {
 	if (videos[currentVideoIndex])
@@ -101,7 +124,7 @@ onMount(async () => {
 >
 	{#each videos as video, i (video.url)}
 		<VideoPlayer
-			paused="{currentVideoIndex != i}"
+			bind:this="{videoPlayers[i]}"
 			load="{currentVideoIndex - keepVideosLoadedCount < i &&
 				currentVideoIndex + keepVideosLoadedCount > i}"
 			src="{video.url}"
