@@ -33,7 +33,7 @@ export let profile: any;
 
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
-		<IconButton class="shrink-0">
+		<IconButton on:click="{() => history.back()}" class="shrink-0">
 			<CaretLeftIcon class="h-7 w-7" />
 		</IconButton>
 	</svelte:fragment>
