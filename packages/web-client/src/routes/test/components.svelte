@@ -16,7 +16,7 @@ import MenuIcon from '$components/icons/MenuIcon.svelte';
 import MusicIcon from '$components/icons/MusicIcon.svelte';
 import NotificationIcon from '$components/icons/NotificationIcon.svelte';
 import PlusIcon from '$components/icons/PlusIcon.svelte';
-import ShareIcon from '$components/icons/ShareIcon.svelte';
+import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
@@ -82,7 +82,7 @@ const imgSrc =
 			<NotificationIcon class="h-6 w-6" />
 			<NotificationIcon showDot class="h-6 w-6" />
 			<PlusIcon class="h-6 w-6" />
-			<ShareIcon class="h-6 w-6" />
+			<ShareMessageIcon class="h-6 w-6" />
 			<TimerIcon class="h-6 w-6" />
 			<WalletIcon class="h-6 w-6" />
 		</div>
