@@ -17,7 +17,6 @@ export let avatarPhotoUrl =
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
-let currentTime = 0;
 // let generatedThumbnail = '';
 // let loadThumbnail = false;
 let videoEl: HTMLVideoElement;
@@ -25,6 +24,8 @@ let videoBgEl: HTMLVideoElement;
 
 export async function play() {
 	if (videoEl) {
+		videoEl.currentTime = 0;
+		videoBgEl.currentTime = 0;
 		videoEl.play();
 		videoBgEl.play();
 	}
@@ -32,7 +33,8 @@ export async function play() {
 
 export async function stop() {
 	if (videoEl && videoBgEl) {
-		currentTime = 0;
+		videoEl.currentTime = 0;
+		videoBgEl.currentTime = 0;
 		videoEl.pause();
 		videoBgEl.pause();
 	}
@@ -67,7 +69,6 @@ export async function stop() {
 			loop
 			playsinline
 			autoplay="{!$playerState.initialized}"
-			bind:currentTime
 			muted="{$playerState.muted}"
 			disableremoteplayback
 			x-webkit-airplay="deny"
@@ -79,7 +80,6 @@ export async function stop() {
 		<video
 			bind:this="{videoBgEl}"
 			loop
-			currentTime="{currentTime}"
 			playsinline
 			disableremoteplayback
 			muted
