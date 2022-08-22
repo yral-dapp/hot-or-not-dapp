@@ -4,7 +4,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
-import ShareIcon from '$components/icons/ShareIcon.svelte';
+import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import { fade } from 'svelte/transition';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
@@ -111,7 +111,7 @@ export async function stop() {
 				<HeartIcon class="h-8 w-8" />
 			</IconButton>
 			<IconButton>
-				<ShareIcon class="h-6 w-6" />
+				<ShareMessageIcon class="h-6 w-6" />
 			</IconButton>
 			<IconButton
 				class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2"
@@ -122,10 +122,15 @@ export async function stop() {
 	</div>
 
 	<div class="absolute inset-x-0 bottom-20 left-4 right-16 z-[5] w-min">
-		<div class="pointer-events-auto flex space-x-3">
-			<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
+		<div
+			on:click="{(e) => e.stopImmediatePropagation()}"
+			class="pointer-events-auto flex space-x-3"
+		>
+			<a class="h-12 w-12" href="/profile/9">
+				<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
+			</a>
 			<div class="flex flex-col space-y-1">
-				<span>{userName}</span>
+				<a href="/profile/9">{userName}</a>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>

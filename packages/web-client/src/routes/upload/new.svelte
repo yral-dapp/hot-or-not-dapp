@@ -117,8 +117,8 @@ onDestroy(() => {
 
 <UploadLayout>
 	<div slot="top-left">
-		<IconButton href="/upload" class="m-4">
-			<CaretLeftIcon class="h-6 w-6 text-white" />
+		<IconButton href="/upload">
+			<CaretLeftIcon class="h-7 w-7 text-white" />
 		</IconButton>
 	</div>
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
