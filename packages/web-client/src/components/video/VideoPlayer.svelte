@@ -122,10 +122,15 @@ export async function stop() {
 	</div>
 
 	<div class="absolute inset-x-0 bottom-20 left-4 right-16 z-[5] w-min">
-		<div class="pointer-events-auto flex space-x-3">
-			<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
+		<div
+			on:click="{(e) => e.stopImmediatePropagation()}"
+			class="pointer-events-auto flex space-x-3"
+		>
+			<a class="h-12 w-12" href="/profile/9">
+				<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
+			</a>
 			<div class="flex flex-col space-y-1">
-				<span>{userName}</span>
+				<a href="/profile/9">{userName}</a>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>
