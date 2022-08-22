@@ -21,5 +21,5 @@ $: innerHeight = window?.innerHeight;
 			<slot name="top-right" />
 		</div>
 	</div>
-	<slot name="content" />
+	<slot class="w-full" name="content" />
 </profile-layout>
