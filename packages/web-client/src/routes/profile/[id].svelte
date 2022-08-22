@@ -7,8 +7,10 @@ export const load: Load = async ({ params }) => {
 	return {
 		props: {
 			profile: {
-				name: 'Harsh',
-				me: true
+				name: 'Harsh Mandan',
+				me: true,
+				username: '@harsh',
+				avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
 			}
 		}
 	};
@@ -26,10 +28,6 @@ export let profile: any;
 </script>
 
 <ProfileLayout>
-	<svelte:fragment slot="content">
-		<div class="h-full w-full"></div>
-	</svelte:fragment>
-
 	<svelte:fragment slot="top-left">
 		<IconButton class="shrink-0">
 			<CaretLeftIcon class="h-7 w-7" />
@@ -50,4 +48,34 @@ export let profile: any;
 			{profile.name}'s Profile
 		{/if}
 	</div>
+
+	<svelte:fragment slot="content">
+		<div class="flex h-full w-full flex-col">
+			<div class="flex w-full flex-col items-center justify-center py-8">
+				<img class="h-24 w-24 rounded-full" alt="{profile.name}" src="{profile.avatar}" />
+				<span class="text-md pt-4 font-bold">{profile.name}</span>
+				<span class="text-sm">{profile.username}</span>
+			</div>
+			<div
+				class="mx-6 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4"
+			>
+				<div class="flex flex-col items-center space-y-1 px-4">
+					<span class="whitespace-nowrap text-xl font-bold">110</span>
+					<span class="text-sm">Lovers</span>
+				</div>
+				<div class="flex flex-col items-center space-y-1 px-4">
+					<span class="whitespace-nowrap text-xl font-bold">2.2 K</span>
+					<span class="text-sm">Earnings</span>
+				</div>
+				<div class="flex flex-col items-center space-y-1 px-4">
+					<span class="whitespace-nowrap text-xl font-bold">2.2 M</span>
+					<span class="text-sm">Hots</span>
+				</div>
+				<div class="flex flex-col items-center space-y-1 px-4">
+					<span class="whitespace-nowrap text-xl font-bold">1.1 M</span>
+					<span class="text-sm">Nots</span>
+				</div>
+			</div>
+		</div>
+	</svelte:fragment>
 </ProfileLayout>
