@@ -108,7 +108,10 @@ onMount(async () => {
 });
 
 onDestroy(() => {
-	$fileList = $fileBlob = null;
+	$fileList = null;
+	$fileBlob = null;
+	videoEl.pause();
+	videoEl.load();
 });
 </script>
 
