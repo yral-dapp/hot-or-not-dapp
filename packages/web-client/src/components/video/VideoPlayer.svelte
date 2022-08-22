@@ -83,6 +83,7 @@ export async function stop() {
 			playsinline
 			disableremoteplayback
 			muted
+			autoplay="{!$playerState.initialized}"
 			preload="metadata"
 			x-webkit-airplay="deny"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
