@@ -5,12 +5,10 @@ import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareIcon from '$components/icons/ShareIcon.svelte';
-import { tick } from 'svelte';
 import { fade } from 'svelte/transition';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 
-export let paused = true;
 export let src = '';
 export let thumbnail = '';
 export let load = false;
@@ -19,41 +17,43 @@ export let avatarPhotoUrl =
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
-let isLoaded = false;
-let generatedThumbnail = '';
-let loadThumbnail = false;
+let currentTime = 0;
+// let generatedThumbnail = '';
+// let loadThumbnail = false;
 let videoEl: HTMLVideoElement;
-let videoEl2: HTMLVideoElement;
-let muted = true;
+let videoBgEl: HTMLVideoElement;
 
-$: if (videoEl && videoEl2 && !paused) {
-	videoEl.play();
-	videoEl2.play();
-	muted = false;
-} else if (videoEl && videoEl2) {
-	videoEl.currentTime = 0;
-	videoEl.pause();
-	videoEl2.currentTime = 0;
-	videoEl2.pause();
-	muted = true;
-}
-
-async function generateThumbnail(target: EventTarget | null) {
-	if (loadThumbnail && target && !isLoaded) {
-		const videoEl = target as HTMLVideoElement;
-		isLoaded = true;
-		await tick();
-		const canvas = document.createElement('canvas');
-		const context = canvas.getContext('2d');
-		canvas.height = videoEl.videoHeight / 6;
-		canvas.width = videoEl.videoWidth / 6;
-		if (context) {
-			context.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-			generatedThumbnail = canvas.toDataURL();
-			console.log({ generatedThumbnail });
-		}
+export async function play() {
+	if (videoEl) {
+		videoEl.play();
+		videoBgEl.play();
 	}
 }
+
+export async function stop() {
+	if (videoEl && videoBgEl) {
+		currentTime = 0;
+		videoEl.pause();
+		videoBgEl.pause();
+	}
+}
+
+// async function generateThumbnail(target: EventTarget | null) {
+// 	if (loadThumbnail && target && !isLoaded) {
+// 		const videoEl = target as HTMLVideoElement;
+// 		isLoaded = true;
+// 		await tick();
+// 		const canvas = document.createElement('canvas');
+// 		const context = canvas.getContext('2d');
+// 		canvas.height = videoEl.videoHeight / 6;
+// 		canvas.width = videoEl.videoWidth / 6;
+// 		if (context) {
+// 			context.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+// 			generatedThumbnail = canvas.toDataURL();
+// 			console.log({ generatedThumbnail });
+// 		}
+// 	}
+// }
 </script>
 
 <div
@@ -66,21 +66,22 @@ async function generateThumbnail(target: EventTarget | null) {
 			bind:this="{videoEl}"
 			loop
 			playsinline
-			muted="{$playerState.muted || muted}"
+			autoplay="{!$playerState.initialized}"
+			bind:currentTime
+			muted="{$playerState.muted}"
 			disableremoteplayback
 			x-webkit-airplay="deny"
-			autoplay
 			preload="metadata"
 			src="{src}"
 			poster="{thumbnail}"
-			class="object-fit absolute z-[3] h-full w-full"
-			on:loadedmetadata="{(e) => setTimeout(() => generateThumbnail(e.target), 200)}"></video>
+			class="object-fit absolute z-[3] h-full w-full"></video>
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
-			bind:this="{videoEl2}"
+			bind:this="{videoBgEl}"
 			loop
-			autoplay
+			currentTime="{currentTime}"
 			playsinline
+			disableremoteplayback
 			muted
 			preload="metadata"
 			x-webkit-airplay="deny"
