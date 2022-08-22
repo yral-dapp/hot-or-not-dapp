@@ -16,7 +16,7 @@ let observeNextVideo: IntersectionObserver | undefined = undefined;
 let moreVideos = true;
 let parentEl: HTMLElement;
 let videoPlayers: VideoPlayer[] = [];
-let playingIndex = 0;
+let playingIndex: number | null = 0;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -91,7 +91,10 @@ function selectNextElement() {
 }
 
 const pausePrevVideo = debounce(100, async () => {
-	videoPlayers[playingIndex].stop();
+	if (playingIndex) {
+		videoPlayers[playingIndex].stop();
+		playingIndex = null;
+	}
 });
 
 const playNextVideo = debounce(100, async () => {
