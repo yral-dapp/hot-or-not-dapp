@@ -14,7 +14,7 @@ export let keepVideosLoadedCount: number = 4;
 let currentVideoIndex = 0;
 let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
-let moreVideos = true;
+let moreVideos = false;
 let parentEl: HTMLElement;
 let videoPlayers: VideoPlayer[] = [];
 let playingIndex: number | null = 0;
@@ -28,6 +28,7 @@ async function fetchNextVideos() {
 		videos = [...videos, ...res.videos];
 		fetchFromId = res.nextCount;
 		moreVideos = res.videosLeft;
+
 		// console.log('fetched', { fetchFromId, videos });
 	}
 }
@@ -131,10 +132,12 @@ onMount(async () => {
 			src="{video.url}"
 		/>
 	{/each}
-	<div
-		class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
-	>
-		<NoVideosIcon class="w-56" />
-		<div class="text-center text-lg font-bold">No more videos to display today</div>
-	</div>
+	{#if !moreVideos}
+		<div
+			class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
+		>
+			<NoVideosIcon class="w-56" />
+			<div class="text-center text-lg font-bold">No more videos to display today</div>
+		</div>
+	{/if}
 </all-videos>
