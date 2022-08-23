@@ -41,6 +41,7 @@ async function handleLogin(type: LoginType) {
 
 function handleSuccessfulLogin(type: LoginType) {
 	$auth.showLogin = false;
+	$auth.isLoggedIn = true;
 	console.log('login successfull', type);
 }
 
