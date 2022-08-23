@@ -1,12 +1,14 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
+import IconButton from '$components/button/IconButton.svelte';
+import CloseIcon from '$components/icons/CloseIcon.svelte';
+import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { auth } from '$stores/auth';
+import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
 
 type LoginType = 'nfid' | 'ii';
-const DFINITY_LOGO =
-	'https://aws1.discourse-cdn.com/business4/uploads/dfn/original/1X/c6f5dd4f7a21c825f82566b7c7528e5505734f77.png';
 const APPLICATION_NAME = encodeURI('Hot or Not');
 const APPLICATION_LOGO_URL = encodeURI(
 	'https://static.wixstatic.com/media/1f4d25_d43585ecba2d4eeeb72a344a1b5896ea~mv2.png'
@@ -48,14 +50,14 @@ function handleError(type: LoginType) {
 }
 </script>
 
-<login class="absolute z-[10] block h-full w-full bg-black/90 text-white">
+<login transition:fade|local class="absolute z-[10] block h-full w-full bg-black/90 text-white">
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
 		<span class="text-3xl font-bold">Join GoBazzinga</span>
 		<div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
 			<span>Create an account using</span>
 			<Button on:click="{() => handleLogin('ii')}" class="w-full space-x-2 py-2.5">
 				<span> Internet Identity </span>
-				<img class="w-8" alt="Login using internet identity" src="{DFINITY_LOGO}" />
+				<DfinityIcon class="w-8" />
 			</Button>
 			{#if !hideNfid}
 				<Button on:click="{() => handleLogin('nfid')}" type="secondary" class="w-full py-3">
@@ -67,5 +69,10 @@ function handleError(type: LoginType) {
 			<span>Already have an account?</span>
 			<span class="text-primary">Sign-in</span>
 		</div>
+	</div>
+	<div class="absolute top-4 right-4">
+		<IconButton on:click="{() => ($auth.showLogin = false)}">
+			<CloseIcon class="h-8 w-8" />
+		</IconButton>
 	</div>
 </login>
