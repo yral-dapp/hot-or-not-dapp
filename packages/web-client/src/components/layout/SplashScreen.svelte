@@ -4,14 +4,16 @@ import { onMount } from 'svelte';
 import { showSplashScreen } from '$stores/splashScreen';
 import FireIcon from '$components/icons/FireIcon.svelte';
 
+export let showOnPath = false;
+
 onMount(() =>
 	setTimeout(() => {
 		$showSplashScreen = false;
-	}, 3000)
+	}, 2000)
 );
 </script>
 
-{#if $showSplashScreen}
+{#if $showSplashScreen && showOnPath}
 	<splash-screen
 		out:fade|local="{{ duration: 500 }}"
 		class="absolute z-[15] flex h-full w-full items-center justify-center bg-primary text-9xl"
