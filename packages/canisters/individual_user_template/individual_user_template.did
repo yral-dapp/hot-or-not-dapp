@@ -1,4 +1,4 @@
 service : {
-  return_my_principal : () -> (principal) query;
-  say_hello : (text) -> (text) query;
+  create_post : (text, vec text, text) -> (nat64);
+  mark_post_as_ready_to_view : (nat64) -> ();
 }

@@ -38,6 +38,13 @@ fn post_upgrade() {
     stable_memory_post_upgrade(0);
 }
 
+// TODO: remove this before deployment to mainnet
+#[update]
+#[candid_method(update)]
+fn __comment_this_reset_user_canisters() {
+    s! { UserIdToCanisterIdMap = UserIdToCanisterIdMap::new() };
+}
+
 #[update]
 #[candid_method(update)]
 async fn get_users_canister() -> Principal {

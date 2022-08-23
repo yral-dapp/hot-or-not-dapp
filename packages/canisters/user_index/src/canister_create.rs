@@ -1,10 +1,3 @@
-// use ic_kit::interfaces::management::{CreateCanister, InstallMode, Method};
-// use ic_kit::{
-//     candid::{candid_method, CandidType, Deserialize, Int, Nat, Principal},
-//     ic,
-//     macros::*,
-// };
-
 use crate::constant::{DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE, GLOBAL_OWNER_PRINCIPAL_ID};
 use candid::Principal;
 use ic_kit::{
@@ -25,7 +18,9 @@ pub async fn create_users_canister(// caller: Principal,
     let arg = management::CreateCanisterArgument {
         settings: Some(management::CanisterSettings {
             controllers: Some(vec![
+                // this canister
                 ic::id(),
+                // hot or not global owner principal
                 Principal::from_text(GLOBAL_OWNER_PRINCIPAL_ID).unwrap(),
             ]),
             compute_allocation: Some(0.into()),
