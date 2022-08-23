@@ -55,7 +55,7 @@ function selectLastElement() {
 			}
 		},
 		{
-			threshold: 0.7
+			threshold: 0.9
 		}
 	);
 
@@ -84,14 +84,14 @@ function selectNextElement() {
 			}
 		},
 		{
-			threshold: 0.7
+			threshold: 0.9
 		}
 	);
 	observeNextVideo.observe(parentEl.children[currentVideoIndex + 1]);
 }
 
 const pausePrevVideo = debounce(100, async () => {
-	if (playingIndex) {
+	if (playingIndex != undefined) {
 		videoPlayers[playingIndex].stop();
 		playingIndex = null;
 	}
