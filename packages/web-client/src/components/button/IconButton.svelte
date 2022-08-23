@@ -17,11 +17,11 @@ $: classes = c(
 </script>
 
 {#if href && !prefetch}
-	<a href="{href}" class="{classes}">
+	<a on:click href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else if href && prefetch}
-	<a sveltekit:prefetch href="{href}" class="{classes}">
+	<a on:click sveltekit:prefetch href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else}
