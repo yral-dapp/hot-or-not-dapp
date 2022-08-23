@@ -1,16 +1,15 @@
 <script lang="ts">
 import { fade } from 'svelte/transition';
-import { onMount } from 'svelte';
 import { showSplashScreen } from '$stores/splashScreen';
 import FireIcon from '$components/icons/FireIcon.svelte';
 
 export let showOnPath = false;
 
-onMount(() =>
+$: if ($showSplashScreen && showOnPath) {
 	setTimeout(() => {
 		$showSplashScreen = false;
-	}, 2000)
-);
+	}, 2000);
+}
 </script>
 
 {#if $showSplashScreen && showOnPath}
