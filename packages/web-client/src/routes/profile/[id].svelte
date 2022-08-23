@@ -29,6 +29,7 @@ import ProfilePost from '$components/profile/ProfilePost.svelte';
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
+import ReportIcon from '$components/icons/ReportIcon.svelte';
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
@@ -37,6 +38,8 @@ const dummy =
 
 export let profile: any;
 export let posts: any[];
+
+const isProfileMine = profile.me;
 </script>
 
 <ProfileLayout>
@@ -49,15 +52,19 @@ export let posts: any[];
 		<IconButton>
 			<ShareArrowIcon class="h-6 w-6" />
 		</IconButton>
-		<IconButton>
-			<PencilIcon class="h-5 w-5" />
-		</IconButton>
+		{#if isProfileMine}
+			<IconButton>
+				<PencilIcon class="h-5 w-5" />
+			</IconButton>
+		{:else}
+			<IconButton>
+				<ReportIcon class="h-5 w-5" />
+			</IconButton>
+		{/if}
 	</div>
 	<div slot="top-center" class="text-lg font-bold">
-		{#if profile.me}
+		{#if isProfileMine}
 			Your profile
-		{:else}
-			{profile.name}'s Profile
 		{/if}
 	</div>
 
@@ -88,6 +95,12 @@ export let posts: any[];
 					<span class="text-sm">Nots</span>
 				</div>
 			</div>
+			{#if !isProfileMine}
+				<div class="flex w-full items-center justify-between space-x-2 px-8 pt-6">
+					<Button class="w-full">Love</Button>
+					<Button type="secondary" class="w-full">Send tokens</Button>
+				</div>
+			{/if}
 			<div class="px-8 pt-2">
 				<ProfileTabs bind:selected="{selectedTab}" />
 			</div>
@@ -103,7 +116,7 @@ export let posts: any[];
 						<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 							<NoPostsIcon class="w-52" />
 							<div class="text-center text-lg font-bold">You have not uploaded any videos yet</div>
-							<Button class="w-full">Upload your first video</Button>
+							<Button prefetch href="/upload" class="w-full">Upload your first video</Button>
 						</div>
 					{/if}
 				{:else}
