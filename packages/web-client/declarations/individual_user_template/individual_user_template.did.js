@@ -1,7 +1,11 @@
 export const idlFactory = ({ IDL }) => {
   return IDL.Service({
-    'return_my_principal' : IDL.Func([], [IDL.Principal], ['query']),
-    'say_hello' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
+    'create_post' : IDL.Func(
+        [IDL.Text, IDL.Vec(IDL.Text), IDL.Text],
+        [IDL.Nat64],
+        [],
+      ),
+    'mark_post_as_ready_to_view' : IDL.Func([IDL.Nat64], [], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

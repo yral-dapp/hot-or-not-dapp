@@ -1,1 +1,4 @@
-service : { get_users_canister : () -> (principal) }
+service : {
+  __comment_this_reset_user_canisters : () -> ();
+  get_users_canister : () -> (principal);
+}
