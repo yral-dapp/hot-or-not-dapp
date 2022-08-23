@@ -1,4 +1,5 @@
 <script lang="ts">
+import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { db, type VideoDB } from '$lib/mockDb';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
@@ -130,4 +131,10 @@ onMount(async () => {
 			src="{video.url}"
 		/>
 	{/each}
+	<div
+		class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
+	>
+		<NoVideosIcon class="w-56" />
+		<div class="text-center text-lg font-bold">No more videos to display today</div>
+	</div>
 </all-videos>
