@@ -115,14 +115,28 @@ const isProfileMine = profile.me;
 					{:else}
 						<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 							<NoPostsIcon class="w-52" />
-							<div class="text-center text-lg font-bold">You have not uploaded any videos yet</div>
-							<Button prefetch href="/upload" class="w-full">Upload your first video</Button>
+							<div class="text-center text-lg font-bold">
+								{#if isProfileMine}
+									You have not uploaded any videos yet
+								{:else}
+									This user has not uploaded any videos yet
+								{/if}
+							</div>
+							{#if isProfileMine}
+								<Button prefetch href="/upload" class="w-full">Upload your first video</Button>
+							{/if}
 						</div>
 					{/if}
 				{:else}
 					<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 						<NoBetsIcon class="w-52" />
-						<div class="text-center text-lg font-bold">You don't have any current bets yet</div>
+						<div class="text-center text-lg font-bold">
+							{#if isProfileMine}
+								You don't have any current bets yet
+							{:else}
+								This user has not placed any bets yet
+							{/if}
+						</div>
 					</div>
 				{/if}
 			</div>
