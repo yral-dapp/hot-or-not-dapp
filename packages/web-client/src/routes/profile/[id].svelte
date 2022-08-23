@@ -11,7 +11,8 @@ export const load: Load = async ({ params }) => {
 				me: true,
 				username: '@harsh',
 				avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
-			}
+			},
+			posts: [1, 2, 3]
 		}
 	};
 };
@@ -24,11 +25,18 @@ import PencilIcon from '$components/icons/PencilIcon.svelte';
 import ProfileLayout from '$components/layout/ProfileLayout.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import ProfileTabs from '$components/tabs/ProfileTabs.svelte';
+import ProfilePost from '$components/profile/ProfilePost.svelte';
+import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
+import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
+import Button from '$components/button/Button.svelte';
+
+let selectedTab: 'posts' | 'trophy' = 'posts';
 
 const dummy =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
 export let profile: any;
+export let posts: any[];
 </script>
 
 <ProfileLayout>
@@ -81,17 +89,29 @@ export let profile: any;
 				</div>
 			</div>
 			<div class="px-8 pt-2">
-				<ProfileTabs />
+				<ProfileTabs bind:selected="{selectedTab}" />
 			</div>
-			<div class="flex flex-col px-8 py-6">
-				<div class="grid grid-cols-3 gap-x-3 gap-y-4">
-					{#each new Array(10) as _}
-						<div
-							class="h-40 w-full rounded-md bg-cover"
-							style="background-image: url('{dummy}')"
-						></div>
-					{/each}
-				</div>
+			<div class="flex h-full flex-col overflow-x-hidden px-8 py-6">
+				{#if selectedTab === 'posts'}
+					{#if posts.length}
+						<div class="grid grid-cols-3 gap-3">
+							{#each posts as i}
+								<ProfilePost id="{`${i}`}" likes="{500}" imageBg="{dummy}" />
+							{/each}
+						</div>
+					{:else}
+						<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+							<NoPostsIcon class="w-52" />
+							<div class="text-center text-lg font-bold">You have not uploaded any videos yet</div>
+							<Button class="w-full">Upload your first video</Button>
+						</div>
+					{/if}
+				{:else}
+					<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+						<NoBetsIcon class="w-52" />
+						<div class="text-center text-lg font-bold">You don't have any current bets yet</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</svelte:fragment>
