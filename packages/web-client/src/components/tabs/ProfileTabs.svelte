@@ -3,7 +3,7 @@ import ProfileIcon from '$components/icons/ProfileIcon.svelte';
 import TrophyIcon from '$components/icons/TrophyIcon.svelte';
 import c from 'clsx';
 
-export let selected: 'posts' | 'trophy' = 'posts';
+export let selected: 'posts' | 'trophy';
 </script>
 
 <profile-tabs class="relative flex h-16 w-full shrink-0 justify-between">
