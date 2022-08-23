@@ -5,6 +5,7 @@ import { Buffer } from 'buffer'; // @dfinity/agent requires this
 import { browser } from '$app/env';
 import { initializeAuthClient } from '$lib/authHelper';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
+import { page } from '$app/stores';
 
 onMount(async () => {
 	if (browser) window.Buffer = Buffer;
@@ -12,5 +13,5 @@ onMount(async () => {
 });
 </script>
 
-<SplashScreen />
+<SplashScreen showOnPath="{$page.url.pathname.includes('all')}" />
 <slot />
