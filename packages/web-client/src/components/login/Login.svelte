@@ -26,10 +26,8 @@ function getIdentityProviderURL(type: LoginType) {
 			return process.env.NODE_ENV === 'development'
 				? `http://${process.env.INTERNET_IDENTITY_CANISTER_ID}.localhost:8000`
 				: 'https://identity.ic0.app/#authorize';
-			break;
 		case 'nfid':
 			return NFID_AUTH_URL;
-			break;
 	}
 }
 
