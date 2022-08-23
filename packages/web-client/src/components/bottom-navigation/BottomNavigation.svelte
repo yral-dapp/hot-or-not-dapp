@@ -1,5 +1,6 @@
 <script lang="ts">
 import { page } from '$app/stores';
+import { auth } from '$stores/auth';
 import IconButton from '$components/button/IconButton.svelte';
 import HomeIcon from '$components/icons/HomeIcon.svelte';
 import MenuIcon from '$components/icons/MenuIcon.svelte';
@@ -8,6 +9,7 @@ import TrophyIcon from '$components/icons/TrophyIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
 
 $: path = $page.url.pathname;
+$: isLoggedIn = $auth.isLoggedIn;
 </script>
 
 <div class="mb-2 flex w-full justify-between px-4">
@@ -17,7 +19,17 @@ $: path = $page.url.pathname;
 	<IconButton class="flex items-center p-2">
 		<TrophyIcon class="h-6 w-6 text-white" />
 	</IconButton>
-	<IconButton prefetch href="/upload" class="flex items-center rounded-full bg-primary p-3">
+	<IconButton
+		prefetch
+		on:click="{(e) => {
+			if (!isLoggedIn) {
+				e.preventDefault();
+				$auth.showLogin = true;
+			}
+		}}"
+		href="/upload"
+		class="flex items-center rounded-full bg-primary p-3"
+	>
 		<PlusIcon class="h-4 w-4 text-white" />
 	</IconButton>
 	<IconButton class="flex items-center p-2">
