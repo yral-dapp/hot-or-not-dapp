@@ -30,12 +30,23 @@ let videoWidth = 0;
 let videoHeight = 0;
 let videoDescription = '';
 let videoHashtags = '';
+let descriptionError = '';
+let hashtagError = '';
 let fileToUpload: Blob | File;
 let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
 
 async function nextStep() {
+	descriptionError = hashtagError = '';
 	if (uploadStatus === 'to-upload') {
-		//perform checks
+		if (!videoDescription) {
+			descriptionError = 'Description is required';
+		} else if (videoDescription.length < 10) {
+			descriptionError = 'Description is too short';
+		}
+		if (!videoHashtags) {
+			hashtagError = 'Please add atleast 1 hashtag';
+		}
+		if (hashtagError || descriptionError) return;
 		uploadStatus = 'uploading';
 		startUploading();
 	}
@@ -159,6 +170,9 @@ onDestroy(() => {
 				bind:value="{videoDescription}"
 				class="shrink-0 rounded-xl bg-white/10"
 			/>
+			{#if descriptionError}
+				<div class="text-xs text-red-500">{descriptionError}</div>
+			{/if}
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Add Hashtags</span>
 				<Input
@@ -168,6 +182,9 @@ onDestroy(() => {
 					class="w-full rounded-xl bg-white/10"
 				/>
 			</div>
+			{#if hashtagError}
+				<div class="text-xs text-red-500">{hashtagError}</div>
+			{/if}
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
 				<div class="flex w-full items-start space-x-4">
