@@ -12,7 +12,7 @@ export const load: Load = async ({ params }) => {
 				username: '@harsh',
 				avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
 			},
-			posts: [1, 2, 3]
+			posts: [1, 2, 3, 4, 5]
 		}
 	};
 };
@@ -76,7 +76,7 @@ const isProfileMine = profile.me;
 				<span class="text-sm">{profile.username}</span>
 			</div>
 			<div
-				class="mx-6 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4"
+				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4"
 			>
 				<div class="flex flex-col items-center space-y-1 px-4">
 					<span class="whitespace-nowrap text-xl font-bold">110</span>
@@ -96,15 +96,15 @@ const isProfileMine = profile.me;
 				</div>
 			</div>
 			{#if !isProfileMine}
-				<div class="flex w-full items-center justify-between space-x-2 px-8 pt-6">
+				<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
 					<Button class="w-full">Love</Button>
 					<Button type="secondary" class="w-full">Send tokens</Button>
 				</div>
 			{/if}
-			<div class="px-8 pt-2">
+			<div class="px-6 pt-2">
 				<ProfileTabs bind:selected="{selectedTab}" />
 			</div>
-			<div class="flex h-full flex-col overflow-x-hidden px-8 py-6">
+			<div class="flex h-full flex-col px-6 py-6">
 				{#if selectedTab === 'posts'}
 					{#if posts.length}
 						<div class="grid grid-cols-3 gap-3">
