@@ -31,6 +31,7 @@ import { debounce } from 'throttle-debounce';
 import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 import { isSafari } from '$lib/isSafari';
+import { auth } from '$stores/auth';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -236,10 +237,15 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 }
 
 onMount(async () => {
-	await requestMediaAccess();
-	if (useCanvas) {
-		updateCanvas();
-		startCapturing();
+	if (!$auth.isLoggedIn) {
+		$auth.showLogin = true;
+		goto('/all');
+	} else {
+		await requestMediaAccess();
+		if (useCanvas) {
+			updateCanvas();
+			startCapturing();
+		}
 	}
 });
 
