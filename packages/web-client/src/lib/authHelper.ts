@@ -21,9 +21,15 @@ export async function initializeAuthClient(): Promise<void> {
 			client: authStore.client,
 			isLoggedIn: true,
 			identity,
-			principal
+			principal,
+			showLogin: false
 		});
 	} else {
-		auth.set({ client: authStore.client, isLoggedIn: false, principal });
+		auth.set({
+			client: authStore.client,
+			isLoggedIn: false,
+			principal,
+			showLogin: authStore.showLogin
+		});
 	}
 }

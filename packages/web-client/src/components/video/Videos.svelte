@@ -14,7 +14,7 @@ export let keepVideosLoadedCount: number = 4;
 let currentVideoIndex = 0;
 let observeLastVideo: IntersectionObserver | undefined = undefined;
 let observeNextVideo: IntersectionObserver | undefined = undefined;
-let moreVideos = false;
+let moreVideos = true;
 let parentEl: HTMLElement;
 let videoPlayers: VideoPlayer[] = [];
 let playingIndex: number | null = 0;
@@ -25,9 +25,8 @@ async function fetchNextVideos() {
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
 			// console.log('fetching', { fetchFromId });
-			let loading = true;
+			loading = true;
 			const res = db.getVideos(fetchFromId);
-
 			videos = [...videos, ...res.videos];
 			fetchFromId = res.nextCount;
 			moreVideos = res.videosLeft;

@@ -7,6 +7,8 @@ import { initializeAuthClient } from '$lib/authHelper';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import { page } from '$app/stores';
 import { showSplashScreen } from '$stores/splashScreen';
+import { auth } from '$stores/auth';
+import Login from '$components/login/Login.svelte';
 
 onMount(async () => {
 	if (browser) window.Buffer = Buffer;
@@ -16,5 +18,8 @@ onMount(async () => {
 
 {#if $showSplashScreen}
 	<SplashScreen showOnPath="{$page.url.pathname.includes('all')}" />
+{/if}
+{#if $auth.showLogin}
+	<Login />
 {/if}
 <slot />

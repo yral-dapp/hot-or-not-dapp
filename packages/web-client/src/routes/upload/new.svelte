@@ -18,6 +18,7 @@ import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
 import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
+import { auth } from '$stores/auth';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -108,8 +109,10 @@ async function showShareDialog() {
 	}
 }
 onMount(async () => {
-	console.log({ $fileList });
-	if ($fileList && $fileList[0]) {
+	if (!$auth.isLoggedIn) {
+		$auth.showLogin = true;
+		goto('/all');
+	} else if ($fileList && $fileList[0]) {
 		fileToUpload = $fileList[0];
 		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
 	} else if ($fileBlob) {
