@@ -18,16 +18,24 @@ let moreVideos = false;
 let parentEl: HTMLElement;
 let videoPlayers: VideoPlayer[] = [];
 let playingIndex: number | null = 0;
+let loading = false;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
-		// console.log('fetching', { fetchFromId });
-		const res = db.getVideos(fetchFromId);
+		try {
+			// console.log('fetching', { fetchFromId });
+			let loading = true;
+			const res = db.getVideos(fetchFromId);
 
-		videos = [...videos, ...res.videos];
-		fetchFromId = res.nextCount;
-		moreVideos = res.videosLeft;
+			videos = [...videos, ...res.videos];
+			fetchFromId = res.nextCount;
+			moreVideos = res.videosLeft;
+			loading = false;
+		} catch (e) {
+			console.error(e);
+			loading = false;
+		}
 
 		// console.log('fetched', { fetchFromId, videos });
 	}
@@ -132,6 +140,13 @@ onMount(async () => {
 			src="{video.url}"
 		/>
 	{/each}
+	{#if loading}
+		<div
+			class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
+		>
+			<div class="text-center text-lg font-bold">Loading</div>
+		</div>
+	{/if}
 	{#if !moreVideos}
 		<div
 			class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
