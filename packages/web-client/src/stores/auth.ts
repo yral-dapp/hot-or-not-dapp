@@ -8,7 +8,9 @@ export const auth = writable<{
 	isLoggedIn: boolean;
 	identity?: Identity;
 	principal?: Principal;
+	showLogin: boolean;
 }>({
 	client: undefined,
-	isLoggedIn: false
+	isLoggedIn: false,
+	showLogin: false
 });
