@@ -19,7 +19,7 @@ let profile = {
 	username: '@harsh',
 	avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
 };
-let posts: [1, 2, 3, 4, 5];
+let posts = [1, 2, 3, 4, 5];
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 const dummy =
