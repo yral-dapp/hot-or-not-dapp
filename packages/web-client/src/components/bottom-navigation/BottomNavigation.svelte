@@ -7,27 +7,26 @@ import MenuIcon from '$components/icons/MenuIcon.svelte';
 import PlusIcon from '$components/icons/PlusIcon.svelte';
 import TrophyIcon from '$components/icons/TrophyIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
+import { goto } from '$app/navigation';
 
 $: path = $page.url.pathname;
 $: isLoggedIn = $auth.isLoggedIn;
 </script>
 
 <div class="mb-2 flex w-full justify-between px-4">
-	<IconButton href="/all" class="flex items-center p-2">
+	<IconButton on:click="{() => goto('all')}" class="flex items-center p-2">
 		<HomeIcon filled="{path.includes('all')}" class="h-6 w-6 text-white" />
 	</IconButton>
 	<IconButton class="flex items-center p-2">
 		<TrophyIcon class="h-6 w-6 text-white" />
 	</IconButton>
 	<IconButton
-		prefetch
 		on:click="{(e) => {
 			if (!isLoggedIn) {
 				e.preventDefault();
 				$auth.showLogin = true;
-			}
+			} else goto('/upload');
 		}}"
-		href="/upload"
 		class="flex items-center rounded-full bg-primary p-3"
 	>
 		<PlusIcon class="h-4 w-4 text-white" />
