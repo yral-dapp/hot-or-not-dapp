@@ -1,7 +1,3 @@
-<script lang="ts" context="module">
-export type UploadStatus = 'to-upload' | 'uploading' | 'uploaded';
-</script>
-
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
@@ -17,6 +13,7 @@ import { onMount, onDestroy } from 'svelte';
 
 import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
 import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
+import type { UploadStatus } from './UploadTypes';
 
 export let selectedFile: File | Blob | null = null;
 

@@ -47,3 +47,5 @@ export const autocompleteTypes = [
 	'tel',
 	'email'
 ] as const;
+
+export type inputAutocomplete = typeof autocompleteTypes[number];

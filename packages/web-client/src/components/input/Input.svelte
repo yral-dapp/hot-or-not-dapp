@@ -1,9 +1,5 @@
-<script lang="ts" context="module">
-import type { autocompleteTypes } from './autocompleteTypes';
-export type inputAutocomplete = typeof autocompleteTypes[number];
-</script>
-
 <script lang="ts">
+import type { inputAutocomplete } from './autocompleteTypes';
 import { onMount } from 'svelte';
 
 export let autocomplete: inputAutocomplete = 'off';

@@ -1,10 +1,6 @@
-<script lang="ts" context="module">
-import type { Load } from '@sveltejs/kit';
+<script lang="ts">
+import { goto } from '$app/navigation';
+import { onMount } from 'svelte';
 
-export const load: Load = () => {
-	return {
-		status: 307,
-		redirect: '/all/0'
-	};
-};
+onMount(() => goto('/all/0'));
 </script>

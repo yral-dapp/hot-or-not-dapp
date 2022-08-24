@@ -22,4 +22,6 @@ onMount(async () => {
 {#if $auth.showLogin}
 	<Login />
 {/if}
-<slot />
+<div class="h-full w-full bg-black">
+	<slot />
+</div>
