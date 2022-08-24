@@ -9,7 +9,8 @@
 			"$components/*": ["src/components/*"],
 			"$routes/*": ["src/routes/*"],
 			"$icons/*": ["src/icons/*"],
-			"$stores/*": ["src/stores/*"]
+			"$stores/*": ["src/stores/*"],
+			"$assets/*": ["src/assets/*"]
 		},
 		"allowJs": false,
 		"esModuleInterop": true,
