@@ -1,14 +1,3 @@
-<script lang="ts" context="module">
-interface CameraControls {
-	flash: 'on' | 'off' | 'not-available' | 'hide';
-	flip: {
-		facingMode: FacingMode;
-		show: boolean;
-	};
-	timer: 'off' | '5s' | '10s';
-}
-</script>
-
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CameraAccessIcon from '$components/icons/CameraAccessIcon.svelte';
@@ -20,8 +9,7 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 import {
 	applyConstraintsOnVideoStream,
 	getDevicesList,
-	getMediaStream,
-	type FacingMode
+	getMediaStream
 } from '$lib/cameraPermissions';
 import { onMount, tick, onDestroy } from 'svelte';
 import { fade } from 'svelte/transition';
@@ -31,7 +19,7 @@ import { debounce } from 'throttle-debounce';
 import { fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 import { isSafari } from '$lib/isSafari';
-import { auth } from '$stores/auth';
+import type { CameraControls } from './UploadTypes';
 
 export let selectedFile: File | Blob | null = null;
 

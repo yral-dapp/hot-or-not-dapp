@@ -1,23 +1,10 @@
-<script lang="ts" context="module">
-import type { Load } from '@sveltejs/kit';
-
-export const load: Load = async ({ params }) => {
-	// console.log('fetch video with id', params.id);
-	const id = Number(params.id);
-	return {
-		props: {
-			startingVideoIndex: isNaN(id) ? 0 : id
-		}
-	};
-};
-</script>
-
 <script lang="ts">
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import Videos from '$components/video/Videos.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
+import { page } from '$app/stores';
 
-export let startingVideoIndex: number;
+let startingVideoIndex = Number($page.params.id) ?? 0;
 </script>
 
 <HomeLayout>
