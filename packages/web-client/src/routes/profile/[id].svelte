@@ -1,23 +1,3 @@
-<script lang="ts" context="module">
-import type { Load } from '@sveltejs/kit';
-
-export const load: Load = async ({ params }) => {
-	// console.log('fetch profile with id', params.id);
-	const id = params.id;
-	return {
-		props: {
-			profile: {
-				name: 'Harsh Mandan',
-				me: true,
-				username: '@harsh',
-				avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
-			},
-			posts: [1, 2, 3, 4, 5]
-		}
-	};
-};
-</script>
-
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
@@ -30,16 +10,24 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
+import { onMount } from 'svelte';
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
 const dummy =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
-export let profile: any;
-export let posts: any[];
+let profile = {
+	name: 'Harsh Mandan',
+	me: true,
+	username: '@harsh',
+	avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
+};
+let posts = [1, 2, 3, 4, 5];
 
 const isProfileMine = profile.me;
+
+onMount(() => {});
 </script>
 
 <ProfileLayout>
