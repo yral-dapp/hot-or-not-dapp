@@ -6,16 +6,14 @@ const config = {
 	preprocess: preprocess({
 		postcss: true
 	}),
-
-	prerender: {
-		enabled: false
-	},
-
 	kit: {
 		prerender: {
-			default: true
+			default: false,
+			entries: []
 		},
-		adapter: adapter()
+		adapter: adapter({
+			fallback: 'index.html'
+		})
 	}
 };
 
