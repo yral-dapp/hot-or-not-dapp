@@ -128,7 +128,7 @@ onDestroy(() => {
 
 <UploadLayout>
 	<div slot="top-left">
-		<IconButton href="/upload">
+		<IconButton on:click="{() => goto('/upload')}">
 			<CaretLeftIcon class="h-7 w-7 text-white" />
 		</IconButton>
 	</div>
