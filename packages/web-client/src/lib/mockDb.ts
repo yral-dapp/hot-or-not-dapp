@@ -30,7 +30,7 @@ const videos: VideoDB[] = [
 	},
 	{
 		id: 7,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-old-street-at-night-3456-large.mp4'
+		url: 'https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smart-watch-with-the-stopwatch-running-32808-large.mp4'
 	},
 	{
 		id: 8,

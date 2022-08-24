@@ -58,7 +58,7 @@ export async function stop() {
 // }
 </script>
 
-<div
+<player
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
 	class="relative flex h-full w-auto snap-center snap-always items-center justify-center"
 >
@@ -138,4 +138,4 @@ export async function stop() {
 			</div>
 		</div>
 	</div>
-</div>
+</player>

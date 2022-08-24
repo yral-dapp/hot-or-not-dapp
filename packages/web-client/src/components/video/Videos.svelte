@@ -12,8 +12,8 @@ export let fetchCount: number = 5;
 export let keepVideosLoadedCount: number = 4;
 
 let currentVideoIndex = 0;
-let observeLastVideo: IntersectionObserver | undefined = undefined;
-let observeNextVideo: IntersectionObserver | undefined = undefined;
+let nextObserver: IntersectionObserver | undefined = undefined;
+let prevObserver: IntersectionObserver | undefined = undefined;
 let moreVideos = true;
 let parentEl: HTMLElement;
 let videoPlayers: VideoPlayer[] = [];
@@ -40,73 +40,57 @@ async function fetchNextVideos() {
 	}
 }
 
-function selectLastElement() {
-	if (observeLastVideo) observeLastVideo.disconnect();
-
-	if (currentVideoIndex == 0 || !parentEl.children[currentVideoIndex - 1]) return;
-
-	observeLastVideo = new IntersectionObserver(
-		async (entries) => {
-			// console.log('prevVideoEntries', entries);
-			if (entries[0].isIntersecting) {
-				// console.log('intersecting prev video');
-				if (currentVideoIndex > 0) {
-					currentVideoIndex--;
-					await pausePrevVideo();
-					await tick();
-					await playNextVideo();
-				}
-				await tick();
-				selectLastElement();
-				updateURL();
-				setTimeout(() => selectLastElement(), 25);
-				selectNextElement();
-			}
-		},
-		{
-			threshold: 0.9
-		}
-	);
-
-	observeLastVideo.observe(parentEl.children[currentVideoIndex - 1]);
-}
-
-function selectNextElement() {
-	if (observeNextVideo) {
-		observeNextVideo.disconnect();
-	}
-	if (!parentEl.children[currentVideoIndex + 1]) return;
-	observeNextVideo = new IntersectionObserver(
-		async (entries) => {
-			if (entries[0].isIntersecting) {
-				if (currentVideoIndex < videos.length) {
-					currentVideoIndex++;
-					await pausePrevVideo();
-					await tick();
-					await playNextVideo();
-				}
-				await tick();
-				updateURL();
-				selectNextElement();
-				setTimeout(() => selectLastElement(), 25);
-				fetchNextVideos();
-			}
-		},
-		{
-			threshold: 0.9
-		}
-	);
-	observeNextVideo.observe(parentEl.children[currentVideoIndex + 1]);
-}
-
-const pausePrevVideo = debounce(100, async () => {
-	if (playingIndex != undefined) {
-		videoPlayers[playingIndex].stop();
-		playingIndex = null;
+const handleNextIntersect = debounce(25, async (entries: IntersectionObserverEntry[]) => {
+	if (entries[0].isIntersecting) {
+		console.log('intersecting next video', entries[0]);
+		currentVideoIndex++;
+		updateURL();
+		await playVideo();
+		await nextObserver?.disconnect();
+		updateObservers();
+		fetchNextVideos();
 	}
 });
 
-const playNextVideo = debounce(100, async () => {
+const handlePrevIntersect = debounce(25, async (entries: IntersectionObserverEntry[]) => {
+	if (entries[0].isIntersecting) {
+		console.log('intersecting prev video', entries[0]);
+		if (currentVideoIndex > 0) {
+			currentVideoIndex--;
+			await playVideo();
+		}
+		updateURL();
+		await prevObserver?.disconnect();
+		updateObservers();
+		fetchNextVideos();
+	}
+});
+
+async function updateObservers() {
+	await tick();
+	if (!nextObserver) {
+		nextObserver = new IntersectionObserver(handleNextIntersect, {
+			root: parentEl,
+			threshold: 0.8
+		});
+	}
+	if (!prevObserver) {
+		prevObserver = new IntersectionObserver(handlePrevIntersect, {
+			root: parentEl,
+			threshold: 0.8
+		});
+	}
+	if (parentEl.children[currentVideoIndex + 1]?.tagName === 'PLAYER')
+		nextObserver.observe(parentEl.children[currentVideoIndex + 1]);
+	if (parentEl.children[currentVideoIndex - 1]?.tagName === 'PLAYER')
+		prevObserver.observe(parentEl.children[currentVideoIndex - 1]);
+}
+
+const playVideo = debounce(100, async () => {
+	if (playingIndex != undefined) {
+		await videoPlayers[playingIndex].stop();
+		playingIndex = null;
+	}
 	videoPlayers[currentVideoIndex].play();
 	playingIndex = currentVideoIndex;
 });
@@ -121,15 +105,16 @@ onMount(async () => {
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	await fetchNextVideos();
-	await selectLastElement();
-	await selectNextElement();
+	await updateObservers();
 });
+
+$: console.log({ currentVideoIndex });
 </script>
 
 <all-videos
 	on:click|once="{() => ($playerState.initialized = true)}"
 	bind:this="{parentEl}"
-	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto"
+	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto bg-black"
 >
 	{#each videos as video, i (video.url)}
 		<VideoPlayer
