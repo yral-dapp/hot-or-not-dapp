@@ -38,7 +38,8 @@ const config = {
 			$components: path.resolve('./src/components'),
 			$routes: path.resolve('./src/routes'),
 			$icons: path.resolve('./src/icons'),
-			$stores: path.resolve('./src/stores')
+			$stores: path.resolve('./src/stores'),
+			$assets: path.resolve('./src/assets')
 		}
 	},
 	define: {
