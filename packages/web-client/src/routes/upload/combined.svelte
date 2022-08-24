@@ -8,5 +8,5 @@ let file: File | Blob | null = null;
 {#if file === null}
 	<Camera bind:selectedFile="{file}" />
 {:else}
-	<Upload selectedFile="{file}" />
+	<Upload bind:selectedFile="{file}" />
 {/if}
