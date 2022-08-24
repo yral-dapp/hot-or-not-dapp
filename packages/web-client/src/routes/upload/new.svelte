@@ -1,7 +1,3 @@
-<script lang="ts" context="module">
-export type UploadStatus = 'to-upload' | 'uploading' | 'uploaded';
-</script>
-
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
@@ -19,6 +15,7 @@ import { goto } from '$app/navigation';
 import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
 import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
 import { auth } from '$stores/auth';
+import type { UploadStatus } from '$components/upload/UploadTypes';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
