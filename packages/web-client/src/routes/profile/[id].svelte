@@ -106,8 +106,8 @@ const dummy =
 				{#if selectedTab === 'posts'}
 					{#if posts.length}
 						<div class="grid grid-cols-3 gap-3">
-							{#each posts as i}
-								<ProfilePost id="{`${i}`}" likes="{500}" imageBg="{dummy}" />
+							{#each posts as post}
+								<ProfilePost id="{`${post.id}`}" likes="{500}" imageBg="{dummy}" />
 							{/each}
 						</div>
 					{:else}
