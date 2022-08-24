@@ -99,7 +99,7 @@ async function showShareDialog() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: 'https://v2.gobazzinga.io/all?id=2'
+			url: 'https://v2.gobazzinga.io/all/1'
 		});
 	} catch (err) {
 		console.error('Cannot open share dialog', err);
