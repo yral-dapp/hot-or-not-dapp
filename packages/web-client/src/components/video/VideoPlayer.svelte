@@ -130,7 +130,7 @@ export async function stop() {
 				<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
 			</a>
 			<div class="flex flex-col space-y-1">
-				<a href="/profile/9">{userName}</a>
+				<a sveltekit:prefetch href="/profile/9">{userName}</a>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>
