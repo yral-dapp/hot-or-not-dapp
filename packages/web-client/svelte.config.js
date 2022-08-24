@@ -8,7 +8,8 @@ const config = {
 	}),
 	kit: {
 		prerender: {
-			default: false,
+			enabled: false,
+			default: true,
 			entries: []
 		},
 		adapter: adapter()
