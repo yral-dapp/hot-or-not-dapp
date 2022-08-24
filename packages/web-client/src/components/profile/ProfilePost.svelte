@@ -7,7 +7,7 @@ export let likes: number;
 </script>
 
 <a
-	href="/all/?id={id}"
+	href="/all/{id}"
 	class="relative h-40 w-full rounded-md bg-cover"
 	style="background-image: url('{imageBg}')"
 >

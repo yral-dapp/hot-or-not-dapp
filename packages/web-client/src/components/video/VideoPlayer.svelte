@@ -126,11 +126,11 @@ export async function stop() {
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
 		>
-			<a class="h-12 w-12" href="/profile?id=1">
+			<a class="h-12 w-12" href="/profile/1">
 				<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
 			</a>
 			<div class="flex flex-col space-y-1">
-				<a sveltekit:prefetch href="/profile?id=1">{userName}</a>
+				<a sveltekit:prefetch href="/profile/1">{userName}</a>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>
