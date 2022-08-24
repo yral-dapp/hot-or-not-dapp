@@ -9,6 +9,7 @@ import { page } from '$app/stores';
 import { showSplashScreen } from '$stores/splashScreen';
 import { auth } from '$stores/auth';
 import Login from '$components/login/Login.svelte';
+import transparentSrc from '$assets/transparent.png';
 
 onMount(async () => {
 	if (browser) window.Buffer = Buffer;
@@ -22,6 +23,5 @@ onMount(async () => {
 {#if $auth.showLogin}
 	<Login />
 {/if}
-<div class="h-full w-full bg-black">
-	<slot />
-</div>
+<img class="absolute z-[-1]" alt="Transparent" src="{transparentSrc}" />
+<slot />
