@@ -6,7 +6,7 @@ import { onMount, tick } from 'svelte';
 import { debounce } from 'throttle-debounce';
 import VideoPlayer from './VideoPlayer.svelte';
 
-export let fetchFromId: number = 1;
+export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
 export let fetchCount: number = 5;
 export let keepVideosLoadedCount: number = 4;
@@ -97,7 +97,7 @@ const playVideo = debounce(100, async () => {
 
 function updateURL() {
 	if (videos[currentVideoIndex])
-		window.history.replaceState(null, '', `?id=${videos[currentVideoIndex].id}`);
+		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
 }
 
 onMount(async () => {

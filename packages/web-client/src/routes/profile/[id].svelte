@@ -13,7 +13,7 @@ import ReportIcon from '$components/icons/ReportIcon.svelte';
 import { page } from '$app/stores';
 
 let profile = {
-	id: $page.url.searchParams.get('id') ?? '1',
+	id: $page.params.id,
 	name: 'Harsh Mandan',
 	me: true,
 	username: '@harsh',
