@@ -11,9 +11,7 @@ const config = {
 			default: false,
 			entries: []
 		},
-		adapter: adapter({
-			fallback: '200.html'
-		})
+		adapter: adapter()
 	}
 };
 
