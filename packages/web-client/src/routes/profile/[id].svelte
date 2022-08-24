@@ -1,3 +1,24 @@
+<script lang="ts" context="module">
+import type { Load } from '@sveltejs/kit';
+
+export const load: Load = async ({ params }) => {
+	// console.log('fetch profile with id', params.id);
+	const id = params.id;
+	return {
+		props: {
+			profile: {
+				id: id,
+				name: 'Harsh Mandan',
+				me: true,
+				username: '@harsh',
+				avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
+			},
+			posts: [1, 2, 3, 4, 5]
+		}
+	};
+};
+</script>
+
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
@@ -10,24 +31,13 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
-import { onMount } from 'svelte';
+
+export let profile: any;
+export let posts: any[];
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
-
 const dummy =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
-
-let profile = {
-	name: 'Harsh Mandan',
-	me: true,
-	username: '@harsh',
-	avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
-};
-let posts = [1, 2, 3, 4, 5];
-
-const isProfileMine = profile.me;
-
-onMount(() => {});
 </script>
 
 <ProfileLayout>
@@ -40,7 +50,7 @@ onMount(() => {});
 		<IconButton>
 			<ShareArrowIcon class="h-6 w-6" />
 		</IconButton>
-		{#if isProfileMine}
+		{#if profile.me}
 			<IconButton>
 				<PencilIcon class="h-5 w-5" />
 			</IconButton>
@@ -51,7 +61,7 @@ onMount(() => {});
 		{/if}
 	</div>
 	<div slot="top-center" class="text-lg font-bold">
-		{#if isProfileMine}
+		{#if profile.me}
 			Your profile
 		{/if}
 	</div>
@@ -83,7 +93,7 @@ onMount(() => {});
 					<span class="text-sm">Nots</span>
 				</div>
 			</div>
-			{#if !isProfileMine}
+			{#if !profile.me}
 				<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
 					<Button class="w-full">Love</Button>
 					<Button type="secondary" class="w-full">Send tokens</Button>
@@ -96,21 +106,21 @@ onMount(() => {});
 				{#if selectedTab === 'posts'}
 					{#if posts.length}
 						<div class="grid grid-cols-3 gap-3">
-							{#each posts as i}
-								<ProfilePost id="{`${i}`}" likes="{500}" imageBg="{dummy}" />
+							{#each posts as post}
+								<ProfilePost id="{`${post.id}`}" likes="{500}" imageBg="{dummy}" />
 							{/each}
 						</div>
 					{:else}
 						<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 							<NoPostsIcon class="w-52" />
 							<div class="text-center text-lg font-bold">
-								{#if isProfileMine}
+								{#if profile.me}
 									You have not uploaded any videos yet
 								{:else}
 									This user has not uploaded any videos yet
 								{/if}
 							</div>
-							{#if isProfileMine}
+							{#if profile.me}
 								<Button prefetch href="/upload" class="w-full">Upload your first video</Button>
 							{/if}
 						</div>
@@ -119,7 +129,7 @@ onMount(() => {});
 					<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 						<NoBetsIcon class="w-52" />
 						<div class="text-center text-lg font-bold">
-							{#if isProfileMine}
+							{#if profile.me}
 								You don't have any current bets yet
 							{:else}
 								This user has not placed any bets yet
