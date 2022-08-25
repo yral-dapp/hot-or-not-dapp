@@ -11,6 +11,7 @@ import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { goto } from '$app/navigation';
 
 export let src = '';
+export let i: number;
 export let thumbnail = '';
 export let load = false;
 export let avatarPhotoUrl =
@@ -60,8 +61,9 @@ export async function stop() {
 </script>
 
 <player
+	i="{i}"
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
-	class="relative flex h-full w-auto snap-center snap-always items-center justify-center"
+	class="relative flex h-full min-h-full w-auto snap-center snap-always items-center justify-center"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
