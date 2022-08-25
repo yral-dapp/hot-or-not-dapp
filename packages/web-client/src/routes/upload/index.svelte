@@ -9,8 +9,7 @@ import CameraLayout from '$components/layout/CameraLayout.svelte';
 import {
 	applyConstraintsOnVideoStream,
 	getDevicesList,
-	getMediaStream,
-	type FacingMode
+	getMediaStream
 } from '$lib/cameraPermissions';
 import { onMount, tick, onDestroy } from 'svelte';
 import { fade } from 'svelte/transition';
@@ -39,6 +38,7 @@ let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
 const useCanvas = !isSafari();
+let loading = false;
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -61,6 +61,7 @@ async function updateVideoStream() {
 }
 
 function handleFileUpload(files: FileList | null) {
+	loading = true;
 	$fileList = files;
 	goto('/upload/new');
 }
@@ -158,6 +159,7 @@ async function startRecording(ignoreTimer = false) {
 function handleDataAvailable(event: any) {
 	console.log('data-available');
 	if (event.data.size > 0) {
+		loading = true;
 		recordedChunks.push(event.data);
 		const type = MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4;';
 		$fileBlob = new Blob(recordedChunks, {
@@ -320,10 +322,10 @@ onDestroy(async () => {
 			<div transition:fade class="flex items-end justify-start pt-7">
 				<div
 					bind:this="{cameraEl}"
-					on:click="{() => startRecording()}"
+					on:click="{() => !loading && startRecording()}"
 					class="{c(
 						'mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
-						recording ? 'z-[5] bg-red-500' : 'bg-white'
+						recording ? 'z-[5] bg-red-500' : loading ? 'bg-zinc-400' : 'bg-white'
 					)}"
 				>
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
@@ -331,7 +333,7 @@ onDestroy(async () => {
 			</div>
 			{#if !recording && useCanvas}
 				<div
-					on:click="{checkClickAndStartRecording}"
+					on:click="{(e) => !loading && checkClickAndStartRecording(e)}"
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
