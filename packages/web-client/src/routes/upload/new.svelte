@@ -192,7 +192,7 @@ onDestroy(() => {
 				{#if hashtags.length}
 					<div class="flex items-center space-x-2">
 						{#each hashtags as hashtag}
-							<div class="rounded-sm bg-primary/30 px-2 py-1 text-xs text-primary">{hashtag}</div>
+							<div class="rounded-sm bg-primary/30 px-2 py-1 text-xs text-primary">#{hashtag}</div>
 						{/each}
 					</div>
 				{/if}
