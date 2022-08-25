@@ -33,6 +33,10 @@ let hashtagError = '';
 let fileToUpload: Blob | File;
 let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
 let hashtags: string[] = [];
+let isInputLimitReached = false;
+const MAX_HASHTAG_LENGTH = 60;
+
+$: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
 async function nextStep() {
 	descriptionError = hashtagError = '';
@@ -186,11 +190,12 @@ onDestroy(() => {
 					on:input="{updateHashtags}"
 					bind:value="{videoHashtags}"
 					type="text"
+					maxlength="{MAX_HASHTAG_LENGTH}"
 					placeholder="#hastag, #hastag2, #hastag3 ..."
 					class="w-full rounded-xl bg-white/10"
 				/>
 				{#if hashtags.length}
-					<div class="flex items-center space-x-2">
+					<div class="flex w-full flex-wrap items-center gap-2">
 						{#each hashtags as hashtag}
 							<div class="rounded-sm bg-primary/30 px-2 py-1 text-xs text-primary">#{hashtag}</div>
 						{/each}
@@ -199,6 +204,9 @@ onDestroy(() => {
 			</div>
 			{#if hashtagError}
 				<div class="text-xs text-red-500">{hashtagError}</div>
+			{/if}
+			{#if isInputLimitReached}
+				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
 			{/if}
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
