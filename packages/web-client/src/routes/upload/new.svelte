@@ -32,6 +32,7 @@ let descriptionError = '';
 let hashtagError = '';
 let fileToUpload: Blob | File;
 let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
+let hashtags: string[] = [];
 
 async function nextStep() {
 	descriptionError = hashtagError = '';
@@ -41,13 +42,20 @@ async function nextStep() {
 		} else if (videoDescription.length < 10) {
 			descriptionError = 'Description is too short';
 		}
-		if (!videoHashtags) {
+		if (!hashtags.length) {
 			hashtagError = 'Please add atleast 1 hashtag';
 		}
 		if (hashtagError || descriptionError) return;
 		uploadStatus = 'uploading';
 		startUploading();
 	}
+}
+
+async function updateHashtags() {
+	hashtags = videoHashtags
+		.split(/(?:,| )+/)
+		.filter((o) => !!o)
+		.map((o) => o.replace('#', ''));
 }
 
 async function startUploading() {
@@ -108,7 +116,6 @@ async function showShareDialog() {
 onMount(async () => {
 	if (!$auth.isLoggedIn) {
 		$auth.showLogin = true;
-		goto('/all');
 	} else if ($fileList && $fileList[0]) {
 		fileToUpload = $fileList[0];
 		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
@@ -176,11 +183,19 @@ onDestroy(() => {
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Add Hashtags</span>
 				<Input
+					on:input="{updateHashtags}"
 					bind:value="{videoHashtags}"
 					type="text"
 					placeholder="#hastag, #hastag2, #hastag3 ..."
 					class="w-full rounded-xl bg-white/10"
 				/>
+				{#if hashtags.length}
+					<div class="flex items-center space-x-2">
+						{#each hashtags as hashtag}
+							<div class="rounded-sm bg-primary/30 px-2 py-1 text-xs text-primary">#{hashtag}</div>
+						{/each}
+					</div>
+				{/if}
 			</div>
 			{#if hashtagError}
 				<div class="text-xs text-red-500">{hashtagError}</div>
