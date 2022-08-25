@@ -63,7 +63,7 @@ const links = [
 					<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{dummy}" />
 					<div class="flex flex-col space-y-1">
 						<div class="text-xl">Harsh</div>
-						<div class=" text-primary">View Profile</div>
+						<div on:click="{() => goto('/profile/1')}" class=" text-primary">View Profile</div>
 					</div>
 				</div>
 				<div class="my-8 h-[1px] w-full bg-white/10"></div>
