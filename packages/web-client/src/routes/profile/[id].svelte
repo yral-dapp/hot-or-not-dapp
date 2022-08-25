@@ -108,9 +108,9 @@ const dummy =
 								{/if}
 							</div>
 							{#if profile.me}
-								<Button on:click="{() => goto('/upload')}" class="w-full"
-									>Upload your first video</Button
-								>
+								<Button on:click="{() => goto('/upload')}" class="w-full">
+									Upload your first video
+								</Button>
 							{/if}
 						</div>
 					{/if}
