@@ -12,16 +12,14 @@ export let fetchCount: number = 5;
 export let keepVideosLoadedCount: number = 4;
 
 let currentVideoIndex = 0;
-let nextObserver: IntersectionObserver | undefined = undefined;
-let prevObserver: IntersectionObserver | undefined = undefined;
+let observer: IntersectionObserver | undefined = undefined;
 let moreVideos = true;
 let parentEl: HTMLElement;
 let videoPlayers: VideoPlayer[] = [];
-let playingIndex: number | null = 0;
 let loading = false;
 
 async function fetchNextVideos() {
-	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
+	console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
 			// console.log('fetching', { fetchFromId });
@@ -31,68 +29,57 @@ async function fetchNextVideos() {
 			fetchFromId = res.nextCount;
 			moreVideos = res.videosLeft;
 			loading = false;
+			// console.log('fetched', videos);
 		} catch (e) {
 			console.error(e);
 			loading = false;
 		}
-
-		// console.log('fetched', { fetchFromId, videos });
 	}
 }
 
 const handleNextIntersect = debounce(25, async (entries: IntersectionObserverEntry[]) => {
-	if (entries[0].isIntersecting) {
-		console.log('intersecting next video', entries[0]);
-		currentVideoIndex++;
-		updateURL();
-		await playVideo();
-		await nextObserver?.disconnect();
-		updateObservers();
-		fetchNextVideos();
-	}
-});
-
-const handlePrevIntersect = debounce(25, async (entries: IntersectionObserverEntry[]) => {
-	if (entries[0].isIntersecting) {
-		console.log('intersecting prev video', entries[0]);
-		if (currentVideoIndex > 0) {
-			currentVideoIndex--;
-			await playVideo();
-		}
-		updateURL();
-		await prevObserver?.disconnect();
-		updateObservers();
-		fetchNextVideos();
-	}
+	entries.forEach((entry) => {
+		const index = Number(entry.target.getAttribute('i'));
+		if (entry.isIntersecting) {
+			if (index > currentVideoIndex) {
+				if (parentEl.children[index - 2]) observer?.unobserve(parentEl.children[index - 2]);
+				if (parentEl.children[index + 2]) observer?.observe(parentEl.children[index + 2]);
+			} else if (index < currentVideoIndex) {
+				if (parentEl.children[currentVideoIndex - 2])
+					observer?.observe(parentEl.children[currentVideoIndex - 2]);
+				if (parentEl.children[currentVideoIndex + 2])
+					observer?.unobserve(parentEl.children[currentVideoIndex + 2]);
+			}
+			// console.log(index, 'intersected');
+			currentVideoIndex = index;
+			playVideo(index);
+			fetchNextVideos();
+			updateURL();
+		} else videoPlayers[index].stop();
+	});
 });
 
 async function updateObservers() {
 	await tick();
-	if (!nextObserver) {
-		nextObserver = new IntersectionObserver(handleNextIntersect, {
+	if (!observer) {
+		observer = new IntersectionObserver(handleNextIntersect, {
 			root: parentEl,
 			threshold: 0.8
 		});
 	}
-	if (!prevObserver) {
-		prevObserver = new IntersectionObserver(handlePrevIntersect, {
-			root: parentEl,
-			threshold: 0.8
-		});
-	}
-	if (parentEl.children[currentVideoIndex + 1]?.tagName === 'PLAYER')
-		nextObserver.observe(parentEl.children[currentVideoIndex + 1]);
-	if (parentEl.children[currentVideoIndex - 1]?.tagName === 'PLAYER')
-		prevObserver.observe(parentEl.children[currentVideoIndex - 1]);
+	if (parentEl.children[currentVideoIndex - 2])
+		observer.observe(parentEl.children[currentVideoIndex - 2]);
+	if (parentEl.children[currentVideoIndex - 1])
+		observer.observe(parentEl.children[currentVideoIndex - 1]);
+	if (parentEl.children[currentVideoIndex]) observer.observe(parentEl.children[currentVideoIndex]);
+	if (parentEl.children[currentVideoIndex + 1])
+		observer.observe(parentEl.children[currentVideoIndex + 1]);
+	if (parentEl.children[currentVideoIndex + 2])
+		observer.observe(parentEl.children[currentVideoIndex + 2]);
 }
 
-const playVideo = debounce(100, async () => {
-	if (playingIndex != undefined) {
-		await videoPlayers[playingIndex].stop();
-		playingIndex = null;
-	}
-	videoPlayers[currentVideoIndex].play();
-	playingIndex = currentVideoIndex;
+const playVideo = debounce(300, async (index: number) => {
+	videoPlayers[index].play();
 });
 
 function updateURL() {
@@ -107,22 +94,15 @@ onMount(async () => {
 	await fetchNextVideos();
 	await updateObservers();
 });
-
-$: console.log({ currentVideoIndex });
 </script>
 
 <all-videos
 	on:click|once="{() => ($playerState.initialized = true)}"
 	bind:this="{parentEl}"
-	class="hide-scrollbar relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-auto bg-black"
+	class="relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-scroll bg-black"
 >
-	{#each videos as video, i (video.url)}
-		<VideoPlayer
-			bind:this="{videoPlayers[i]}"
-			load="{currentVideoIndex - keepVideosLoadedCount < i &&
-				currentVideoIndex + keepVideosLoadedCount > i}"
-			src="{video.url}"
-		/>
+	{#each videos as video, i (i)}
+		<VideoPlayer i="{i}" bind:this="{videoPlayers[i]}" load src="{video.url}" />
 	{/each}
 	{#if loading}
 		<div
