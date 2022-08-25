@@ -102,7 +102,13 @@ onMount(async () => {
 	class="relative block h-full w-full snap-y snap-mandatory overflow-hidden overflow-y-scroll bg-black"
 >
 	{#each videos as video, i (i)}
-		<VideoPlayer i="{i}" bind:this="{videoPlayers[i]}" load src="{video.url}" />
+		<VideoPlayer
+			i="{i}"
+			bind:this="{videoPlayers[i]}"
+			load="{currentVideoIndex - keepVideosLoadedCount < i &&
+				currentVideoIndex + keepVideosLoadedCount > i}"
+			src="{video.url}"
+		/>
 	{/each}
 	{#if loading}
 		<div
