@@ -6,6 +6,7 @@ export let autocomplete: inputAutocomplete = 'off';
 export let disabled = false;
 export let placeholder = '';
 export let value: string | number = '';
+export let maxlength: number | undefined = undefined;
 export let type: 'text' | 'password' | 'number' | 'email' = 'text';
 export { exportClass as class };
 
@@ -23,6 +24,7 @@ onMount(() => {
 	placeholder="{placeholder}"
 	bind:value
 	bind:this="{inputEl}"
+	maxlength="{maxlength}"
 	on:input
 	on:change
 	on:focus
