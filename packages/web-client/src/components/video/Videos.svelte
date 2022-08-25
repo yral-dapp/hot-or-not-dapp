@@ -19,13 +19,14 @@ let videoPlayers: VideoPlayer[] = [];
 let loading = false;
 
 async function fetchNextVideos() {
-	console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
+	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
 			// console.log('fetching', { fetchFromId });
 			loading = true;
 			const res = db.getVideos(fetchFromId);
 			videos = [...videos, ...res.videos];
+			await tick();
 			fetchFromId = res.nextCount;
 			moreVideos = res.videosLeft;
 			loading = false;
