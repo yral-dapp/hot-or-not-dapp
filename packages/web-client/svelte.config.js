@@ -7,10 +7,9 @@ const config = {
 		postcss: true
 	}),
 	kit: {
-		prerender: {
-			default: true
-		},
-		adapter: adapter()
+		adapter: adapter({
+			fallback: '200.html'
+		})
 	}
 };
 
