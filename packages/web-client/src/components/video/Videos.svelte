@@ -55,7 +55,13 @@ const handleNextIntersect = debounce(25, async (entries: IntersectionObserverEnt
 			playVideo(index);
 			fetchNextVideos();
 			updateURL();
-		} else videoPlayers[index].stop();
+		} else {
+			try {
+				videoPlayers[index].stop();
+			} catch (e) {
+				console.warn('Could not pause');
+			}
+		}
 	});
 });
 
