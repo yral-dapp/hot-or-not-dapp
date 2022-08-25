@@ -34,7 +34,7 @@ $: isLoggedIn = $auth.isLoggedIn;
 	<IconButton class="flex items-center p-2">
 		<WalletIcon class="h-6 w-6 text-white" />
 	</IconButton>
-	<IconButton class="flex items-center p-2">
-		<MenuIcon class="h-6 w-6 text-white" />
+	<IconButton on:click="{() => goto('/menu')}" class="flex items-center p-2">
+		<MenuIcon class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
 	</IconButton>
 </div>

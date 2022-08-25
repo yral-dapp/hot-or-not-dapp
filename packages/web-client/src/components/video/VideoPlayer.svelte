@@ -129,11 +129,11 @@ export async function stop() {
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
 		>
-			<button on:click="{() => goto('/profile/1')}" class="h-12 w-12">
+			<button on:click="{() => goto('/profile/2')}" class="h-12 w-12">
 				<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
 			</button>
 			<div class="flex flex-col space-y-1">
-				<button on:click="{() => goto('/profile/1')}">{userName}</button>
+				<button on:click="{() => goto('/profile/2')}">{userName}</button>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>

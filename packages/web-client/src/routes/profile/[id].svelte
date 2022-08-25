@@ -16,7 +16,7 @@ import { goto } from '$app/navigation';
 let profile = {
 	id: $page.params.id,
 	name: 'Harsh Mandan',
-	me: true,
+	me: $page.params.id == '1',
 	username: '@harsh',
 	avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
 };
