@@ -7,7 +7,7 @@ $: innerHeight = window?.innerHeight;
 <svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
 
 <upload-layout
-	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
+	style="{innerHeight ? `height: ${innerHeight}px` : '100vh'}"
 	class="relative flex h-full w-full flex-col overflow-hidden text-white"
 >
 	<div
@@ -19,7 +19,7 @@ $: innerHeight = window?.innerHeight;
 		<slot name="top-center" />
 	</div>
 	<slot name="content" />
-	<div class="absolute inset-x-0 bottom-8 z-[2] {testClasses}">
+	<div class="absolute inset-x-0 bottom-0 z-[2] {testClasses}">
 		<slot name="bottom" />
 	</div>
 </upload-layout>
