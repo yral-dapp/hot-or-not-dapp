@@ -12,6 +12,9 @@ const config = {
 			},
 			colors: {
 				primary: '#E96B25'
+			},
+			animation: {
+				'spin-slow': 'spin 3s linear infinite'
 			}
 		}
 	},

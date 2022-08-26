@@ -24,12 +24,7 @@ $: showBg = !path.includes('all');
 		<TrophyIcon class="h-6 w-6 text-white" />
 	</IconButton>
 	<IconButton
-		on:click="{(e) => {
-			if (!isLoggedIn) {
-				e.preventDefault();
-				$auth.showLogin = true;
-			} else goto('/upload');
-		}}"
+		on:click="{() => goto('/upload')}"
 		class="flex items-center rounded-full bg-primary p-3"
 	>
 		<PlusIcon class="h-4 w-4 text-white" />

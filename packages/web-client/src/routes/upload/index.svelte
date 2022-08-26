@@ -19,8 +19,8 @@ import { debounce } from 'throttle-debounce';
 import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 import { isSafari } from '$lib/isSafari';
-import { auth } from '$stores/auth';
 import type { CameraControls } from '$components/upload/UploadTypes';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -319,11 +319,14 @@ onDestroy(async () => {
 					bind:this="{cameraEl}"
 					on:click="{() => !loading && startRecording()}"
 					class="{c(
-						'mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
-						recording ? 'z-[5] bg-red-500' : loading ? 'bg-zinc-400' : 'bg-white'
+						'relative mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
+						recording ? 'z-[5] bg-red-500' : 'bg-white'
 					)}"
 				>
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
+					{#if loading}
+						<LoadingIcon class="absolute mx-auto h-8 w-8 animate-spin-slow text-primary" />
+					{/if}
 				</div>
 			</div>
 			{#if !recording && useCanvas}
