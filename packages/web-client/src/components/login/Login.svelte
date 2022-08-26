@@ -1,13 +1,4 @@
-<script lang="ts">
-import Button from '$components/button/Button.svelte';
-import IconButton from '$components/button/IconButton.svelte';
-import CloseIcon from '$components/icons/CloseIcon.svelte';
-import DfinityIcon from '$components/icons/DfinityIcon.svelte';
-import { auth } from '$stores/auth';
-import { fade } from 'svelte/transition';
-
-export let hideNfid = false;
-
+<script lang="ts" context="module">
 type LoginType = 'nfid' | 'ii';
 const APPLICATION_NAME = encodeURI('Hot or Not');
 const APPLICATION_LOGO_URL = encodeURI(
@@ -19,7 +10,22 @@ const NFID_AUTH_URL =
 	'&applicationLogo=' +
 	APPLICATION_LOGO_URL +
 	'#authorize';
+</script>
 
+<script lang="ts">
+import { user_index } from '$canisters/user_index';
+
+import Button from '$components/button/Button.svelte';
+import IconButton from '$components/button/IconButton.svelte';
+import CloseIcon from '$components/icons/CloseIcon.svelte';
+import DfinityIcon from '$components/icons/DfinityIcon.svelte';
+import { initializeAuthClient } from '$lib/authHelper';
+import { auth } from '$stores/auth';
+import { fade } from 'svelte/transition';
+
+export let hideNfid = false;
+
+let error = '';
 function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
 		case 'ii':
@@ -34,7 +40,7 @@ function getIdentityProviderURL(type: LoginType) {
 async function handleLogin(type: LoginType) {
 	await $auth.client?.login({
 		onSuccess: () => handleSuccessfulLogin(type),
-		onError: () => handleError(type),
+		onError: (e) => handleError(type, e),
 		identityProvider: getIdentityProviderURL(type)
 	});
 }
@@ -42,11 +48,13 @@ async function handleLogin(type: LoginType) {
 function handleSuccessfulLogin(type: LoginType) {
 	$auth.showLogin = false;
 	$auth.isLoggedIn = true;
-	console.log('login successfull', type);
+	initializeAuthClient();
+	user_index.get_users_canister();
 }
 
-function handleError(type: LoginType) {
-	console.log('error on login successfull', type);
+function handleError(type: LoginType, e?: string) {
+	error = 'Error while logging in. Please try again or use a different method';
+	console.warn('Error while logging in using,', type, ', Details: ', e);
 }
 </script>
 
@@ -65,10 +73,11 @@ function handleError(type: LoginType) {
 				</Button>
 			{/if}
 		</div>
-		<div class="flex space-x-2">
-			<span>Already have an account?</span>
-			<span class="text-primary">Sign-in</span>
-		</div>
+		{#if error}
+			<div class="text-xs text-red-600">
+				{error}
+			</div>
+		{/if}
 	</div>
 	<div class="absolute top-4 right-4">
 		<IconButton on:click="{() => ($auth.showLogin = false)}">
