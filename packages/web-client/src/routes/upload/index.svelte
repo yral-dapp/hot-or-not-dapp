@@ -307,7 +307,7 @@ onDestroy(async () => {
 		</div>
 	</div>
 	<div class="pointer-events-auto flex w-full items-start justify-end px-5" slot="top">
-		<IconButton on:click="{() => goto('/all')}" class="h-10 w-10 rounded-full bg-black/50">
+		<IconButton href="/all" prefetch class="h-10 w-10 rounded-full bg-black/50">
 			<CloseIcon class="h-6 w-6 text-white" />
 		</IconButton>
 	</div>

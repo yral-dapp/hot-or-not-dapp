@@ -14,7 +14,6 @@ import { onMount, onDestroy } from 'svelte';
 import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
 import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
 import type { UploadStatus } from './UploadTypes';
-import { goto } from '$app/navigation';
 
 export let selectedFile: File | Blob | null = null;
 
@@ -231,7 +230,7 @@ onDestroy(() => {
 		{:else if uploadStatus === 'uploaded'}
 			<div class="flex items-center justify-between space-x-4">
 				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
-				<Button on:click="{() => goto('/all')}" class="w-full">View Video</Button>
+				<Button href="/all" prefetch class="w-full">View Video</Button>
 			</div>
 		{/if}
 	</div>

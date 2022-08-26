@@ -12,7 +12,6 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
 import { page } from '$app/stores';
-import { goto } from '$app/navigation';
 
 let profile = {
 	id: $page.params.id,
@@ -109,9 +108,7 @@ const dummyPost =
 								{/if}
 							</div>
 							{#if profile.me}
-								<Button on:click="{() => goto('/upload')}" class="w-full">
-									Upload your first video
-								</Button>
+								<Button href="/upload" prefetch class="w-full">Upload your first video</Button>
 							{/if}
 						</div>
 					{/if}

@@ -1,5 +1,4 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
@@ -19,34 +18,34 @@ const links = [
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
 		class: 'w-5 h-5',
-		onClick: () => goto('/refer')
+		href: '/refer'
 	},
 	{
 		icon: CenterTextIcon,
 		title: 'About Us',
 		class: 'w-5 h-5',
-		onClick: () => goto('/about-us')
+		href: '/about-us'
 	},
 	{
 		icon: MessageBoxIcon,
 		title: 'FAQs',
-		onClick: () => goto('/faq')
+		href: '/faq'
 	},
 	{
 		icon: NotebookIcon,
 		title: 'Terms of Service',
-		onClick: () => goto('/terms-of-service')
+		href: '/terms-of-service'
 	},
 	{
 		icon: LockIcon,
 		title: 'Privacy Policy',
-		onClick: () => goto('/refer')
+		href: '/privacy-policy'
 	},
 	{
 		icon: LogoutIcon,
 		title: 'Logout',
 		class: 'w-5 h-5 pl-1',
-		onClick: () => goto('/logout')
+		href: '/logout'
 	}
 ];
 </script>
@@ -66,18 +65,18 @@ const links = [
 					<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{placeholderImg}" />
 					<div class="flex flex-col space-y-1">
 						<div class="text-xl">Harsh</div>
-						<div on:click="{() => goto('/profile/1')}" class=" text-primary">View Profile</div>
+						<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
 					</div>
 				</div>
 				<div class="my-8 h-[1px] w-full bg-white/10"></div>
 				{#each links as link}
-					<div on:click="{link.onClick}" class="flex items-center justify-between">
+					<a href="{link.href}" sveltekit:prefetch class="flex items-center justify-between">
 						<div class="flex items-center space-x-4 text-white">
 							<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />
 							<div>{link.title}</div>
 						</div>
 						<CaretLeftIcon class="h-6 w-6 rotate-180" />
-					</div>
+					</a>
 				{/each}
 			</div>
 			<div class="flex flex-col items-center justify-center space-y-4">
