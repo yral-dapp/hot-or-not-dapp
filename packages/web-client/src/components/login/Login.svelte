@@ -38,6 +38,8 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
+	const canisterId = await user_index.get_users_canister();
+	console.log('users canister before login:', canisterId.toText());
 	await $auth.client?.login({
 		onSuccess: () => handleSuccessfulLogin(type),
 		onError: (e) => handleError(type, e),
@@ -45,11 +47,12 @@ async function handleLogin(type: LoginType) {
 	});
 }
 
-function handleSuccessfulLogin(type: LoginType) {
+async function handleSuccessfulLogin(type: LoginType) {
 	$auth.showLogin = false;
 	$auth.isLoggedIn = true;
 	initializeAuthClient();
-	user_index.get_users_canister();
+	const canisterId = await user_index.get_users_canister();
+	console.log('users canister after login:', canisterId.toText());
 }
 
 function handleError(type: LoginType, e?: string) {
