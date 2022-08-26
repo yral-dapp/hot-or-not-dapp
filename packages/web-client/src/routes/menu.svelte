@@ -55,11 +55,17 @@ const links = [
 </script>
 
 <HomeLayout>
-	<svelte:fragment slot="top">Menu</svelte:fragment>
+	<svelte:fragment slot="top">
+		<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
+			Menu
+		</div></svelte:fragment
+	>
 	<svelte:fragment slot="content">
-		<div class="my-20 flex h-full w-full flex-col justify-between px-8">
-			<div class="flex h-full w-full flex-col space-y-10">
-				<div class="flex w-full items-center space-x-4 pb-5">
+		<div
+			class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8"
+		>
+			<div class="flex w-full shrink-0 flex-col space-y-10">
+				<div class="sticky flex w-full items-center space-x-4 pb-2">
 					<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{dummy}" />
 					<div class="flex flex-col space-y-1">
 						<div class="text-xl">Harsh</div>
@@ -77,7 +83,7 @@ const links = [
 					</div>
 				{/each}
 			</div>
-			<div class="flex flex-col items-center justify-center space-y-4 pb-44">
+			<div class="flex flex-col items-center justify-center space-y-4">
 				<div class="text-sm text-white/50">Follow us on</div>
 				<div class="flex items-center space-x-4">
 					<div
