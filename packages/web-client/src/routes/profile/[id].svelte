@@ -10,6 +10,7 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
+import placeholderImage from '$assets/placeholder.png';
 import { page } from '$app/stores';
 import { goto } from '$app/navigation';
 
@@ -18,13 +19,13 @@ let profile = {
 	name: 'Harsh Mandan',
 	me: $page.params.id == '1',
 	username: '@harsh',
-	avatar: 'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg'
+	avatar: placeholderImage
 };
 let posts = [1, 2, 3, 4, 5];
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
-const dummy =
-	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+const dummyPost =
+	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
 </script>
 
 <ProfileLayout>
@@ -94,7 +95,7 @@ const dummy =
 					{#if posts.length}
 						<div class="grid grid-cols-3 gap-3">
 							{#each posts as post}
-								<ProfilePost id="{`${post}`}" likes="{500}" imageBg="{dummy}" />
+								<ProfilePost id="{`${post}`}" likes="{500}" imageBg="{dummyPost}" />
 							{/each}
 						</div>
 					{:else}
