@@ -38,7 +38,7 @@ let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
 const useCanvas = !isSafari();
-let loading = true;
+let loading = false;
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
