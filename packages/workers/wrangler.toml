@@ -1,0 +1,19 @@
+name = "hot-or-not-upload-api"
+account_id = "a209c523d2d9646cc56227dbe6ce3ede"
+workers_dev = true
+compatibility_date = "2022-08-25"
+main = "index.js"
+
+# [secrets]
+# CLOUDFLARE_API_TOKEN
+
+[env.localhost]
+account_id = "d297dffa4033356cd9fcbcdde15c46de"
+
+[env.localhost.vars]
+CLOUDFLARE_ACCOUNT_ID = "d297dffa4033356cd9fcbcdde15c46de"
+CORS_ALLOW_ORIGINS = "http://localhost:5173"
+
+[env.main.vars]
+CLOUDFLARE_ACCOUNT_ID = "a209c523d2d9646cc56227dbe6ce3ede"
+CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app"
