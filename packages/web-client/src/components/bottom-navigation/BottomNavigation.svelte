@@ -1,6 +1,5 @@
 <script lang="ts">
 import { page } from '$app/stores';
-import { auth } from '$stores/auth';
 import IconButton from '$components/button/IconButton.svelte';
 import HomeIcon from '$components/icons/HomeIcon.svelte';
 import MenuIcon from '$components/icons/MenuIcon.svelte';
@@ -10,7 +9,6 @@ import WalletIcon from '$components/icons/WalletIcon.svelte';
 import { goto } from '$app/navigation';
 
 $: path = $page.url.pathname;
-$: isLoggedIn = $auth.isLoggedIn;
 $: showBg = !path.includes('all');
 </script>
 
@@ -32,7 +30,7 @@ $: showBg = !path.includes('all');
 	<IconButton class="flex items-center p-2">
 		<WalletIcon class="h-6 w-6 text-white" />
 	</IconButton>
-	<IconButton on:click="{() => goto('/menu')}" class="flex items-center p-2">
+	<IconButton href="/menu" prefetch class="flex items-center p-2">
 		<MenuIcon class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
 	</IconButton>
 </div>
