@@ -1,13 +1,12 @@
 <script lang="ts">
+import { goto } from '$app/navigation';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import TelegramIcon from '$components/icons/TelegramIcon.svelte';
 import DiscordIcon from '$components/icons/DiscordIcon.svelte';
 import TwitterIcon from '$components/icons/TwitterIcon.svelte';
 import CoinBagIcon from '$components/icons/CoinBagIcon.svelte';
-import { goto } from '$app/navigation';
 import CenterTextIcon from '$components/icons/CenterTextIcon.svelte';
 import MessageBoxIcon from '$components/icons/MessageBoxIcon.svelte';
 import NotebookIcon from '$components/icons/NotebookIcon.svelte';
