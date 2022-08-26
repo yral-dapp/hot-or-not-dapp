@@ -12,9 +12,6 @@ export async function initializeAuthClient(): Promise<void> {
 		authStore = get(auth);
 	}
 	const identity = authStore.client?.getIdentity();
-	// const backend = createActor(canisterId as string, {
-	// 	agentOptions: { identity }
-	// });
 	const principal = await identity?.getPrincipal();
 	if (await authStore.client?.isAuthenticated()) {
 		auth.set({
