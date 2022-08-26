@@ -11,9 +11,12 @@ import { goto } from '$app/navigation';
 
 $: path = $page.url.pathname;
 $: isLoggedIn = $auth.isLoggedIn;
+$: showBg = !path.includes('all');
 </script>
 
-<div class="mb-2 flex w-full justify-between px-4">
+<div
+	class="flex w-full items-center justify-between py-3 px-4 {showBg ? 'bg-black shadow-up' : ''}"
+>
 	<IconButton on:click="{() => goto('all')}" class="flex items-center p-2">
 		<HomeIcon filled="{path.includes('all')}" class="h-6 w-6 text-white" />
 	</IconButton>
