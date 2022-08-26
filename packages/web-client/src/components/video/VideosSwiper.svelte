@@ -52,7 +52,6 @@ async function handleChange(e: CustomEvent) {
 }
 
 const playVideo = debounce(50, async (index: number) => {
-	console.log('trying to play', index);
 	videoPlayers[index].play();
 	currentPlayingIndex = index;
 });
@@ -69,7 +68,7 @@ onMount(async () => {
 	await fetchNextVideos();
 });
 
-$: console.log({ currentVideoIndex, $playerState });
+$: console.log({ currentVideoIndex });
 </script>
 
 <Swiper
