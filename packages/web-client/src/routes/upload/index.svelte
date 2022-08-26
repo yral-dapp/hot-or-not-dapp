@@ -229,15 +229,10 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 }
 
 onMount(async () => {
-	if (!$auth.isLoggedIn) {
-		$auth.showLogin = true;
-		goto('/all');
-	} else {
-		await requestMediaAccess();
-		if (useCanvas) {
-			updateCanvas();
-			startCapturing();
-		}
+	await requestMediaAccess();
+	if (useCanvas) {
+		updateCanvas();
+		startCapturing();
 	}
 });
 
