@@ -148,7 +148,7 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-4 lg:px-8"
+		class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 pb-64 lg:px-8"
 	>
 		<div
 			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
@@ -253,8 +253,11 @@ onDestroy(() => {
 			</div>
 		{/if}
 	</div>
-	<div slot="bottom" class="border-t-2 border-white/10 bg-black px-8 shadow-up shadow-black/50">
-		<div class="py-4">
+	<div
+		slot="bottom"
+		class="border-t-2 border-white/10 bg-black px-8 pt-4 pb-8 shadow-up shadow-black/50"
+	>
+		<div class="pb-4">
 			<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 			deleted.
 		</div>
