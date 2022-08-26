@@ -17,5 +17,4 @@ let exportClass: any = '';
 	on:change
 	on:focus
 	on:blur
-	class="w-full border-none bg-transparent py-3 px-4 focus:ring-transparent {exportClass}"
-></textarea>
+	class="w-full border-none py-3 px-4 focus:ring-transparent {exportClass}"></textarea>
