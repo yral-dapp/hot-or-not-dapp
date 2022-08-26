@@ -9,6 +9,7 @@ import { fade } from 'svelte/transition';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { goto } from '$app/navigation';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 
 export let src = '';
 export let i: number;
@@ -24,6 +25,7 @@ export let videoViews = 254000;
 // let loadThumbnail = false;
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
+let loaded = false;
 
 export async function play() {
 	if (videoEl) {
@@ -47,7 +49,8 @@ export async function stop() {
 <player
 	i="{i}"
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
-	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {autoplay
+	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {autoplay &&
+	loaded
 		? 'opacity-100'
 		: 'opacity-0'}"
 >
@@ -57,6 +60,10 @@ export async function stop() {
 			bind:this="{videoEl}"
 			loop
 			playsinline
+			on:loadeddata="{() => {
+				console.log('loaded', i);
+				loaded = true;
+			}}"
 			autoplay="{!$playerState.initialized}"
 			muted="{$playerState.muted || !autoplay}"
 			disableremoteplayback
@@ -128,3 +135,11 @@ export async function stop() {
 		</div>
 	</div>
 </player>
+{#if !loaded}
+	<loader
+		transition:fade|local="{{ duration: 300 }}"
+		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center"
+	>
+		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
+	</loader>
+{/if}
