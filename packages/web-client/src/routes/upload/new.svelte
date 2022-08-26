@@ -253,7 +253,7 @@ onDestroy(() => {
 			</div>
 		{/if}
 	</div>
-	<div slot="bottom" class="border-t-2 border-white/10 bg-black px-8">
+	<div slot="bottom" class="border-t-2 border-white/10 bg-black px-8 shadow-up shadow-black/50">
 		<div class="py-4">
 			<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 			deleted.
