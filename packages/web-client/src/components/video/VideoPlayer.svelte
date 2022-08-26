@@ -14,6 +14,7 @@ export let src = '';
 export let i: number;
 export let thumbnail = '';
 export let load = false;
+export let autoplay = false;
 export let avatarPhotoUrl =
 	'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 export let userName = 'Natasha';
@@ -41,29 +42,14 @@ export async function stop() {
 		videoBgEl.pause();
 	}
 }
-
-// async function generateThumbnail(target: EventTarget | null) {
-// 	if (loadThumbnail && target && !isLoaded) {
-// 		const videoEl = target as HTMLVideoElement;
-// 		isLoaded = true;
-// 		await tick();
-// 		const canvas = document.createElement('canvas');
-// 		const context = canvas.getContext('2d');
-// 		canvas.height = videoEl.videoHeight / 6;
-// 		canvas.width = videoEl.videoWidth / 6;
-// 		if (context) {
-// 			context.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-// 			generatedThumbnail = canvas.toDataURL();
-// 			console.log({ generatedThumbnail });
-// 		}
-// 	}
-// }
 </script>
 
 <player
 	i="{i}"
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
-	class="relative flex h-full min-h-full w-auto snap-center snap-always items-center justify-center"
+	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {autoplay
+		? 'opacity-100'
+		: 'opacity-0'}"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
@@ -72,7 +58,7 @@ export async function stop() {
 			loop
 			playsinline
 			autoplay="{!$playerState.initialized}"
-			muted="{$playerState.muted}"
+			muted="{$playerState.muted || !autoplay}"
 			disableremoteplayback
 			x-webkit-airplay="deny"
 			preload="metadata"
@@ -86,7 +72,7 @@ export async function stop() {
 			playsinline
 			disableremoteplayback
 			muted
-			autoplay="{!$playerState.initialized}"
+			autoplay="{i == 0}"
 			preload="metadata"
 			x-webkit-airplay="deny"
 			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
