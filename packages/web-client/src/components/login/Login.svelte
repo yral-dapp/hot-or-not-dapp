@@ -13,8 +13,6 @@ const NFID_AUTH_URL =
 </script>
 
 <script lang="ts">
-import { user_index } from '$canisters/user_index';
-
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
@@ -38,8 +36,7 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
-	const canisterId = await user_index.get_users_canister();
-	console.log('users canister before login:', canisterId.toText());
+	// console.log('users canister before login:', canisterId.toText());
 	await $auth.client?.login({
 		onSuccess: () => handleSuccessfulLogin(type),
 		onError: (e) => handleError(type, e),
@@ -51,8 +48,6 @@ async function handleSuccessfulLogin(type: LoginType) {
 	$auth.showLogin = false;
 	$auth.isLoggedIn = true;
 	initializeAuthClient();
-	const canisterId = await user_index.get_users_canister();
-	console.log('users canister after login:', canisterId.toText());
 }
 
 function handleError(type: LoginType, e?: string) {
