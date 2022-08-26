@@ -41,8 +41,6 @@ export async function stop() {
 		videoBgEl.pause();
 	}
 }
-
-$: autoplay && prefetch('/profile/2');
 </script>
 
 <player
