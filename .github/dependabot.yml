@@ -14,3 +14,8 @@ updates:
     directory: '/packages/functions'
     schedule:
       interval: 'daily'
+
+  - package-ecosystem: 'npm'
+    directory: '/packages/workers'
+    schedule:
+      interval: 'daily'
