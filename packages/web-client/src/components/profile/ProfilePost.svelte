@@ -1,5 +1,4 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 
 export let id: string;
@@ -7,8 +6,9 @@ export let imageBg: string;
 export let likes: number;
 </script>
 
-<div
-	on:click="{() => goto(`/all/${id}`)}"
+<a
+	href="{`/all/${id}`}"
+	sveltekit:prefetch
 	class="relative h-40 w-full cursor-pointer rounded-md bg-cover"
 	style="background-image: url('{imageBg}')"
 >
@@ -20,4 +20,4 @@ export let likes: number;
 			{likes}
 		</div>
 	</div>
-</div>
+</a>

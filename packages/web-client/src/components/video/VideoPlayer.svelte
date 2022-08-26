@@ -8,7 +8,6 @@ import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import { fade } from 'svelte/transition';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
-import { goto } from '$app/navigation';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
 
@@ -121,11 +120,11 @@ export async function stop() {
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
 		>
-			<button on:click="{() => goto('/profile/2')}" class="h-12 w-12">
+			<a href="/profile/2" sveltekit:prefetch class="h-12 w-12">
 				<Avatar class="h-12 w-12" src="{placeholderImage}" />
-			</button>
+			</a>
 			<div class="flex flex-col space-y-1">
-				<button on:click="{() => goto('/profile/2')}">{userName}</button>
+				<a href="/profile/2" sveltekit:prefetch>{userName}</a>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>
