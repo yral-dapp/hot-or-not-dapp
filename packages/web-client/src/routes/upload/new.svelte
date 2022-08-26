@@ -11,7 +11,7 @@ import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount, onDestroy } from 'svelte';
 import { fileList, fileBlob } from '$stores/fileUpload';
-import { goto } from '$app/navigation';
+import { goto, prefetch } from '$app/navigation';
 import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
 import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
 import { auth } from '$stores/auth';
@@ -87,6 +87,7 @@ async function handleUploadSuccess(uploadTask: UploadTask) {
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 	}, 2000);
+	prefetch('/all/0'); //prefetch the newly uploaded video page
 }
 
 async function handleUploadError(error: StorageError | string) {

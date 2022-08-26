@@ -10,6 +10,7 @@ import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
+import { prefetch } from '$app/navigation';
 
 export let src = '';
 export let i: number;
@@ -19,8 +20,6 @@ export let autoplay = false;
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
-// let generatedThumbnail = '';
-// let loadThumbnail = false;
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let loaded = false;
@@ -42,6 +41,8 @@ export async function stop() {
 		videoBgEl.pause();
 	}
 }
+
+$: autoplay && prefetch('/profile/2');
 </script>
 
 <player
