@@ -1,4 +1,6 @@
 <script lang="ts">
+import { prefetch } from '$app/navigation';
+
 import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import HomeIcon from '$components/icons/HomeIcon.svelte';
@@ -6,9 +8,20 @@ import MenuIcon from '$components/icons/MenuIcon.svelte';
 import PlusIcon from '$components/icons/PlusIcon.svelte';
 import TrophyIcon from '$components/icons/TrophyIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
+import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
 $: showBg = !path.includes('all');
+
+function prefetchLinks() {
+	!path.includes('menu') && prefetch('/menu');
+	!path.includes('all') && prefetch('/all/0');
+	!path.includes('upload') && prefetch('/upload');
+	// !path.includes('wallet') && prefetch('/wallet');
+	// !path.includes('leaderboard') && prefetch('/leaderboard');
+}
+
+onMount(() => prefetchLinks());
 </script>
 
 <div

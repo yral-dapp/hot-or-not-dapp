@@ -12,6 +12,8 @@ import NotebookIcon from '$components/icons/NotebookIcon.svelte';
 import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
 import placeholderImg from '$assets/placeholder.png';
+import { onMount } from 'svelte';
+import { prefetch } from '$app/navigation';
 
 const links = [
 	{
@@ -48,6 +50,15 @@ const links = [
 		href: '/logout'
 	}
 ];
+
+function prefetchLinks() {
+	links.forEach((link) => {
+		prefetch(link.href);
+	});
+	prefetch('/profile/0');
+}
+
+onMount(() => prefetchLinks());
 </script>
 
 <HomeLayout>

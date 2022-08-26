@@ -17,7 +17,7 @@ import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileList, fileBlob } from '$stores/fileUpload';
-import { goto } from '$app/navigation';
+import { goto, prefetch } from '$app/navigation';
 import { isSafari } from '$lib/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -228,12 +228,18 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 	}
 }
 
+function prefetchLinks() {
+	prefetch('/all/0');
+	prefetch('/new');
+}
+
 onMount(async () => {
 	await requestMediaAccess();
 	if (useCanvas) {
 		updateCanvas();
 		startCapturing();
 	}
+	prefetchLinks();
 });
 
 onDestroy(async () => {
