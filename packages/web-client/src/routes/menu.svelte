@@ -13,9 +13,7 @@ import MessageBoxIcon from '$components/icons/MessageBoxIcon.svelte';
 import NotebookIcon from '$components/icons/NotebookIcon.svelte';
 import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
-
-const dummy =
-	'https://gumlet.assettype.com/freepressjournal/2020-09/e313672e-77ee-4f58-8449-25e5f869b25a/freepressjournal_2020_02_d3038220_213c_42a6_8d5e_b73b090f8da7_EQBBDnKUcAArPz8.jpg';
+import placeholderImg from '$assets/placeholder.png';
 
 const links = [
 	{
@@ -66,7 +64,7 @@ const links = [
 		>
 			<div class="flex w-full shrink-0 flex-col space-y-10">
 				<div class="sticky flex w-full items-center space-x-4 pb-2">
-					<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{dummy}" />
+					<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{placeholderImg}" />
 					<div class="flex flex-col space-y-1">
 						<div class="text-xl">Harsh</div>
 						<div on:click="{() => goto('/profile/1')}" class=" text-primary">View Profile</div>
