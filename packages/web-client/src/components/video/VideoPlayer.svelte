@@ -10,14 +10,13 @@ import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { goto } from '$app/navigation';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import placeholderImage from '$assets/placeholder.png';
 
 export let src = '';
 export let i: number;
 export let thumbnail = '';
 export let load = false;
 export let autoplay = false;
-export let avatarPhotoUrl =
-	'https://images.pexels.com/photos/3276046/pexels-photo-3276046.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
@@ -123,7 +122,7 @@ export async function stop() {
 			class="pointer-events-auto flex space-x-3"
 		>
 			<button on:click="{() => goto('/profile/2')}" class="h-12 w-12">
-				<Avatar class="h-12 w-12" src="{avatarPhotoUrl}" />
+				<Avatar class="h-12 w-12" src="{placeholderImage}" />
 			</button>
 			<div class="flex flex-col space-y-1">
 				<button on:click="{() => goto('/profile/2')}">{userName}</button>
