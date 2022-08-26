@@ -50,6 +50,10 @@ async function nextStep() {
 			hashtagError = 'Please add atleast 1 hashtag';
 		}
 		if (hashtagError || descriptionError) return;
+		if (!$auth.isLoggedIn) {
+			$auth.showLogin = true;
+			return;
+		}
 		uploadStatus = 'uploading';
 		startUploading();
 	}
@@ -118,9 +122,7 @@ async function showShareDialog() {
 	}
 }
 onMount(async () => {
-	if (!$auth.isLoggedIn) {
-		$auth.showLogin = true;
-	} else if ($fileList && $fileList[0]) {
+	if ($fileList && $fileList[0]) {
 		fileToUpload = $fileList[0];
 		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
 	} else if ($fileBlob) {
