@@ -9,6 +9,7 @@ export const auth = writable<{
 	identity?: Identity;
 	principal?: Principal;
 	showLogin: boolean;
+	userCanisterPrincipal?: Principal;
 }>({
 	client: undefined,
 	isLoggedIn: false,
