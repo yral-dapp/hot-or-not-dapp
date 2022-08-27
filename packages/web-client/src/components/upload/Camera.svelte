@@ -423,6 +423,7 @@ onDestroy(async () => {
 <input
 	type="file"
 	accept="video/*"
+	disabled="{loading}"
 	bind:this="{inputEl}"
 	class="hidden"
 	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
