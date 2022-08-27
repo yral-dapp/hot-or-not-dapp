@@ -18,8 +18,6 @@ jobs:
         with:
           node-version: "16"
       - run: npm install
-        with:
-          workingDirectory: "packages/workers/"
       - uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_PAGES_API_TOKEN }}
