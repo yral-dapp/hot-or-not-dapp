@@ -6,17 +6,15 @@ import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import { fade } from 'svelte/transition';
-import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
-import { prefetch } from '$app/navigation';
+import { isiPhone } from '$lib/isSafari';
 
 export let src = '';
 export let i: number;
 export let thumbnail = '';
 export let load = false;
-export let autoplay = false;
 export let userName = 'Natasha';
 export let videoViews = 254000;
 
@@ -24,12 +22,20 @@ let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let loaded = false;
 
-export async function play() {
-	if (videoEl) {
-		videoEl.currentTime = 0;
-		videoBgEl.currentTime = 0;
-		videoEl.play();
-		videoBgEl.play();
+export async function play(resetTime = true) {
+	try {
+		if (videoEl) {
+			if (resetTime) {
+				videoEl.currentTime = 0;
+				videoBgEl.currentTime = 0;
+			}
+			await videoEl.play();
+			await videoBgEl.play();
+			!isiPhone() && (videoEl.muted = false);
+		}
+	} catch (e) {
+		console.log('cp', i, e);
+		videoEl && (videoEl.muted = true);
 	}
 }
 
@@ -41,11 +47,15 @@ export async function stop() {
 		videoBgEl.pause();
 	}
 }
+
+async function handleClick() {
+	videoEl && (videoEl.muted = !videoEl.muted);
+}
 </script>
 
 <player
 	i="{i}"
-	on:click="{() => ($playerState.muted = !$playerState.muted)}"
+	on:click="{handleClick}"
 	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {loaded
 		? 'opacity-100'
 		: 'opacity-0'}"
@@ -56,12 +66,9 @@ export async function stop() {
 			bind:this="{videoEl}"
 			loop
 			playsinline
-			on:loadeddata="{() => {
-				console.log('loaded', i);
-				loaded = true;
-			}}"
-			autoplay="{!$playerState.initialized}"
-			muted="{$playerState.muted || !autoplay}"
+			on:loadeddata="{() => (loaded = true)}"
+			autoplay
+			muted
 			disableremoteplayback
 			x-webkit-airplay="deny"
 			preload="metadata"
@@ -84,7 +91,7 @@ export async function stop() {
 		</video>
 	{/if}
 
-	{#if $playerState.muted}
+	{#if videoEl?.muted}
 		<div
 			transition:fade="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"

@@ -1,3 +1,3 @@
-export function isSafari() {
-	return navigator.userAgent.toLowerCase().includes('safari');
+export function isiPhone() {
+	return /iPhone|iPod|iPad/.test(navigator.platform);
 }
