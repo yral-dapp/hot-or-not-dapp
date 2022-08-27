@@ -87,7 +87,7 @@ async function handleUploadSuccess(uploadTask: UploadTask) {
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 	}, 2000);
-	prefetch('/all/0'); //prefetch the newly uploaded video page
+	// prefetch('/all/0'); //prefetch the newly uploaded video page
 }
 
 async function handleUploadError(error: StorageError | string) {
