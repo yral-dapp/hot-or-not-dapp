@@ -16,12 +16,11 @@ import { fade } from 'svelte/transition';
 import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
-import { fileBlob } from '$stores/fileUpload';
-import { goto } from '$app/navigation';
+import { fileList, fileBlob } from '$stores/fileUpload';
+import { goto, prefetch } from '$app/navigation';
 import { isSafari } from '$lib/isSafari';
-import type { CameraControls } from './UploadTypes';
-
-export let selectedFile: File | Blob | null = null;
+import type { CameraControls } from '$components/upload/UploadTypes';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -39,6 +38,7 @@ let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
 const useCanvas = !isSafari();
+let loading = false;
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -61,9 +61,9 @@ async function updateVideoStream() {
 }
 
 function handleFileUpload(files: FileList | null) {
-	if (files && files[0]) {
-		selectedFile = files[0];
-	}
+	loading = true;
+	$fileList = files;
+	goto('/upload/new');
 }
 
 function toggleTimer() {
@@ -159,6 +159,7 @@ async function startRecording(ignoreTimer = false) {
 function handleDataAvailable(event: any) {
 	console.log('data-available');
 	if (event.data.size > 0) {
+		loading = true;
 		recordedChunks.push(event.data);
 		const type = MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4;';
 		$fileBlob = new Blob(recordedChunks, {
@@ -227,12 +228,18 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 	}
 }
 
+function prefetchLinks() {
+	prefetch('/all/0');
+	prefetch('/new');
+}
+
 onMount(async () => {
 	await requestMediaAccess();
 	if (useCanvas) {
 		updateCanvas();
 		startCapturing();
 	}
+	prefetchLinks();
 });
 
 onDestroy(async () => {
@@ -316,18 +323,21 @@ onDestroy(async () => {
 			<div transition:fade class="flex items-end justify-start pt-7">
 				<div
 					bind:this="{cameraEl}"
-					on:click="{() => startRecording()}"
+					on:click="{() => !loading && startRecording()}"
 					class="{c(
-						'mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
+						'relative mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
 						recording ? 'z-[5] bg-red-500' : 'bg-white'
 					)}"
 				>
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
+					{#if loading}
+						<LoadingIcon class="absolute mx-auto h-8 w-8 animate-spin-slow text-primary" />
+					{/if}
 				</div>
 			</div>
 			{#if !recording && useCanvas}
 				<div
-					on:click="{checkClickAndStartRecording}"
+					on:click="{(e) => !loading && checkClickAndStartRecording(e)}"
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
