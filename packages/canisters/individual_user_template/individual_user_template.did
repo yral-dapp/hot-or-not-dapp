@@ -1,4 +1,9 @@
+type PostDetailsFromFrontend = record {
+  hashtags : vec text;
+  description : text;
+  video_url : text;
+};
 service : {
-  create_post : (text, vec text, text) -> (nat64);
+  create_post : (PostDetailsFromFrontend) -> (nat64);
   mark_post_as_ready_to_view : (nat64) -> ();
 }
