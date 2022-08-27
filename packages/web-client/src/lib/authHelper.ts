@@ -1,6 +1,7 @@
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
 import { auth } from '../stores/auth';
+import { user_index } from '$canisters/user_index';
 
 export async function initializeAuthClient(): Promise<void> {
 	let authStore = get(auth);
@@ -14,12 +15,14 @@ export async function initializeAuthClient(): Promise<void> {
 	const identity = authStore.client?.getIdentity();
 	const principal = await identity?.getPrincipal();
 	if (await authStore.client?.isAuthenticated()) {
+		const userCanister = await user_index.get_users_canister();
 		auth.set({
 			client: authStore.client,
 			isLoggedIn: true,
 			identity,
 			principal,
-			showLogin: false
+			showLogin: false,
+			userCanister
 		});
 	} else {
 		auth.set({
@@ -29,4 +32,5 @@ export async function initializeAuthClient(): Promise<void> {
 			showLogin: authStore.showLogin
 		});
 	}
+	console.log('auth updated', get(auth));
 }
