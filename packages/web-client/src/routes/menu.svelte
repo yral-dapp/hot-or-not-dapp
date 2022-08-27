@@ -14,6 +14,8 @@ import LogoutIcon from '$components/icons/LogoutIcon.svelte';
 import placeholderImg from '$assets/placeholder.png';
 import { onMount } from 'svelte';
 import { prefetch } from '$app/navigation';
+import { auth } from '$stores/auth';
+import Button from '$components/button/Button.svelte';
 
 const links = [
 	{
@@ -65,20 +67,26 @@ onMount(() => prefetchLinks());
 	<svelte:fragment slot="top">
 		<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
 			Menu
-		</div></svelte:fragment
-	>
+		</div>
+	</svelte:fragment>
 	<svelte:fragment slot="content">
 		<div
 			class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8"
 		>
 			<div class="flex w-full shrink-0 flex-col space-y-10">
-				<div class="sticky flex w-full items-center space-x-4 pb-2">
-					<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{placeholderImg}" />
-					<div class="flex flex-col space-y-1">
-						<div class="text-xl">Harsh</div>
-						<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
+				{#if $auth.isLoggedIn}
+					<div class="sticky flex w-full items-center space-x-4 pb-2">
+						<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{placeholderImg}" />
+						<div class="flex flex-col space-y-1">
+							<div class="text-xl">Harsh</div>
+							<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
+						</div>
 					</div>
-				</div>
+				{:else}
+					<div class="flex h-24 w-full items-center justify-center">
+						<Button on:click="{() => ($auth.showLogin = true)}" class="w-full">Login</Button>
+					</div>
+				{/if}
 				<div class="my-8 h-[1px] w-full bg-white/10"></div>
 				{#each links as link}
 					<a href="{link.href}" sveltekit:prefetch class="flex items-center justify-between">
