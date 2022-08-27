@@ -50,12 +50,9 @@ async function handleChange(e: CustomEvent) {
 	updateURL();
 }
 
-const playVideo = debounce(200, async (index: number) => {
-	if (!loading) {
-		videoPlayers[index].play();
-		currentPlayingIndex = index;
-		videoPlayers[index + 1]?.stop();
-	}
+const playVideo = debounce(50, async (index: number) => {
+	videoPlayers[index].play();
+	currentPlayingIndex = index;
 });
 
 function updateURL() {
@@ -69,8 +66,6 @@ onMount(async () => {
 	$playerState.muted = true;
 	await fetchNextVideos();
 });
-
-$: console.log({ currentVideoIndex });
 </script>
 
 <Swiper
@@ -85,7 +80,6 @@ $: console.log({ currentVideoIndex });
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<VideoPlayer
 				i="{i}"
-				autoplay="{i == currentVideoIndex}"
 				bind:this="{videoPlayers[i]}"
 				load="{currentVideoIndex - keepVideosLoadedCount < i &&
 					currentVideoIndex + keepVideosLoadedCount > i}"
