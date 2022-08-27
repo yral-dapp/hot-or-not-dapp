@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - 'packages/functions/**'
-      - '.github/workflows/workers-deploy.yml'
+      - "packages/functions/**"
+      - ".github/workflows/workers-deploy.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
