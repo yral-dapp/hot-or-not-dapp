@@ -1,5 +1,11 @@
 {
 	"webclient": {
 		"ic": "vyatz-hqaaa-aaaam-qauea-cai"
+	},
+	"individual_user_template": {
+		"local": "rwlgt-iiaaa-aaaaa-aaaaa-cai"
+	},
+	"user_index": {
+		"local": "ryjl3-tyaaa-aaaaa-aaaba-cai"
 	}
 }
