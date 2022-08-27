@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - 'packages/backend/**'
-      - '.github/workflows/backend-deploy.yml'
+      - "packages/backend/**"
+      - ".github/workflows/backend-deploy.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,11 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - run: DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
-      - run: dfx identity list
+      # - uses: actions/setup-node@v2
+      #   with:
+      #     node-version: "16"
+      # - run: DFX_VERSION=0.11.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      # - run: dfx identity list
       # - run: |
       #    touch actions_identity.pem
       #    echo "${{ secrets.ACTIONS_IDENTITY_SECRET }}" > actions_identity.pem
