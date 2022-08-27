@@ -16,6 +16,7 @@ import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
 import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
+import { individualUser } from '$lib/backend';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -87,7 +88,14 @@ async function handleUploadSuccess(uploadTask: UploadTask) {
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 	}, 2000);
-	// prefetch('/all/0'); //prefetch the newly uploaded video page
+
+	const postId = individualUser().create_post({
+		description: videoDescription,
+		hashtags: hashtags,
+		video_url: gcsBucket + uploadTask.snapshot.ref.fullPath
+	});
+
+	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 }
 
 async function handleUploadError(error: StorageError | string) {
