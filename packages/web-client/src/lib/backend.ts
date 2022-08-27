@@ -32,7 +32,7 @@ const individualUserCanister: {
 export function userIndex(): UserIndexActor {
 	const authStore = get(auth);
 	if (!userIndexCanister.actor || userIndexCanister.loginState != authStore.isLoggedIn) {
-		userIndexCanister.actor = createUserIndexActor(userIndexCanisterId as string, {
+		userIndexCanister.actor = createUserIndexActor(userIndexCanisterId, {
 			agentOptions: { identity: authStore?.identity, host }
 		}) as UserIndexActor;
 		userIndexCanister.loginState = authStore.isLoggedIn;
@@ -40,12 +40,15 @@ export function userIndex(): UserIndexActor {
 	} else return userIndexCanister.actor;
 }
 
-export function individualUser(individualUserCanisterId: string): IndividualUserCanister {
+export function individualUser(): IndividualUserCanister {
 	const authStore = get(auth);
 	if (!individualUserCanister.actor || individualUserCanister.loginState != authStore.isLoggedIn) {
-		individualUserCanister.actor = createIndividualUserActor(individualUserCanisterId as string, {
-			agentOptions: { identity: authStore?.identity, host }
-		}) as IndividualUserCanister;
+		individualUserCanister.actor = createIndividualUserActor(
+			authStore.userCanisterPrincipal?.toText(),
+			{
+				agentOptions: { identity: authStore?.identity, host }
+			}
+		) as IndividualUserCanister;
 		individualUserCanister.loginState = authStore.isLoggedIn;
 		return individualUserCanister.actor;
 	} else return individualUserCanister.actor;
