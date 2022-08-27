@@ -6,6 +6,7 @@ package
 .env
 .env.*
 !.env.example
+*.yaml
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
