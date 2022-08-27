@@ -5,9 +5,7 @@ import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { Mousewheel } from 'swiper';
 import 'swiper/css';
-import 'swiper/css/pagination';
 import { debounce } from 'throttle-debounce';
 
 export let fetchFromId: number = 0;
@@ -33,6 +31,7 @@ async function fetchNextVideos() {
 			fetchFromId = res.nextCount;
 			moreVideos = res.videosLeft;
 			loading = false;
+
 			// console.log('fetched', videos);
 		} catch (e) {
 			console.error(e);
@@ -51,9 +50,12 @@ async function handleChange(e: CustomEvent) {
 	updateURL();
 }
 
-const playVideo = debounce(50, async (index: number) => {
-	videoPlayers[index].play();
-	currentPlayingIndex = index;
+const playVideo = debounce(200, async (index: number) => {
+	if (!loading) {
+		videoPlayers[index].play();
+		currentPlayingIndex = index;
+		videoPlayers[index + 1]?.stop();
+	}
 });
 
 function updateURL() {
@@ -76,10 +78,8 @@ $: console.log({ currentVideoIndex });
 	observer
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
-	speed="{500}"
-	mousewheel="{{ forceToAxis: true, sensitivity: 1, releaseOnEdges: true, thresholdDelta: 40 }}"
-	modules="{[Mousewheel]}"
-	class="mySwiper h-full w-full"
+	cssMode
+	class="h-full w-full"
 >
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
@@ -94,18 +94,18 @@ $: console.log({ currentVideoIndex });
 		</SwiperSlide>
 	{/each}
 	{#if loading}
-		<div
-			class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
-		>
-			<div class="text-center text-lg font-bold">Loading</div>
-		</div>
+		<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+				<div class="text-center text-lg font-bold">Loading</div>
+			</div>
+		</SwiperSlide>
 	{/if}
 	{#if !moreVideos}
-		<div
-			class="relative flex h-full w-auto snap-center snap-always flex-col items-center justify-center space-y-8 px-8"
-		>
-			<NoVideosIcon class="w-56" />
-			<div class="text-center text-lg font-bold">No more videos to display today</div>
-		</div>
+		<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+				<NoVideosIcon class="w-56" />
+				<div class="text-center text-lg font-bold">No more videos to display today</div>
+			</div>
+		</SwiperSlide>
 	{/if}
 </Swiper>

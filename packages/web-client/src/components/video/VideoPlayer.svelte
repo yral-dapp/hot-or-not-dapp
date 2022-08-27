@@ -46,8 +46,7 @@ export async function stop() {
 <player
 	i="{i}"
 	on:click="{() => ($playerState.muted = !$playerState.muted)}"
-	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {autoplay &&
-	loaded
+	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {loaded
 		? 'opacity-100'
 		: 'opacity-0'}"
 >
