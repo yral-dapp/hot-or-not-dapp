@@ -12,12 +12,13 @@ import NotebookIcon from '$components/icons/NotebookIcon.svelte';
 import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
 import placeholderImg from '$assets/placeholder.png';
+import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
 import { prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
-import Button from '$components/button/Button.svelte';
+import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 
-const links = [
+$: links = [
 	{
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
@@ -49,19 +50,24 @@ const links = [
 		icon: LogoutIcon,
 		title: 'Logout',
 		class: 'w-5 h-5 pl-1',
-		href: '/logout'
+		onClick: () => (showLogoutPopup = true),
+		hide: !$auth.isLoggedIn
 	}
 ];
 
+let showLogoutPopup = false;
+
 function prefetchLinks() {
 	links.forEach((link) => {
-		prefetch(link.href);
+		link.href && prefetch(link.href);
 	});
 	prefetch('/profile/0');
 }
 
 onMount(() => prefetchLinks());
 </script>
+
+<LogoutPopup bind:show="{showLogoutPopup}" />
 
 <HomeLayout>
 	<svelte:fragment slot="top">
@@ -89,13 +95,21 @@ onMount(() => prefetchLinks());
 				{/if}
 				<div class="my-8 h-[1px] w-full bg-white/10"></div>
 				{#each links as link}
-					<a href="{link.href}" sveltekit:prefetch class="flex items-center justify-between">
-						<div class="flex items-center space-x-4 text-white">
-							<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />
-							<div>{link.title}</div>
-						</div>
-						<CaretLeftIcon class="h-6 w-6 rotate-180" />
-					</a>
+					{#if !link.hide}
+						<svelte:element
+							this="{link.href ? 'a' : 'button'}"
+							on:click="{link.onClick}"
+							href="{link.href}"
+							sveltekit:prefetch="{link.href ? true : null}"
+							class="flex items-center justify-between"
+						>
+							<div class="flex items-center space-x-4 text-white">
+								<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />
+								<div>{link.title}</div>
+							</div>
+							<CaretLeftIcon class="h-6 w-6 rotate-180" />
+						</svelte:element>
+					{/if}
 				{/each}
 			</div>
 			<div class="flex flex-col items-center justify-center space-y-4">
