@@ -1,12 +1,11 @@
 <script lang="ts">
 import Camera from '$components/upload/Camera.svelte';
 import Upload from '$components/upload/Upload.svelte';
-
-let file: File | Blob | null = null;
+import { fileBlob, fileList } from '$stores/fileUpload';
 </script>
 
-{#if file === null}
-	<Camera bind:selectedFile="{file}" />
+{#if !fileList || !fileBlob}
+	<Camera />
 {:else}
-	<Upload bind:selectedFile="{file}" />
+	<Upload />
 {/if}
