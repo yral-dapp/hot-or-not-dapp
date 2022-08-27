@@ -10,12 +10,12 @@ import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount, onDestroy } from 'svelte';
-
-import { gcsBucket, uploadToBucketResumable } from '$lib/firebase';
-import type { StorageError, UploadTask, UploadTaskSnapshot } from 'firebase/storage';
-import type { UploadStatus } from './UploadTypes';
-
-export let selectedFile: File | Blob | null = null;
+import { fileList, fileBlob } from '$stores/fileUpload';
+import { goto, prefetch } from '$app/navigation';
+import { auth } from '$stores/auth';
+import type { UploadStatus } from '$components/upload/UploadTypes';
+import { individualUser } from '$lib/backend';
+import { uploadVideoToStream } from '$lib/stream';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -30,7 +30,13 @@ let videoDescription = '';
 let videoHashtags = '';
 let descriptionError = '';
 let hashtagError = '';
+let fileToUpload: Blob | File;
 let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
+let hashtags: string[] = [];
+let isInputLimitReached = false;
+const MAX_HASHTAG_LENGTH = 60;
+
+$: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
 async function nextStep() {
 	descriptionError = hashtagError = '';
@@ -40,53 +46,52 @@ async function nextStep() {
 		} else if (videoDescription.length < 10) {
 			descriptionError = 'Description is too short';
 		}
-		if (!videoHashtags) {
+		if (!hashtags.length) {
 			hashtagError = 'Please add atleast 1 hashtag';
 		}
 		if (hashtagError || descriptionError) return;
+		if (!$auth.isLoggedIn) {
+			$auth.showLogin = true;
+			return;
+		}
 		uploadStatus = 'uploading';
 		startUploading();
 	}
 }
 
-async function startUploading() {
-	if (!selectedFile) return;
-	const uploadRes = await uploadToBucketResumable(selectedFile);
-
-	if (uploadRes.status === 'error') {
-		handleUploadError(uploadRes.error);
-		return;
-	}
-
-	uploadRes.uploadTask.on('state_changed', handleUploadProgress, handleUploadError, () =>
-		handleUploadSuccess(uploadRes.uploadTask)
-	);
+async function updateHashtags() {
+	hashtags = videoHashtags
+		.split(/(?:,| )+/)
+		.filter((o) => !!o)
+		.map((o) => o.replace('#', ''));
 }
 
-async function handleUploadSuccess(uploadTask: UploadTask) {
-	console.log('gcsUri', gcsBucket + uploadTask.snapshot.ref.fullPath);
+async function startUploading() {
+	if (!fileToUpload) return;
+	const uploadRes = await uploadVideoToStream(fileToUpload);
+
+	if (!uploadRes.success) {
+		console.error(uploadRes.error);
+		return;
+	}
+	handleUploadSuccess(uploadRes.uploadedUrl);
+}
+
+async function handleUploadSuccess(uploadedUrl: string) {
+	console.log('uploaded Url', uploadedUrl);
 	uploadStep = 'processing';
 	setTimeout(() => {
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 	}, 2000);
-}
 
-async function handleUploadError(error: StorageError | string) {
-	console.error(error);
-}
+	const postId = individualUser().create_post({
+		description: videoDescription,
+		hashtags: hashtags,
+		video_url: uploadedUrl
+	});
 
-async function handleUploadProgress(snapshot: UploadTaskSnapshot) {
-	const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-	uploadProgress.set(Math.ceil(progress));
-	switch (snapshot.state) {
-		case 'paused':
-			console.log('Upload is paused');
-			break;
-		case 'running':
-			console.log('Upload is running');
-			break;
-	}
+	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 }
 
 async function showShareDialog() {
@@ -98,19 +103,25 @@ async function showShareDialog() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: 'https://v2.gobazzinga.io/all/2'
+			url: 'https://v2.gobazzinga.io/all/1'
 		});
 	} catch (err) {
 		console.error('Cannot open share dialog', err);
 	}
 }
 onMount(async () => {
-	if (selectedFile) {
-		videoEl.src = URL.createObjectURL(selectedFile) + '#t=0.01';
-	}
+	if ($fileList && $fileList[0]) {
+		fileToUpload = $fileList[0];
+		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
+	} else if ($fileBlob) {
+		fileToUpload = $fileBlob;
+		videoEl.src = URL.createObjectURL($fileBlob) + '#t=0.01';
+	} else goto('/upload');
 });
 
 onDestroy(() => {
+	$fileList = null;
+	$fileBlob = null;
 	videoEl.pause();
 	videoEl.load();
 });
@@ -118,14 +129,14 @@ onDestroy(() => {
 
 <UploadLayout>
 	<div slot="top-left">
-		<IconButton on:click="{() => (selectedFile = null)}">
+		<IconButton href="/upload" prefetch>
 			<CaretLeftIcon class="h-7 w-7 text-white" />
 		</IconButton>
 	</div>
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="mb-40 flex w-full flex-col items-center justify-start space-y-8 overflow-y-scroll py-10 px-4 lg:px-8"
+		class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 pb-64 lg:px-8"
 	>
 		<div
 			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
@@ -166,14 +177,26 @@ onDestroy(() => {
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Add Hashtags</span>
 				<Input
+					on:input="{updateHashtags}"
 					bind:value="{videoHashtags}"
 					type="text"
+					maxlength="{MAX_HASHTAG_LENGTH}"
 					placeholder="#hastag, #hastag2, #hastag3 ..."
 					class="w-full rounded-xl bg-white/10"
 				/>
+				{#if hashtags.length}
+					<div class="flex w-full flex-wrap items-center gap-2">
+						{#each hashtags as hashtag}
+							<div class="rounded-sm bg-primary/30 px-2 py-1 text-xs text-primary">#{hashtag}</div>
+						{/each}
+					</div>
+				{/if}
 			</div>
 			{#if hashtagError}
 				<div class="text-xs text-red-500">{hashtagError}</div>
+			{/if}
+			{#if isInputLimitReached}
+				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
 			{/if}
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
@@ -218,8 +241,11 @@ onDestroy(() => {
 			</div>
 		{/if}
 	</div>
-	<div slot="bottom" class="border-t-2 border-white/10 bg-black px-8">
-		<div class="py-4">
+	<div
+		slot="bottom"
+		class="border-t-2 border-white/10 bg-black px-8 pt-4 pb-8 shadow-up shadow-black/50"
+	>
+		<div class="pb-4">
 			<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 			deleted.
 		</div>
