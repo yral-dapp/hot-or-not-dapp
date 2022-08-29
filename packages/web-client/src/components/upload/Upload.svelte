@@ -14,7 +14,7 @@ import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import { checkVideoStatus, uploadVideoToStream } from '$lib/stream';
+import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -84,21 +84,24 @@ async function checkVideoProcessingStatus(uid: string) {
 	uploadProgress.set(100);
 	videoStatusInterval = setInterval(async () => {
 		const videoStatus = await checkVideoStatus(uid);
-		if (videoStatus.success) {
-			handleSuccessfulUpload();
+		if (videoStatus.success && videoStatus.status == 'ready') {
+			handleSuccessfulUpload(uid);
 			clearInterval(videoStatusInterval);
 		}
 	}, 4000);
 }
 
-async function handleSuccessfulUpload() {
+async function handleSuccessfulUpload(uid: string) {
 	console.log('upload processed');
-	uploadStep = 'verified';
+	const video = await getVideoDetails(uid);
+	console.log({ video });
 	// const postId = individualUser().create_post({
 	// 	description: videoDescription,
 	// 	hashtags: hashtags,
 	// 	video_url: ''
 	// });
+	uploadStep = 'verified';
+	uploadStatus = 'uploaded';
 	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 }
 
