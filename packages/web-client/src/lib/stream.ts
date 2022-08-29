@@ -14,7 +14,7 @@ async function generateUrl() {
 	});
 	const body = await res.json();
 	if (body.success) {
-		return body.result as { uploadUrl: string; uid: string };
+		return body.result as { uploadURL: string; uid: string };
 	} else {
 		return undefined;
 	}
@@ -22,7 +22,7 @@ async function generateUrl() {
 
 export async function uploadVideoToStream(file: Blob) {
 	const uploadRes = await generateUrl();
-	if (!uploadRes || !uploadRes.uploadUrl) {
+	if (!uploadRes || !uploadRes.uploadURL) {
 		return {
 			success: false,
 			error: "Couldn't generate upload Url"
@@ -31,7 +31,7 @@ export async function uploadVideoToStream(file: Blob) {
 	try {
 		const formData = new FormData();
 		formData.append('file', file);
-		const res = await fetch(uploadRes.uploadUrl, {
+		const res = await fetch(uploadRes.uploadURL, {
 			method: 'POST',
 			body: formData
 		});
