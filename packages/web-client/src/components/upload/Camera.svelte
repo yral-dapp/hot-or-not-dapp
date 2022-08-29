@@ -18,7 +18,7 @@ import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
-import { isSafari } from '$lib/isSafari';
+import { isiPhone } from '$lib/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 
@@ -37,7 +37,7 @@ let mediaRecorder: MediaRecorder;
 let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
-const useCanvas = !isSafari();
+const useCanvas = !isiPhone();
 let loading = false;
 
 const filterPreviewImage =
