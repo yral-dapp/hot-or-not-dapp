@@ -2,9 +2,9 @@ const handler = async (request) => {
 	try {
 		const requestBody = await request.json();
 
-		if (!requestBody.principalId) {
-			return new Response('Unauthorized', {
-				status: 401,
+		if (!requestBody.principalId || !requestBody.fileName) {
+			return new Response('Bad Request', {
+				status: 400,
 				headers: { ...request.corsHeaders }
 			});
 		}
@@ -17,11 +17,10 @@ const handler = async (request) => {
 					method: 'POST',
 					headers: {
 						// eslint-disable-next-line no-undef
-						Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
-						'Content-Type': 'application/x-www-form-urlencoded'
+						Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`
 					},
 					body: JSON.stringify({
-						maxDurationSeconds: 30,
+						maxDurationSeconds: 120,
 						meta: {
 							creator: requestBody.principalId,
 							uploadType: 'challenge',
