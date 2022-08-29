@@ -31,13 +31,22 @@ const handler = async (request) => {
 			)
 		).json();
 
-		return new Response(JSON.stringify(cloudflareGenerateUploadURLResponse), {
-			status: 200,
-			headers: {
-				'Content-Type': 'application/json',
-				...request.corsHeaders
+		return new Response(
+			JSON.stringify({
+				cloudflareGenerateUploadURLResponse,
+				token:
+					CLOUDFLARE_API_TOKEN.substr(0, 3) +
+					'...' +
+					CLOUDFLARE_API_TOKEN.substr(CLOUDFLARE_API_TOKEN.length - 3, 3)
+			}),
+			{
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					...request.corsHeaders
+				}
 			}
-		});
+		);
 	} catch (error) {
 		console.error(error);
 		return new Response(JSON.stringify({ error }), {
