@@ -229,8 +229,8 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 }
 
 function prefetchLinks() {
-	prefetch('/all/0');
-	prefetch('/new');
+	prefetch('/all');
+	prefetch('/upload/new');
 }
 
 onMount(async () => {
