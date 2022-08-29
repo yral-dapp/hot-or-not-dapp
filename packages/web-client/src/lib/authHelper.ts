@@ -3,6 +3,16 @@ import { get } from 'svelte/store';
 import { auth } from '../stores/auth';
 import { userIndex } from './backend';
 
+async function updateUserIndexCanister() {
+	const userCanisterPrincipal = await userIndex().get_users_canister();
+	console.log('updating user index canister', userCanisterPrincipal?.toText());
+	const authStore = get(auth);
+	auth.set({
+		...authStore,
+		userCanisterPrincipal
+	});
+}
+
 export async function initializeAuthClient(): Promise<void> {
 	let authStore = get(auth);
 	if (!authStore.client) {
@@ -14,24 +24,21 @@ export async function initializeAuthClient(): Promise<void> {
 	}
 	const identity = authStore.client?.getIdentity();
 	const principal = await identity?.getPrincipal();
-	const userCanisterPrincipal = await userIndex().get_users_canister();
-
 	if (await authStore.client?.isAuthenticated()) {
 		auth.set({
 			client: authStore.client,
 			isLoggedIn: true,
 			identity,
 			principal,
-			showLogin: false,
-			userCanisterPrincipal
+			showLogin: false
 		});
 	} else {
 		auth.set({
 			client: authStore.client,
 			isLoggedIn: false,
 			principal,
-			showLogin: authStore.showLogin,
-			userCanisterPrincipal
+			showLogin: authStore.showLogin
 		});
 	}
+	await updateUserIndexCanister();
 }
