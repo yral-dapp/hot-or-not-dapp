@@ -26,7 +26,7 @@ router.all('*', withCorsHeaders).options('*', (request) => {
 });
 
 router.post('/video/getVideoUploadURL', getVideoUploadURL);
-router.get('/video/:cloudflareVideoUid/getVideoProcessingStatus', getVideoProcessingStatus);
+// router.get('/video/:cloudflareVideoUid/getVideoProcessingStatus', getVideoProcessingStatus);
 
 // 404 for everything else
 router.all('*', () => new Response('Not Found.', { status: 404 }));
