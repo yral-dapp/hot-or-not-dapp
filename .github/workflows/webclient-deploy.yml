@@ -31,6 +31,7 @@ jobs:
           echo "VITE_FIREBASE_MESSAGING_SENDER_ID=\"$FIREBASE_MESSAGING_SENDER_ID\"" >> .env
           echo "VITE_FIREBASE_APP_ID=\"$FIREBASE_APP_ID\"" >> .env
           echo "VITE_FIREBASE_MEASUREMENT_ID=\"$FIREBASE_MEASUREMENT_ID\"" >> .env
+          echo "VITE_CLOUDFLARE_WORKERS_API_URL=\"$CLOUDFLARE_WORKERS_API_URL\"" >> .env
         working-directory: packages/web-client/
         env:
           GA_TRACKING_ID: "G-KXNH2F9QXW"
@@ -42,7 +43,7 @@ jobs:
           FIREBASE_MESSAGING_SENDER_ID: "442139438721"
           FIREBASE_APP_ID: "1:442139438721:web:b7e616f50feaa67ad12780"
           FIREBASE_MEASUREMENT_ID: "G-LDBZXMYM4E"
-          VITE_CLOUDFLARE_WORKERS_API_URL: "https://hot-or-not-upload-api-main.go-bazzinga.workers.dev"
+          CLOUDFLARE_WORKERS_API_URL: "https://hot-or-not-upload-api-main.go-bazzinga.workers.dev"
       - run: npm run build
       - run: DFX_VERSION=0.11.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
