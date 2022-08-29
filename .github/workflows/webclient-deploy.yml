@@ -1,8 +1,6 @@
 name: Deploy Web-Client
 on:
   push:
-    branches:
-      - main
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
