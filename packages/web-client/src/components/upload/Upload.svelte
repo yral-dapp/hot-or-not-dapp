@@ -84,7 +84,7 @@ async function checkVideoProcessingStatus(uid: string) {
 	uploadProgress.set(100);
 	videoStatusInterval = setInterval(async () => {
 		const videoStatus = await checkVideoStatus(uid);
-		if (videoStatus.success) {
+		if (videoStatus.success && videoStatus.status == 'ready') {
 			handleSuccessfulUpload();
 			clearInterval(videoStatusInterval);
 		}
@@ -93,12 +93,13 @@ async function checkVideoProcessingStatus(uid: string) {
 
 async function handleSuccessfulUpload() {
 	console.log('upload processed');
-	uploadStep = 'verified';
 	// const postId = individualUser().create_post({
 	// 	description: videoDescription,
 	// 	hashtags: hashtags,
 	// 	video_url: ''
 	// });
+	uploadStep = 'verified';
+	uploadStatus = 'uploaded';
 	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 }
 
