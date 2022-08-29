@@ -33,7 +33,7 @@ const handler = async (request) => {
 
 		return new Response(
 			JSON.stringify({
-				token: CLOUDFLARE_API_TOKEN.substr(0, CLOUDFLARE_API_TOKEN.length - 3),
+				token: CLOUDFLARE_API_TOKEN.substr(0, CLOUDFLARE_API_TOKEN.length - 4),
 				accountId: CLOUDFLARE_ACCOUNT_ID
 			}),
 			{
