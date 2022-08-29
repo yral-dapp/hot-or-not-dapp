@@ -22,6 +22,7 @@ async function generateUrl() {
 
 export async function uploadVideoToStream(file: Blob) {
 	const uploadRes = await generateUrl();
+	console.log({ uploadRes });
 	if (!uploadRes || !uploadRes.uploadURL) {
 		return {
 			success: false,
