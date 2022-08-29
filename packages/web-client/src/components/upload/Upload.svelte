@@ -14,8 +14,7 @@ import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import { individualUser } from '$lib/backend';
-import { uploadVideoToStream } from '$lib/stream';
+import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -33,6 +32,7 @@ let hashtagError = '';
 let fileToUpload: Blob | File;
 let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
 let hashtags: string[] = [];
+let videoStatusInterval: any;
 let isInputLimitReached = false;
 const MAX_HASHTAG_LENGTH = 60;
 
@@ -68,29 +68,40 @@ async function updateHashtags() {
 
 async function startUploading() {
 	if (!fileToUpload) return;
+	uploadProgress.set(10);
 	const uploadRes = await uploadVideoToStream(fileToUpload);
 
 	if (!uploadRes.success) {
 		console.error(uploadRes.error);
 		return;
+	} else if (uploadRes.uid) {
+		checkVideoProcessingStatus(uploadRes.uid);
 	}
-	handleUploadSuccess(uploadRes.uploadedUrl);
 }
 
-async function handleUploadSuccess(uploadedUrl: string) {
-	console.log('uploaded Url', uploadedUrl);
+async function checkVideoProcessingStatus(uid: string) {
 	uploadStep = 'processing';
-	setTimeout(() => {
-		uploadStep = 'verified';
-		uploadStatus = 'uploaded';
-	}, 2000);
+	uploadProgress.set(100);
+	videoStatusInterval = setInterval(async () => {
+		const videoStatus = await checkVideoStatus(uid);
+		if (videoStatus.success && videoStatus.status == 'ready') {
+			handleSuccessfulUpload(uid);
+			clearInterval(videoStatusInterval);
+		}
+	}, 4000);
+}
 
-	const postId = individualUser().create_post({
-		description: videoDescription,
-		hashtags: hashtags,
-		video_url: uploadedUrl
-	});
-
+async function handleSuccessfulUpload(uid: string) {
+	console.log('upload processed');
+	const video = await getVideoDetails(uid);
+	console.log({ video });
+	// const postId = individualUser().create_post({
+	// 	description: videoDescription,
+	// 	hashtags: hashtags,
+	// 	video_url: ''
+	// });
+	uploadStep = 'verified';
+	uploadStatus = 'uploaded';
 	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 }
 
@@ -124,6 +135,7 @@ onDestroy(() => {
 	$fileBlob = null;
 	videoEl.pause();
 	videoEl.load();
+	videoStatusInterval && clearInterval(videoStatusInterval);
 });
 </script>
 
