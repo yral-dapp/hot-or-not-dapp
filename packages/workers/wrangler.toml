@@ -1,4 +1,4 @@
-name = "hot-or-not-upload-api"
+name = "hot-or-not-upload-api-main"
 account_id = "a209c523d2d9646cc56227dbe6ce3ede"
 workers_dev = true
 compatibility_date = "2022-08-25"
