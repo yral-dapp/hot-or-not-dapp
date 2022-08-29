@@ -17,11 +17,10 @@ const handler = async (request) => {
 					method: 'POST',
 					headers: {
 						// eslint-disable-next-line no-undef
-						Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
-						'Content-Type': 'application/x-www-form-urlencoded'
+						Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`
 					},
 					body: JSON.stringify({
-						maxDurationSeconds: 30,
+						maxDurationSeconds: 120,
 						meta: {
 							creator: requestBody.principalId,
 							uploadType: 'challenge',
