@@ -14,7 +14,7 @@ import { fileList, fileBlob } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import { checkVideoStatus, uploadVideoToStream } from '$lib/stream';
+import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -85,14 +85,16 @@ async function checkVideoProcessingStatus(uid: string) {
 	videoStatusInterval = setInterval(async () => {
 		const videoStatus = await checkVideoStatus(uid);
 		if (videoStatus.success && videoStatus.status == 'ready') {
-			handleSuccessfulUpload();
+			handleSuccessfulUpload(uid);
 			clearInterval(videoStatusInterval);
 		}
 	}, 4000);
 }
 
-async function handleSuccessfulUpload() {
+async function handleSuccessfulUpload(uid: string) {
 	console.log('upload processed');
+	const video = await getVideoDetails(uid);
+	console.log({ video });
 	// const postId = individualUser().create_post({
 	// 	description: videoDescription,
 	// 	hashtags: hashtags,
