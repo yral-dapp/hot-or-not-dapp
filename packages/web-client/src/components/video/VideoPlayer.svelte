@@ -10,6 +10,7 @@ import SoundIcon from '$components/icons/SoundIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
 import { isiPhone } from '$lib/isSafari';
+import c from 'clsx';
 
 export let src = '';
 export let i: number;
@@ -17,6 +18,7 @@ export let thumbnail = '';
 export let load = false;
 export let userName = 'Natasha';
 export let videoViews = 254000;
+export let swiperJs;
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
@@ -56,9 +58,11 @@ async function handleClick() {
 <player
 	i="{i}"
 	on:click="{handleClick}"
-	class="relative flex h-full w-full items-center justify-center transition-all duration-500 {loaded
-		? 'opacity-100'
-		: 'opacity-0'}"
+	class="{c(
+		'relative flex h-full items-center justify-center transition-all duration-500',
+		loaded ? 'opacity-100' : 'opacity-0',
+		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
+	)}"
 >
 	{#if load}
 		<!-- svelte-ignore a11y-media-has-caption -->
