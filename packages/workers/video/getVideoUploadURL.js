@@ -2,9 +2,9 @@ const handler = async (request) => {
 	try {
 		const requestBody = await request.json();
 
-		if (!requestBody.principalId) {
-			return new Response('Unauthorized', {
-				status: 401,
+		if (!requestBody.principalId || !requestBody.fileName) {
+			return new Response('Bad Request', {
+				status: 400,
 				headers: { ...request.corsHeaders }
 			});
 		}
