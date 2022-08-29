@@ -1,5 +1,9 @@
-import adapter from '@sveltejs/adapter-static';
+import staticAdapter from '@sveltejs/adapter-static';
+import cfAdapter from '@sveltejs/adapter-cloudflare';
 import preprocess from 'svelte-preprocess';
+
+const isSSR = process.env.BUILD_MODE === 'ssr';
+console.log('svelte in', isSSR ? 'ssr' : 'static', 'build mode');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -7,9 +11,11 @@ const config = {
 		postcss: true
 	}),
 	kit: {
-		adapter: adapter({
-			fallback: '200.html'
-		})
+		adapter: isSSR
+			? cfAdapter()
+			: staticAdapter({
+					fallback: '200.html'
+			  })
 	}
 };
 
