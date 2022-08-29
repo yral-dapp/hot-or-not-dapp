@@ -26,4 +26,4 @@ jobs:
           secrets: |
             CLOUDFLARE_API_TOKEN
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_STREAM_IMAGES_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_STREAM_API_TOKEN }}
