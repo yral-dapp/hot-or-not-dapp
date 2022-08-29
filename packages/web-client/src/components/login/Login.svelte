@@ -61,7 +61,7 @@ function handleError(type: LoginType, e?: string) {
 		<span class="text-3xl font-bold">Join GoBazzinga</span>
 		<div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
 			<span>Create an account using</span>
-			<Button on:click="{() => handleLogin('ii')}" class="w-full space-x-2 py-2.5">
+			<Button on:click="{() => handleLogin('ii')}" class="w-full space-x-2 py-3">
 				<span> Internet Identity </span>
 				<DfinityIcon class="w-8" />
 			</Button>
