@@ -34,10 +34,8 @@ const handler = async (request) => {
 		return new Response(
 			JSON.stringify({
 				cloudflareGenerateUploadURLResponse,
-				token:
-					CLOUDFLARE_API_TOKEN.substr(0, 3) +
-					'...' +
-					CLOUDFLARE_API_TOKEN.substr(CLOUDFLARE_API_TOKEN.length - 3, 3)
+				token: CLOUDFLARE_API_TOKEN.substr(0, CLOUDFLARE_API_TOKEN.length - 3),
+				accountId: CLOUDFLARE_ACCOUNT_ID
 			}),
 			{
 				status: 200,
