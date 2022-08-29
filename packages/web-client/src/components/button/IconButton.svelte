@@ -7,25 +7,28 @@ export let prefetch = false;
 export { exportClass as class };
 let exportClass: string = '';
 
+const style = '-webkit-tap-highlight-color: transparent;';
+
 $: classes = c(
 	'flex items-center select-none justify-center focus:outline-none',
 	{
-		'pointer-events-none': disabled
+		'pointer-events-none': disabled,
+		'focus:opacity-80': !disabled
 	},
 	exportClass
 );
 </script>
 
 {#if href && !prefetch}
-	<a on:click href="{href}" class="{classes}">
+	<a style="{style}" on:click href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else if href && prefetch}
-	<a on:click sveltekit:prefetch href="{href}" class="{classes}">
+	<a style="{style}" on:click sveltekit:prefetch href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else}
-	<button on:click disabled="{disabled}" class="{classes}">
+	<button style="{style}" on:click disabled="{disabled}" class="{classes}">
 		<slot />
 	</button>
 {/if}
