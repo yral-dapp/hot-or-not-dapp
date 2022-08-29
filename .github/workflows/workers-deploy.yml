@@ -23,7 +23,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           environment: "main"
           workingDirectory: "packages/workers/"
-          secrets: |
-            CLOUDFLARE_API_TOKEN
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_STREAM_API_TOKEN }}
+          postCommands: |
+            echo "${{ secrets.CLOUDFLARE_STREAM_API_TOKEN }}" | wrangler secret put CLOUDFLARE_API_TOKEN
