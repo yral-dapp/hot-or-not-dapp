@@ -80,6 +80,7 @@ onMount(async () => {
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<VideoPlayer
 				i="{i}"
+				swiperJs
 				bind:this="{videoPlayers[i]}"
 				load="{currentVideoIndex - keepVideosLoadedCount < i &&
 					currentVideoIndex + keepVideosLoadedCount > i}"

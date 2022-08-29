@@ -111,6 +111,7 @@ onMount(async () => {
 	{#each videos as video, i (i)}
 		<VideoPlayer
 			i="{i}"
+			swiperJs="{false}"
 			bind:this="{videoPlayers[i]}"
 			load="{currentVideoIndex - keepVideosLoadedCount < i &&
 				currentVideoIndex + keepVideosLoadedCount > i}"
