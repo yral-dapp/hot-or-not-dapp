@@ -41,3 +41,5 @@ jobs:
           environment: "main"
           workingDirectory: "packages/web-client/"
           command: pages publish ".svelte-kit/cloudflare" --project-name=hot-or-not-web-client
+        env:
+          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
