@@ -53,7 +53,6 @@ async function nextStep() {
 			$auth.showLogin = true;
 			return;
 		}
-		uploadStatus = 'uploading';
 		startUploading();
 	}
 }
@@ -67,9 +66,15 @@ async function updateHashtags() {
 
 async function startUploading() {
 	if (!$fileToUpload) return;
+	hashtagError = '';
+	uploadStep = 'uploading';
+	uploadStatus = 'uploading';
 	const uploadRes: any = await uploadVideoToStream($fileToUpload, onProgress);
 	if (!uploadRes.success) {
 		console.error(uploadRes.error);
+		hashtagError = 'Uploading failed. Please try again';
+		uploadStatus = 'to-upload';
+		uploadProgress.set(0);
 		return;
 	} else if (uploadRes.uid) {
 		checkVideoProcessingStatus(uploadRes.uid);
@@ -200,11 +205,11 @@ onDestroy(() => {
 					</div>
 				{/if}
 			</div>
-			{#if hashtagError}
-				<div class="text-xs text-red-500">{hashtagError}</div>
-			{/if}
 			{#if isInputLimitReached}
 				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
+			{/if}
+			{#if hashtagError}
+				<div class="text-xs text-red-500">{hashtagError}</div>
 			{/if}
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
