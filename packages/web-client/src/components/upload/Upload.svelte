@@ -10,7 +10,7 @@ import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount, onDestroy } from 'svelte';
-import { fileList, fileBlob } from '$stores/fileUpload';
+import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
@@ -29,7 +29,6 @@ let videoDescription = '';
 let videoHashtags = '';
 let descriptionError = '';
 let hashtagError = '';
-let fileToUpload: Blob | File;
 let uploadStep: 'uploading' | 'processing' | 'verified' | 'not-verified' = 'uploading';
 let hashtags: string[] = [];
 let videoStatusInterval: any;
@@ -67,8 +66,8 @@ async function updateHashtags() {
 }
 
 async function startUploading() {
-	if (!fileToUpload) return;
-	const uploadRes: any = await uploadVideoToStream(fileToUpload, onProgress);
+	if (!$fileToUpload) return;
+	const uploadRes: any = await uploadVideoToStream($fileToUpload, onProgress);
 	if (!uploadRes.success) {
 		console.error(uploadRes.error);
 		return;
@@ -123,18 +122,13 @@ async function showShareDialog() {
 	}
 }
 onMount(async () => {
-	if ($fileList && $fileList[0]) {
-		fileToUpload = $fileList[0];
-		videoEl.src = URL.createObjectURL(fileToUpload) + '#t=0.01';
-	} else if ($fileBlob) {
-		fileToUpload = $fileBlob;
-		videoEl.src = URL.createObjectURL($fileBlob) + '#t=0.01';
+	if ($fileToUpload) {
+		videoEl.src = URL.createObjectURL($fileToUpload) + '#t=0.01';
 	} else goto('/upload');
 });
 
 onDestroy(() => {
-	$fileList = null;
-	$fileBlob = null;
+	$fileToUpload = null;
 	videoEl.pause();
 	videoEl.load();
 	videoStatusInterval && clearInterval(videoStatusInterval);
