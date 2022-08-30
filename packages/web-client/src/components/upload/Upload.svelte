@@ -15,6 +15,7 @@ import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
 import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
+import PencilIcon from '$components/icons/PencilIcon.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -95,7 +96,7 @@ async function checkVideoProcessingStatus(uid: string) {
 				handleSuccessfulUpload(uid);
 				clearInterval(videoStatusInterval);
 			} else throw new Error();
-		} catch (e) {
+		} catch (_) {
 			console.error('Processign error');
 			hashtagError = 'Uploading failed. Please try again';
 			uploadStatus = 'to-upload';
@@ -106,17 +107,27 @@ async function checkVideoProcessingStatus(uid: string) {
 }
 
 async function handleSuccessfulUpload(uid: string) {
-	console.log('upload processed');
-	const video = await getVideoDetails(uid);
-	console.log({ video });
-	// const postId = individualUser().create_post({
-	// 	description: videoDescription,
-	// 	hashtags: hashtags,
-	// 	video_url: ''
-	// });
-	uploadStep = 'verified';
-	uploadStatus = 'uploaded';
-	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
+	try {
+		console.log('upload processed');
+		const video = await getVideoDetails(uid);
+		if (video.success) {
+			console.log({ video });
+			// const postId = individualUser().create_post({
+			// 	description: videoDescription,
+			// 	hashtags: hashtags,
+			// 	video_url: ''
+			// });
+			uploadStep = 'verified';
+			uploadStatus = 'uploaded';
+			// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
+		} else throw new Error();
+	} catch (_) {
+		console.error('Cannot fetch details error');
+		hashtagError = 'Uploading failed. Please try again';
+		uploadStatus = 'to-upload';
+		uploadProgress.set(0);
+		return;
+	}
 }
 
 async function showShareDialog() {
