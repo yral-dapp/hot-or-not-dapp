@@ -16,7 +16,7 @@ import { fade } from 'svelte/transition';
 import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
-import { fileItem, fileBlob } from '$stores/fileUpload';
+import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { isiPhone } from '$lib/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
@@ -83,14 +83,15 @@ function checkFileSelected(files: FileList | null) {
 		videoEl.onloadedmetadata = () => {
 			URL.revokeObjectURL(videoEl.src);
 			if (videoEl.duration && videoEl.duration > 1) {
-				if (videoEl.duration > 5) {
+				if (videoEl.duration > 60) {
 					invalidFileSelected = {
 						show: true,
 						error: 'length'
 					};
 					loading = false;
 				} else {
-					$fileItem = files[0];
+					console.log('file is fine', files);
+					$fileToUpload = files[0];
 					goto('/upload/new');
 				}
 			} else {
@@ -103,7 +104,6 @@ function checkFileSelected(files: FileList | null) {
 		};
 		videoEl.src = URL.createObjectURL(files[0]);
 	}
-	inputEl.value = '';
 }
 
 function toggleTimer() {
@@ -202,7 +202,7 @@ function handleDataAvailable(event: any) {
 		loading = true;
 		recordedChunks.push(event.data);
 		const type = MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4;';
-		$fileBlob = new Blob(recordedChunks, {
+		$fileToUpload = new Blob(recordedChunks, {
 			type
 		});
 		goto('/upload/new');
@@ -469,7 +469,7 @@ onDestroy(async () => {
 	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
 />
 
-<Popup bind:show="{invalidFileSelected.show}">
+<Popup on:close="{() => (inputEl.value = '')}" bind:show="{invalidFileSelected.show}">
 	<div class="flex flex-col space-y-4">
 		<div>
 			{#if invalidFileSelected.error === 'size'}
@@ -480,7 +480,12 @@ onDestroy(async () => {
 				Something went wrong selecting the video. Please try again
 			{/if}
 		</div>
-		<Button on:click="{() => (invalidFileSelected.show = false)}">Okay</Button>
+		<Button
+			on:click="{() => {
+				invalidFileSelected.show = false;
+				inputEl.value = '';
+			}}">Okay</Button
+		>
 	</div>
 </Popup>
 
