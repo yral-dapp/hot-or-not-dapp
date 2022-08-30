@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "npm run web-client:build",
 		"web-client:build": "npm run --prefix ./packages/web-client build",
+		"web-client:build:ssr": "npm run --prefix ./packages/web-client build:ssr",
 		"web-client:preview": "npm run --prefix ./packages/web-client preview",
 		"web-client:dev": "npm run --prefix ./packages/web-client dev",
 		"workers:dev": "npm run --prefix ./src/workers dev",

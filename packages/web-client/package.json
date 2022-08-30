@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "vite dev --host",
 		"build": "vite build",
+		"build:ssr": "BUILD_MODE=ssr vite build",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
@@ -24,6 +25,7 @@
 		"throttle-debounce": "5.0.0"
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-cloudflare": "^1.0.0-next.32",
 		"@sveltejs/adapter-static": "1.0.0-next.39",
 		"@sveltejs/kit": "1.0.0-next.402",
 		"@tailwindcss/forms": "0.5.2",
