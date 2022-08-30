@@ -22,18 +22,13 @@ async function generateUrl() {
 }
 
 export async function uploadVideoToStream(file: Blob | File, onProgress: any) {
-	// const uploadRes = await generateUrl();
-	// if (!uploadRes || !uploadRes.uploadURL) {
-	// 	return {
-	// 		success: false,
-	// 		error: "Couldn't generate upload Url"
-	// 	};
-	// }
-
-	const uploadRes = {
-		uploadURL: 'https://upload.videodelivery.net/d82052224bb74c51b8b17abd838b426a',
-		uid: '1234'
-	};
+	const uploadRes = await generateUrl();
+	if (!uploadRes || !uploadRes.uploadURL) {
+		return {
+			success: false,
+			error: "Couldn't generate upload Url"
+		};
+	}
 
 	return new Promise((resolve) => {
 		const xhr = new XMLHttpRequest();
