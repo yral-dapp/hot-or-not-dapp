@@ -16,4 +16,4 @@ CORS_ALLOW_ORIGINS = "http://localhost:5173"
 
 [env.main.vars]
 CLOUDFLARE_ACCOUNT_ID = "a209c523d2d9646cc56227dbe6ce3ede"
-CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app"
+CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app,https://hotornot.wtf",
