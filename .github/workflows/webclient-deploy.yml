@@ -11,22 +11,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  web-client-deploy-dapp:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
-      - run: npm run web-client:build
-      - run: DFX_VERSION=0.11.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
-      - run: dfx identity list
-      - run: |
-          touch actions_identity.pem
-          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
-          dfx identity import --disable-encryption actions actions_identity.pem 
-          rm actions_identity.pem
-          dfx identity use actions
-      - run: dfx deploy webclient --network ic --no-wallet
+  # web-client-deploy-dapp:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set-up env
+  #       uses: ./.github/workflows/webclient-setup
+  #     - run: npm run web-client:build
+  #     - run: DFX_VERSION=0.11.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+  #     - run: dfx identity list
+  #     - run: |
+  #         touch actions_identity.pem
+  #         echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+  #         dfx identity import --disable-encryption actions actions_identity.pem
+  #         rm actions_identity.pem
+  #         dfx identity use actions
+  #     - run: dfx deploy webclient --network ic --no-wallet
 
   web-client-deploy-pages:
     runs-on: ubuntu-latest
@@ -40,4 +40,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           environment: "main"
           workingDirectory: "packages/web-client/"
-          command: pages publish --project-name=hot-or-not-main
+          command: pages publish .svelte-kit/cloudflare --project-name=hot-or-not-main --env main
