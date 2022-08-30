@@ -3,7 +3,8 @@ on:
   push:
     paths:
       - "packages/web-client/**"
-      - ".github/workflows/web-client/**"
+      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/composite/webclient-setup.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set-up env
-        uses: ./.github/workflows/web-client/webclient-setup
+        uses: ./.github/workflows/composite/webclient-setup
       - run: npm run build
       - run: DFX_VERSION=0.11.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
@@ -32,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set-up env
-        uses: ./.github/workflows/web-client/webclient-setup
+        uses: ./.github/workflows/composite/webclient-setup
       - run: npm run build:ssr
       - uses: cloudflare/wrangler-action@2.0.0
         with:
