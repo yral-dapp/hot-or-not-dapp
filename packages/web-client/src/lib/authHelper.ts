@@ -13,7 +13,7 @@ async function updateUserIndexCanister() {
 	});
 }
 
-export async function initializeAuthClient(): Promise<void> {
+export default async function initializeAuthClient(): Promise<void> {
 	let authStore = get(auth);
 	if (!authStore.client) {
 		const authClient = await AuthClient.create();
