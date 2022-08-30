@@ -11,8 +11,10 @@ import Login from '$components/login/Login.svelte';
 import transparentSrc from '$assets/transparent.png';
 
 onMount(async () => {
-	if (browser) window.Buffer = Buffer;
-	await initializeAuthClient();
+	if (browser) {
+		window.Buffer = Buffer;
+		await initializeAuthClient();
+	}
 });
 </script>
 
