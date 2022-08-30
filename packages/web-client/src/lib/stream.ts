@@ -21,7 +21,7 @@ async function generateUrl() {
 	}
 }
 
-export async function uploadVideoToStream(file: Blob, onProgress: any) {
+export async function uploadVideoToStream(file: Blob | File, onProgress: any) {
 	// const uploadRes = await generateUrl();
 	// if (!uploadRes || !uploadRes.uploadURL) {
 	// 	return {
