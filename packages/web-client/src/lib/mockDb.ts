@@ -1,6 +1,7 @@
 export type VideoDB = {
 	id: number;
 	url: string;
+	name?: string;
 };
 
 const videos: VideoDB[] = [
