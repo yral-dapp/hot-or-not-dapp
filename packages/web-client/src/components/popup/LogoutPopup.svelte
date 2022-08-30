@@ -9,10 +9,11 @@ let loading = false;
 
 async function handleLogout() {
 	loading = true;
-	await $auth.client?.logout();
-	await initializeAuthClient();
+	$auth.isLoggedIn = false;
 	loading = false;
 	show = false;
+	await $auth.client?.logout();
+	await initializeAuthClient();
 }
 </script>
 
