@@ -62,7 +62,7 @@ async function updateHashtags() {
 	hashtags = videoHashtags
 		.split(/(?:,| )+/)
 		.filter((o) => !!o)
-		.map((o) => o.replace('#', ''));
+		.map((o) => o.replace('#', '').toLowerCase());
 }
 
 async function startUploading() {
