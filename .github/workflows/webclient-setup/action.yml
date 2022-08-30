@@ -1,4 +1,5 @@
 name: Setup Web-Client Env
+description: Set up node environment and install dependencies
 
 inputs:
   working-dir:
@@ -9,11 +10,11 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
         node-version: "16"
     - run: npm install
+      shell: bash
     - run: |
         touch .env
         echo "VITE_GA_TRACKING_ID=\"$GA_TRACKING_ID\"" >> .env
@@ -27,6 +28,7 @@ runs:
         echo "VITE_FIREBASE_MEASUREMENT_ID=\"$FIREBASE_MEASUREMENT_ID\"" >> .env
         echo "VITE_CLOUDFLARE_WORKERS_API_HOST=\"$CLOUDFLARE_WORKERS_API_HOST\"" >> .env
         echo "VITE_CLOUDFLARE_STREAM_HOST=\"$CLOUDFLARE_STREAM_HOST\"" >> .env
+      shell: bash
       working-directory: ${{ inputs.working-dir }}
       env:
         GA_TRACKING_ID: "G-KXNH2F9QXW"
