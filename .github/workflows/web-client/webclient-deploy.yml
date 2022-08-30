@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - "packages/web-client/**"
-      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/web-client/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
