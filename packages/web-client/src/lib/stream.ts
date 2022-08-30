@@ -21,40 +21,33 @@ async function generateUrl() {
 	}
 }
 
-export async function uploadVideoToStream(file: Blob) {
-	const uploadRes = await generateUrl();
-	if (!uploadRes || !uploadRes.uploadURL) {
-		return {
-			success: false,
-			error: "Couldn't generate upload Url"
-		};
-	}
-	try {
+export async function uploadVideoToStream(file: Blob, onProgress: any) {
+	// const uploadRes = await generateUrl();
+	// if (!uploadRes || !uploadRes.uploadURL) {
+	// 	return {
+	// 		success: false,
+	// 		error: "Couldn't generate upload Url"
+	// 	};
+	// }
+
+	const uploadRes = {
+		uploadURL: 'https://upload.videodelivery.net/d82052224bb74c51b8b17abd838b426a',
+		uid: '1234'
+	};
+
+	return new Promise((resolve) => {
+		const xhr = new XMLHttpRequest();
+		xhr.upload.addEventListener('progress', (e) => onProgress(e.loaded / e.total));
+		xhr.addEventListener('load', () => resolve({ success: true, uid: uploadRes.uid }));
+		xhr.addEventListener('error', () => resolve({ success: false, error: 'Something went wrong' }));
+		xhr.addEventListener('abort', () =>
+			resolve({ success: false, error: 'Upload cancelled by user' })
+		);
+		xhr.open('POST', uploadRes.uploadURL, true);
 		const formData = new FormData();
 		formData.append('file', file);
-		const res = await fetch(uploadRes.uploadURL, {
-			method: 'POST',
-			body: formData
-		});
-
-		if (res.status != 200) {
-			return {
-				success: false,
-				error: 'Something went wrong while uploading file'
-			};
-		} else {
-			return {
-				success: true,
-				uid: uploadRes.uid
-			};
-		}
-	} catch (e) {
-		console.log('error', e);
-		return {
-			success: false,
-			error: 'Something went wrong while uploading file'
-		};
-	}
+		xhr.send(formData);
+	});
 }
 
 export async function checkVideoStatus(uid: string) {

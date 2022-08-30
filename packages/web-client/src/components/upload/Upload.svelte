@@ -68,15 +68,17 @@ async function updateHashtags() {
 
 async function startUploading() {
 	if (!fileToUpload) return;
-	uploadProgress.set(10);
-	const uploadRes = await uploadVideoToStream(fileToUpload);
-
+	const uploadRes: any = await uploadVideoToStream(fileToUpload, onProgress);
 	if (!uploadRes.success) {
 		console.error(uploadRes.error);
 		return;
 	} else if (uploadRes.uid) {
 		checkVideoProcessingStatus(uploadRes.uid);
 	}
+}
+
+function onProgress(progress: number) {
+	uploadProgress.set(progress * 100);
 }
 
 async function checkVideoProcessingStatus(uid: string) {
