@@ -38,8 +38,7 @@ jobs:
       - uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          environment: "main"
           workingDirectory: "packages/web-client/"
-          command: pages publish ".svelte-kit/cloudflare" --project-name=hot-or-not-web-client --commit-dirty=true --env=main
+          command: pages publish ".svelte-kit/cloudflare" --branch=production --project-name=hot-or-not-web-client --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
