@@ -89,10 +89,18 @@ async function checkVideoProcessingStatus(uid: string) {
 	uploadStep = 'processing';
 	uploadProgress.set(100);
 	videoStatusInterval = setInterval(async () => {
-		const videoStatus = await checkVideoStatus(uid);
-		if (videoStatus.success && videoStatus.status == 'ready') {
-			handleSuccessfulUpload(uid);
-			clearInterval(videoStatusInterval);
+		try {
+			const videoStatus = await checkVideoStatus(uid);
+			if (videoStatus.success && videoStatus.status == 'ready') {
+				handleSuccessfulUpload(uid);
+				clearInterval(videoStatusInterval);
+			} else throw new Error();
+		} catch (e) {
+			console.error('Processign error');
+			hashtagError = 'Uploading failed. Please try again';
+			uploadStatus = 'to-upload';
+			uploadProgress.set(0);
+			return;
 		}
 	}, 4000);
 }
