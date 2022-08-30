@@ -15,6 +15,7 @@ import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
 import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
+import PencilIcon from '$components/icons/PencilIcon.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -53,7 +54,6 @@ async function nextStep() {
 			$auth.showLogin = true;
 			return;
 		}
-		uploadStatus = 'uploading';
 		startUploading();
 	}
 }
@@ -67,9 +67,15 @@ async function updateHashtags() {
 
 async function startUploading() {
 	if (!$fileToUpload) return;
+	hashtagError = '';
+	uploadStep = 'uploading';
+	uploadStatus = 'uploading';
 	const uploadRes: any = await uploadVideoToStream($fileToUpload, onProgress);
 	if (!uploadRes.success) {
 		console.error(uploadRes.error);
+		hashtagError = 'Uploading failed. Please try again';
+		uploadStatus = 'to-upload';
+		uploadProgress.set(0);
 		return;
 	} else if (uploadRes.uid) {
 		checkVideoProcessingStatus(uploadRes.uid);
@@ -84,26 +90,44 @@ async function checkVideoProcessingStatus(uid: string) {
 	uploadStep = 'processing';
 	uploadProgress.set(100);
 	videoStatusInterval = setInterval(async () => {
-		const videoStatus = await checkVideoStatus(uid);
-		if (videoStatus.success && videoStatus.status == 'ready') {
-			handleSuccessfulUpload(uid);
-			clearInterval(videoStatusInterval);
+		try {
+			const videoStatus = await checkVideoStatus(uid);
+			if (videoStatus.success && videoStatus.status == 'ready') {
+				handleSuccessfulUpload(uid);
+				clearInterval(videoStatusInterval);
+			} else throw new Error();
+		} catch (_) {
+			console.error('Processign error');
+			hashtagError = 'Uploading failed. Please try again';
+			uploadStatus = 'to-upload';
+			uploadProgress.set(0);
+			return;
 		}
 	}, 4000);
 }
 
 async function handleSuccessfulUpload(uid: string) {
-	console.log('upload processed');
-	const video = await getVideoDetails(uid);
-	console.log({ video });
-	// const postId = individualUser().create_post({
-	// 	description: videoDescription,
-	// 	hashtags: hashtags,
-	// 	video_url: ''
-	// });
-	uploadStep = 'verified';
-	uploadStatus = 'uploaded';
-	// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
+	try {
+		console.log('upload processed');
+		const video = await getVideoDetails(uid);
+		if (video.success) {
+			console.log({ video });
+			// const postId = individualUser().create_post({
+			// 	description: videoDescription,
+			// 	hashtags: hashtags,
+			// 	video_url: ''
+			// });
+			uploadStep = 'verified';
+			uploadStatus = 'uploaded';
+			// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
+		} else throw new Error();
+	} catch (_) {
+		console.error('Cannot fetch details error');
+		hashtagError = 'Uploading failed. Please try again';
+		uploadStatus = 'to-upload';
+		uploadProgress.set(0);
+		return;
+	}
 }
 
 async function showShareDialog() {
@@ -200,11 +224,11 @@ onDestroy(() => {
 					</div>
 				{/if}
 			</div>
-			{#if hashtagError}
-				<div class="text-xs text-red-500">{hashtagError}</div>
-			{/if}
 			{#if isInputLimitReached}
 				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
+			{/if}
+			{#if hashtagError}
+				<div class="text-xs text-red-500">{hashtagError}</div>
 			{/if}
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
