@@ -16,11 +16,13 @@ import { fade } from 'svelte/transition';
 import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/filtersMap';
 import { debounce } from 'throttle-debounce';
-import { fileList, fileBlob } from '$stores/fileUpload';
+import { fileItem, fileBlob } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { isiPhone } from '$lib/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import Popup from '$components/popup/Popup.svelte';
+import Button from '$components/button/Button.svelte';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -39,6 +41,10 @@ let captureInterval: any;
 let recording = false;
 const useCanvas = !isiPhone();
 let loading = false;
+let invalidFileSelected = {
+	show: false,
+	error: 'size'
+};
 
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
@@ -60,10 +66,44 @@ async function updateVideoStream() {
 	videoEl.srcObject = mediaStream;
 }
 
-function handleFileUpload(files: FileList | null) {
+function checkFileSelected(files: FileList | null) {
 	loading = true;
-	$fileList = files;
-	goto('/upload/new');
+	if (files && files[0]) {
+		if (files[0].size / 1024 / 1024 > 200) {
+			//file is larger than 200 MiB
+			invalidFileSelected = {
+				show: true,
+				error: 'size'
+			};
+			loading = false;
+			return;
+		}
+		const videoEl = document.createElement('video');
+		videoEl.preload = 'metadata';
+		videoEl.onloadedmetadata = () => {
+			URL.revokeObjectURL(videoEl.src);
+			if (videoEl.duration && videoEl.duration > 1) {
+				if (videoEl.duration > 5) {
+					invalidFileSelected = {
+						show: true,
+						error: 'length'
+					};
+					loading = false;
+				} else {
+					$fileItem = files[0];
+					goto('/upload/new');
+				}
+			} else {
+				invalidFileSelected = {
+					show: true,
+					error: 'other'
+				};
+				loading = false;
+			}
+		};
+		videoEl.src = URL.createObjectURL(files[0]);
+	}
+	inputEl.value = '';
 }
 
 function toggleTimer() {
@@ -426,8 +466,23 @@ onDestroy(async () => {
 	disabled="{loading}"
 	bind:this="{inputEl}"
 	class="hidden"
-	on:change="{(e) => handleFileUpload(e.currentTarget.files)}"
+	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
 />
+
+<Popup bind:show="{invalidFileSelected.show}">
+	<div class="flex flex-col space-y-4">
+		<div>
+			{#if invalidFileSelected.error === 'size'}
+				The video you selected is larger than 200MB. Please select a smaller video
+			{:else if invalidFileSelected.error === 'length'}
+				The video you selected is longer than 1 minute. Please select a shorter video
+			{:else}
+				Something went wrong selecting the video. Please try again
+			{/if}
+		</div>
+		<Button on:click="{() => (invalidFileSelected.show = false)}">Okay</Button>
+	</div>
+</Popup>
 
 <style>
 .w-dumb-start {
