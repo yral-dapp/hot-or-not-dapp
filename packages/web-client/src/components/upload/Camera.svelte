@@ -23,7 +23,6 @@ import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
 import Button from '$components/button/Button.svelte';
-import { browser } from '$app/env';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -213,7 +212,7 @@ function handleDataAvailable(event: any) {
 }
 
 function updateCanvas() {
-	if (canvasEl && useCanvas && browser) {
+	if (canvasEl && useCanvas) {
 		canvasEl.height = window.innerHeight;
 		canvasEl.width = window.innerWidth;
 	}
