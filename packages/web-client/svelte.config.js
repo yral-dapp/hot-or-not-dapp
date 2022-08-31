@@ -2,7 +2,7 @@ import staticAdapter from '@sveltejs/adapter-static';
 import cfAdapter from '@sveltejs/adapter-cloudflare';
 import preprocess from 'svelte-preprocess';
 
-const isSSR = process.env.BUILD_MODE === 'ssr';
+const isSSR = process.env.BUILD_MODE != 'static';
 console.log('svelte in', isSSR ? 'ssr' : 'static', 'build mode');
 
 /** @type {import('@sveltejs/kit').Config} */
