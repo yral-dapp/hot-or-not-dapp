@@ -1,11 +1,12 @@
 <script lang="ts">
-$: innerHeight = window?.innerHeight;
+import { browser } from '$app/env';
+$: innerHeight = browser ? window?.innerHeight : 0;
 </script>
 
 <svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
 
 <camera-layout
-	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
+	style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
 	class="relative block h-full w-full overflow-hidden text-white"
 >
 	<slot name="content" />

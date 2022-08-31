@@ -149,8 +149,8 @@ onMount(async () => {
 
 onDestroy(() => {
 	$fileToUpload = null;
-	videoEl.pause();
-	videoEl.load();
+	videoEl?.pause();
+	videoEl?.load();
 	videoStatusInterval && clearInterval(videoStatusInterval);
 });
 </script>

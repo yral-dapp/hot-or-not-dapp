@@ -2,6 +2,7 @@
 import { browser } from '$app/env';
 
 export let testMode = false;
+
 $: testClasses = testMode ? 'border-2 border-white/30' : '';
 $: innerHeight = browser ? window?.innerHeight : 0;
 </script>
