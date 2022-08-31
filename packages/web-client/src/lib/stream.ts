@@ -2,7 +2,6 @@ import { auth } from '$stores/auth';
 import { get } from 'svelte/store';
 
 const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST;
-const cfStreamApiHost = import.meta.env.VITE_CLOUDFLARE_STREAM_HOST;
 
 async function generateUrl() {
 	const authStore = get(auth);
@@ -53,30 +52,12 @@ export async function checkVideoStatus(uid: string) {
 		const res = await req.json();
 		return {
 			success: true,
-			status: (res.readyToStream ? 'ready' : 'processing') as 'ready' | 'processing'
+			result: res
 		};
 	} catch (e) {
 		return {
 			success: false,
 			error: 'Something went wrong while checking status'
-		};
-	}
-}
-
-export async function getVideoDetails(uid: string) {
-	try {
-		const req = await fetch(`${cfStreamApiHost}/${uid}`, {
-			method: 'GET'
-		});
-		const res = await req.json();
-		return {
-			success: true,
-			result: res.result
-		};
-	} catch (e) {
-		return {
-			success: false,
-			error: 'Something went wrong while fetching video'
 		};
 	}
 }
