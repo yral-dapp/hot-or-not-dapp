@@ -8,7 +8,6 @@ import SplashScreen from '$components/layout/SplashScreen.svelte';
 import { page } from '$app/stores';
 import { auth } from '$stores/auth';
 import Login from '$components/login/Login.svelte';
-import transparentSrc from '$assets/transparent.png';
 
 onMount(async () => {
 	if (browser) {
@@ -24,5 +23,4 @@ onMount(async () => {
 	<Login />
 {/if}
 
-<img class="absolute z-[-1]" alt="Transparent" src="{transparentSrc}" />
 <slot />
