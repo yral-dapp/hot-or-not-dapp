@@ -39,7 +39,7 @@ let mediaRecorder: MediaRecorder;
 let recordedChunks: Blob[] = [];
 let captureInterval: any;
 let recording = false;
-const useCanvas = !isiPhone();
+let useCanvas = false;
 let loading = false;
 let invalidFileSelected = {
 	show: false,
@@ -275,6 +275,7 @@ function prefetchLinks() {
 
 onMount(async () => {
 	await requestMediaAccess();
+	useCanvas = !isiPhone();
 	if (useCanvas) {
 		updateCanvas();
 		startCapturing();
