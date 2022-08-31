@@ -165,7 +165,7 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 pb-64 lg:px-8"
+		class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 lg:px-8"
 	>
 		<div
 			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
@@ -201,6 +201,8 @@ onDestroy(() => {
 			<InputBox
 				placeholder="Write your description here ..."
 				bind:value="{videoDescription}"
+				on:focus="{() => console.log('focus')}"
+				on:blur="{() => console.log('blur')}"
 				class="shrink-0 rounded-xl bg-white/10"
 			/>
 			{#if descriptionError}
@@ -272,24 +274,21 @@ onDestroy(() => {
 				</div>
 			</div>
 		{/if}
-	</div>
-	<div
-		slot="bottom"
-		class="border-t-2 border-white/10 bg-black px-8 pt-4 pb-8 shadow-up shadow-black/50"
-	>
-		<div class="pb-4">
-			<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
-			deleted.
-		</div>
-		{#if uploadStatus === 'to-upload'}
-			<Button class="w-full" on:click="{nextStep}">Upload Video</Button>
-		{:else if uploadStatus === 'uploading'}
-			<Button class="w-full" disabled on:click="{nextStep}">Uploading</Button>
-		{:else if uploadStatus === 'uploaded'}
-			<div class="flex items-center justify-between space-x-4">
-				<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
-				<Button href="/all" prefetch class="w-full">View Video</Button>
+		<div class="pt-32 pb-8 shadow-up shadow-black/50">
+			<div class="pb-4">
+				<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
+				deleted.
 			</div>
-		{/if}
+			{#if uploadStatus === 'to-upload'}
+				<Button class="w-full" on:click="{nextStep}">Upload Video</Button>
+			{:else if uploadStatus === 'uploading'}
+				<Button class="w-full" disabled on:click="{nextStep}">Uploading</Button>
+			{:else if uploadStatus === 'uploaded'}
+				<div class="flex items-center justify-between space-x-4">
+					<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
+					<Button href="/all" prefetch class="w-full">View Video</Button>
+				</div>
+			{/if}
+		</div>
 	</div>
 </UploadLayout>
