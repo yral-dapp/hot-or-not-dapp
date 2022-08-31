@@ -15,7 +15,6 @@ import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
 import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
-import PencilIcon from '$components/icons/PencilIcon.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -153,8 +152,8 @@ onMount(async () => {
 
 onDestroy(() => {
 	$fileToUpload = null;
-	videoEl.pause();
-	videoEl.load();
+	videoEl?.pause();
+	videoEl?.load();
 	videoStatusInterval && clearInterval(videoStatusInterval);
 });
 </script>
