@@ -27,7 +27,6 @@ runs:
         echo "VITE_FIREBASE_APP_ID=\"$FIREBASE_APP_ID\"" >> .env
         echo "VITE_FIREBASE_MEASUREMENT_ID=\"$FIREBASE_MEASUREMENT_ID\"" >> .env
         echo "VITE_CLOUDFLARE_WORKERS_API_HOST=\"$CLOUDFLARE_WORKERS_API_HOST\"" >> .env
-        echo "VITE_CLOUDFLARE_STREAM_HOST=\"$CLOUDFLARE_STREAM_HOST\"" >> .env
       shell: bash
       working-directory: ${{ inputs.working-dir }}
       env:
@@ -41,4 +40,3 @@ runs:
         FIREBASE_APP_ID: "1:442139438721:web:b7e616f50feaa67ad12780"
         FIREBASE_MEASUREMENT_ID: "G-LDBZXMYM4E"
         CLOUDFLARE_WORKERS_API_HOST: "https://hot-or-not-upload-api-main.go-bazzinga.workers.dev"
-        CLOUDFLARE_STREAM_HOST: "https://api.cloudflare.com/client/v4/accounts/a209c523d2d9646cc56227dbe6ce3ede/stream"
