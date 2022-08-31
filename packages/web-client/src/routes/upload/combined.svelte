@@ -1,11 +1,29 @@
 <script lang="ts">
-import Camera from '$components/upload/Camera.svelte';
-import Upload from '$components/upload/Upload.svelte';
-import { fileToUpload } from '$stores/fileUpload';
+let src = '';
+let paused = true;
+function checkFileSelected(files: FileList | null) {
+	if (files && files[0]) {
+		src = URL.createObjectURL(files[0]);
+	}
+}
 </script>
 
-{#if !fileToUpload}
-	<Camera />
-{:else}
-	<Upload />
+<input
+	type="file"
+	accept="video/*"
+	class="border-2 p-4"
+	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
+/>
+
+{#if src}
+	<!-- svelte-ignore a11y-media-has-caption -->
+	<video
+		preload="metadata"
+		on:click="{() => (paused = !paused)}"
+		bind:paused
+		src="{src}"
+		playsinline
+		class="h-80 w-full rounded-xl"
+	>
+	</video>
 {/if}
