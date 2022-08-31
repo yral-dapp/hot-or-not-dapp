@@ -1,13 +1,15 @@
 <script lang="ts">
+import { browser } from '$app/env';
+
 export let testMode = false;
 $: testClasses = testMode ? 'border-2 border-white/30' : '';
-$: innerHeight = window?.innerHeight;
+$: innerHeight = browser ? window?.innerHeight : 0;
 </script>
 
 <svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
 
 <home
-	style="height: 100vh; {innerHeight ? `height: ${innerHeight}px` : ''}"
+	style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
 	class="relative block h-full w-full overflow-hidden text-white"
 >
 	<slot name="content" />
