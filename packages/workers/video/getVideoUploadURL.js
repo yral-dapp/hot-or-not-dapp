@@ -20,7 +20,7 @@ const handler = async (request) => {
 						Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`
 					},
 					body: JSON.stringify({
-						maxDurationSeconds: 120,
+						maxDurationSeconds: 60,
 						meta: {
 							creator: requestBody.principalId,
 							uploadType: 'challenge',
