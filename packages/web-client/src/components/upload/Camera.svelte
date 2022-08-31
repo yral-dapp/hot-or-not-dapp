@@ -277,6 +277,7 @@ onMount(async () => {
 	await requestMediaAccess();
 	useCanvas = !isiPhone();
 	if (useCanvas) {
+		await tick();
 		updateCanvas();
 		startCapturing();
 	}
