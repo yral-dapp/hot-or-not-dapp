@@ -3,7 +3,7 @@ let src = '';
 let paused = true;
 function checkFileSelected(files: FileList | null) {
 	if (files && files[0]) {
-		src = URL.createObjectURL(files[0]);
+		src = URL.createObjectURL(files[0]) + '#t=0.1';
 	}
 }
 </script>
@@ -23,6 +23,7 @@ function checkFileSelected(files: FileList | null) {
 		bind:paused
 		src="{src}"
 		playsinline
+		muted
 		class="h-80 w-full rounded-xl"
 	>
 	</video>
