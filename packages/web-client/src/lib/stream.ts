@@ -20,7 +20,10 @@ async function generateUrl() {
 	}
 }
 
-export async function uploadVideoToStream(file: Blob | File, onProgress: any) {
+export async function uploadVideoToStream(
+	file: Blob | File,
+	onProgress: any
+): Promise<UploadVideoToStream> {
 	const uploadRes = await generateUrl();
 	if (!uploadRes || !uploadRes.uploadURL) {
 		return {
@@ -44,15 +47,15 @@ export async function uploadVideoToStream(file: Blob | File, onProgress: any) {
 	});
 }
 
-export async function checkVideoStatus(uid: string) {
+export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {
 	try {
 		const req = await fetch(`${cfWorkerHost}/video/${uid}/getVideoProcessingStatus`, {
 			method: 'GET'
 		});
-		const res = await req.json();
+		const result: CheckVideoStatusResult = await req.json();
 		return {
 			success: true,
-			result: res
+			result
 		};
 	} catch (e) {
 		return {
@@ -61,3 +64,26 @@ export async function checkVideoStatus(uid: string) {
 		};
 	}
 }
+
+type RequestError = {
+	success: false;
+	error: string;
+};
+
+export type CheckVideoStatusResult = {
+	readyToStream: boolean;
+	thumbnail: string;
+	playback?: {
+		hls?: string;
+		dash?: string;
+	};
+};
+
+type CheckVideoStatus =
+	| RequestError
+	| {
+			success: true;
+			result: CheckVideoStatusResult;
+	  };
+
+type UploadVideoToStream = RequestError | { success: true; uid: string };
