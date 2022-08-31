@@ -494,7 +494,7 @@ onDestroy(async () => {
 <input
 	type="file"
 	accept="video/*"
-	disabled="{loading}"
+	disabled="{loading || recording}"
 	bind:this="{inputEl}"
 	class="hidden"
 	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
