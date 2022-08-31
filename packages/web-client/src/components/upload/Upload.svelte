@@ -14,8 +14,7 @@ import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import { checkVideoStatus, getVideoDetails, uploadVideoToStream } from '$lib/stream';
-import PencilIcon from '$components/icons/PencilIcon.svelte';
+import { checkVideoStatus, uploadVideoToStream, type CheckVideoStatusResult } from '$lib/stream';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -92,8 +91,8 @@ async function checkVideoProcessingStatus(uid: string) {
 	videoStatusInterval = setInterval(async () => {
 		try {
 			const videoStatus = await checkVideoStatus(uid);
-			if (videoStatus.success && videoStatus.status == 'ready') {
-				handleSuccessfulUpload(uid);
+			if (videoStatus.success && videoStatus.result.readyToStream) {
+				handleSuccessfulUpload(videoStatus.result);
 				clearInterval(videoStatusInterval);
 			} else throw new Error();
 		} catch (_) {
@@ -106,23 +105,20 @@ async function checkVideoProcessingStatus(uid: string) {
 	}, 4000);
 }
 
-async function handleSuccessfulUpload(uid: string) {
+async function handleSuccessfulUpload(result: CheckVideoStatusResult) {
 	try {
-		console.log('upload processed');
-		const video = await getVideoDetails(uid);
-		if (video.success) {
-			console.log({ video });
-			// const postId = individualUser().create_post({
-			// 	description: videoDescription,
-			// 	hashtags: hashtags,
-			// 	video_url: ''
-			// });
-			uploadStep = 'verified';
-			uploadStatus = 'uploaded';
-			// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
-		} else throw new Error();
+		console.log('upload successful');
+		console.log({ result });
+		// const postId = individualUser().create_post({
+		// 	description: videoDescription,
+		// 	hashtags: hashtags,
+		// 	video_url: ''
+		// });
+		uploadStep = 'verified';
+		uploadStatus = 'uploaded';
+		// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 	} catch (_) {
-		console.error('Cannot fetch details error');
+		console.error('Couldnt send details to backend');
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
 		uploadProgress.set(0);
