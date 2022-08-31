@@ -1,4 +1,6 @@
 <script lang="ts">
+import { browser } from '$app/env';
+
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { db, type VideoDB } from '$lib/mockDb';
 import { playerState } from '$stores/playerState';
@@ -90,7 +92,7 @@ const playVideo = debounce(300, async (index: number) => {
 });
 
 function updateURL() {
-	if (videos[currentVideoIndex])
+	if (videos[currentVideoIndex] && browser)
 		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
 }
 

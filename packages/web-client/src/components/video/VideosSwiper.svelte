@@ -7,6 +7,7 @@ import VideoPlayer from './VideoPlayer.svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
+import { browser } from '$app/env';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -56,7 +57,7 @@ const playVideo = debounce(50, async (index: number) => {
 });
 
 function updateURL() {
-	if (videos[currentVideoIndex])
+	if (videos[currentVideoIndex] && browser)
 		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
 }
 
