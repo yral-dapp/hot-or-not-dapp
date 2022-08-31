@@ -19,7 +19,8 @@ const handler = async (request) => {
 
 		return new Response(
 			JSON.stringify({
-				readyToStream: cloudflareQueryResponse.result.status.state === 'ready'
+				readyToStream: cloudflareQueryResponse.result.status.state === 'ready',
+				result: cloudflareQueryResponse
 			}),
 			{
 				status: 200,
