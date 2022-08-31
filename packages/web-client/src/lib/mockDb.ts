@@ -7,180 +7,167 @@ export type VideoDB = {
 const videos: VideoDB[] = [
 	{
 		id: 1,
-		url: 'https://cdn3.sharechat.com/542130_new_attributed_529356_23e1ce8d_1656749447451_.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/0593cbe129f2ce6a000b80a471770a20/downloads/default.mp4'
 	},
 	{
 		id: 2,
-		url: 'https://cdn3.sharechat.com/51165_new_attributed_36961_309e124a_1658632001423_w.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/8b94845381b2aa0af63a140b9cf4f839/downloads/default.mp4'
 	},
 	{
 		id: 3,
-		url: 'https://cdn3.sharechat.com/759334_new_attributed_732416_1f30d9b7_1655461662962_.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/7a85574345ed783cb3088e5f32cf40c0/downloads/default.mp4'
 	},
 	{
 		id: 4,
-		url: 'https://cdn3.sharechat.com/553810_new_attributed_530322_1f7bb168_1655883498574_.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/680731689e845fbf10fb6f8268dfc69c/downloads/default.mp4'
 	},
 	{
 		id: 5,
-		url: 'https://cdn3.sharechat.com/358818_new_attributed_323906_2c209d2e_1656758294702_.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/747ff41462878087ae350f87452daace/downloads/default.mp4'
 	},
 	{
 		id: 6,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-fountain-in-a-garden-2674-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/0ce2cd1f6817e84c231eecf2abf4eafa/downloads/default.mp4'
 	},
 	{
 		id: 7,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smart-watch-with-the-stopwatch-running-32808-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/7713d16ecd117ee7ff8b5632727520a5/downloads/default.mp4'
 	},
 	{
 		id: 8,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-tourists-skiing-on-a-snowy-slope-in-canada-3351-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/6640e07eedeb77c2c84779992f764533/downloads/default.mp4'
 	},
-	{ id: 9, url: 'https://assets.mixkit.co/videos/preview/mixkit-pink-and-blue-ink-1192-large.mp4' },
+	{
+		id: 9,
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/3ce7db0084fdd5ded3e2f85e57d86290/downloads/default.mp4'
+	},
 	{
 		id: 10,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-dancing-upside-down-on-a-pedestrian-bridge-3627-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/7e0ee53eefb4d9024ed92ff4f91d56bc/downloads/default.mp4'
 	},
 	{
 		id: 11,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-the-spheres-of-a-christmas-tree-2720-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/8130828f70ebd9b4dccb65f5ae40460d/downloads/default.mp4'
 	},
 	{
 		id: 12,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-dynamic-animation-of-the-head-of-a-screaming-man-32645-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/046369a46f25e5d84bba40aebd634c7a/downloads/default.mp4'
 	},
 	{
 		id: 13,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-under-a-peripheral-road-with-two-avenues-on-the-sides-34560-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/d5e2d29b4ffc6a5af518b8645d96d7ab/downloads/default.mp4'
 	},
 	{
 		id: 14,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-two-avenues-with-many-cars-traveling-at-night-34562-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/f6e7fb0b1bcedd9bafd1b63c78288ce0/downloads/default.mp4'
 	},
 	{
 		id: 15,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-city-traffic-on-bridges-and-streets-34565-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/ff2f77b7e79e85b9e473e8d8069d3d47/downloads/default.mp4'
 	},
 	{
 		id: 16,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-the-breeze-1188-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/87918808ddccbbbf47252b0733a6fa8b/downloads/default.mp4'
 	},
 	{
 		id: 17,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-pink-flowers-wave-in-the-breeze-1168-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/2992d623e470508d44642cf111a52ac5/downloads/default.mp4'
 	},
 	{
 		id: 18,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-top-aerial-shot-of-a-skater-skating-on-a-half-1364-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/1d99b2d13b48ec0a2c6bd4ca0b4d2073/downloads/default.mp4'
 	},
 	{
 		id: 19,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-dog-standing-on-a-log-1555-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/6c548aa1ca0e59306aea02f848a33718/downloads/default.mp4'
 	},
 	{
 		id: 20,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-elevated-electric-train-1600-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/b6970fc503fc1090bffa268eb85ac395/downloads/default.mp4'
 	},
 	{
 		id: 21,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-lens-taking-photos-2373-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/3e8bf5a1c13ee6fd3f24de179dad9e29/downloads/default.mp4'
 	},
 	{
 		id: 22,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-footballer-headbutting-the-ball-2923-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/2bef975832f6f587ef7a0c6b3cc7466d/downloads/default.mp4'
 	},
 	{
 		id: 23,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-flames-burning-inside-a-bbq-grill-2780-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/fbc472f29984a0ee6a964a24a632a45c/downloads/default.mp4'
 	},
 	{
 		id: 24,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-sparks-of-fire-on-a-black-background-3463-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/7e4eb7106721079015d93442e474db71/downloads/default.mp4'
 	},
 	{
 		id: 25,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-popping-dancers-performing-at-abandoned-place-3630-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/fc41fe33690045e6388f89d2208a1797/downloads/default.mp4'
 	},
 	{
 		id: 26,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-man-playing-drums-with-sepia-filter-3620-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/1502e05dc80588958ee847ed0875a2e3/downloads/default.mp4'
 	},
 	{
 		id: 27,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-old-street-at-night-3456-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/2b614b6bf84394c16350c9eb64f929e8/downloads/default.mp4'
 	},
 	{
 		id: 28,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-tourists-skiing-on-a-snowy-slope-in-canada-3352-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/6047bbb6fb8b02e26665111ff39938f0/downloads/default.mp4'
 	},
 	{
 		id: 29,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-woman-sitting-reading-in-pajamas-4950-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/8f940e102ba0dc6ebeda3693619b7753/downloads/default.mp4'
 	},
 	{
 		id: 30,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-ice-falling-into-a-glass-with-soda-5083-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/6c5d09093b1bebd973cfbd1098c98403/downloads/default.mp4'
 	},
 	{
 		id: 31,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-artist-working-in-her-studio-5375-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/1fb6b3ef5f5595f31dcd3fd64e9d8a18/downloads/default.mp4'
 	},
 	{
 		id: 32,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-domino-effect-on-dark-background-5253-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/5e962bd6e9abe997bd986cbcd9d0afc4/downloads/default.mp4'
 	},
 	{
 		id: 33,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-bartender-serving-beer-from-a-tap-looking-down-at-his-8709-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/a330652b298d35da78b36dfa88a39bc0/downloads/default.mp4'
 	},
 	{
 		id: 34,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-gummy-bears-lined-up-on-a-white-background-30382-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/fcf62f37663030818528f06761db9ea2/downloads/default.mp4'
 	},
 	{
 		id: 35,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-red-berries-served-in-a-bowl-on-a-wooden-table-30427-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/cb68609788ea863acd7a2e55c5457ccb/downloads/default.mp4'
 	},
 	{
 		id: 36,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-serving-juice-in-a-glass-with-some-oranges-on-a-10428-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/9c65cb1d3db9475e2282555768d65ab3/downloads/default.mp4'
 	},
 	{
 		id: 37,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-representation-of-a-sunrise-made-with-homemade-materials-13769-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/6849b11ba4af6e6a8e7f11cd4817c27d/downloads/default.mp4'
 	},
 	{
 		id: 38,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-blue-sky-with-clouds-moving-with-the-wind-2632-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/91771f5afd426ca49341c424c5929c2c/downloads/default.mp4'
 	},
 	{
 		id: 39,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-fire-line-to-the-floor-of-the-entrance-to-a-33874-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/d9c262307760be15db188a0dc3f58b11/downloads/default.mp4'
 	},
 	{
 		id: 40,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-decorated-for-halloween-with-a-pumpkin-spiders-smoke-and-candles-33890-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/e1d60669d1a7dd5cc29e7cd24368a318/downloads/default.mp4'
 	},
 	{
 		id: 41,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-playing-an-online-video-game-43532-large.mp4'
-	},
-	{
-		id: 42,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-small-pickup-truck-in-a-wide-dirt-desert-40066-large.mp4'
-	},
-	{
-		id: 43,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-cyborg-being-prepared-40203-large.mp4'
-	},
-	{
-		id: 44,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-jazz-musicians-playing-in-the-street-40397-large.mp4'
-	},
-	{
-		id: 45,
-		url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-moving-while-playing-a-vr-video-game-40463-large.mp4'
+		url: 'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/55ffebac2b19e1645d77d1e547b54cb8/downloads/default.mp4'
 	}
 ];
 
