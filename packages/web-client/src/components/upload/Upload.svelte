@@ -34,6 +34,7 @@ let hashtags: string[] = [];
 let videoStatusInterval: any;
 let isInputLimitReached = false;
 const MAX_HASHTAG_LENGTH = 60;
+let videoSrc = '';
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
@@ -143,7 +144,7 @@ async function showShareDialog() {
 }
 onMount(async () => {
 	if ($fileToUpload) {
-		videoEl.src = URL.createObjectURL($fileToUpload) + '#t=0.01';
+		videoSrc = URL.createObjectURL($fileToUpload) + '#t=0.01';
 	} else goto('/upload');
 });
 
@@ -170,18 +171,21 @@ onDestroy(() => {
 			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
 			class="relative flex max-h-64 max-w-lg items-center justify-center"
 		>
-			<video
-				preload="metadata"
-				bind:this="{videoEl}"
-				on:click="{() => (previewPaused = true)}"
-				bind:paused="{previewPaused}"
-				bind:videoHeight
-				bind:videoWidth
-				playsinline
-				class="h-full w-full rounded-xl"
-			>
-				<track kind="captions" />
-			</video>
+			{#if videoSrc}
+				<!-- svelte-ignore a11y-media-has-caption -->
+				<video
+					preload="metadata"
+					bind:this="{videoEl}"
+					on:click="{() => (previewPaused = true)}"
+					bind:paused="{previewPaused}"
+					bind:videoHeight
+					bind:videoWidth
+					src="{videoSrc}"
+					playsinline
+					class="h-full w-full rounded-xl"
+				>
+				</video>
+			{/if}
 			{#if previewPaused}
 				<div
 					on:click="{() => (previewPaused = false)}"
