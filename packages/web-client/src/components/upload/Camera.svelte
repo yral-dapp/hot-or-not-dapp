@@ -23,6 +23,8 @@ import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
 import Button from '$components/button/Button.svelte';
+import { linear } from 'svelte/easing';
+import { tweened, type Tweened } from 'svelte/motion';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -30,6 +32,10 @@ let inputEl: HTMLInputElement;
 let initState: 'init' | 'denied' | 'allowed' = 'init';
 let timerInterval: any = undefined;
 let timerCountdown = 0;
+let recordingProgress: Tweened<number> | undefined = tweened(0, {
+	duration: 1000,
+	easing: linear
+});
 let canvasEl: HTMLCanvasElement;
 let cameraEl: HTMLElement;
 let filtersEl: HTMLElement;
@@ -41,6 +47,8 @@ let captureInterval: any;
 let recording = false;
 let useCanvas = false;
 let loading = false;
+let recordingInterval: any;
+let recordingSeconds = 0;
 let invalidFileSelected = {
 	show: false,
 	error: 'size'
@@ -168,7 +176,6 @@ function setTimer() {
 		timerCountdown--;
 		if (timerCountdown == 0) {
 			clearInterval(timerInterval);
-			timerInterval = undefined;
 			startRecording(true);
 		}
 	}, 1000);
@@ -176,8 +183,10 @@ function setTimer() {
 
 async function startRecording(ignoreTimer = false) {
 	if (recording) {
-		mediaRecorder.stop();
 		recording = false;
+		clearInterval(recordingInterval);
+		recordingProgress = undefined;
+		mediaRecorder.stop();
 	} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
 		setTimer();
@@ -191,6 +200,16 @@ async function startRecording(ignoreTimer = false) {
 			: 'video/mp4;';
 		mediaRecorder = new MediaRecorder(recordStream, { mimeType });
 		mediaRecorder.ondataavailable = handleDataAvailable;
+		recordingInterval = setInterval(() => {
+			if (recordingSeconds < 60) {
+				recordingSeconds++;
+				recordingProgress?.set((recordingSeconds / 60) * 100);
+				console.log({ recordingSeconds, $recordingProgress });
+			} else {
+				startRecording();
+				clearInterval(recordingInterval);
+			}
+		}, 1000);
 		mediaRecorder.start();
 		recording = true;
 	}
@@ -294,6 +313,7 @@ onDestroy(async () => {
 	}
 	captureInterval && clearInterval(captureInterval);
 	timerInterval && clearInterval(timerInterval);
+	recordingInterval && clearInterval(recordingInterval);
 });
 </script>
 
@@ -354,10 +374,19 @@ onDestroy(async () => {
 			<div class="absolute inset-x-0 -bottom-2 h-0.5 w-full rounded-full bg-primary"></div>
 		</div>
 	</div>
-	<div class="pointer-events-auto flex w-full items-start justify-end px-5" slot="top">
-		<IconButton href="/all" prefetch class="h-10 w-10 rounded-full bg-black/50">
-			<CloseIcon class="h-6 w-6 text-white" />
-		</IconButton>
+	<div class="pointer-events-auto relative flex w-full items-start justify-end px-5" slot="top">
+		{#if recording}
+			<div class="absolute top-4 left-4 right-4 h-2 rounded-full bg-white px-5">
+				<div
+					style="width: {$recordingProgress}%"
+					class="absolute top-0 left-0 h-full max-w-full rounded-full bg-primary"
+				></div>
+			</div>
+		{:else}
+			<IconButton href="/all" prefetch class="h-10 w-10 rounded-full bg-black/50">
+				<CloseIcon class="h-6 w-6 text-white" />
+			</IconButton>
+		{/if}
 	</div>
 	<svelte:fragment slot="bottom-camera-controls">
 		{#if initState == 'allowed'}
