@@ -462,16 +462,18 @@ onDestroy(async () => {
 				{#if cameraControls.flip.show}
 					<div class="flex flex-col items-center justify-center space-y-1">
 						<IconButton
+							disabled="{!cameraControls.flip.show}"
 							on:click="{switchCamera}"
 							class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
 						>
-							<FlipIcon class="h-5 w-5 text-white" />
+							<FlipIcon disabled="{!cameraControls.flip.show}" class="h-4 w-4 text-white" />
 						</IconButton>
 						<span class="text-xs">Flip</span>
 					</div>
 				{/if}
 				<div class="flex flex-col items-center justify-center space-y-1">
 					<IconButton
+						disabled="{recording}"
 						on:click="{toggleTimer}"
 						class="{c('flex h-10 w-10 items-center justify-center rounded-full', {
 							'bg-black text-white': cameraControls.timer === 'off',
@@ -479,7 +481,7 @@ onDestroy(async () => {
 						})}"
 					>
 						{#if cameraControls.timer === 'off'}
-							<TimerIcon class="h-6 w-6 " />
+							<TimerIcon disabled="{recording}" class="h-5 w-5 " />
 						{:else}
 							{cameraControls.timer}
 						{/if}
