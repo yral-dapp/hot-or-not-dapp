@@ -35,6 +35,7 @@ let videoStatusInterval: any;
 let isInputLimitReached = false;
 const MAX_HASHTAG_LENGTH = 60;
 let videoSrc = '';
+let previewMuted = true;
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
@@ -142,9 +143,10 @@ async function showShareDialog() {
 		console.error('Cannot open share dialog', err);
 	}
 }
+
 onMount(async () => {
 	if ($fileToUpload) {
-		videoSrc = URL.createObjectURL($fileToUpload) + '#t=0.01';
+		videoSrc = URL.createObjectURL($fileToUpload);
 	} else goto('/upload');
 });
 
@@ -176,13 +178,18 @@ onDestroy(() => {
 				<video
 					preload="metadata"
 					bind:this="{videoEl}"
-					on:click="{() => (previewPaused = true)}"
+					on:click="{() => {
+						previewPaused = !previewPaused;
+						previewMuted = false;
+					}}"
 					bind:paused="{previewPaused}"
 					bind:videoHeight
 					bind:videoWidth
 					src="{videoSrc}"
 					playsinline
-					class="h-full w-full rounded-xl"
+					autoplay
+					muted="{previewMuted}"
+					class="h-full w-full rounded-xl bg-white/10 ring-4 ring-white/30"
 				>
 				</video>
 			{/if}
