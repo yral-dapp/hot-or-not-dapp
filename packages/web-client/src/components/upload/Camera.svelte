@@ -186,6 +186,7 @@ async function startRecording(ignoreTimer = false) {
 		recording = false;
 		clearInterval(recordingInterval);
 		recordingProgress = undefined;
+		await tick();
 		mediaRecorder.stop();
 	} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
 		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
@@ -204,7 +205,6 @@ async function startRecording(ignoreTimer = false) {
 			if (recordingSeconds < 60) {
 				recordingSeconds++;
 				recordingProgress?.set((recordingSeconds / 60) * 100);
-				console.log({ recordingSeconds, $recordingProgress });
 			} else {
 				startRecording();
 				clearInterval(recordingInterval);
