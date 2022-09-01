@@ -11,11 +11,12 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
 import { isiPhone } from '$lib/isSafari';
 import c from 'clsx';
+import { playerState } from '$stores/playerState';
 
 export let src = '';
 export let i: number;
 export let thumbnail = '';
-export let load = false;
+export let inView = false;
 export let userName = 'Natasha';
 export let videoViews = 254000;
 export let swiperJs;
@@ -24,16 +25,17 @@ let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let loaded = false;
 
-export async function play(resetTime = true) {
+let playPromise: Promise<void> | undefined = undefined;
+
+export async function play() {
 	try {
 		if (videoEl) {
-			if (resetTime) {
-				videoEl.currentTime = 0;
-				videoBgEl.currentTime = 0;
-			}
-			await videoEl.play();
+			videoEl.currentTime = 0.1;
+			videoBgEl.currentTime = 0.1;
+			playPromise = videoEl.play();
+			await playPromise;
 			await videoBgEl.play();
-			!isiPhone() && (videoEl.muted = false);
+			!isiPhone() && $playerState.initialized && (videoEl.muted = false);
 		}
 	} catch (e) {
 		console.log('cp', i, e);
@@ -43,8 +45,11 @@ export async function play(resetTime = true) {
 
 export async function stop() {
 	if (videoEl && videoBgEl) {
-		videoEl.currentTime = 0;
-		videoBgEl.currentTime = 0;
+		videoEl.currentTime = 0.1;
+		videoBgEl.currentTime = 0.1;
+		if (playPromise) {
+			await playPromise;
+		}
 		videoEl.pause();
 		videoBgEl.pause();
 	}
@@ -64,40 +69,39 @@ async function handleClick() {
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}"
 >
-	{#if load}
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			bind:this="{videoEl}"
-			loop
-			playsinline
-			on:loadeddata="{() => (loaded = true)}"
-			autoplay
-			muted
-			disableremoteplayback
-			x-webkit-airplay="deny"
-			preload="metadata"
-			src="{src}"
-			poster="{thumbnail}"
-			class="object-fit absolute z-[3] h-full w-full"></video>
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			bind:this="{videoBgEl}"
-			loop
-			playsinline
-			disableremoteplayback
-			muted
-			autoplay="{i == 0}"
-			preload="metadata"
-			x-webkit-airplay="deny"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-md"
-			src="{src}"
-		>
-		</video>
-	{/if}
+	<!-- svelte-ignore a11y-media-has-caption -->
+	<video
+		bind:this="{videoEl}"
+		loop
+		playsinline
+		on:loadeddata="{() => (loaded = true)}"
+		autoplay
+		muted
+		disableremoteplayback
+		x-webkit-airplay="deny"
+		preload="metadata"
+		src="{src}"
+		poster="{thumbnail}"
+		class="object-fit absolute z-[3] h-full w-full"></video>
+	<!-- svelte-ignore a11y-media-has-caption -->
+	<video
+		bind:this="{videoBgEl}"
+		loop
+		playsinline
+		disableremoteplayback
+		muted
+		autoplay
+		preload="metadata"
+		x-webkit-airplay="deny"
+		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
+		src="{src}"
+	>
+	</video>
 
-	{#if videoEl?.muted}
+	{#if videoEl?.muted && inView}
 		<div
-			transition:fade="{{ duration: 100 }}"
+			in:fade="{{ duration: 100, delay: 200 }}"
+			out:fade="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
 		>
 			<div class="flex h-full items-center justify-center">
