@@ -43,15 +43,15 @@ async function fetchNextVideos() {
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
-	videoPlayers[currentPlayingIndex].stop();
-	await tick();
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
 }
 
 const playVideo = debounce(50, async (index: number) => {
-	videoPlayers[index].play();
+	videoPlayers[currentPlayingIndex]?.stop();
+	videoPlayers[index]?.play();
+	videoPlayers[index + 1]?.stop();
 	currentPlayingIndex = index;
 });
 
@@ -74,18 +74,20 @@ onMount(async () => {
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
 	cssMode
+	spaceBetween="{100}"
 	class="h-full w-full"
 >
 	{#each videos as video, i (i)}
-		<SwiperSlide class="flex h-full w-full items-center justify-center">
-			<VideoPlayer
-				i="{i}"
-				swiperJs
-				bind:this="{videoPlayers[i]}"
-				load="{currentVideoIndex - keepVideosLoadedCount < i &&
-					currentVideoIndex + keepVideosLoadedCount > i}"
-				src="{video.url}"
-			/>
+		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
+			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
+				<VideoPlayer
+					bind:this="{videoPlayers[i]}"
+					i="{i}"
+					inView="{i == currentVideoIndex}"
+					swiperJs
+					src="{video.url}"
+				/>
+			{/if}
 		</SwiperSlide>
 	{/each}
 	{#if loading}
