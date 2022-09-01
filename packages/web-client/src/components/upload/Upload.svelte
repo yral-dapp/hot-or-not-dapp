@@ -274,7 +274,7 @@ onDestroy(() => {
 				</div>
 			</div>
 		{/if}
-		<div class="pt-32 pb-8 shadow-up shadow-black/50">
+		<div class="pt-16 pb-8 shadow-up shadow-black/50">
 			<div class="pb-4">
 				<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 				deleted.
