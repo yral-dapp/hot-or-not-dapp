@@ -17,11 +17,21 @@ const handler = async (request) => {
 			)
 		).json();
 
+		let mp4Url = '';
+
+		if (cloudflareQueryResponse.result.status.state === 'ready') {
+			const res = await enableMp4Download(cloudflareVideoUid);
+			if (!res.error) {
+				mp4Url = res.url;
+			}
+		}
+
 		return new Response(
 			JSON.stringify({
 				readyToStream: cloudflareQueryResponse.result.status.state === 'ready',
 				thumbnail: cloudflareQueryResponse.result.thumbnail,
-				playback: cloudflareQueryResponse.result.playback
+				playback: cloudflareQueryResponse.result.playback,
+				mp4Url
 			}),
 			{
 				status: 200,
@@ -39,5 +49,28 @@ const handler = async (request) => {
 		});
 	}
 };
+
+async function enableMp4Download() {
+	try {
+		const req = await fetch(
+			// eslint-disable-next-line no-undef
+			`https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/stream/${videoUid}/downloads`,
+			{
+				method: 'POST',
+				headers: {
+					// eslint-disable-next-line no-undef
+					Authorization: CLOUDFLARE_API_TOKEN
+				}
+			}
+		);
+		const res = await req.json();
+		if (res && res.result && res.result.default) {
+			return res.result.default;
+		}
+	} catch (e) {
+		console.error(e);
+		return { error: true };
+	}
+}
 
 export default handler;
