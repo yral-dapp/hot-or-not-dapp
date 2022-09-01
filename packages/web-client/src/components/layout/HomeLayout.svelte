@@ -1,5 +1,6 @@
 <script lang="ts">
 import { browser } from '$app/env';
+import { playerState } from '$stores/playerState';
 
 export let testMode = false;
 
@@ -10,6 +11,7 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 <svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
 
 <home
+	on:click|once="{() => ($playerState.initialized = true)}"
 	style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
 	class="relative block h-full w-full overflow-hidden text-white"
 >
