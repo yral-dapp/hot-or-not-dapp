@@ -3,6 +3,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import PencilIcon from '$components/icons/PencilIcon.svelte';
 import PlusIcon from '$components/icons/PlusIcon.svelte';
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte';
+import Popup from '$components/popup/Popup.svelte';
 
 export let src = '';
 
@@ -26,6 +27,9 @@ function checkFileSelected(files: FileList | null) {
 	}
 }
 
+let popup = {
+	show: false
+};
 let inputEl: HTMLInputElement;
 let loading = false;
 </script>
@@ -39,7 +43,7 @@ let loading = false;
 		<img alt="User avatar" src="{src}" class="h-48 w-48 rounded-full object-cover" />
 	{/if}
 	<IconButton
-		on:click="{() => inputEl?.click()}"
+		on:click="{() => (popup.show = true)}"
 		disabled="{loading}"
 		class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 focus:bg-orange-600"
 	>
@@ -59,3 +63,27 @@ let loading = false;
 	class="hidden"
 	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
 />
+
+<Popup on:close="{() => (inputEl.value = '')}" bind:show="{popup.show}" class="mx-20 w-full">
+	<div class="flex w-full flex-col gap-4 divide-y-2 divide-zinc-200 text-black">
+		{#if src}
+			<button
+				on:click="{() => {
+					src = '';
+					popup.show = false;
+				}}"
+				class="text-red-500">Delete photo</button
+			>
+		{/if}
+		<button class="{src ? 'pt-4' : ''}">Take photo</button>
+		<button
+			class="pt-4"
+			on:click="{() => {
+				inputEl?.click();
+				popup.show = false;
+			}}"
+		>
+			Choose photo
+		</button>
+	</div>
+</Popup>
