@@ -508,7 +508,11 @@ onDestroy(async () => {
 	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
 />
 
-<Popup on:close="{() => (inputEl.value = '')}" bind:show="{invalidFileSelected.show}">
+<Popup
+	showCloseButton
+	on:close="{() => (inputEl.value = '')}"
+	bind:show="{invalidFileSelected.show}"
+>
 	<div class="flex flex-col space-y-4">
 		<div>
 			{#if invalidFileSelected.error === 'size'}

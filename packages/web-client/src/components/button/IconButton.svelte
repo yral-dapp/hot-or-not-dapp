@@ -10,10 +10,9 @@ let exportClass: string = '';
 const style = '-webkit-tap-highlight-color: transparent;';
 
 $: classes = c(
-	'flex items-center select-none justify-center focus:outline-none',
+	'flex items-center select-none justify-center focus:outline-none ',
 	{
-		'pointer-events-none': disabled,
-		'focus:opacity-80': !disabled
+		'pointer-events-none': disabled
 	},
 	exportClass
 );

@@ -38,7 +38,7 @@ const dummyPost =
 			<ShareArrowIcon class="h-6 w-6" />
 		</IconButton>
 		{#if profile.me}
-			<IconButton>
+			<IconButton href="{`/profile/${$page.params.id}/edit`}">
 				<PencilIcon class="h-5 w-5" />
 			</IconButton>
 		{:else}

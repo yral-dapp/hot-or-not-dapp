@@ -35,3 +35,7 @@
 		transform: scale(1);
 	}
 }
+
+button {
+	-webkit-tap-highlight-color: transparent;
+}
