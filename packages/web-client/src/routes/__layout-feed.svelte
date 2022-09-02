@@ -1,0 +1,31 @@
+<script lang="ts">
+import SplashScreen from '$components/layout/SplashScreen.svelte';
+import { page } from '$app/stores';
+import HomeLayout from '$components/layout/HomeLayout.svelte';
+import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
+import IconButton from '$components/button/IconButton.svelte';
+import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+</script>
+
+<HomeLayout>
+	<svelte:fragment slot="top">
+		{#if $page.url.pathname.includes('menu')}
+			<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
+				Menu
+			</div>
+		{:else if $page.url.pathname.includes('users')}
+			<div class="flex items-center rounded-full bg-black/10 py-2 px-4">User's Videos</div>
+			<div class="absolute top-4 left-4">
+				<IconButton>
+					<CaretLeftIcon class="h-5 w-5" />
+				</IconButton>
+			</div>
+		{/if}
+	</svelte:fragment>
+	<svelte:fragment slot="content">
+		<slot />
+	</svelte:fragment>
+	<div class="w-full" slot="bottom-navigation">
+		<BottomNavigation />
+	</div>
+</HomeLayout>

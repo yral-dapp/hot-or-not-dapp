@@ -4,8 +4,6 @@ import { onMount } from 'svelte';
 import { Buffer } from 'buffer'; // @dfinity/agent requires this
 import { browser } from '$app/env';
 import { initializeAuthClient } from '$lib/authHelper';
-import SplashScreen from '$components/layout/SplashScreen.svelte';
-import { page } from '$app/stores';
 import { auth } from '$stores/auth';
 import Login from '$components/login/Login.svelte';
 
@@ -16,8 +14,6 @@ onMount(async () => {
 	}
 });
 </script>
-
-<SplashScreen showOnPath="{$page.url.pathname.includes('all')}" />
 
 {#if $auth.showLogin}
 	<Login />
