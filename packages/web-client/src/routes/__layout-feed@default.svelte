@@ -1,5 +1,4 @@
 <script lang="ts">
-import SplashScreen from '$components/layout/SplashScreen.svelte';
 import { page } from '$app/stores';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
