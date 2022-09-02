@@ -43,7 +43,7 @@ let selectedFilter: keyof typeof allFilters | 'clear' = 'clear';
 let recordStream: MediaStream;
 let mediaRecorder: MediaRecorder;
 let recordedChunks: Blob[] = [];
-let captureInterval: any;
+let captureInterval: any | undefined = undefined;
 let recording = false;
 let useCanvas = false;
 let loading = false;
@@ -165,6 +165,14 @@ async function requestMediaAccess() {
 	const res = await getMediaStream(cameraControls.flip.facingMode);
 	if (res.error == 'none' && res.stream) {
 		mediaStream = res.stream;
+
+		await tick();
+
+		updateCanvas(
+			mediaStream.getVideoTracks()[0].getSettings().height || window.innerHeight,
+			mediaStream.getVideoTracks()[0].getSettings().width || window.innerWidth
+		);
+
 		await checkIfFlashAvailable();
 		await checkIfFlipAvailable();
 	} else {
@@ -226,16 +234,15 @@ function handleDataAvailable(event: any) {
 			type
 		});
 		goto('/upload/new');
-	} else {
-		console.log('else');
 	}
 }
 
-function updateCanvas() {
-	if (canvasEl && useCanvas) {
-		canvasEl.height = window.innerHeight;
-		canvasEl.width = window.innerWidth;
+async function updateCanvas(height: number, width: number) {
+	if (useCanvas && canvasEl) {
+		canvasEl.height = height;
+		canvasEl.width = width;
 	}
+	if (!captureInterval) startCapturing();
 }
 
 function computeFrame() {
@@ -245,12 +252,12 @@ function computeFrame() {
 			videoEl,
 			0,
 			0,
-			window.innerWidth,
-			window.innerHeight,
+			canvasEl.width,
+			canvasEl.height,
 			0,
 			0,
-			window.innerWidth,
-			window.innerHeight
+			canvasEl.width,
+			canvasEl.height
 		);
 		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
 		if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
@@ -294,13 +301,8 @@ function prefetchLinks() {
 }
 
 onMount(async () => {
-	await requestMediaAccess();
 	useCanvas = !isiPhone();
-	if (useCanvas) {
-		await tick();
-		updateCanvas();
-		startCapturing();
-	}
+	await requestMediaAccess();
 	prefetchLinks();
 });
 
@@ -317,8 +319,6 @@ onDestroy(async () => {
 	recordingInterval && clearInterval(recordingInterval);
 });
 </script>
-
-<svelte:window on:resize="{updateCanvas}" />
 
 <CameraLayout>
 	<svelte:fragment slot="content">
@@ -349,7 +349,7 @@ onDestroy(async () => {
 							? 'transform: scaleX(-1);'
 							: ''
 						: ''}"
-					class="absolute z-[4] h-full w-full object-cover object-center"
+					class="absolute z-[4] w-full object-cover object-center"
 				>
 				</video>
 				{#if timerInterval}
@@ -358,7 +358,7 @@ onDestroy(async () => {
 							in:fade|local="{{ duration: 500, delay: 100 }}"
 							out:fade|local="{{ duration: 100 }}"
 							class="{c(
-								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
+								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold opacity-0',
 								timerCountdown > 3 ? 'text-white' : 'text-primary'
 							)}"
 						>
@@ -367,7 +367,9 @@ onDestroy(async () => {
 					{/key}
 				{/if}
 				{#if useCanvas}
-					<canvas class="absolute z-[5]" bind:this="{canvasEl}"></canvas>
+					<div class="absolute z-[5] flex h-full w-full items-center justify-center">
+						<canvas bind:this="{canvasEl}" class="h-full"></canvas>
+					</div>
 				{/if}
 			{/if}
 		</div>
