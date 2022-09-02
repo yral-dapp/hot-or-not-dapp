@@ -47,7 +47,13 @@ export async function play() {
 	}
 }
 
-$: videoEl && videoEl.paused && (videoPaused = true);
+$: {
+	if (videoEl && isiPhone() && videoEl.paused) {
+		videoPaused = true;
+	} else {
+		videoPaused = false;
+	}
+}
 
 export async function stop() {
 	if (videoEl && videoBgEl) {
