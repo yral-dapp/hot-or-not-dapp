@@ -349,7 +349,7 @@ onDestroy(async () => {
 							? 'transform: scaleX(-1);'
 							: ''
 						: ''}"
-					class="absolute z-[4] w-full object-cover object-center"
+					class="absolute z-[4] w-full object-cover object-center {useCanvas ? '' : 'h-full'}"
 				>
 				</video>
 				{#if timerInterval}
