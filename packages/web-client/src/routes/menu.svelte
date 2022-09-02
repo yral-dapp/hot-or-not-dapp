@@ -17,6 +17,7 @@ import { onMount } from 'svelte';
 import { prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
+import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 
 $: links = [
 	{
@@ -129,6 +130,11 @@ onMount(() => prefetchLinks());
 						class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
 					>
 						<TwitterIcon class="h-4 w-4" />
+					</div>
+					<div
+						class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
+					>
+						<Ic0Icon class="h-5 w-5" />
 					</div>
 				</div>
 			</div>
