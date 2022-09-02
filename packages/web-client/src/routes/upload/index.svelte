@@ -374,13 +374,6 @@ onDestroy(async () => {
 			{/if}
 		</div>
 	</svelte:fragment>
-	<div class="flex h-full w-full items-center justify-center space-x-16" slot="bottom-navigation">
-		<button class="focus:outline-none" on:click="{() => inputEl.click()}">Gallery</button>
-		<div class="relative">
-			<button class="focus:outline-none">Camera</button>
-			<div class="absolute inset-x-0 -bottom-2 h-0.5 w-full rounded-full bg-primary"></div>
-		</div>
-	</div>
 	<div class="pointer-events-auto relative flex w-full items-start justify-end px-5" slot="top">
 		{#if recording}
 			<div class="absolute top-4 left-4 right-4 h-2 rounded-full bg-white px-5">
@@ -498,6 +491,18 @@ onDestroy(async () => {
 				</div>
 			</div>
 		{/if}
+	</div>
+	<div
+		class="flex h-full w-full items-center justify-center space-x-16 bg-black/80 transition-all duration-200 {recording
+			? 'opacity-0'
+			: ''}"
+		slot="bottom-navigation"
+	>
+		<button class="focus:outline-none" on:click="{() => inputEl.click()}">Gallery</button>
+		<div class="relative">
+			<button class="focus:outline-none">Camera</button>
+			<div class="absolute inset-x-0 -bottom-2 h-0.5 w-full rounded-full bg-primary"></div>
+		</div>
 	</div>
 </CameraLayout>
 
