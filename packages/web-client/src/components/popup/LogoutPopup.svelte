@@ -17,7 +17,7 @@ async function handleLogout() {
 }
 </script>
 
-<Popup bind:show>
+<Popup showCloseButton bind:show>
 	<div class="flex flex-col space-y-4">
 		<div>Are you sure you want to logout?</div>
 		<Button disabled="{loading}" on:click="{handleLogout}">Yes, I'm sure</Button>
