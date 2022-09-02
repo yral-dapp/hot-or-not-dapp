@@ -54,6 +54,7 @@ let invalidFileSelected = {
 	error: 'size'
 };
 
+const MAX_RECORDING_SECONDS = 20;
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
 
@@ -202,9 +203,9 @@ async function startRecording(ignoreTimer = false) {
 		mediaRecorder = new MediaRecorder(recordStream, { mimeType });
 		mediaRecorder.ondataavailable = handleDataAvailable;
 		recordingInterval = setInterval(() => {
-			if (recordingSeconds < 60) {
+			if (recordingSeconds < MAX_RECORDING_SECONDS) {
 				recordingSeconds++;
-				recordingProgress?.set((recordingSeconds / 60) * 100);
+				recordingProgress?.set((recordingSeconds / MAX_RECORDING_SECONDS) * 100);
 			} else {
 				startRecording();
 				clearInterval(recordingInterval);
@@ -464,13 +465,17 @@ onDestroy(async () => {
 					</div>
 				{/if}
 				{#if cameraControls.flip.show}
+					{@const disabled = !cameraControls.flip.show || (recording && !useCanvas)}
 					<div class="flex flex-col items-center justify-center space-y-1">
 						<IconButton
-							disabled="{!cameraControls.flip.show}"
+							disabled="{disabled}"
 							on:click="{switchCamera}"
 							class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
 						>
-							<FlipIcon disabled="{!cameraControls.flip.show}" class="h-4 w-4 text-white" />
+							<FlipIcon
+								disabled="{disabled}"
+								class="h-4 w-4 text-white"
+							/>
 						</IconButton>
 						<span class="text-xs">Flip</span>
 					</div>
