@@ -5,6 +5,9 @@ import { fade } from 'svelte/transition';
 import { createEventDispatcher } from 'svelte';
 
 export let show = false;
+export let showCloseButton = false;
+export { exportClass as class };
+let exportClass: any = '';
 
 const dispatch = createEventDispatcher<{ close: void }>();
 </script>
@@ -20,11 +23,13 @@ const dispatch = createEventDispatcher<{ close: void }>();
 	>
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
-			class="relative z-[99] mx-8 max-w-sm rounded-lg bg-white p-10"
+			class="relative z-[99] mx-8 w-full max-w-sm rounded-lg bg-white p-10 {exportClass}"
 		>
-			<IconButton on:click="{() => (show = false)}" class="absolute top-2 right-2">
-				<CloseIcon class="h-6 w-6 text-black/50" />
-			</IconButton>
+			{#if showCloseButton}
+				<IconButton on:click="{() => (show = false)}" class="absolute top-2 right-2">
+					<CloseIcon class="h-6 w-6 text-black/50" />
+				</IconButton>
+			{/if}
 			<slot />
 		</div>
 	</div>
