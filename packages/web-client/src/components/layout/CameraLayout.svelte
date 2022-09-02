@@ -19,7 +19,7 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 	<div class="absolute bottom-20 z-[5] h-24 w-full">
 		<slot name="bottom-camera-controls" />
 	</div>
-	<div class="absolute inset-x-0 bottom-0 z-[5] h-16 bg-black/80">
+	<div class="absolute inset-x-0 bottom-0 z-[5] h-16">
 		<slot name="bottom-navigation" />
 	</div>
 </camera-layout>
