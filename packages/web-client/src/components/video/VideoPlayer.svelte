@@ -25,7 +25,7 @@ export let swiperJs;
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let loaded = false;
-let videoPaused = false;
+let paused = true;
 
 let playPromise: Promise<void> | undefined = undefined;
 
@@ -37,21 +37,15 @@ export async function play() {
 			playPromise = videoEl.play();
 			await playPromise;
 			await videoBgEl.play();
-			!isiPhone() && $playerState.initialized && (videoEl.muted = false);
+			if (!isiPhone() && $playerState.initialized && !$playerState.muted) {
+				videoEl.muted = $playerState.muted = false;
+			}
 		}
 	} catch (e) {
-		console.log('cp', i, e);
 		if (videoEl) {
+			$playerState.muted = true;
 			videoEl.muted = true;
 		}
-	}
-}
-
-$: {
-	if (videoEl && isiPhone() && videoEl.paused) {
-		videoPaused = true;
-	} else {
-		videoPaused = false;
 	}
 }
 
@@ -69,15 +63,11 @@ export async function stop() {
 
 async function handleClick() {
 	if (videoEl) {
-		try {
-			if (videoPaused) {
-				videoPaused = false;
-				videoEl.currentTime = 0.1;
-				videoEl.play();
-				videoEl.muted = false;
-			} else videoEl.muted = !videoEl.muted;
-		} catch (e) {
-			videoPaused = true;
+		if (paused) {
+			play();
+		} else {
+			videoEl.muted = !videoEl.muted;
+			$playerState.muted = videoEl.muted;
 		}
 	}
 }
@@ -100,6 +90,7 @@ async function handleClick() {
 		on:loadeddata="{() => (loaded = true)}"
 		autoplay
 		muted
+		bind:paused
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
@@ -113,6 +104,7 @@ async function handleClick() {
 		playsinline
 		disableremoteplayback
 		muted
+		bind:paused
 		autoplay
 		preload="metadata"
 		x-webkit-airplay="deny"
@@ -120,16 +112,7 @@ async function handleClick() {
 		src="{src}"
 	>
 	</video>
-
-	{#if videoPaused}
-		<div class="max-w-16 pointer-events-none absolute inset-0 z-[5]">
-			<div class="flex h-full items-center justify-center">
-				<IconButton class="rounded-full bg-black/50 p-4">
-					<PlayIcon class="h-8 w-8 text-white" />
-				</IconButton>
-			</div>
-		</div>
-	{:else if videoEl?.muted && inView}
+	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div
 			in:fade="{{ duration: 100, delay: 200 }}"
 			out:fade="{{ duration: 100 }}"
