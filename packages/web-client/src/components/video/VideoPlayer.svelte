@@ -37,21 +37,13 @@ export async function play() {
 			playPromise = videoEl.play();
 			await playPromise;
 			await videoBgEl.play();
-			!isiPhone() && $playerState.initialized && (videoEl.muted = false);
+			!isiPhone() && $playerState.initialized && !$playerState.muted && (videoEl.muted = false);
 		}
 	} catch (e) {
-		console.log('cp', i, e);
 		if (videoEl) {
+			$playerState.muted = true;
 			videoEl.muted = true;
 		}
-	}
-}
-
-$: {
-	if (videoEl && isiPhone() && videoEl.paused) {
-		videoPaused = true;
-	} else {
-		videoPaused = false;
 	}
 }
 
@@ -75,7 +67,11 @@ async function handleClick() {
 				videoEl.currentTime = 0.1;
 				videoEl.play();
 				videoEl.muted = false;
-			} else videoEl.muted = !videoEl.muted;
+				$playerState.muted = false;
+			} else {
+				videoEl.muted = !videoEl.muted;
+				videoEl.muted && ($playerState.muted = true);
+			}
 		} catch (e) {
 			videoPaused = true;
 		}
