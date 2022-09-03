@@ -54,7 +54,7 @@ let invalidFileSelected = {
 	error: 'size'
 };
 
-const MAX_RECORDING_SECONDS = 20;
+const MAX_RECORDING_SECONDS = 60;
 const filterPreviewImage =
 	'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb';
 
