@@ -124,12 +124,12 @@ onMount(() => prefetchLinks());
 				<TwitterIcon class="h-4 w-4" />
 			</div>
 			{#if !$page.url.host.includes('ic0.app')}
-				<div
-					href="{process.env.WEBCLIENT_CANISTER_ID}"
+				<a
+					href="{`https://${process.env.WEBCLIENT_CANISTER_ID}.raw.ic0.app`}"
 					class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
 				>
 					<Ic0Icon class="h-5 w-5" />
-				</div>
+				</a>
 			{/if}
 		</div>
 	</div>
