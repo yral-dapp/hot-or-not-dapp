@@ -7,6 +7,7 @@ import VideoPlayer from './VideoPlayer.svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
+import type { IndividualUserCanister } from '$lib/backend';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -18,6 +19,7 @@ let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
+let individualUser: () => IndividualUserCanister;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -61,6 +63,7 @@ function updateURL() {
 }
 
 onMount(async () => {
+	individualUser = (await import('$lib/backend')).individualUser;
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
@@ -83,6 +86,7 @@ onMount(async () => {
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
+					individualUser="{individualUser}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
 					src="{video.url}"
