@@ -11,7 +11,6 @@ import placeholderImage from '$assets/placeholder.png';
 import { isiPhone } from '$lib/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
-import PlayIcon from '$components/icons/PlayIcon.svelte';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 
 export let src = '';
