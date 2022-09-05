@@ -11,16 +11,21 @@ import placeholderImage from '$assets/placeholder.png';
 import { isiPhone } from '$lib/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
-import PlayIcon from '$components/icons/PlayIcon.svelte';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
+import { individualUser } from '$lib/backend';
+import { auth } from '$stores/auth';
 
 export let src = '';
+export let id: bigint = BigInt('');
 export let i: number;
 export let thumbnail = '';
 export let inView = false;
 export let userName = 'Natasha';
 export let videoViews = 254000;
 export let swiperJs;
+export let liked = false;
+export let shareCount = 0;
+export let shared = false;
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
@@ -69,6 +74,21 @@ async function handleClick() {
 			videoEl.muted = !videoEl.muted;
 			$playerState.muted = videoEl.muted;
 		}
+	}
+}
+
+async function handleLike() {
+	if ($auth.isLoggedIn) {
+		liked = !liked;
+		individualUser().update_post_toggle_like_status_by_caller(id);
+	} else $auth.showLogin = true;
+}
+
+async function handleShare() {
+	if (!shared) {
+		shareCount++;
+		shared = true;
+		individualUser().update_post_increment_share_count(id);
 	}
 }
 </script>
@@ -128,10 +148,20 @@ async function handleClick() {
 
 	<div class="max-w-16 absolute right-4 bottom-20 z-[5]">
 		<div class="flex flex-col space-y-6">
-			<IconButton>
-				<HeartIcon class="h-8 w-8" />
+			<IconButton
+				on:click="{(e) => {
+					e.stopImmediatePropagation();
+					handleLike();
+				}}"
+			>
+				<HeartIcon filled="{liked}" class="h-8 w-8" />
 			</IconButton>
-			<IconButton>
+			<IconButton
+				on:click="{(e) => {
+					e.stopImmediatePropagation();
+					handleShare();
+				}}"
+			>
 				<ShareMessageIcon class="h-6 w-6" />
 			</IconButton>
 			<IconButton
