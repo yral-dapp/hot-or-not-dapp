@@ -20,7 +20,7 @@ import Button from '$components/button/Button.svelte';
 		<div
 			class="flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-auto p-8"
 		>
-			<ProfileImageSelector src="" />
+			<ProfileImageSelector />
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Your name</span>
 				<Input
