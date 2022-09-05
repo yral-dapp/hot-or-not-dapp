@@ -34,9 +34,6 @@ export async function uploadProfilePicture(file: Blob | File) {
 	formData.append('file', file);
 	const res = await fetch(uploadRes.uploadURL, {
 		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${import.meta.env.VITE_CF_STREAM_API}`
-		},
 		body: formData
 	});
 	const body = await res.json();
