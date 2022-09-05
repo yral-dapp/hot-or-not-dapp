@@ -9,6 +9,13 @@ const handler = async (request) => {
 			});
 		}
 
+		const form = new FormData();
+		form.append('requireSignedURLs', 'false');
+		form.append(
+			'metadata',
+			`{"creator":"${requestBody.principalId}", "uploadType": "profile-image"}`
+		);
+
 		const cloudflareGenerateUploadURLResponse = await (
 			await fetch(
 				// eslint-disable-next-line no-undef
@@ -19,12 +26,7 @@ const handler = async (request) => {
 						// eslint-disable-next-line no-undef
 						Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`
 					},
-					body: JSON.stringify({
-						meta: {
-							creator: requestBody.principalId,
-							uploadType: 'profile-image'
-						}
-					})
+					body: form
 				}
 			)
 		).json();
