@@ -12,8 +12,8 @@ import { isiPhone } from '$lib/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
-import { individualUser } from '$lib/backend';
 import { auth } from '$stores/auth';
+import type { IndividualUserCanister } from '$lib/backend';
 
 export let src = '';
 export let id: bigint = BigInt('');
@@ -26,6 +26,7 @@ export let swiperJs;
 export let liked = false;
 export let shareCount = 0;
 export let shared = false;
+export let individualUser: () => IndividualUserCanister;
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
