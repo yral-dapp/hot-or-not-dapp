@@ -73,10 +73,13 @@ let loading = false;
 	disabled="{loading}"
 	bind:this="{inputEl}"
 	class="hidden"
-	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
+	on:change="{(e) => {
+		checkFileSelected(e.currentTarget.files);
+		inputEl.value = '';
+	}}"
 />
 
-<Popup on:close="{() => (inputEl.value = '')}" bind:show="{menuPopup}" class="mx-20 w-full">
+<Popup bind:show="{menuPopup}" class="mx-20 w-full">
 	<div class="flex w-full flex-col gap-4 divide-y-2 divide-zinc-200 text-black">
 		{#if src}
 			<button
