@@ -13,7 +13,6 @@ async function generateUrl() {
 		})
 	});
 	const body = await res.json();
-	console.log('image url request', body);
 
 	if (body.success) {
 		return body.result as { uploadURL: string; id: string };
