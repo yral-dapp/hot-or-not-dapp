@@ -1,5 +1,6 @@
 import { Router } from 'itty-router';
 import getVideoUploadURL from './video/getVideoUploadURL';
+import getImageUploadURL from './image/getImageUploadURL';
 import getVideoProcessingStatus from './video/getVideoProcessingStatus';
 
 const router = Router();
@@ -27,6 +28,7 @@ router.all('*', withCorsHeaders).options('*', (request) => {
 
 router.post('/video/getVideoUploadURL', getVideoUploadURL);
 router.get('/video/:cloudflareVideoUid/getVideoProcessingStatus', getVideoProcessingStatus);
+router.post('/image/getImageUploadURL', getImageUploadURL);
 
 // 404 for everything else
 router.all('*', () => new Response('Not Found.', { status: 404 }));
