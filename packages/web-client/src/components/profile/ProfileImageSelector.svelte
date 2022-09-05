@@ -9,14 +9,13 @@ import { getCroppedImg } from '$lib/canvasUtils';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
 export let src = '';
+export let cropSrc = '';
 let latestCropDetails: {
 	x: number;
 	y: number;
 	height: number;
 	width: number;
 } | null = null;
-
-$: console.log({ latestCropDetails });
 
 function checkFileSelected(files: FileList | null) {
 	loading = true;
@@ -32,10 +31,7 @@ function checkFileSelected(files: FileList | null) {
 		// 	loading = false;
 		// 	return;
 		// }
-
-		src = URL.createObjectURL(files[0]);
-
-		console.log('file is fine', files);
+		cropSrc = URL.createObjectURL(files[0]);
 		loading = false;
 	}
 }
@@ -111,7 +107,7 @@ let loading = false;
 
 	<IconButton
 		on:click="{async () => {
-			src = await getCroppedImg(src, latestCropDetails);
+			src = await getCroppedImg(cropSrc, latestCropDetails);
 			cropPopup = false;
 		}}"
 		class="absolute right-2 top-2 z-[100] flex h-10 w-10 items-center rounded-full bg-primary text-white backdrop-blur-md"
@@ -120,7 +116,7 @@ let loading = false;
 	</IconButton>
 	<Cropper
 		on:cropcomplete="{({ detail }) => (latestCropDetails = detail.pixels)}"
-		image="{src}"
+		image="{cropSrc}"
 		aspect="{1}"
 		crop="{{ x: 0, y: 0 }}"
 		zoom="{1}"
