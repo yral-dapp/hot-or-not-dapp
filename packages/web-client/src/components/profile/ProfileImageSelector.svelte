@@ -98,22 +98,22 @@ let loading = false;
 	</div>
 </Popup>
 
-<Popup class="h-1/2" bind:show="{cropPopup}">
+<Popup style="aspect-ratio: 1/1;" class="w-full !bg-black" bind:show="{cropPopup}">
 	<div
-		class="absolute left-2 top-2 z-[100] rounded-md bg-white px-4 py-2 text-black backdrop-blur-md"
+		class="absolute inset-x-0 top-0 z-[100] flex -translate-y-[1px] items-center justify-between bg-white/10 py-1 pl-4 pr-2 text-white backdrop-blur-md"
 	>
-		Crop image to continue
+		<span> Crop image to continue </span>
+		<IconButton
+			on:click="{async () => {
+				src = await getCroppedImg(cropSrc, latestCropDetails);
+				cropPopup = false;
+			}}"
+			class="flex h-9 w-9 items-center rounded-full bg-primary text-white"
+		>
+			<CheckIcon class="h-4 w-4" />
+		</IconButton>
 	</div>
 
-	<IconButton
-		on:click="{async () => {
-			src = await getCroppedImg(cropSrc, latestCropDetails);
-			cropPopup = false;
-		}}"
-		class="absolute right-2 top-2 z-[100] flex h-10 w-10 items-center rounded-full bg-primary text-white backdrop-blur-md"
-	>
-		<CheckIcon class="h-4 w-4" />
-	</IconButton>
 	<Cropper
 		on:cropcomplete="{({ detail }) => (latestCropDetails = detail.pixels)}"
 		image="{cropSrc}"
