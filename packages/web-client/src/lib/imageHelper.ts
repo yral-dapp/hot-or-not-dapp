@@ -5,7 +5,7 @@ const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST;
 
 async function generateUrl() {
 	const authStore = get(auth);
-	const res = await fetch(`${cfWorkerHost}/video/getVideoUploadURL`, {
+	const res = await fetch(`${cfWorkerHost}/image/getImageUploadURL`, {
 		method: 'POST',
 		body: JSON.stringify({
 			principalId: authStore.principal?.toText() || '',
