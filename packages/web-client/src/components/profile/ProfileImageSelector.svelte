@@ -6,6 +6,7 @@ import PlusIcon from '$components/icons/PlusIcon.svelte';
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
 import { getCroppedImg } from '$lib/canvasUtils';
+import { uploadProfilePicture } from '$lib/imageHelper';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
 export let src = '';
@@ -34,6 +35,10 @@ function checkFileSelected(files: FileList | null) {
 		cropSrc = URL.createObjectURL(files[0]);
 		loading = false;
 	}
+}
+
+function uploadImage(blob: Blob) {
+	uploadProfilePicture(blob);
 }
 
 let menuPopup = false;
@@ -105,7 +110,9 @@ let loading = false;
 		<span> Crop image to continue </span>
 		<IconButton
 			on:click="{async () => {
-				src = await getCroppedImg(cropSrc, latestCropDetails);
+				const blob = await getCroppedImg(cropSrc, latestCropDetails);
+				uploadImage(blob);
+				src = URL.createObjectURL(blob);
 				cropPopup = false;
 			}}"
 			class="flex h-9 w-9 items-center rounded-full bg-primary text-white"
