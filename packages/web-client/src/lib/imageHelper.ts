@@ -31,10 +31,13 @@ export async function uploadProfilePicture(file: Blob | File) {
 	}
 	const formData = new FormData();
 	formData.append('file', file);
-	const res = await fetch(uploadRes.uploadURL, {
-		method: 'POST',
-		body: formData
-	});
-	const body = await res.json();
-	console.log('uploaded image', body);
+	try {
+		await fetch(uploadRes.uploadURL, {
+			method: 'POST',
+			body: formData
+		});
+		console.log('image uploaded successfully');
+	} catch (e) {
+		console.log('error uploading image', e);
+	}
 }
