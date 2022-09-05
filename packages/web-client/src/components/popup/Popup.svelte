@@ -6,6 +6,8 @@ import { createEventDispatcher } from 'svelte';
 
 export let show = false;
 export let showCloseButton = false;
+export { exportStyle as style };
+let exportStyle: any = '';
 export { exportClass as class };
 let exportClass: any = '';
 
@@ -23,6 +25,7 @@ const dispatch = createEventDispatcher<{ close: void }>();
 	>
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
+			style="{exportStyle}"
 			class="relative z-[99] mx-8 w-full max-w-sm rounded-lg bg-white p-10 {exportClass}"
 		>
 			{#if showCloseButton}
