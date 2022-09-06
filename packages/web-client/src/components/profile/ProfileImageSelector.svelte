@@ -6,7 +6,9 @@ import PlusIcon from '$components/icons/PlusIcon.svelte';
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
 import { getCroppedImg } from '$lib/canvasUtils';
+import getDefaultImageUrl from '$lib/getDefaultImageUrl';
 import { uploadProfilePicture } from '$lib/imageHelper';
+import { auth } from '$stores/auth';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
 export let src = '';
@@ -49,9 +51,11 @@ let loading = false;
 
 <div class="relative flex h-48 w-48">
 	{#if !src}
-		<div class="flex h-48 w-48 items-center justify-center rounded-full bg-white/20">
-			<UserAvatarIcon class="h-24 w-24 text-white/30" />
-		</div>
+		<img
+			alt="User avatar"
+			src="{getDefaultImageUrl($auth.principal)}"
+			class="h-48 w-48 rounded-full object-cover"
+		/>
 	{:else}
 		<img alt="User avatar" src="{src}" class="h-48 w-48 rounded-full object-cover" />
 	{/if}

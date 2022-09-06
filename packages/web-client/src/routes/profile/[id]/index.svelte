@@ -57,17 +57,19 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
-import placeholderImage from '$assets/placeholder.png';
 import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
+import { auth } from '$stores/auth';
+import getDefaultImageUrl from '$lib/getDefaultImageUrl';
 
 let profile = {
 	id: $page.params.id,
 	name: 'Harsh Mandan',
 	me: $page.params.id == '1',
 	username: '@harsh',
-	avatar: placeholderImage
+	avatar: getDefaultImageUrl($auth.principal)
 };
+
 let posts = [1, 2, 3, 4, 5];
 
 async function showShareDialog() {
