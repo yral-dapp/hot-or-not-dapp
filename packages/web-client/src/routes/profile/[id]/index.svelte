@@ -1,3 +1,50 @@
+<script lang="ts" context="module">
+const dummyPost =
+	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
+
+const dummySpeculation =
+	'https://images.pexels.com/photos/13151933/pexels-photo-13151933.jpeg?auto=compress&cs=tinysrgb&h=400';
+
+const speculations = [
+	{
+		id: '1',
+		imageBg: dummySpeculation,
+		username: 'Adrian440',
+		bet: {
+			tokens: 100,
+			status: 'lost' as BetStatus
+		}
+	},
+	{
+		id: '2',
+		imageBg: dummySpeculation,
+		username: 'Natasha009',
+		bet: {
+			tokens: 80,
+			status: 'won' as BetStatus
+		}
+	},
+	{
+		id: '3',
+		imageBg: dummySpeculation,
+		username: 'WWEKarun',
+		bet: {
+			tokens: 500,
+			status: 'pending' as BetStatus
+		}
+	},
+	{
+		id: '4',
+		imageBg: dummySpeculation,
+		username: 'Aaron500',
+		bet: {
+			tokens: 20,
+			status: 'lost' as BetStatus
+		}
+	}
+];
+</script>
+
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
@@ -12,6 +59,7 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import placeholderImage from '$assets/placeholder.png';
 import { page } from '$app/stores';
+import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
 
 let profile = {
 	id: $page.params.id,
@@ -39,8 +87,6 @@ async function showShareDialog() {
 }
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
-const dummyPost =
-	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
 </script>
 
 <ProfileLayout>
@@ -128,6 +174,12 @@ const dummyPost =
 							{/if}
 						</div>
 					{/if}
+				{:else if speculations.length}
+					<div class="grid grid-cols-2 gap-3">
+						{#each speculations as speculation}
+							<SpeculationPost me="{profile.me}" {...speculation} />
+						{/each}
+					</div>
 				{:else}
 					<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 						<NoBetsIcon class="w-52" />
