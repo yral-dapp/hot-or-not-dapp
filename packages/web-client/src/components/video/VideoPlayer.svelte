@@ -98,7 +98,7 @@ async function handleShare() {
 	i="{i}"
 	on:click="{handleClick}"
 	class="{c(
-		'relative flex h-full items-center justify-center transition-all duration-500',
+		'inline-flex h-full items-center justify-center transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}"
@@ -147,7 +147,7 @@ async function handleShare() {
 		</div>
 	{/if}
 
-	<div class="max-w-16 absolute right-4 bottom-20 z-[5]">
+	<div class="max-w-16 absolute right-4 bottom-20 z-[10]">
 		<div class="flex flex-col space-y-6">
 			<IconButton
 				on:click="{(e) => {
@@ -191,6 +191,7 @@ async function handleShare() {
 		</div>
 	</div>
 </player>
+
 {#if !loaded}
 	<loader
 		transition:fade|local="{{ duration: 300 }}"
@@ -199,3 +200,11 @@ async function handleShare() {
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
 	</loader>
 {/if}
+
+<style>
+@supports (-webkit-overflow-scrolling: touch) {
+	* {
+		transform: translate3d(0, 0, 0);
+	}
+}
+</style>
