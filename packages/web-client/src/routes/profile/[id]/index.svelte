@@ -22,6 +22,22 @@ let profile = {
 };
 let posts = [1, 2, 3, 4, 5];
 
+async function showShareDialog() {
+	try {
+		if (!navigator.canShare) {
+			console.error('Browser does not support share dialog');
+			return;
+		}
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: 'https://v2.gobazzinga.io/all/1'
+		});
+	} catch (err) {
+		console.error('Cannot open share dialog', err);
+	}
+}
+
 let selectedTab: 'posts' | 'trophy' = 'posts';
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
@@ -34,7 +50,7 @@ const dummyPost =
 		</IconButton>
 	</svelte:fragment>
 	<div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
-		<IconButton>
+		<IconButton on:click="{showShareDialog}">
 			<ShareArrowIcon class="h-6 w-6" />
 		</IconButton>
 		{#if profile.me}
