@@ -33,7 +33,7 @@ $: YOU = me ? 'You' : '';
 >
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);"
-		class="absolute inset-0 z-[1]"
+		class="pointer-events-none absolute inset-0 z-[1]"
 	></div>
 	<div class="pointer-events-none absolute inset-x-0 bottom-2 z-[2] flex flex-col px-2">
 		<span class="text-xs font-thin uppercase">{YOU} {betKeyword[bet.status]}</span>
