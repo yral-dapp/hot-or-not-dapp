@@ -103,23 +103,22 @@ let loading = false;
 	</div>
 </Popup>
 
-<Popup style="aspect-ratio: 1/1;" class="w-full !bg-black" bind:show="{cropPopup}">
-	<div
-		class="absolute inset-x-0 top-0 z-[100] flex -translate-y-[1px] items-center justify-between bg-white/10 py-1 pl-4 pr-2 text-white backdrop-blur-md"
+<Popup
+	style="aspect-ratio: 3/4;"
+	class="w-full overflow-hidden !bg-black/50"
+	bind:show="{cropPopup}"
+>
+	<button
+		on:click="{async () => {
+			const blob = await getCroppedImg(cropSrc, latestCropDetails);
+			uploadImage(blob);
+			src = URL.createObjectURL(blob);
+			cropPopup = false;
+		}}"
+		class="absolute inset-x-0 bottom-0 z-[100] flex items-center justify-center rounded-b-md bg-primary py-2 text-white"
 	>
-		<span> Crop image to continue </span>
-		<IconButton
-			on:click="{async () => {
-				const blob = await getCroppedImg(cropSrc, latestCropDetails);
-				uploadImage(blob);
-				src = URL.createObjectURL(blob);
-				cropPopup = false;
-			}}"
-			class="flex h-9 w-9 items-center rounded-full bg-primary text-white"
-		>
-			<CheckIcon class="h-4 w-4" />
-		</IconButton>
-	</div>
+		Continue
+	</button>
 
 	<Cropper
 		cropShape="round"
