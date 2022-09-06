@@ -122,6 +122,7 @@ let loading = false;
 	</div>
 
 	<Cropper
+		cropShape="round"
 		on:cropcomplete="{({ detail }) => (latestCropDetails = detail.pixels)}"
 		image="{cropSrc}"
 		aspect="{1}"
