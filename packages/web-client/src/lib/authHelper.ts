@@ -16,7 +16,11 @@ async function updateUserIndexCanister() {
 export async function initializeAuthClient(): Promise<void> {
 	let authStore = get(auth);
 	if (!authStore.client) {
-		const authClient = await AuthClient.create();
+		const authClient = await AuthClient.create({
+			idleOptions: {
+				disableIdle: true
+			}
+		});
 		auth.update((o) => {
 			return { ...o, client: authClient };
 		});
