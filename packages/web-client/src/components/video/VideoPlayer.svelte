@@ -136,8 +136,8 @@ async function handleShare() {
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div
-			in:fade="{{ duration: 100, delay: 200 }}"
-			out:fade="{{ duration: 100 }}"
+			in:fade|local="{{ duration: 100, delay: 200 }}"
+			out:fade|local="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
 		>
 			<div class="flex h-full items-center justify-center">
