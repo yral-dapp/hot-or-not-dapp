@@ -17,6 +17,7 @@ import { auth } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
+import getDefaultImageUrl from '$lib/getDefaultImageUrl';
 
 $: links = [
 	{
@@ -75,7 +76,11 @@ onMount(() => prefetchLinks());
 	<div class="flex w-full shrink-0 flex-col space-y-10">
 		{#if $auth.isLoggedIn}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
-				<img alt="profile" class="h-24 w-24 rounded-full object-cover" src="{placeholderImg}" />
+				<img
+					alt="profile"
+					class="h-24 w-24 rounded-full object-cover"
+					src="{getDefaultImageUrl('1')}"
+				/>
 				<div class="flex flex-col space-y-1">
 					<div class="text-xl">Harsh</div>
 					<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>

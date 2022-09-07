@@ -14,6 +14,7 @@ import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { auth } from '$stores/auth';
 import type { IndividualUserCanister } from '$lib/backend';
+import getDefaultImageUrl from '$lib/getDefaultImageUrl';
 
 export let src = '';
 export let id: bigint = BigInt('');
@@ -179,10 +180,10 @@ async function handleShare() {
 			class="pointer-events-auto flex space-x-3"
 		>
 			<a href="/profile/2" sveltekit:prefetch class="h-12 w-12">
-				<Avatar class="h-12 w-12" src="{placeholderImage}" />
+				<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
 			</a>
 			<div class="flex flex-col space-y-1">
-				<a href="/profile/2" sveltekit:prefetch>{userName}</a>
+				<a href="{`/profile/{i + 1}`}" sveltekit:prefetch>{userName}</a>
 				<div class="flex items-center space-x-1">
 					<EyeIcon class="h-4 w-4 text-white" />
 					<span class="text-sm">{videoViews}</span>
