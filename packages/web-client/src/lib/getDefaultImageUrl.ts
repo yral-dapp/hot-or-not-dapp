@@ -1,4 +1,4 @@
-import type { Principal } from '@dfinity/principal';
+import { Principal } from '@dfinity/principal';
 
 const avatars = [
 	'https://i.imgur.com/QlRZXTs.png',
@@ -23,8 +23,13 @@ const avatars = [
 	'https://i.imgur.com/3wQVn0e.png'
 ];
 
-export default (principal?: Principal) => {
-	const string = principal ? principal.toText() : 'random';
+export default (principal?: Principal | string) => {
+	let string = 'random';
+	if (principal instanceof Principal && principal) {
+		string = principal.toText();
+	} else if (principal) {
+		string = principal;
+	}
 	const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0);
 	return avatars[sum % 20];
 };

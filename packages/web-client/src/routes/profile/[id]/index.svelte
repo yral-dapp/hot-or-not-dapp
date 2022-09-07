@@ -61,6 +61,7 @@ import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
 import { auth } from '$stores/auth';
 import getDefaultImageUrl from '$lib/getDefaultImageUrl';
+import { goto } from '$app/navigation';
 
 let profile = {
 	id: $page.params.id,
@@ -93,7 +94,7 @@ let selectedTab: 'posts' | 'trophy' = 'posts';
 
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
-		<IconButton on:click="{() => history.back()}" class="shrink-0">
+		<IconButton on:click="{() => goto('/menu')}" class="shrink-0">
 			<CaretLeftIcon class="h-7 w-7" />
 		</IconButton>
 	</svelte:fragment>
