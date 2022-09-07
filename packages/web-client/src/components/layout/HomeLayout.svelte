@@ -3,6 +3,7 @@ import { browser } from '$app/env';
 import { playerState } from '$stores/playerState';
 
 export let testMode = false;
+export let view: 'hot-or-not' | 'videos' = 'videos';
 
 $: testClasses = testMode ? 'border-2 border-white/30' : '';
 $: innerHeight = browser ? window?.innerHeight : 0;
@@ -19,7 +20,11 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 	<div class="absolute inset-x-0 top-0 z-[5] {testClasses}">
 		<slot name="top" />
 	</div>
-	<div class="absolute inset-x-0 bottom-0 z-[5] max-h-16 {testClasses}">
+	<div
+		class="absolute inset-x-0 bottom-0 z-[5] {view === 'videos'
+			? 'max-h-16'
+			: 'max-h-32'} {testClasses}"
+	>
 		<slot name="bottom-navigation" />
 	</div>
 </home>

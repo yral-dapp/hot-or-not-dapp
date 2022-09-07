@@ -2,5 +2,5 @@
 import { goto } from '$app/navigation';
 import { onMount } from 'svelte';
 
-onMount(() => goto('/all/1'));
+onMount(() => goto('/hot/1'));
 </script>
