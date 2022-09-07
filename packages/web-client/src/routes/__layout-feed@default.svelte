@@ -4,11 +4,14 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/bottom-navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import Selector from '$components/home/Selector.svelte';
 </script>
 
 <HomeLayout>
 	<svelte:fragment slot="top">
-		{#if $page.url.pathname.includes('menu')}
+		{#if $page.url.pathname.includes('all')}
+			<Selector />
+		{:else if $page.url.pathname.includes('menu')}
 			<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
 				Menu
 			</div>
