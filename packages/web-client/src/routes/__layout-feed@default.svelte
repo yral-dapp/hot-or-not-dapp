@@ -5,7 +5,6 @@ import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import Selector from '$components/home/Selector.svelte';
-import HotOrNot from '$components/navigation/HotOrNot.svelte';
 </script>
 
 <HomeLayout>
