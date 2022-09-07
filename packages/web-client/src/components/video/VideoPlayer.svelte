@@ -174,7 +174,7 @@ async function handleShare() {
 		</div>
 	</div>
 
-	<div class="absolute inset-x-0 bottom-20 left-4 right-16 z-[10] w-min">
+	<div class="absolute bottom-20 left-4 z-[10] w-full pr-20">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
