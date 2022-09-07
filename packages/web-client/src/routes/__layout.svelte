@@ -13,6 +13,7 @@ onMount(async () => {
 		window.Buffer = Buffer;
 		await initializeAuthClient();
 		LogRocket.init('8n3yhe/hotornot');
+		LogRocket.identify(navigator.platform, { name: 'Tester' });
 	}
 });
 </script>
