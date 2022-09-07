@@ -191,6 +191,10 @@ async function handleShare() {
 			</div>
 		</div>
 	</div>
+	<div
+		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
+		class="absolute inset-x-0 bottom-0 z-[4] h-full"
+	></div>
 </player>
 
 {#if !loaded}
