@@ -3,11 +3,11 @@ import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { db, type VideoDB } from '$lib/mockDb';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
-import VideoPlayer from './VideoPlayer.svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
 import type { IndividualUserCanister } from '$lib/backend';
+import VideoPlayerHotOrNot from './VideoPlayerHotOrNot.svelte';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -18,7 +18,7 @@ let currentVideoIndex = 0;
 let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
-let videoPlayers: VideoPlayer[] = [];
+let videoPlayers: VideoPlayerHotOrNot[] = [];
 let individualUser: () => IndividualUserCanister;
 
 async function fetchNextVideos() {
@@ -84,7 +84,7 @@ onMount(async () => {
 		{#each videos as video, i (i)}
 			<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 				{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
-					<VideoPlayer
+					<VideoPlayerHotOrNot
 						bind:this="{videoPlayers[i]}"
 						i="{i}"
 						individualUser="{individualUser}"
