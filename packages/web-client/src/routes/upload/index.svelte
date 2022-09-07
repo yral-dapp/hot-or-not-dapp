@@ -391,7 +391,7 @@ onDestroy(async () => {
 	<svelte:fragment slot="bottom-camera-controls">
 		{#if initState == 'allowed'}
 			<!-- Snap Point -->
-			<div transition:fade class="flex items-end justify-start pt-7">
+			<div transition:fade|local class="flex items-end justify-start pt-7">
 				<div
 					bind:this="{cameraEl}"
 					on:click="{() => !loading && startRecording()}"

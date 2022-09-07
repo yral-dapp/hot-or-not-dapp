@@ -2,19 +2,17 @@
 import Avatar from '$components/avatar/Avatar.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
-import FireIcon from '$components/icons/FireIcon.svelte';
-import HeartIcon from '$components/icons/HeartIcon.svelte';
-import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
-import { fade } from 'svelte/transition';
+import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
-import placeholderImage from '$assets/placeholder.png';
-import { isiPhone } from '$lib/isSafari';
-import c from 'clsx';
-import { playerState } from '$stores/playerState';
+import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
-import { auth } from '$stores/auth';
 import type { IndividualUserCanister } from '$lib/backend';
 import getDefaultImageUrl from '$lib/getDefaultImageUrl';
+import { isiPhone } from '$lib/isSafari';
+import { auth } from '$stores/auth';
+import { playerState } from '$stores/playerState';
+import c from 'clsx';
+import { fade } from 'svelte/transition';
 
 export let src = '';
 export let id: bigint = BigInt('');
@@ -148,15 +146,14 @@ async function handleShare() {
 		</div>
 	{/if}
 
-	<div class="max-w-16 absolute right-4 bottom-20 z-[10]">
+	<div class="max-w-16 absolute right-4 bottom-40 z-[10]">
 		<div class="flex flex-col space-y-6">
 			<IconButton
 				on:click="{(e) => {
 					e.stopImmediatePropagation();
-					handleLike();
 				}}"
 			>
-				<HeartIcon filled="{liked}" class="h-8 w-8" />
+				<GiftBoxIcon class="h-8 w-8" />
 			</IconButton>
 			<IconButton
 				on:click="{(e) => {
@@ -166,15 +163,10 @@ async function handleShare() {
 			>
 				<ShareMessageIcon class="h-6 w-6" />
 			</IconButton>
-			<IconButton
-				class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2"
-			>
-				<FireIcon class="h-5 w-5" />
-			</IconButton>
 		</div>
 	</div>
 
-	<div class="absolute bottom-20 left-4 z-[10] w-full pr-20">
+	<div class="absolute bottom-40 left-4 z-[10] flex w-full flex-col space-y-4 pr-20">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
@@ -189,6 +181,12 @@ async function handleShare() {
 					<span class="text-sm">{videoViews}</span>
 				</div>
 			</div>
+		</div>
+		<div>Lorem ipsum dolor sit amet, consect etur orem ipsum dolor sit amet, consect etur</div>
+		<div class="flex items-start space-x-2">
+			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
+			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
+			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
 		</div>
 	</div>
 	<div

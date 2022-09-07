@@ -2,7 +2,7 @@
 import { fade } from 'svelte/transition';
 </script>
 
-<div class="wrapper" transition:fade>
+<div class="wrapper" transition:fade|local>
 	<div class="progressbar"></div>
 </div>
 

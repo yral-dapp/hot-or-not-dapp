@@ -2,9 +2,10 @@
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import Selector from '$components/home/Selector.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
+import HotOrNotLayout from '$components/layout/HotOrNotLayout.svelte';
 </script>
 
-<HomeLayout view="hot-or-not">
+<HotOrNotLayout>
 	<svelte:fragment slot="top">
 		<Selector selected="hot-or-not" />
 	</svelte:fragment>
@@ -14,4 +15,4 @@ import HotOrNot from '$components/navigation/HotOrNot.svelte';
 	<div class="w-full" slot="bottom-navigation">
 		<HotOrNot />
 	</div>
-</HomeLayout>
+</HotOrNotLayout>

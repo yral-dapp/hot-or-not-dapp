@@ -6,7 +6,7 @@ $: loading = $navigating !== null && $navigating.from.pathname !== $navigating.t
 </script>
 
 {#key loading}
-	<div in:fade="{{ duration: 700 }}">
+	<div in:fade|local="{{ duration: 700 }}">
 		<slot />
 	</div>
 {/key}
