@@ -1,11 +1,10 @@
 <script lang="ts">
-import { page } from '$app/stores';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import Selector from '$components/home/Selector.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
 </script>
 
-<HomeLayout>
+<HomeLayout view="hot-or-not">
 	<svelte:fragment slot="top">
 		<Selector selected="hot-or-not" />
 	</svelte:fragment>

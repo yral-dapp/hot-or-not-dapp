@@ -7,7 +7,7 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import Selector from '$components/home/Selector.svelte';
 </script>
 
-<HomeLayout>
+<HomeLayout view="videos">
 	<svelte:fragment slot="top">
 		{#if $page.url.pathname.includes('all')}
 			<Selector selected="videos" />
