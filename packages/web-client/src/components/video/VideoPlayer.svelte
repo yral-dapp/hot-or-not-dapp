@@ -7,7 +7,6 @@ import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import { fade } from 'svelte/transition';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
-import placeholderImage from '$assets/placeholder.png';
 import { isiPhone } from '$lib/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
