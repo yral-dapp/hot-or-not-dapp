@@ -12,7 +12,7 @@ import HotOrNotLayout from '$components/layout/HotOrNotLayout.svelte';
 	<svelte:fragment slot="content">
 		<slot />
 	</svelte:fragment>
-	<div class="w-full" slot="bottom-navigation">
+	<div class="pointer-events-none w-full" slot="bottom-navigation">
 		<HotOrNot />
 	</div>
 </HotOrNotLayout>
