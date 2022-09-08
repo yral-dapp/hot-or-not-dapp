@@ -23,14 +23,14 @@ function toggleBet() {
 let coinsBet = 10;
 </script>
 
-<hot-or-not class="flex w-full items-center justify-center space-x-8 px-4">
-	<div class="flex flex-col items-center space-y-1">
+<hot-or-not class="pointer-events-none flex w-full items-center justify-center space-x-8 px-4">
+	<div class="pointer-events-auto flex flex-col items-center space-y-1">
 		<IconButton>
 			<NotIcon class="h-24" />
 		</IconButton>
 		<span class="text-sm">Not</span>
 	</div>
-	<div class="flex flex-col items-center">
+	<div class="pointer-events-auto flex flex-col items-center">
 		<IconButton
 			disabled="{coinsBet == 100}"
 			on:click="{(e) => {
@@ -63,7 +63,7 @@ let coinsBet = 10;
 			<ChevronUpIcon class="h-2 rotate-180" />
 		</IconButton>
 	</div>
-	<div class="flex flex-col items-center space-y-1">
+	<div class="pointer-events-auto flex flex-col items-center space-y-1">
 		<IconButton>
 			<HotIcon class="h-24" />
 		</IconButton>

@@ -167,7 +167,7 @@ async function handleShare() {
 		</div>
 	</div>
 
-	<div class="absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-20">
+	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-20">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
@@ -189,11 +189,11 @@ async function handleShare() {
 				e.stopImmediatePropagation();
 				truncate = !truncate;
 			}}"
-			class="w-80 text-left"
+			class="pointer-events-auto w-80 text-left"
 		>
 			Lorem ipsum dolor sit amet, consect etur orem ipsum dolor sit amet, consect etur
 		</button>
-		<div class="flex items-start space-x-2">
+		<div class="pointer-events-none flex items-start space-x-2">
 			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
 			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
 			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
@@ -201,7 +201,7 @@ async function handleShare() {
 	</div>
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
-		class="absolute inset-x-0 bottom-0 z-[4] h-full"
+		class="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-full"
 	></div>
 </player>
 
