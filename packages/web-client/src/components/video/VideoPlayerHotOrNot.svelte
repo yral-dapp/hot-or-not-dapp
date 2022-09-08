@@ -166,13 +166,13 @@ async function handleShare() {
 		</div>
 	</div>
 
-	<div class="absolute bottom-40 left-4 z-[10] flex w-full flex-col space-y-4 pr-20">
+	<div class="absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-20">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
 		>
 			<a href="/profile/2" sveltekit:prefetch class="h-12 w-12">
-				<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
+				<Avatar class="h-12 w-12 shrink-0" src="{getDefaultImageUrl(i.toString())}" />
 			</a>
 			<div class="flex flex-col space-y-1">
 				<a href="{`/profile/{i + 1}`}" sveltekit:prefetch>{userName}</a>
