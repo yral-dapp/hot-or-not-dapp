@@ -94,7 +94,10 @@ let selectedTab: 'posts' | 'trophy' = 'posts';
 
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
-		<IconButton on:click="{() => goto('/menu')}" class="shrink-0">
+		<IconButton
+			on:click="{() => (history.length > 2 ? history.back() : goto('/menu'))}"
+			class="shrink-0"
+		>
 			<CaretLeftIcon class="h-7 w-7" />
 		</IconButton>
 	</svelte:fragment>

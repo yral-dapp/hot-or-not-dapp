@@ -59,10 +59,10 @@ $: links = [
 let showLogoutPopup = false;
 
 function prefetchLinks() {
-	links.forEach((link) => {
-		link.href && prefetch(link.href);
-	});
-	prefetch('/profile/0');
+	// links.forEach((link) => {
+	// 	link.href && prefetch(link.href);
+	// });
+	// prefetch('/profile/1');
 }
 
 onMount(() => prefetchLinks());
