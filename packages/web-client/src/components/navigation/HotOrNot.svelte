@@ -6,16 +6,18 @@ import HotIcon from '$components/icons/HotIcon.svelte';
 import NotIcon from '$components/icons/NotIcon.svelte';
 
 function increaseBet() {
-	if (coinsBet < 990) {
-		coinsBet += 10;
-		coinsBet = coinsBet;
-	}
+	if (coinsBet == 10) coinsBet = 50;
+	else if (coinsBet == 50) coinsBet = 100;
 }
 
 function decreaseBet() {
-	if (coinsBet > 10) {
-		coinsBet -= 10;
-	}
+	if (coinsBet == 50) coinsBet = 10;
+	else if (coinsBet == 100) coinsBet = 50;
+}
+
+function toggleBet() {
+	if (coinsBet == 100) coinsBet = 10;
+	else increaseBet();
 }
 
 let coinsBet = 10;
@@ -24,44 +26,46 @@ let coinsBet = 10;
 <hot-or-not class="flex w-full items-center justify-center space-x-8 px-4">
 	<div class="flex flex-col items-center space-y-1">
 		<IconButton>
-			<NotIcon class="h-20" />
+			<NotIcon class="h-24" />
 		</IconButton>
 		<span class="text-sm">Not</span>
 	</div>
 	<div class="flex flex-col items-center">
 		<IconButton
+			disabled="{coinsBet == 100}"
 			on:click="{(e) => {
 				e.stopImmediatePropagation();
 				increaseBet();
 			}}"
-			class="z-[10] flex items-center p-4"
+			class="z-[10] flex items-center p-4 disabled:opacity-50"
 		>
 			<ChevronUpIcon class="h-2" />
 		</IconButton>
-		<div class="relative h-20 w-20">
+		<button on:click="{toggleBet}" class="relative h-20 w-20 select-none">
 			<BetCoinIcon class="h-20" />
-			<div class="absolute inset-0 flex items-center justify-center">
+			<div class="absolute inset-0 flex select-none items-center justify-center">
 				<span
 					style="text-shadow: 3px 3px 0 #EA9C00;"
-					class="text-3xl font-extrabold text-[#FFCC00]"
+					class="select-none text-3xl font-extrabold text-[#FFCC00]"
 				>
 					{coinsBet}
 				</span>
 			</div>
-		</div>
+		</button>
 		<IconButton
 			on:click="{(e) => {
 				e.stopImmediatePropagation();
 				decreaseBet();
 			}}"
-			class="z-[10] flex items-center p-4"
+			disabled="{coinsBet == 10}"
+			class="z-[10] flex items-center p-4 disabled:opacity-50"
 		>
 			<ChevronUpIcon class="h-2 rotate-180" />
 		</IconButton>
 	</div>
 	<div class="flex flex-col items-center space-y-1">
 		<IconButton>
-			<HotIcon class="h-20" />
+			<HotIcon class="h-24" />
 		</IconButton>
 		<span class="text-sm">Hot</span>
 	</div>
