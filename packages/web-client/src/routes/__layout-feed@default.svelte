@@ -5,6 +5,7 @@ import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import Selector from '$components/home/Selector.svelte';
+import { goto } from '$app/navigation';
 </script>
 
 <HomeLayout>
@@ -18,7 +19,7 @@ import Selector from '$components/home/Selector.svelte';
 		{:else if $page.url.pathname.includes('users')}
 			<div class="flex items-center rounded-full bg-black/10 py-2 px-4">User's Videos</div>
 			<div class="absolute top-4 left-4">
-				<IconButton>
+				<IconButton on:click="{() => (history.length > 2 ? history.back() : goto('/all'))}">
 					<CaretLeftIcon class="h-5 w-5" />
 				</IconButton>
 			</div>
