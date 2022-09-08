@@ -112,7 +112,7 @@ onMount(async () => {
 					class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8"
 				>
 					<NoBetsIcon class="w-56" />
-					<div class="text-center text-lg font-bold">No more videos to display today</div>
+					<div class="text-center text-lg font-bold">There are no more videos to bet on</div>
 					<div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
 						<HotOrNot />
 					</div>
