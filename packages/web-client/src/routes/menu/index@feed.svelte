@@ -79,7 +79,7 @@ onMount(() => prefetchLinks());
 				<img
 					alt="profile"
 					class="h-24 w-24 rounded-full object-cover"
-					src="{getDefaultImageUrl('1')}"
+					src="{getDefaultImageUrl($auth.principal)}"
 				/>
 				<div class="flex flex-col space-y-1">
 					<div class="text-xl">Harsh</div>
