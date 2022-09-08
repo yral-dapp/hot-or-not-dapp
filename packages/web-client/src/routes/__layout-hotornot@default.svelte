@@ -1,7 +1,5 @@
 <script lang="ts">
-import HomeLayout from '$components/layout/HomeLayout.svelte';
 import Selector from '$components/home/Selector.svelte';
-import HotOrNot from '$components/navigation/HotOrNot.svelte';
 import HotOrNotLayout from '$components/layout/HotOrNotLayout.svelte';
 </script>
 
@@ -12,7 +10,4 @@ import HotOrNotLayout from '$components/layout/HotOrNotLayout.svelte';
 	<svelte:fragment slot="content">
 		<slot />
 	</svelte:fragment>
-	<div class="pointer-events-none w-full" slot="bottom-navigation">
-		<HotOrNot />
-	</div>
 </HotOrNotLayout>
