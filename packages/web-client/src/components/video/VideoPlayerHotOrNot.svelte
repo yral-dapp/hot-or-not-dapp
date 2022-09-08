@@ -6,6 +6,7 @@ import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
+import HotOrNot from '$components/navigation/HotOrNot.svelte';
 import type { IndividualUserCanister } from '$lib/backend';
 import getDefaultImageUrl from '$lib/getDefaultImageUrl';
 import { isiPhone } from '$lib/isSafari';
@@ -167,7 +168,7 @@ async function handleShare() {
 		</div>
 	</div>
 
-	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-20">
+	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-16">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
@@ -203,6 +204,9 @@ async function handleShare() {
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
 		class="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-full"
 	></div>
+	<div class="absolute inset-x-0 bottom-0 z-[5] max-h-48">
+		<HotOrNot />
+	</div>
 </player>
 
 {#if !loaded}

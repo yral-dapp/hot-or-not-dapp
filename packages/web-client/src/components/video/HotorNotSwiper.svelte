@@ -8,6 +8,8 @@ import 'swiper/css';
 import { debounce } from 'throttle-debounce';
 import type { IndividualUserCanister } from '$lib/backend';
 import VideoPlayerHotOrNot from './VideoPlayerHotOrNot.svelte';
+import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
+import HotOrNot from '$components/navigation/HotOrNot.svelte';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -105,12 +107,15 @@ onMount(async () => {
 			</SwiperSlide>
 		{/if}
 		{#if !moreVideos}
-			<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<SwiperSlide class="relative h-full w-full items-center justify-center">
 				<div
-					class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8"
+					class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8"
 				>
-					<NoVideosIcon class="w-56" />
+					<NoBetsIcon class="w-56" />
 					<div class="text-center text-lg font-bold">No more videos to display today</div>
+					<div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
+						<HotOrNot />
+					</div>
 				</div>
 			</SwiperSlide>
 		{/if}
