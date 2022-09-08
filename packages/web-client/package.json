@@ -22,7 +22,6 @@
 		"@dfinity/principal": "0.12.2",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
-		"logrocket": "^3.0.1",
 		"swiper": "^8.3.2",
 		"throttle-debounce": "5.0.0"
 	},
