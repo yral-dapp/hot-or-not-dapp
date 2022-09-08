@@ -31,6 +31,7 @@ let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let loaded = false;
 let paused = true;
+let truncate = true;
 
 let playPromise: Promise<void> | undefined = undefined;
 
@@ -182,7 +183,16 @@ async function handleShare() {
 				</div>
 			</div>
 		</div>
-		<div>Lorem ipsum dolor sit amet, consect etur orem ipsum dolor sit amet, consect etur</div>
+		<button
+			class:truncate
+			on:click="{(e) => {
+				e.stopImmediatePropagation();
+				truncate = !truncate;
+			}}"
+			class="w-80 text-left"
+		>
+			Lorem ipsum dolor sit amet, consect etur orem ipsum dolor sit amet, consect etur
+		</button>
 		<div class="flex items-start space-x-2">
 			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
 			<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
