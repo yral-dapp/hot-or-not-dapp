@@ -99,7 +99,7 @@ async function handleShare() {
 	i="{i}"
 	on:click="{handleClick}"
 	class="{c(
-		'inline-flex h-full items-center justify-center transition-all duration-500',
+		'inline-flex h-full items-center justify-center overflow-hidden transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}"
