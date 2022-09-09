@@ -5,32 +5,13 @@ import left from '$assets/decore-left.png';
 import right from '$assets/decore-right.png';
 import StarsIcon from '$components/icons/StarsIcon.svelte';
 import Button from '$components/button/Button.svelte';
-import { browser } from '$app/env';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
 import TutorialArrow from '$components/icons/TutorialArrow.svelte';
 import CoinBagIcon from '$components/icons/CoinBagIcon.svelte';
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte';
 
 let step: 1 | 2 | 3 = 1;
-
-$: width = browser ? window.innerWidth : 0;
-$: height = browser ? window.innerHeight : 0;
-$: rightHole = {
-	left: width / 2 + 112,
-	top: height - 80
-};
-$: leftHole = {
-	left: width / 2 - 112,
-	top: height - 80
-};
 </script>
-
-<svelte:window
-	on:resize="{() => {
-		width = window.innerWidth;
-		height = window.innerHeight;
-	}}"
-/>
 
 {#if $showOnboarding}
 	<onboarding
