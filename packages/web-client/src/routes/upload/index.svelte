@@ -274,7 +274,6 @@ const checkWhichEl = debounce(500, () => {
 	const captureArea = cameraEl.getBoundingClientRect();
 	for (let i = 0; i < filtersEl.children.length - 1; i++) {
 		const filterEl = filtersEl.children[i].getBoundingClientRect();
-		console.log(i, filterEl.left, captureArea.left, captureArea.right, filterEl.right);
 		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
 			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
 
