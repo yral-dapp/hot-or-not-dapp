@@ -168,7 +168,7 @@ async function handleShare() {
 		</div>
 	</div>
 
-	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-16">
+	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
