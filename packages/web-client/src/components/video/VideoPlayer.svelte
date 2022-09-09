@@ -14,6 +14,7 @@ import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { auth } from '$stores/auth';
 import type { IndividualUserCanister } from '$lib/backend';
 import getDefaultImageUrl from '$lib/getDefaultImageUrl';
+import Log from '$lib/Log';
 
 export let src = '';
 export let id: bigint = BigInt('');
@@ -48,6 +49,7 @@ export async function play() {
 			}
 		}
 	} catch (e) {
+		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -68,13 +70,17 @@ export async function stop() {
 }
 
 async function handleClick() {
-	if (videoEl) {
-		if (paused) {
-			play();
-		} else {
-			videoEl.muted = !videoEl.muted;
-			$playerState.muted = videoEl.muted;
+	try {
+		if (videoEl) {
+			if (paused) {
+				play();
+			} else {
+				videoEl.muted = !videoEl.muted;
+				$playerState.muted = videoEl.muted;
+			}
 		}
+	} catch (e) {
+		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
 	}
 }
 
