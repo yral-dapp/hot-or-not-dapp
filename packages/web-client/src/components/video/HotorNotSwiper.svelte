@@ -1,12 +1,11 @@
 <script lang="ts">
-import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import { db, type VideoDB } from '$lib/mockDb';
+import { db, type VideoDB } from '$lib/db/mockDb';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
-import type { IndividualUserCanister } from '$lib/backend';
+import type { IndividualUserCanister } from '$lib/helpers/backend';
 import VideoPlayerHotOrNot from './VideoPlayerHotOrNot.svelte';
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
@@ -65,7 +64,7 @@ function updateURL() {
 }
 
 onMount(async () => {
-	individualUser = (await import('$lib/backend')).individualUser;
+	individualUser = (await import('$lib/helpers/backend')).individualUser;
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;

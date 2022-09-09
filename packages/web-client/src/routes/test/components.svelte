@@ -20,7 +20,7 @@ import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
-import getDefaultImageUrl from '$lib/getDefaultImageUrl';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 </script>
 
 <div

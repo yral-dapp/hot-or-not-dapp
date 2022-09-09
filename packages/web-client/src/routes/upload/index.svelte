@@ -6,26 +6,22 @@ import FlashIcon from '$components/icons/FlashIcon.svelte';
 import FlipIcon from '$components/icons/FlipIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import CameraLayout from '$components/layout/CameraLayout.svelte';
-import {
-	applyConstraintsOnVideoStream,
-	getDevicesList,
-	getMediaStream
-} from '$lib/cameraPermissions';
+import { applyConstraintsOnVideoStream, getDevicesList, getMediaStream } from '$lib/helpers/camera';
 import { onMount, tick, onDestroy } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
-import { allFilters, getFilterCss } from '$lib/filtersMap';
+import { allFilters, getFilterCss } from '$lib/utils/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
-import { isiPhone } from '$lib/isSafari';
+import { isiPhone } from '$lib/utils/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
 import Button from '$components/button/Button.svelte';
 import { linear } from 'svelte/easing';
 import { tweened, type Tweened } from 'svelte/motion';
-import Log from '$lib/Log';
+import Log from '$lib/utils/Log';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;

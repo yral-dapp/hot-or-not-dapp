@@ -1,6 +1,6 @@
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
-import { auth } from '../stores/auth';
+import { auth } from '../../stores/auth';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
