@@ -5,6 +5,8 @@ import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte';
 import HotIcon from '$components/icons/HotIcon.svelte';
 import NotIcon from '$components/icons/NotIcon.svelte';
 
+export let tutorialMode = false;
+
 function increaseBet() {
 	if (coinsBet == 10) coinsBet = 50;
 	else if (coinsBet == 50) coinsBet = 100;
@@ -24,8 +26,12 @@ let coinsBet = 10;
 </script>
 
 <hot-or-not class="flex w-full items-center justify-center space-x-8 px-4">
-	<div class="pointer-events-auto flex flex-col items-center space-y-1">
+	<div class="pointer-events-auto relative flex flex-col items-center space-y-1">
+		{#if tutorialMode}
+			<div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10"></div>
+		{/if}
 		<IconButton
+			disabled="{tutorialMode}"
 			on:click="{(e) => {
 				e.stopImmediatePropagation();
 			}}"
@@ -34,7 +40,11 @@ let coinsBet = 10;
 		</IconButton>
 		<span class="text-sm">Not</span>
 	</div>
-	<div class="pointer-events-auto flex flex-col items-center">
+	<div
+		class="relative flex flex-col items-center {tutorialMode
+			? '!pointer-events-none opacity-0'
+			: 'pointer-events-auto'}"
+	>
 		<IconButton
 			disabled="{coinsBet == 100}"
 			on:click="{(e) => {
@@ -67,8 +77,12 @@ let coinsBet = 10;
 			<ChevronUpIcon class="h-2 rotate-180" />
 		</IconButton>
 	</div>
-	<div class="pointer-events-auto flex flex-col items-center space-y-1">
+	<div class="pointer-events-auto relative flex flex-col items-center space-y-1">
+		{#if tutorialMode}
+			<div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10"></div>
+		{/if}
 		<IconButton
+			disabled="{tutorialMode}"
 			on:click="{(e) => {
 				e.stopImmediatePropagation();
 			}}"
