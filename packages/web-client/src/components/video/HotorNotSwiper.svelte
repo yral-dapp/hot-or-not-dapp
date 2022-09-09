@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
 import type { IndividualUserCanister } from '$lib/helpers/backend';
-import VideoPlayerHotOrNot from './VideoPlayerHotOrNot.svelte';
+import HotOrNotPlayer from './HotOrNotPlayer.svelte';
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
 
@@ -19,7 +19,7 @@ let currentVideoIndex = 0;
 let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
-let videoPlayers: VideoPlayerHotOrNot[] = [];
+let videoPlayers: HotOrNotPlayer[] = [];
 let individualUser: () => IndividualUserCanister;
 
 async function fetchNextVideos() {
@@ -46,6 +46,7 @@ async function fetchNextVideos() {
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
+	$playerState.currentHotOrNotIndex = currentVideoIndex;
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
@@ -85,7 +86,7 @@ onMount(async () => {
 		{#each videos as video, i (i)}
 			<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 				{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
-					<VideoPlayerHotOrNot
+					<HotOrNotPlayer
 						bind:this="{videoPlayers[i]}"
 						i="{i}"
 						individualUser="{individualUser}"
