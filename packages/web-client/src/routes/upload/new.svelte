@@ -14,8 +14,12 @@ import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import { checkVideoStatus, uploadVideoToStream, type CheckVideoStatusResult } from '$lib/stream';
-import Log from '$lib/Log';
+import {
+	checkVideoStatus,
+	uploadVideoToStream,
+	type CheckVideoStatusResult
+} from '$lib/helpers/stream';
+import Log from '$lib/utils/Log';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;

@@ -7,14 +7,14 @@ import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import { fade } from 'svelte/transition';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
-import { isiPhone } from '$lib/isSafari';
+import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { auth } from '$stores/auth';
-import type { IndividualUserCanister } from '$lib/backend';
-import getDefaultImageUrl from '$lib/getDefaultImageUrl';
-import Log from '$lib/Log';
+import type { IndividualUserCanister } from '$lib/helpers/backend';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import Log from '$lib/utils/Log';
 
 export let src = '';
 export let id: bigint = BigInt('');

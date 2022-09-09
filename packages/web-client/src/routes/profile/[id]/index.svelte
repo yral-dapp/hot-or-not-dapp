@@ -60,7 +60,7 @@ import ReportIcon from '$components/icons/ReportIcon.svelte';
 import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
 import { auth } from '$stores/auth';
-import getDefaultImageUrl from '$lib/getDefaultImageUrl';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { goto } from '$app/navigation';
 
 let profile = {

@@ -15,7 +15,7 @@ import { auth } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
-import getDefaultImageUrl from '$lib/getDefaultImageUrl';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 
 $: links = [
 	{

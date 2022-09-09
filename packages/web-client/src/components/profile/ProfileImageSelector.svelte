@@ -1,13 +1,11 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
-import CheckIcon from '$components/icons/CheckIcon.svelte';
 import PencilIcon from '$components/icons/PencilIcon.svelte';
 import PlusIcon from '$components/icons/PlusIcon.svelte';
-import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
-import { getCroppedImg } from '$lib/canvasUtils';
-import getDefaultImageUrl from '$lib/getDefaultImageUrl';
-import { uploadProfilePicture } from '$lib/imageHelper';
+import { uploadProfilePicture } from '$lib/helpers/image';
+import { getCroppedImg } from '$lib/utils/canvas';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { auth } from '$stores/auth';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
