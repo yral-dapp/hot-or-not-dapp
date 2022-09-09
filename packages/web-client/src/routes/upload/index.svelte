@@ -25,6 +25,7 @@ import Popup from '$components/popup/Popup.svelte';
 import Button from '$components/button/Button.svelte';
 import { linear } from 'svelte/easing';
 import { tweened, type Tweened } from 'svelte/motion';
+import Log from '$lib/Log';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -99,7 +100,7 @@ function checkFileSelected(files: FileList | null) {
 					};
 					loading = false;
 				} else {
-					console.log('file is fine', files);
+					Log({ res: 'Selected file is fine. Proceeding', source: '0 checkFileSelected' }, 'info');
 					$fileToUpload = files[0];
 					goto('/upload/new');
 				}
@@ -158,25 +159,29 @@ async function checkIfFlipAvailable() {
 }
 
 async function requestMediaAccess() {
-	if (mediaStream) {
-		const tracks = mediaStream.getTracks();
-		tracks.forEach((track) => track.stop());
-	}
-	const res = await getMediaStream(cameraControls.flip.facingMode);
-	if (res.error == 'none' && res.stream) {
-		mediaStream = res.stream;
+	try {
+		if (mediaStream) {
+			const tracks = mediaStream.getTracks();
+			tracks.forEach((track) => track.stop());
+		}
+		const res = await getMediaStream(cameraControls.flip.facingMode);
+		if (res.error == 'none' && res.stream) {
+			mediaStream = res.stream;
 
-		await tick();
+			await tick();
 
-		updateCanvas(
-			mediaStream.getVideoTracks()[0].getSettings().height || window.innerHeight,
-			mediaStream.getVideoTracks()[0].getSettings().width || window.innerWidth
-		);
+			updateCanvas(
+				mediaStream.getVideoTracks()[0].getSettings().height || window.innerHeight,
+				mediaStream.getVideoTracks()[0].getSettings().width || window.innerWidth
+			);
 
-		await checkIfFlashAvailable();
-		await checkIfFlipAvailable();
-	} else {
-		initState = 'denied';
+			await checkIfFlashAvailable();
+			await checkIfFlipAvailable();
+		} else {
+			initState = 'denied';
+		}
+	} catch (e) {
+		Log({ error: e, source: '1 requestMediaAccess' }, 'error');
 	}
 }
 
@@ -191,41 +196,44 @@ function setTimer() {
 }
 
 async function startRecording(ignoreTimer = false) {
-	if (recording) {
-		recording = false;
-		clearInterval(recordingInterval);
-		recordingProgress = undefined;
-		await tick();
-		mediaRecorder.stop();
-	} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
-		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
-		setTimer();
-	} else {
-		console.log('starting recoridng');
-		if (useCanvas) {
-			recordStream = canvasEl.captureStream(30);
-		} else recordStream = mediaStream;
-		const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
-			? 'video/webm; codecs=vp9'
-			: 'video/mp4;';
-		mediaRecorder = new MediaRecorder(recordStream, { mimeType });
-		mediaRecorder.ondataavailable = handleDataAvailable;
-		recordingInterval = setInterval(() => {
-			if (recordingSeconds < MAX_RECORDING_SECONDS) {
-				recordingSeconds++;
-				recordingProgress?.set((recordingSeconds / MAX_RECORDING_SECONDS) * 100);
-			} else {
-				startRecording();
-				clearInterval(recordingInterval);
-			}
-		}, 1000);
-		mediaRecorder.start();
-		recording = true;
+	try {
+		if (recording) {
+			recording = false;
+			clearInterval(recordingInterval);
+			recordingProgress = undefined;
+			await tick();
+			mediaRecorder.stop();
+		} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
+			timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
+			setTimer();
+		} else {
+			if (useCanvas) {
+				recordStream = canvasEl.captureStream(30);
+			} else recordStream = mediaStream;
+			const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
+				? 'video/webm; codecs=vp9'
+				: 'video/mp4;';
+			mediaRecorder = new MediaRecorder(recordStream, { mimeType });
+			mediaRecorder.ondataavailable = handleDataAvailable;
+			recordingInterval = setInterval(() => {
+				if (recordingSeconds < MAX_RECORDING_SECONDS) {
+					recordingSeconds++;
+					recordingProgress?.set((recordingSeconds / MAX_RECORDING_SECONDS) * 100);
+				} else {
+					startRecording();
+					clearInterval(recordingInterval);
+				}
+			}, 1000);
+			mediaRecorder.start();
+			recording = true;
+		}
+	} catch (e) {
+		Log({ error: e, source: '1 startRecording' }, 'error');
 	}
 }
 
 function handleDataAvailable(event: any) {
-	console.log('data-available');
+	Log({ res: 'Video recorded, Proceeding...', source: '0 handleDataAvailable' }, 'error');
 	if (event.data.size > 0) {
 		loading = true;
 		recordedChunks.push(event.data);
@@ -246,23 +254,27 @@ async function updateCanvas(height: number, width: number) {
 }
 
 function computeFrame() {
-	const ctx = canvasEl.getContext('2d');
-	if (ctx) {
-		ctx.drawImage(
-			videoEl,
-			0,
-			0,
-			canvasEl.width,
-			canvasEl.height,
-			0,
-			0,
-			canvasEl.width,
-			canvasEl.height
-		);
-		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-		if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
-		else ctx.filter = '';
-		ctx.putImageData(frame, 0, 0);
+	try {
+		const ctx = canvasEl.getContext('2d');
+		if (ctx) {
+			ctx.drawImage(
+				videoEl,
+				0,
+				0,
+				canvasEl.width,
+				canvasEl.height,
+				0,
+				0,
+				canvasEl.width,
+				canvasEl.height
+			);
+			const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+			if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
+			else ctx.filter = '';
+			ctx.putImageData(frame, 0, 0);
+		}
+	} catch (e) {
+		Log({ error: e, source: '1 computeFrame' }, 'error');
 	}
 }
 

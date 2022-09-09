@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
 import type { IndividualUserCanister } from '$lib/backend';
+import Log from '$lib/Log';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -25,7 +26,8 @@ async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
-			// console.log('fetching', { fetchFromId });
+			Log({ res: 'fetching', fetchFromId, source: '0 fetchNextVideos' }, 'info');
+
 			loading = true;
 			const res = db.getVideos(fetchFromId);
 			videos = [...videos, ...res.videos];
@@ -34,9 +36,9 @@ async function fetchNextVideos() {
 			moreVideos = res.videosLeft;
 			loading = false;
 
-			// console.log('fetched', videos);
+			Log({ res: 'fetched', fetchFromId, moreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
-			console.error(e);
+			Log({ error: e, fetchFromId, moreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
 	}
@@ -45,6 +47,7 @@ async function fetchNextVideos() {
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
+	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
