@@ -204,7 +204,7 @@ async function handleShare() {
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
 		class="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-full"
 	></div>
-	<div class="absolute inset-x-0 bottom-0 z-[5] max-h-48">
+	<div class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
 		<HotOrNot />
 	</div>
 </player>
