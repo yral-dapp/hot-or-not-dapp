@@ -99,7 +99,7 @@ async function handleShare() {
 	i="{i}"
 	on:click="{handleClick}"
 	class="{c(
-		'inline-flex h-full items-center justify-center overflow-hidden transition-all duration-500',
+		'inline-flex h-full items-center justify-center transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}"
@@ -168,7 +168,7 @@ async function handleShare() {
 		</div>
 	</div>
 
-	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4 pr-16">
+	<div class="pointer-events-none absolute bottom-40 left-4 z-[9] flex flex-col space-y-4">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
 			class="pointer-events-auto flex space-x-3"
