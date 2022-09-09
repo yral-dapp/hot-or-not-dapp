@@ -288,8 +288,9 @@ const checkWhichEl = debounce(500, () => {
 		const filterEl = filtersEl.children[i].getBoundingClientRect();
 		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
 			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
-			console.log({ filterElSelected });
+
 			selectedFilter = filterElSelected ?? 'clear';
+			console.log(selectedFilter);
 			break;
 		}
 	}
@@ -403,7 +404,7 @@ onDestroy(async () => {
 	<svelte:fragment slot="bottom-camera-controls">
 		{#if initState == 'allowed'}
 			<!-- Snap Point -->
-			<div transition:fade|local class="flex items-end justify-start pt-7">
+			<div transition:fade|local class="flex items-end justify-start pt-3">
 				<div
 					bind:this="{cameraEl}"
 					on:click="{() => !loading && startRecording()}"
@@ -424,22 +425,36 @@ onDestroy(async () => {
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
-					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
+					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto"
 				>
 					<!-- Begin Dumb item -->
 					<div data-filter="clear" class="shrink-0 snap-center">
 						<div class="w-dumb-start shrink-0"></div>
 					</div>
 					<!-- End Dumb item -->
-					{#each Object.keys(allFilters) as filter, i}
-						<img
+					{#each Object.keys(allFilters) as filter}
+						<div
 							draggable="false"
 							data-filter="{filter}"
-							style="filter: {getFilterCss(filter)}; -webkit-touch-callout: none;"
-							alt="{filter}"
-							src="{filterPreviewImage}"
-							class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
-						/>
+							class="relative flex h-16 shrink-0 select-none snap-center snap-always items-start"
+						>
+							<img
+								draggable="false"
+								style="filter: {getFilterCss(filter)}; -webkit-touch-callout: none;"
+								alt="{filter}"
+								src="{filterPreviewImage}"
+								class="h-12 w-12 rounded-full"
+							/>
+							<div
+								class="{filter == selectedFilter
+									? 'opacity-0'
+									: 'opacity-100'} absolute inset-x-0 bottom-0 z-[10] flex items-center justify-center transition-opacity duration-200"
+							>
+								<span class="text-xs capitalize text-white">
+									{filter}
+								</span>
+							</div>
+						</div>
 					{/each}
 
 					<div data-filter="clear" class="shrink-0 snap-center">
