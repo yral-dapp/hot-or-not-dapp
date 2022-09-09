@@ -48,6 +48,7 @@ async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
+	$playerState.currentVideosIndex = videos[currentVideoIndex].id;
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
