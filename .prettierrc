@@ -6,6 +6,7 @@
 	"svelteStrictMode": true,
 	"svelteIndentScriptAndStyle": false,
 	"svelteAllowShorthand": true,
+	"bracketSameLine": true,
 	"plugins": ["./node_modules/prettier-plugin-tailwindcss"],
 	"tailwindConfig": "./packages/web-client/tailwind.config.cjs",
 	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
