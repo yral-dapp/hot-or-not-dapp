@@ -245,8 +245,8 @@ async function updateCanvas(height: number, width: number) {
 	if (useCanvas && canvasEl) {
 		canvasEl.height = height;
 		canvasEl.width = width;
+		if (!captureInterval) startCapturing();
 	}
-	if (!captureInterval) startCapturing();
 }
 
 function computeFrame() {
