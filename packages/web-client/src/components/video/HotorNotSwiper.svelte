@@ -9,6 +9,7 @@ import type { IndividualUserCanister } from '$lib/helpers/backend';
 import HotOrNotPlayer from './HotOrNotPlayer.svelte';
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
+import Log from '$lib/utils/Log';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -26,7 +27,7 @@ async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
-			// console.log('fetching', { fetchFromId });
+			Log({ hnn: true, res: 'fetching', fetchFromId, source: '0 fetchNextVideos' }, 'info');
 			loading = true;
 			const res = db.getVideos(fetchFromId);
 			videos = [...videos, ...res.videos];
@@ -35,9 +36,12 @@ async function fetchNextVideos() {
 			moreVideos = res.videosLeft;
 			loading = false;
 
-			// console.log('fetched', videos);
+			Log(
+				{ hnn: true, res: 'fetched', fetchFromId, moreVideos, source: '0 fetchNextVideos' },
+				'info'
+			);
 		} catch (e) {
-			console.error(e);
+			Log({ error: e, hnn: true, fetchFromId, moreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
 	}
@@ -47,6 +51,7 @@ async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	$playerState.currentHotOrNotIndex = currentVideoIndex;
+	Log({ hnn: true, currentVideoIndex, source: '0 handleChange' }, 'info');
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
