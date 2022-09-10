@@ -31,6 +31,6 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 			</div>
 
 			<Button href="https://gobazzinga.io" class="w-full">Visit the website</Button>
-		</div></svelte:fragment
-	>
+		</div>
+	</svelte:fragment>
 </HomeLayout>
