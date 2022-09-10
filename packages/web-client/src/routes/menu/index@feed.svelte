@@ -16,13 +16,14 @@ import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { prefetch } from '$app/navigation';
 
 $: links = [
 	{
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
 		class: 'w-5 h-5',
-		href: '/refer'
+		href: '/refer-earn'
 	},
 	{
 		icon: CenterTextIcon,
@@ -57,10 +58,10 @@ $: links = [
 let showLogoutPopup = false;
 
 function prefetchLinks() {
-	// links.forEach((link) => {
-	// 	link.href && prefetch(link.href);
-	// });
-	// prefetch('/profile/1');
+	links.forEach((link) => {
+		link.href && prefetch(link.href);
+	});
+	prefetch('/profile/1');
 }
 
 onMount(() => prefetchLinks());
@@ -69,16 +70,14 @@ onMount(() => prefetchLinks());
 <LogoutPopup bind:show="{showLogoutPopup}" />
 
 <div
-	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8"
->
+	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
 	<div class="flex w-full shrink-0 flex-col space-y-10">
 		{#if $auth.isLoggedIn}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
 				<img
 					alt="profile"
 					class="h-24 w-24 rounded-full object-cover"
-					src="{getDefaultImageUrl($auth.principal)}"
-				/>
+					src="{getDefaultImageUrl($auth.principal)}" />
 				<div class="flex flex-col space-y-1">
 					<div class="text-xl">Harsh</div>
 					<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
@@ -97,8 +96,7 @@ onMount(() => prefetchLinks());
 					on:click="{link.onClick}"
 					href="{link.href}"
 					sveltekit:prefetch="{link.href ? true : null}"
-					class="flex items-center justify-between"
-				>
+					class="flex items-center justify-between">
 					<div class="flex items-center space-x-4 text-white">
 						<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />
 						<div>{link.title}</div>
@@ -112,25 +110,21 @@ onMount(() => prefetchLinks());
 		<div class="text-sm text-white/50">Follow us on</div>
 		<div class="flex items-center space-x-4">
 			<div
-				class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
-			>
+				class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
 				<TelegramIcon class="h-5 w-5 -translate-x-[1px]" />
 			</div>
 			<div
-				class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
-			>
+				class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
 				<DiscordIcon class="h-5 w-5" />
 			</div>
 			<div
-				class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
-			>
+				class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
 				<TwitterIcon class="h-4 w-4" />
 			</div>
 			{#if !$page.url.host.includes('ic0.app')}
 				<a
 					href="{`https://${process.env.WEBCLIENT_CANISTER_ID}.raw.ic0.app`}"
-					class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary"
-				>
+					class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
 					<Ic0Icon class="h-5 w-5" />
 				</a>
 			{/if}
