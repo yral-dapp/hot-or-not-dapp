@@ -10,6 +10,7 @@ import HotOrNot from '$components/navigation/HotOrNot.svelte';
 import type { IndividualUserCanister } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { isiPhone } from '$lib/utils/isSafari';
+import Log from '$lib/utils/Log';
 import { auth } from '$stores/auth';
 import { playerState } from '$stores/playerState';
 import c from 'clsx';
@@ -49,6 +50,7 @@ export async function play() {
 			}
 		}
 	} catch (e) {
+		Log({ error: e, hnn: true, i, src, inView, source: '1 play' }, 'error');
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -69,13 +71,17 @@ export async function stop() {
 }
 
 async function handleClick() {
-	if (videoEl) {
-		if (paused) {
-			play();
-		} else {
-			videoEl.muted = !videoEl.muted;
-			$playerState.muted = videoEl.muted;
+	try {
+		if (videoEl) {
+			if (paused) {
+				play();
+			} else {
+				videoEl.muted = !videoEl.muted;
+				$playerState.muted = videoEl.muted;
+			}
 		}
+	} catch (e) {
+		Log({ error: e, hnn: true, i, src, inView, source: '1 handleClick' }, 'error');
 	}
 }
 
