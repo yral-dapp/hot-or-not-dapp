@@ -12,6 +12,10 @@ onMount(async () => {
 	if (browser) {
 		try {
 			window.Buffer = Buffer;
+			if (process.env.NODE_ENV != 'development') {
+				(window as any).LogRocket && (window as any).LogRocket.init('c77ths/hotornot');
+				Log('LR Initialized', 'info');
+			}
 			await initializeAuthClient();
 		} catch (e) {
 			Log({ error: e, source: '0 layout' }, 'error');
