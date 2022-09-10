@@ -61,7 +61,7 @@ import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
 import { auth } from '$stores/auth';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
-import { goto } from '$app/navigation';
+import { afterNavigate, goto } from '$app/navigation';
 
 let profile = {
 	id: $page.params.id,
@@ -72,6 +72,8 @@ let profile = {
 };
 
 let posts = [1, 2, 3, 4, 5];
+
+let back: string | null = null;
 
 async function showShareDialog() {
 	try {
@@ -90,14 +92,19 @@ async function showShareDialog() {
 }
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
+
+afterNavigate(({ from }) => {
+	if (from) {
+		if (from.pathname.includes('edit')) {
+			back = null;
+		} else back = from.pathname;
+	} else back = null;
+});
 </script>
 
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
-		<IconButton
-			on:click="{() => (history.length > 2 ? history.back() : goto('/menu'))}"
-			class="shrink-0"
-		>
+		<IconButton on:click="{() => (back ? goto(back) : goto('/menu'))}" class="shrink-0">
 			<CaretLeftIcon class="h-7 w-7" />
 		</IconButton>
 	</svelte:fragment>
@@ -129,8 +136,7 @@ let selectedTab: 'posts' | 'trophy' = 'posts';
 				<span class="text-sm">{profile.username}</span>
 			</div>
 			<div
-				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4"
-			>
+				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4">
 				<div class="flex flex-col items-center space-y-1 px-4">
 					<span class="whitespace-nowrap text-xl font-bold">110</span>
 					<span class="text-sm">Lovers</span>
