@@ -16,6 +16,7 @@ import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { prefetch } from '$app/navigation';
 
 $: links = [
 	{
@@ -57,10 +58,10 @@ $: links = [
 let showLogoutPopup = false;
 
 function prefetchLinks() {
-	// links.forEach((link) => {
-	// 	link.href && prefetch(link.href);
-	// });
-	// prefetch('/profile/1');
+	links.forEach((link) => {
+		link.href && prefetch(link.href);
+	});
+	prefetch('/profile/1');
 }
 
 onMount(() => prefetchLinks());
