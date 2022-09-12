@@ -37,8 +37,13 @@ function checkFileSelected(files: FileList | null) {
 	}
 }
 
-function uploadImage(blob: Blob) {
-	uploadProfilePicture(blob);
+async function uploadImage(blob: Blob) {
+	const img = await uploadProfilePicture(blob);
+	if (!img) {
+		//do something
+	} else {
+		src = img;
+	}
 }
 
 let menuPopup = false;
@@ -52,16 +57,14 @@ let loading = false;
 		<img
 			alt="User avatar"
 			src="{getDefaultImageUrl($auth.principal)}"
-			class="h-48 w-48 rounded-full object-cover"
-		/>
+			class="h-48 w-48 rounded-full object-cover" />
 	{:else}
 		<img alt="User avatar" src="{src}" class="h-48 w-48 rounded-full object-cover" />
 	{/if}
 	<IconButton
 		on:click="{() => (menuPopup = true)}"
 		disabled="{loading}"
-		class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 focus:bg-orange-600"
-	>
+		class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 focus:bg-orange-600">
 		{#if !src}
 			<PlusIcon class="h-4 w-4 text-white" />
 		{:else}
@@ -79,8 +82,7 @@ let loading = false;
 	on:change="{(e) => {
 		checkFileSelected(e.currentTarget.files);
 		inputEl.value = '';
-	}}"
-/>
+	}}" />
 
 <Popup bind:show="{menuPopup}" class="mx-20 w-full">
 	<div class="flex w-full flex-col gap-4 divide-y-2 divide-zinc-200 text-black">
@@ -90,16 +92,14 @@ let loading = false;
 					src = '';
 					menuPopup = false;
 				}}"
-				class="text-red-500">Delete photo</button
-			>
+				class="text-red-500">Delete photo</button>
 		{/if}
 		<button class="{src ? 'pt-4' : ''}">Take photo</button>
 		<button
 			class="pt-4"
 			on:click="{() => {
 				inputEl?.click();
-			}}"
-		>
+			}}">
 			Choose photo
 		</button>
 	</div>
@@ -108,8 +108,7 @@ let loading = false;
 <Popup
 	style="aspect-ratio: 3/4;"
 	class="w-full overflow-hidden !bg-black/50"
-	bind:show="{cropPopup}"
->
+	bind:show="{cropPopup}">
 	<button
 		on:click="{async () => {
 			const blob = await getCroppedImg(cropSrc, latestCropDetails);
@@ -117,8 +116,7 @@ let loading = false;
 			src = URL.createObjectURL(blob);
 			cropPopup = false;
 		}}"
-		class="absolute inset-x-0 bottom-0 z-[100] flex items-center justify-center rounded-b-md bg-primary py-2 text-white"
-	>
+		class="absolute inset-x-0 bottom-0 z-[100] flex items-center justify-center rounded-b-md bg-primary py-2 text-white">
 		Continue
 	</button>
 
@@ -128,6 +126,5 @@ let loading = false;
 		image="{cropSrc}"
 		aspect="{1}"
 		crop="{{ x: 0, y: 0 }}"
-		zoom="{1}"
-	/>
+		zoom="{1}" />
 </Popup>
