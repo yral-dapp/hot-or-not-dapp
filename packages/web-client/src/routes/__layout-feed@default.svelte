@@ -5,7 +5,17 @@ import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import Selector from '$components/home/Selector.svelte';
-import { goto } from '$app/navigation';
+import { afterNavigate, goto } from '$app/navigation';
+
+let back: string | null = null;
+
+afterNavigate(({ from }) => {
+	if (from) {
+		if (from.pathname.includes('edit')) {
+			back = null;
+		} else back = from.pathname;
+	} else back = null;
+});
 </script>
 
 <HomeLayout>
@@ -19,7 +29,7 @@ import { goto } from '$app/navigation';
 		{:else if $page.url.pathname.includes('users')}
 			<div class="flex items-center rounded-full bg-black/10 py-2 px-4">User's Videos</div>
 			<div class="absolute top-4 left-4">
-				<IconButton on:click="{() => (history.length > 2 ? history.back() : goto('/all'))}">
+				<IconButton on:click="{() => (back ? goto(back) : goto('/menu'))}">
 					<CaretLeftIcon class="h-5 w-5" />
 				</IconButton>
 			</div>
