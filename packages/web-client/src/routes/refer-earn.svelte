@@ -7,6 +7,7 @@ import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte';
 import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
+import DotTabs from '$components/tabs/DotTabs.svelte';
 import Log from '$lib/utils/Log';
 
 const code = 'HTRNTWT';
@@ -34,7 +35,7 @@ function copyLink() {
 	<svelte:fragment slot="content">
 		<div
 			class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll py-20 px-8">
-			<div>How to earn</div>
+			<DotTabs selectedIndex="{0}" tabs="{['How to earn', 'History']}" />
 			<div class="shrink-0 py-4">
 				<CoinsStashIcon class="h-36" />
 			</div>
