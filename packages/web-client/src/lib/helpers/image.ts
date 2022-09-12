@@ -32,11 +32,12 @@ export async function uploadProfilePicture(file: Blob | File) {
 	const formData = new FormData();
 	formData.append('file', file);
 	try {
-		await fetch(uploadRes.uploadURL, {
+		const res = await fetch(uploadRes.uploadURL, {
 			method: 'POST',
 			body: formData
 		});
-		console.log('image uploaded successfully');
+		console.log('image uploaded successfully, res', res);
+		console.log('res.json', await res.json());
 	} catch (e) {
 		console.log('error uploading image', e);
 	}
