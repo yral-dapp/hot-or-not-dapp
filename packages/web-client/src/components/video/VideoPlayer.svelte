@@ -95,6 +95,11 @@ async function handleShare() {
 	if (!shared) {
 		shareCount++;
 		shared = true;
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: `https://hotornot.wtf/all/${i}`
+		});
 		individualUser().update_post_increment_share_count(id);
 	}
 }
@@ -107,8 +112,7 @@ async function handleShare() {
 		'inline-flex h-full items-center justify-center transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
-	)}"
->
+	)}">
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
 		bind:this="{videoEl}"
@@ -136,15 +140,13 @@ async function handleShare() {
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{src}"
-	>
+		src="{src}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div
 			in:fade|local="{{ duration: 100, delay: 200 }}"
 			out:fade|local="{{ duration: 100 }}"
-			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
-		>
+			class="max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
 				<IconButton>
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
@@ -159,21 +161,18 @@ async function handleShare() {
 				on:click="{(e) => {
 					e.stopImmediatePropagation();
 					handleLike();
-				}}"
-			>
+				}}">
 				<HeartIcon filled="{liked}" class="h-8 w-8" />
 			</IconButton>
 			<IconButton
 				on:click="{(e) => {
 					e.stopImmediatePropagation();
 					handleShare();
-				}}"
-			>
+				}}">
 				<ShareMessageIcon class="h-6 w-6" />
 			</IconButton>
 			<IconButton
-				class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2"
-			>
+				class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
 				<FireIcon class="h-5 w-5" />
 			</IconButton>
 		</div>
@@ -182,8 +181,7 @@ async function handleShare() {
 	<div class="absolute bottom-20 left-4 z-[9] pr-20">
 		<div
 			on:click="{(e) => e.stopImmediatePropagation()}"
-			class="pointer-events-auto flex space-x-3"
-		>
+			class="pointer-events-auto flex space-x-3">
 			<a href="/profile/2" sveltekit:prefetch class="h-12 w-12 shrink-0">
 				<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
 			</a>
@@ -198,15 +196,14 @@ async function handleShare() {
 	</div>
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
-		class="absolute inset-x-0 bottom-0 z-[4] h-full"
-	></div>
+		class="absolute inset-x-0 bottom-0 z-[4] h-full">
+	</div>
 </player>
 
 {#if !loaded}
 	<loader
 		transition:fade|local="{{ duration: 300 }}"
-		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center"
-	>
+		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
 	</loader>
 {/if}
