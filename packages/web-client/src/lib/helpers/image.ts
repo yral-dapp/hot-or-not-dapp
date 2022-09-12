@@ -1,33 +1,36 @@
+import Log from '$lib/utils/Log';
 import { auth } from '$stores/auth';
 import { get } from 'svelte/store';
 
 const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST;
 
 async function generateUrl() {
-	const authStore = get(auth);
-	const res = await fetch(`${cfWorkerHost}/image/getImageUploadURL`, {
-		method: 'POST',
-		body: JSON.stringify({
-			principalId: authStore.principal?.toText() || '',
-			fileName: Date.now().toString()
-		})
-	});
-	const body = await res.json();
-
-	if (body.success) {
-		return body.result as { uploadURL: string; id: string };
-	} else {
-		return undefined;
+	try {
+		const authStore = get(auth);
+		const res = await fetch(`${cfWorkerHost}/image/getImageUploadURL`, {
+			method: 'POST',
+			body: JSON.stringify({
+				principalId: authStore.principal?.toText() || '',
+				fileName: Date.now().toString()
+			})
+		});
+		const body = await res.json();
+		Log({ body, from: '0 generateUrl' }, 'info');
+		if (body.success) {
+			return body.result as { uploadURL: string; id: string };
+		} else {
+			return;
+		}
+	} catch (e) {
+		Log({ error: e, from: '1 generateUrl' }, 'error');
+		return;
 	}
 }
 
 export async function uploadProfilePicture(file: Blob | File) {
 	const uploadRes = await generateUrl();
 	if (!uploadRes || !uploadRes.uploadURL) {
-		return {
-			success: false,
-			error: "Couldn't generate upload Url"
-		};
+		return;
 	}
 	const formData = new FormData();
 	formData.append('file', file);
@@ -36,9 +39,13 @@ export async function uploadProfilePicture(file: Blob | File) {
 			method: 'POST',
 			body: formData
 		});
-		console.log('image uploaded successfully, res', res);
-		console.log('res.json', await res.json());
+		const body = await res.json();
+		Log({ body, from: '0 uploadProfilePicture' }, 'info');
+		if (body.success) {
+			return body.result.variants[0] as string;
+		}
 	} catch (e) {
-		console.log('error uploading image', e);
+		Log({ error: e, from: '1 uploadProfilePicture' }, 'error');
+		return;
 	}
 }
