@@ -109,7 +109,7 @@ async function handleShare() {
 	i="{i}"
 	on:click="{handleClick}"
 	class="{c(
-		'inline-flex h-full items-center justify-center transition-all duration-500',
+		'block h-full items-center justify-center overflow-auto transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}">
@@ -155,48 +155,54 @@ async function handleShare() {
 		</div>
 	{/if}
 
-	<div class="max-w-16 absolute right-4 bottom-20 z-[10]">
-		<div class="flex flex-col space-y-6">
-			<IconButton
-				on:click="{(e) => {
-					e.stopImmediatePropagation();
-					handleLike();
-				}}">
-				<HeartIcon filled="{liked}" class="h-8 w-8" />
-			</IconButton>
-			<IconButton
-				on:click="{(e) => {
-					e.stopImmediatePropagation();
-					handleShare();
-				}}">
-				<ShareMessageIcon class="h-6 w-6" />
-			</IconButton>
-			<IconButton
-				class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
-				<FireIcon class="h-5 w-5" />
-			</IconButton>
-		</div>
-	</div>
-
-	<div class="absolute bottom-20 left-4 z-[9] pr-20">
+	<div transition:fade class="absolute z-[10] block h-full w-full">
 		<div
-			on:click="{(e) => e.stopImmediatePropagation()}"
-			class="pointer-events-auto flex space-x-3">
-			<a href="/profile/2" sveltekit:prefetch class="h-12 w-12 shrink-0">
-				<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
-			</a>
-			<div class="flex flex-col space-y-1">
-				<a href="{`/profile/{i + 1}`}" sveltekit:prefetch>{userName}</a>
-				<div class="flex items-center space-x-1">
-					<EyeIcon class="h-4 w-4 text-white" />
-					<span class="text-sm">{videoViews}</span>
+			style="-webkit-transform: translate3d(0, 0, 0);"
+			class="max-w-16 absolute right-4 bottom-20 z-[10]">
+			<div class="flex flex-col space-y-6">
+				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+						handleLike();
+					}}">
+					<HeartIcon filled="{liked}" class="h-8 w-8" />
+				</IconButton>
+				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+						handleShare();
+					}}">
+					<ShareMessageIcon class="h-6 w-6" />
+				</IconButton>
+				<IconButton
+					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
+					<FireIcon class="h-5 w-5" />
+				</IconButton>
+			</div>
+		</div>
+
+		<div
+			style="-webkit-transform: translate3d(0, 0, 0);"
+			class="absolute bottom-20 left-4 z-[9] pr-20">
+			<div
+				on:click="{(e) => e.stopImmediatePropagation()}"
+				class="pointer-events-auto flex space-x-3">
+				<a href="/profile/2" sveltekit:prefetch class="h-12 w-12 shrink-0">
+					<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
+				</a>
+				<div class="flex flex-col space-y-1">
+					<a href="{`/profile/{i + 1}`}" sveltekit:prefetch>{userName}</a>
+					<div class="flex items-center space-x-1">
+						<EyeIcon class="h-4 w-4 text-white" />
+						<span class="text-sm">{videoViews}</span>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div
-		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
-		class="absolute inset-x-0 bottom-0 z-[4] h-full">
+		<div
+			style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
+			class="absolute inset-x-0 bottom-0 z-[4] h-full">
+		</div>
 	</div>
 </player>
 
@@ -207,11 +213,3 @@ async function handleShare() {
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
 	</loader>
 {/if}
-
-<style>
-@supports (-webkit-overflow-scrolling: touch) {
-	* {
-		transform: translate3d(0, 0, 0);
-	}
-}
-</style>
