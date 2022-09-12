@@ -1,3 +1,3 @@
-import { writable } from 'svelte/store';
+import { writable } from 'svelte-local-storage-store';
 
-export const showOnboarding = writable<boolean>(true);
+export const showOnboarding = writable('hot-or-not-ob', true);
