@@ -19,19 +19,6 @@ pub fn get_global_sprincipal() -> SPrincipal {
     SPrincipal(Principal::from_text(GLOBAL_OWNER_PRINCIPAL_ID).unwrap())
 }
 
-pub fn setup_initial_access_control(
-    user_id_access_control_map: &mut SHashMap<SPrincipal, Vec<UserAccessRole>>,
-) {
-    // * add global owner
-    user_id_access_control_map.insert(
-        get_global_sprincipal(),
-        &vec![
-            UserAccessRole::CanisterController,
-            UserAccessRole::CanisterAdmin,
-        ],
-    );
-}
-
 /// Helper method to check if a principal has requisite access
 /// to make the canister call
 pub fn does_principal_have_role(

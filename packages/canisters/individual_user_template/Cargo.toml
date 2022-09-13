@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 candid = "0.7.16"
 ic-cdk = "0.5.6"
 ic-cdk-macros = "0.5.6"
-ic-kit = "0.4.8"
 ic-stable-memory = "0.2.3"
-speedy = "0.8.3"
 serde = "1.0.144"
+shared_utils = { path = "../shared_utils" }
+speedy = "0.8.3"

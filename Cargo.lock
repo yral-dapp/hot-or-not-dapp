@@ -734,9 +734,9 @@ dependencies = [
  "candid",
  "ic-cdk",
  "ic-cdk-macros",
- "ic-kit",
  "ic-stable-memory",
  "serde",
+ "shared_utils",
  "speedy",
 ]
 

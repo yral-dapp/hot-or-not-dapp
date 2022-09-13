@@ -1,4 +1,4 @@
-use crate::{canister_create::create_users_canister, AccessControlMap, UserIdToCanisterIdMap};
+use crate::{canister_management::create_users_canister, AccessControlMap, UserIdToCanisterIdMap};
 use candid::Principal;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::access_control::{does_principal_have_role, UserAccessRole};
@@ -13,7 +13,7 @@ async fn get_user_canister_id_from_user_principal_id() -> Principal {
     match user_id_to_canister_id_map.get_cloned(&user_id) {
         Some(canister_id) => canister_id.0,
         None => {
-            let created_canister_id = create_users_canister().await;
+            let created_canister_id = create_users_canister(user_id.0).await;
 
             user_id_to_canister_id_map.insert(user_id, &SPrincipal(created_canister_id));
             s! { UserIdToCanisterIdMap = user_id_to_canister_id_map };

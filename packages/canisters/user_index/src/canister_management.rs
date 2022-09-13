@@ -14,9 +14,7 @@ const WASM: &[u8] = include_bytes!(
     "../../../../target/wasm32-unknown-unknown/release/individual_user_template.wasm"
 );
 
-pub async fn create_users_canister(// caller: Principal,
-    // collection: Principal,
-) -> Principal {
+pub async fn create_users_canister(caller: Principal) -> Principal {
     let arg = management::CreateCanisterArgument {
         settings: Some(management::CanisterSettings {
             controllers: Some(vec![
@@ -41,7 +39,8 @@ pub async fn create_users_canister(// caller: Principal,
     .0
     .canister_id;
 
-    //     let arg = encode_args((Some(collection),)).expect("Failed to serialize the install argument.");
+    let arg =
+        candid::encode_args((ic::id(), caller)).expect("Failed to serialize the install argument.");
 
     management::InstallCode::perform(
         Principal::management_canister(),
@@ -49,7 +48,7 @@ pub async fn create_users_canister(// caller: Principal,
             mode: InstallMode::Install,
             canister_id,
             wasm_module: WASM.into(),
-            arg: vec![],
+            arg,
         },),
     )
     .await

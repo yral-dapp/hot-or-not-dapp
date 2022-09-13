@@ -1,13 +1,14 @@
+use access_control::util::setup_initial_access_control;
 use candid::{export_service, Principal};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query};
 use ic_stable_memory::{
     collections::hash_map::SHashMap, s, stable_memory_init, stable_memory_post_upgrade,
     stable_memory_pre_upgrade, utils::ic_types::SPrincipal,
 };
-use shared_utils::access_control::{self as shared_utils_access_control, UserAccessRole};
+use shared_utils::access_control::UserAccessRole;
 
 mod access_control;
-mod canister_create;
+mod canister_management;
 #[cfg(test)]
 mod test;
 mod user_index;
@@ -29,7 +30,7 @@ fn init() {
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
-    shared_utils_access_control::setup_initial_access_control(&mut user_id_access_control_map);
+    setup_initial_access_control(&mut user_id_access_control_map);
     s! { AccessControlMap = user_id_access_control_map };
 }
 

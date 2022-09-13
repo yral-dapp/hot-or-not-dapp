@@ -4,6 +4,11 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'video_url' : IDL.Text,
   });
+  const UserAccessRole = IDL.Variant({
+    'CanisterController' : IDL.Null,
+    'ProfileOwner' : IDL.Null,
+    'CanisterAdmin' : IDL.Null,
+  });
   const PostViewDetailsFromFrontend = IDL.Variant({
     'WatchedMultipleTimes' : IDL.Record({
       'percentage_watched' : IDL.Nat8,
@@ -12,7 +17,12 @@ export const idlFactory = ({ IDL }) => {
     'WatchedPartially' : IDL.Record({ 'percentage_watched' : IDL.Nat8 }),
   });
   return IDL.Service({
-    'create_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
+    'add_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
+    'get_user_roles' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(UserAccessRole)],
+        ['query'],
+      ),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
         [],
@@ -27,6 +37,12 @@ export const idlFactory = ({ IDL }) => {
     'update_post_toggle_like_status_by_caller' : IDL.Func(
         [IDL.Nat64],
         [IDL.Bool],
+        [],
+      ),
+    'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
+    'update_user_remove_role' : IDL.Func(
+        [UserAccessRole, IDL.Principal],
+        [],
         [],
       ),
   });
