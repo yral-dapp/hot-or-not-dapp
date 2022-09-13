@@ -1,18 +1,13 @@
 [package]
-name = "user_index"
+name = "shared_utils"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[lib]
-crate-type = ["cdylib"]
-
 [dependencies]
 candid = "0.7.16"
 ic-cdk = "0.5.6"
-ic-kit = "0.4.8"
-ic-cdk-macros = "0.5.6"
 ic-stable-memory = "0.2.3"
-shared_utils = { path = "../shared_utils" }
+serde = "1.0.144"
 speedy = "0.8.3"

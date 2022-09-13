@@ -1,4 +1,3 @@
-use crate::constant::{DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE, GLOBAL_OWNER_PRINCIPAL_ID};
 use candid::Principal;
 use ic_kit::{
     ic,
@@ -6,6 +5,9 @@ use ic_kit::{
         management::{self, InstallMode},
         Method,
     },
+};
+use shared_utils::constant::{
+    DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE, GLOBAL_OWNER_PRINCIPAL_ID,
 };
 
 const WASM: &[u8] = include_bytes!(
@@ -52,11 +54,6 @@ pub async fn create_users_canister(// caller: Principal,
     )
     .await
     .unwrap();
-
-    ic::print(format!(
-        "debug: curation canister spawned and initialized `{:}`",
-        canister_id
-    ));
 
     canister_id
 }
