@@ -20,7 +20,7 @@ import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
-import placeholderImage from '$assets/placeholder.png';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 </script>
 
 <div
@@ -30,10 +30,10 @@ import placeholderImage from '$assets/placeholder.png';
 	<div class="flex flex-col space-y-4 py-4">
 		<span class="text-xl">Avatar</span>
 		<div class="flex items-center space-x-4">
-			<Avatar src="{placeholderImage}" class="h-24 w-24" />
-			<Avatar src="{placeholderImage}" class="h-16 w-16" />
-			<Avatar src="{placeholderImage}" class="h-8 w-8" />
-			<Avatar src="{placeholderImage}" class="h-4 w-4" />
+			<Avatar src="{getDefaultImageUrl()}" class="h-24 w-24" />
+			<Avatar src="{getDefaultImageUrl()}" class="h-16 w-16" />
+			<Avatar src="{getDefaultImageUrl()}" class="h-8 w-8" />
+			<Avatar src="{getDefaultImageUrl()}" class="h-4 w-4" />
 		</div>
 	</div>
 

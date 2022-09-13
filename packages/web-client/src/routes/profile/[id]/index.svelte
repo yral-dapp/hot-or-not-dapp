@@ -1,3 +1,50 @@
+<script lang="ts" context="module">
+const dummyPost =
+	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
+
+const dummySpeculation =
+	'https://images.pexels.com/photos/13151933/pexels-photo-13151933.jpeg?auto=compress&cs=tinysrgb&h=400';
+
+const speculations = [
+	{
+		id: '1',
+		imageBg: dummySpeculation,
+		username: 'Adrian440',
+		bet: {
+			tokens: 100,
+			status: 'lost' as BetStatus
+		}
+	},
+	{
+		id: '2',
+		imageBg: dummySpeculation,
+		username: 'Natasha009',
+		bet: {
+			tokens: 80,
+			status: 'won' as BetStatus
+		}
+	},
+	{
+		id: '3',
+		imageBg: dummySpeculation,
+		username: 'WWEKarun',
+		bet: {
+			tokens: 500,
+			status: 'pending' as BetStatus
+		}
+	},
+	{
+		id: '4',
+		imageBg: dummySpeculation,
+		username: 'Aaron500',
+		bet: {
+			tokens: 20,
+			status: 'lost' as BetStatus
+		}
+	}
+];
+</script>
+
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
@@ -10,31 +57,59 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
-import placeholderImage from '$assets/placeholder.png';
 import { page } from '$app/stores';
+import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
+import { auth } from '$stores/auth';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { afterNavigate, goto } from '$app/navigation';
 
 let profile = {
 	id: $page.params.id,
 	name: 'Harsh Mandan',
 	me: $page.params.id == '1',
 	username: '@harsh',
-	avatar: placeholderImage
+	avatar: getDefaultImageUrl($auth.principal)
 };
+
 let posts = [1, 2, 3, 4, 5];
 
+let back: string | null = null;
+
+async function showShareDialog() {
+	try {
+		if (!navigator.canShare) {
+			console.error('Browser does not support share dialog');
+			return;
+		}
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: 'https://v2.gobazzinga.io/all/1'
+		});
+	} catch (err) {
+		console.error('Cannot open share dialog', err);
+	}
+}
+
 let selectedTab: 'posts' | 'trophy' = 'posts';
-const dummyPost =
-	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
+
+afterNavigate(({ from }) => {
+	if (from) {
+		if (from.pathname.includes('edit')) {
+			back = null;
+		} else back = from.pathname;
+	} else back = null;
+});
 </script>
 
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
-		<IconButton on:click="{() => history.back()}" class="shrink-0">
+		<IconButton on:click="{() => (back ? goto(back) : goto('/menu'))}" class="shrink-0">
 			<CaretLeftIcon class="h-7 w-7" />
 		</IconButton>
 	</svelte:fragment>
 	<div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
-		<IconButton>
+		<IconButton on:click="{showShareDialog}">
 			<ShareArrowIcon class="h-6 w-6" />
 		</IconButton>
 		{#if profile.me}
@@ -61,8 +136,7 @@ const dummyPost =
 				<span class="text-sm">{profile.username}</span>
 			</div>
 			<div
-				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4"
-			>
+				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4">
 				<div class="flex flex-col items-center space-y-1 px-4">
 					<span class="whitespace-nowrap text-xl font-bold">110</span>
 					<span class="text-sm">Lovers</span>
@@ -112,6 +186,12 @@ const dummyPost =
 							{/if}
 						</div>
 					{/if}
+				{:else if speculations.length}
+					<div class="grid grid-cols-2 gap-3">
+						{#each speculations as speculation}
+							<SpeculationPost me="{profile.me}" {...speculation} />
+						{/each}
+					</div>
 				{:else}
 					<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 						<NoBetsIcon class="w-52" />

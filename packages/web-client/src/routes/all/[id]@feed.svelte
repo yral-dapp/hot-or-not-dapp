@@ -6,6 +6,6 @@ import VideosSwiper from '$components/video/VideosSwiper.svelte';
 let startingVideoIndex = Number($page.params.id) ?? 0;
 </script>
 
-<SplashScreen showOnPath="{$page.url.pathname.includes('all')}" />
+<SplashScreen />
 
 <VideosSwiper fetchFromId="{startingVideoIndex}" />

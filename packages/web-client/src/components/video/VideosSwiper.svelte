@@ -1,12 +1,14 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import { db, type VideoDB } from '$lib/mockDb';
+import { db, type VideoDB } from '$lib/db/mockDb';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
 import VideoPlayer from './VideoPlayer.svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
+import type { IndividualUserCanister } from '$lib/helpers/backend';
+import Log from '$lib/utils/Log';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -18,12 +20,14 @@ let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
+let individualUser: () => IndividualUserCanister;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
-			// console.log('fetching', { fetchFromId });
+			Log({ res: 'fetching', fetchFromId, source: '0 fetchNextVideos' }, 'info');
+
 			loading = true;
 			const res = db.getVideos(fetchFromId);
 			videos = [...videos, ...res.videos];
@@ -32,9 +36,9 @@ async function fetchNextVideos() {
 			moreVideos = res.videosLeft;
 			loading = false;
 
-			// console.log('fetched', videos);
+			Log({ res: 'fetched', fetchFromId, moreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
-			console.error(e);
+			Log({ error: e, fetchFromId, moreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
 	}
@@ -43,6 +47,8 @@ async function fetchNextVideos() {
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
+	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
+	$playerState.currentVideosIndex = videos[currentVideoIndex].id;
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
@@ -61,6 +67,7 @@ function updateURL() {
 }
 
 onMount(async () => {
+	individualUser = (await import('$lib/helpers/backend')).individualUser;
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
@@ -83,6 +90,7 @@ onMount(async () => {
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
+					individualUser="{individualUser}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
 					src="{video.url}"

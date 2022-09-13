@@ -14,7 +14,12 @@ import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { auth } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import { checkVideoStatus, uploadVideoToStream, type CheckVideoStatusResult } from '$lib/stream';
+import {
+	checkVideoStatus,
+	uploadVideoToStream,
+	type CheckVideoStatusResult
+} from '$lib/helpers/stream';
+import Log from '$lib/utils/Log';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -72,8 +77,9 @@ async function startUploading() {
 	uploadStep = 'uploading';
 	uploadStatus = 'uploading';
 	const uploadRes: any = await uploadVideoToStream($fileToUpload, onProgress);
+	Log({ uploadRes, source: '0 startUploading' }, 'info');
 	if (!uploadRes.success) {
-		console.error(uploadRes.error);
+		Log({ error: uploadRes.error, source: '1 startUploading' }, 'error');
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
 		uploadProgress.set(0);
@@ -93,12 +99,14 @@ async function checkVideoProcessingStatus(uid: string) {
 	videoStatusInterval = setInterval(async () => {
 		try {
 			const videoStatus = await checkVideoStatus(uid);
+			Log({ videoStatus, source: '0 checkVideoProcessingStatus' }, 'info');
 			if (videoStatus.success && videoStatus.result.readyToStream) {
 				handleSuccessfulUpload(videoStatus.result);
 				clearInterval(videoStatusInterval);
 			} else throw new Error();
 		} catch (_) {
-			console.error('Processign error');
+			Log({ error: 'Processing error', source: '1 checkVideoProcessingStatus' }, 'error');
+			console.error('Processing error');
 			hashtagError = 'Uploading failed. Please try again';
 			uploadStatus = 'to-upload';
 			uploadProgress.set(0);
@@ -109,8 +117,7 @@ async function checkVideoProcessingStatus(uid: string) {
 
 async function handleSuccessfulUpload(result: CheckVideoStatusResult) {
 	try {
-		console.log('upload successful');
-		console.log({ result });
+		Log({ result, source: '0 handleSuccessfulUpload' }, 'info');
 		// const postId = individualUser().create_post({
 		// 	description: videoDescription,
 		// 	hashtags: hashtags,
@@ -120,6 +127,7 @@ async function handleSuccessfulUpload(result: CheckVideoStatusResult) {
 		uploadStatus = 'uploaded';
 		// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
 	} catch (_) {
+		Log({ error: 'Couldnt send details to backend', source: '1 handleSuccessfulUpload' }, 'error');
 		console.error('Couldnt send details to backend');
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
@@ -281,7 +289,7 @@ onDestroy(() => {
 				</div>
 			</div>
 		{/if}
-		<div class="pt-16 pb-8 shadow-up shadow-black/50">
+		<div class="pt-16 pb-24 shadow-up shadow-black/50">
 			<div class="pb-4">
 				<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 				deleted.

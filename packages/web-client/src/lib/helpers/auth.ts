@@ -1,6 +1,6 @@
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
-import { auth } from '../stores/auth';
+import { auth } from '../../stores/auth';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
@@ -16,7 +16,11 @@ async function updateUserIndexCanister() {
 export async function initializeAuthClient(): Promise<void> {
 	let authStore = get(auth);
 	if (!authStore.client) {
-		const authClient = await AuthClient.create();
+		const authClient = await AuthClient.create({
+			idleOptions: {
+				disableIdle: true
+			}
+		});
 		auth.update((o) => {
 			return { ...o, client: authClient };
 		});

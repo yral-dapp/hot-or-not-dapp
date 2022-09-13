@@ -6,25 +6,22 @@ import FlashIcon from '$components/icons/FlashIcon.svelte';
 import FlipIcon from '$components/icons/FlipIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import CameraLayout from '$components/layout/CameraLayout.svelte';
-import {
-	applyConstraintsOnVideoStream,
-	getDevicesList,
-	getMediaStream
-} from '$lib/cameraPermissions';
+import { applyConstraintsOnVideoStream, getDevicesList, getMediaStream } from '$lib/helpers/camera';
 import { onMount, tick, onDestroy } from 'svelte';
 import { fade } from 'svelte/transition';
 import c from 'clsx';
-import { allFilters, getFilterCss } from '$lib/filtersMap';
+import { allFilters, getFilterCss } from '$lib/utils/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
-import { isiPhone } from '$lib/isSafari';
+import { isiPhone } from '$lib/utils/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import Popup from '$components/popup/Popup.svelte';
 import Button from '$components/button/Button.svelte';
 import { linear } from 'svelte/easing';
 import { tweened, type Tweened } from 'svelte/motion';
+import Log from '$lib/utils/Log';
 
 let videoEl: HTMLVideoElement;
 let mediaStream: MediaStream;
@@ -99,7 +96,7 @@ function checkFileSelected(files: FileList | null) {
 					};
 					loading = false;
 				} else {
-					console.log('file is fine', files);
+					Log({ res: 'Selected file is fine. Proceeding', source: '0 checkFileSelected' }, 'info');
 					$fileToUpload = files[0];
 					goto('/upload/new');
 				}
@@ -158,25 +155,29 @@ async function checkIfFlipAvailable() {
 }
 
 async function requestMediaAccess() {
-	if (mediaStream) {
-		const tracks = mediaStream.getTracks();
-		tracks.forEach((track) => track.stop());
-	}
-	const res = await getMediaStream(cameraControls.flip.facingMode);
-	if (res.error == 'none' && res.stream) {
-		mediaStream = res.stream;
+	try {
+		if (mediaStream) {
+			const tracks = mediaStream.getTracks();
+			tracks.forEach((track) => track.stop());
+		}
+		const res = await getMediaStream(cameraControls.flip.facingMode);
+		if (res.error == 'none' && res.stream) {
+			mediaStream = res.stream;
 
-		await tick();
+			await tick();
 
-		updateCanvas(
-			mediaStream.getVideoTracks()[0].getSettings().height || window.innerHeight,
-			mediaStream.getVideoTracks()[0].getSettings().width || window.innerWidth
-		);
+			updateCanvas(
+				mediaStream.getVideoTracks()[0].getSettings().height || window.innerHeight,
+				mediaStream.getVideoTracks()[0].getSettings().width || window.innerWidth
+			);
 
-		await checkIfFlashAvailable();
-		await checkIfFlipAvailable();
-	} else {
-		initState = 'denied';
+			await checkIfFlashAvailable();
+			await checkIfFlipAvailable();
+		} else {
+			initState = 'denied';
+		}
+	} catch (e) {
+		Log({ error: e, source: '1 requestMediaAccess' }, 'error');
 	}
 }
 
@@ -191,41 +192,44 @@ function setTimer() {
 }
 
 async function startRecording(ignoreTimer = false) {
-	if (recording) {
-		recording = false;
-		clearInterval(recordingInterval);
-		recordingProgress = undefined;
-		await tick();
-		mediaRecorder.stop();
-	} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
-		timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
-		setTimer();
-	} else {
-		console.log('starting recoridng');
-		if (useCanvas) {
-			recordStream = canvasEl.captureStream(30);
-		} else recordStream = mediaStream;
-		const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
-			? 'video/webm; codecs=vp9'
-			: 'video/mp4;';
-		mediaRecorder = new MediaRecorder(recordStream, { mimeType });
-		mediaRecorder.ondataavailable = handleDataAvailable;
-		recordingInterval = setInterval(() => {
-			if (recordingSeconds < MAX_RECORDING_SECONDS) {
-				recordingSeconds++;
-				recordingProgress?.set((recordingSeconds / MAX_RECORDING_SECONDS) * 100);
-			} else {
-				startRecording();
-				clearInterval(recordingInterval);
-			}
-		}, 1000);
-		mediaRecorder.start();
-		recording = true;
+	try {
+		if (recording) {
+			recording = false;
+			clearInterval(recordingInterval);
+			recordingProgress = undefined;
+			await tick();
+			mediaRecorder.stop();
+		} else if (cameraControls.timer !== 'off' && !ignoreTimer) {
+			timerCountdown = cameraControls.timer === '5s' ? 5 : 10;
+			setTimer();
+		} else {
+			if (useCanvas) {
+				recordStream = canvasEl.captureStream(30);
+			} else recordStream = mediaStream;
+			const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
+				? 'video/webm; codecs=vp9'
+				: 'video/mp4;';
+			mediaRecorder = new MediaRecorder(recordStream, { mimeType });
+			mediaRecorder.ondataavailable = handleDataAvailable;
+			recordingInterval = setInterval(() => {
+				if (recordingSeconds < MAX_RECORDING_SECONDS) {
+					recordingSeconds++;
+					recordingProgress?.set((recordingSeconds / MAX_RECORDING_SECONDS) * 100);
+				} else {
+					startRecording();
+					clearInterval(recordingInterval);
+				}
+			}, 1000);
+			mediaRecorder.start();
+			recording = true;
+		}
+	} catch (e) {
+		Log({ error: e, source: '1 startRecording' }, 'error');
 	}
 }
 
 function handleDataAvailable(event: any) {
-	console.log('data-available');
+	Log({ res: 'Video recorded, Proceeding...', source: '0 handleDataAvailable' }, 'error');
 	if (event.data.size > 0) {
 		loading = true;
 		recordedChunks.push(event.data);
@@ -241,28 +245,32 @@ async function updateCanvas(height: number, width: number) {
 	if (useCanvas && canvasEl) {
 		canvasEl.height = height;
 		canvasEl.width = width;
+		if (!captureInterval) startCapturing();
 	}
-	if (!captureInterval) startCapturing();
 }
 
 function computeFrame() {
-	const ctx = canvasEl.getContext('2d');
-	if (ctx) {
-		ctx.drawImage(
-			videoEl,
-			0,
-			0,
-			canvasEl.width,
-			canvasEl.height,
-			0,
-			0,
-			canvasEl.width,
-			canvasEl.height
-		);
-		const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-		if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
-		else ctx.filter = '';
-		ctx.putImageData(frame, 0, 0);
+	try {
+		const ctx = canvasEl.getContext('2d');
+		if (ctx) {
+			ctx.drawImage(
+				videoEl,
+				0,
+				0,
+				canvasEl.width,
+				canvasEl.height,
+				0,
+				0,
+				canvasEl.width,
+				canvasEl.height
+			);
+			const frame = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+			if (selectedFilter != 'clear') ctx.filter = getFilterCss(selectedFilter);
+			else ctx.filter = '';
+			ctx.putImageData(frame, 0, 0);
+		}
+	} catch (e) {
+		Log({ error: e, source: '1 computeFrame' }, 'error');
 	}
 }
 
@@ -276,8 +284,9 @@ const checkWhichEl = debounce(500, () => {
 		const filterEl = filtersEl.children[i].getBoundingClientRect();
 		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
 			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
-			console.log({ filterElSelected });
+
 			selectedFilter = filterElSelected ?? 'clear';
+			console.log(selectedFilter);
 			break;
 		}
 	}
@@ -391,7 +400,7 @@ onDestroy(async () => {
 	<svelte:fragment slot="bottom-camera-controls">
 		{#if initState == 'allowed'}
 			<!-- Snap Point -->
-			<div transition:fade class="flex items-end justify-start pt-7">
+			<div transition:fade|local class="flex items-end justify-start pt-3">
 				<div
 					bind:this="{cameraEl}"
 					on:click="{() => !loading && startRecording()}"
@@ -412,22 +421,36 @@ onDestroy(async () => {
 					transition:fade
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
-					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto "
+					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto"
 				>
 					<!-- Begin Dumb item -->
 					<div data-filter="clear" class="shrink-0 snap-center">
 						<div class="w-dumb-start shrink-0"></div>
 					</div>
 					<!-- End Dumb item -->
-					{#each Object.keys(allFilters) as filter, i}
-						<img
+					{#each Object.keys(allFilters) as filter}
+						<div
 							draggable="false"
 							data-filter="{filter}"
-							style="filter: {getFilterCss(filter)}; -webkit-touch-callout: none;"
-							alt="{filter}"
-							src="{filterPreviewImage}"
-							class="h-12 w-12 shrink-0 select-none snap-center snap-always rounded-full"
-						/>
+							class="relative flex h-16 shrink-0 select-none snap-center snap-always items-start"
+						>
+							<img
+								draggable="false"
+								style="filter: {getFilterCss(filter)}; -webkit-touch-callout: none;"
+								alt="{filter}"
+								src="{filterPreviewImage}"
+								class="h-12 w-12 rounded-full"
+							/>
+							<div
+								class="{filter == selectedFilter
+									? 'opacity-0'
+									: 'opacity-100'} absolute inset-x-0 bottom-0 z-[10] flex items-center justify-center transition-opacity duration-200"
+							>
+								<span class="text-xs capitalize text-white">
+									{filter}
+								</span>
+							</div>
+						</div>
 					{/each}
 
 					<div data-filter="clear" class="shrink-0 snap-center">

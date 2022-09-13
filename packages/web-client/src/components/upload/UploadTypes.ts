@@ -1,4 +1,4 @@
-import type { FacingMode } from '$lib/cameraPermissions';
+import type { FacingMode } from '$lib/helpers/camera';
 
 export interface CameraControls {
 	flash: 'on' | 'off' | 'not-available' | 'hide';

@@ -7,20 +7,27 @@ import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import { fade } from 'svelte/transition';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
-import placeholderImage from '$assets/placeholder.png';
-import { isiPhone } from '$lib/isSafari';
+import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
-import PlayIcon from '$components/icons/PlayIcon.svelte';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
+import { auth } from '$stores/auth';
+import type { IndividualUserCanister } from '$lib/helpers/backend';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import Log from '$lib/utils/Log';
 
 export let src = '';
+export let id: bigint = BigInt('');
 export let i: number;
 export let thumbnail = '';
 export let inView = false;
 export let userName = 'Natasha';
 export let videoViews = 254000;
 export let swiperJs;
+export let liked = false;
+export let shareCount = 0;
+export let shared = false;
+export let individualUser: () => IndividualUserCanister;
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
@@ -42,6 +49,7 @@ export async function play() {
 			}
 		}
 	} catch (e) {
+		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -62,13 +70,37 @@ export async function stop() {
 }
 
 async function handleClick() {
-	if (videoEl) {
-		if (paused) {
-			play();
-		} else {
-			videoEl.muted = !videoEl.muted;
-			$playerState.muted = videoEl.muted;
+	try {
+		if (videoEl) {
+			if (paused) {
+				play();
+			} else {
+				videoEl.muted = !videoEl.muted;
+				$playerState.muted = videoEl.muted;
+			}
 		}
+	} catch (e) {
+		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
+	}
+}
+
+async function handleLike() {
+	if ($auth.isLoggedIn) {
+		liked = !liked;
+		individualUser().update_post_toggle_like_status_by_caller(id);
+	} else $auth.showLogin = true;
+}
+
+async function handleShare() {
+	if (!shared) {
+		shareCount++;
+		shared = true;
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: `https://hotornot.wtf/all/${i}`
+		});
+		individualUser().update_post_increment_share_count(id);
 	}
 }
 </script>
@@ -77,11 +109,10 @@ async function handleClick() {
 	i="{i}"
 	on:click="{handleClick}"
 	class="{c(
-		'relative flex h-full items-center justify-center transition-all duration-500',
+		'block h-full items-center justify-center overflow-auto transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
-	)}"
->
+	)}">
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
 		bind:this="{videoEl}"
@@ -109,15 +140,13 @@ async function handleClick() {
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{src}"
-	>
+		src="{src}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div
-			in:fade="{{ duration: 100, delay: 200 }}"
-			out:fade="{{ duration: 100 }}"
-			class="max-w-16 pointer-events-none absolute inset-0 z-[5]"
-		>
+			in:fade|local="{{ duration: 100, delay: 200 }}"
+			out:fade|local="{{ duration: 100 }}"
+			class="max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
 				<IconButton>
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
@@ -126,45 +155,61 @@ async function handleClick() {
 		</div>
 	{/if}
 
-	<div class="max-w-16 absolute right-4 bottom-20 z-[5]">
-		<div class="flex flex-col space-y-6">
-			<IconButton>
-				<HeartIcon class="h-8 w-8" />
-			</IconButton>
-			<IconButton>
-				<ShareMessageIcon class="h-6 w-6" />
-			</IconButton>
-			<IconButton
-				class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2"
-			>
-				<FireIcon class="h-5 w-5" />
-			</IconButton>
-		</div>
-	</div>
-
-	<div class="absolute inset-x-0 bottom-20 left-4 right-16 z-[10] w-min">
+	<div transition:fade class="absolute z-[10] block h-full w-full">
 		<div
-			on:click="{(e) => e.stopImmediatePropagation()}"
-			class="pointer-events-auto flex space-x-3"
-		>
-			<a href="/profile/2" sveltekit:prefetch class="h-12 w-12">
-				<Avatar class="h-12 w-12" src="{placeholderImage}" />
-			</a>
-			<div class="flex flex-col space-y-1">
-				<a href="/profile/2" sveltekit:prefetch>{userName}</a>
-				<div class="flex items-center space-x-1">
-					<EyeIcon class="h-4 w-4 text-white" />
-					<span class="text-sm">{videoViews}</span>
+			style="-webkit-transform: translate3d(0, 0, 0);"
+			class="max-w-16 absolute right-4 bottom-20 z-[10]">
+			<div class="flex flex-col space-y-6">
+				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+						handleLike();
+					}}">
+					<HeartIcon filled="{liked}" class="h-8 w-8" />
+				</IconButton>
+				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+						handleShare();
+					}}">
+					<ShareMessageIcon class="h-6 w-6" />
+				</IconButton>
+				<IconButton
+					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
+					<FireIcon class="h-5 w-5" />
+				</IconButton>
+			</div>
+		</div>
+
+		<div
+			style="-webkit-transform: translate3d(0, 0, 0);"
+			class="absolute bottom-20 left-4 z-[9] pr-20">
+			<div
+				on:click="{(e) => e.stopImmediatePropagation()}"
+				class="pointer-events-auto flex space-x-3">
+				<a href="/profile/2" sveltekit:prefetch class="h-12 w-12 shrink-0">
+					<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
+				</a>
+				<div class="flex flex-col space-y-1">
+					<a href="{`/profile/{i + 1}`}" sveltekit:prefetch>{userName}</a>
+					<div class="flex items-center space-x-1">
+						<EyeIcon class="h-4 w-4 text-white" />
+						<span class="text-sm">{videoViews}</span>
+					</div>
 				</div>
 			</div>
 		</div>
+		<div
+			style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
+			class="absolute inset-x-0 bottom-0 z-[4] h-full">
+		</div>
 	</div>
 </player>
+
 {#if !loaded}
 	<loader
 		transition:fade|local="{{ duration: 300 }}"
-		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center"
-	>
+		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
 	</loader>
 {/if}

@@ -13,7 +13,7 @@ function getRadianAngle(degreeValue) {
 	return (degreeValue * Math.PI) / 180;
 }
 
-export async function getCroppedImg(imageSrc, pixelCrop, rotation = 0): string {
+export async function getCroppedImg(imageSrc, pixelCrop, rotation = 0): Blob {
 	const image = await createImage(imageSrc);
 	const canvas = document.createElement('canvas');
 	const ctx = canvas.getContext('2d');
@@ -52,7 +52,7 @@ export async function getCroppedImg(imageSrc, pixelCrop, rotation = 0): string {
 	// As a blob
 	return new Promise((resolve) => {
 		canvas.toBlob((file) => {
-			resolve(URL.createObjectURL(file));
+			resolve(file);
 		}, 'image/png');
 	});
 }
