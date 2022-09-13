@@ -2,10 +2,17 @@
 export { exportClass as class };
 let exportClass: any = '';
 export let outlined = false;
+export let size = '100%';
 </script>
 
 {#if outlined}
-	<svg class="{exportClass}" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<svg
+		class="{exportClass}"
+		style="width: {size}; height: {size}"
+		viewBox="0 0 39 39"
+		fill="none"
+		role="img"
+		xmlns="http://www.w3.org/2000/svg">
 		<path
 			fill-rule="evenodd"
 			clip-rule="evenodd"
@@ -13,7 +20,12 @@ export let outlined = false;
 			fill="white"></path>
 	</svg>
 {:else}
-	<svg class="{exportClass}" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<svg
+		class="{exportClass}"
+		role="img"
+		viewBox="0 0 36 36"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg">
 		<g filter="url(#filter0_d_1389_1295)">
 			<path
 				fill-rule="evenodd"
@@ -28,9 +40,7 @@ export let outlined = false;
 				y="0.226807"
 				width="35.5465"
 				height="35.5466"
-				filterUnits="userSpaceOnUse"
-				color-interpolation-filters="sRGB"
-			>
+				filterUnits="userSpaceOnUse">
 				<feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
 				<feColorMatrix
 					in="SourceAlpha"

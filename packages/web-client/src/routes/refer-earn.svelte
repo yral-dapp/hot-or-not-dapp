@@ -12,7 +12,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 
 const code = 'HTRNTWT';
-let selected = 1;
+let selectedTab = 0;
 
 function copyLink() {
 	try {
@@ -36,9 +36,9 @@ function copyLink() {
 	</svelte:fragment>
 	<svelte:fragment slot="content">
 		<div
-			class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll py-20 px-8">
-			<DotTabs bind:selectedIndex="{selected}" tabs="{['How to earn', 'History']}" />
-			{#if selected == 0}
+			class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll px-8 pb-20 pt-16">
+			<DotTabs bind:selectedIndex="{selectedTab}" tabs="{['How to earn', 'History']}" />
+			{#if selectedTab == 0}
 				<div class="shrink-0 py-4">
 					<CoinsStashIcon class="h-36" />
 				</div>

@@ -3,11 +3,12 @@ export let tabs: string[];
 export let selectedIndex: number;
 </script>
 
-<dot-tabs class="flex w-full shrink-0 items-center justify-center space-x-6">
+<dot-tabs class="flex w-full shrink-0 items-center justify-center space-x-6 py-4">
 	{#each tabs as tab, i}
 		{@const active = selectedIndex == i}
 		<button
 			on:click="{() => (selectedIndex = i)}"
+			on:click
 			class="relative transition-colors duration-200 {active ? 'text-white' : 'text-white/50'}">
 			{tab}
 			{#if active}
