@@ -1,11 +1,30 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export interface PostDetailsForFrontend {
+  'id' : bigint,
+  'status' : PostStatus,
+  'hashtags' : Array<string>,
+  'like_count' : bigint,
+  'description' : string,
+  'total_view_count' : bigint,
+  'video_url' : string,
+  'created_by_username' : [] | [string],
+  'liked_by_me' : boolean,
+  'created_by_profile_photo_url' : [] | [string],
+}
 export interface PostDetailsFromFrontend {
   'hashtags' : Array<string>,
   'description' : string,
   'video_url' : string,
 }
+export type PostStatus = { 'BannedForExplicitness' : null } |
+  { 'BannedDueToUserReporting' : null } |
+  { 'Uploaded' : null } |
+  { 'CheckingExplicitness' : null } |
+  { 'ReadyToView' : null } |
+  { 'Transcoding' : null } |
+  { 'Deleted' : null };
 export type PostViewDetailsFromFrontend = {
     'WatchedMultipleTimes' : {
       'percentage_watched' : number,
@@ -16,8 +35,26 @@ export type PostViewDetailsFromFrontend = {
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null };
+export interface UserProfile {
+  'unique_user_name' : [] | [string],
+  'profile_picture_url' : [] | [string],
+  'display_name' : [] | [string],
+  'principal_id' : Principal,
+  'profile_stats' : UserProfileGlobalStats,
+}
+export interface UserProfileGlobalStats {
+  'lifetime_earnings' : bigint,
+  'lover_count' : bigint,
+  'hots_earned_count' : bigint,
+  'nots_earned_count' : bigint,
+}
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
+  'get_post_with_pagination' : ActorMethod<
+    [bigint, bigint],
+    Array<PostDetailsForFrontend>,
+  >,
+  'get_profile_details' : ActorMethod<[], UserProfile>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],

@@ -1,7 +1,28 @@
+type PostDetailsForFrontend = record {
+  id : nat64;
+  status : PostStatus;
+  hashtags : vec text;
+  like_count : nat64;
+  description : text;
+  total_view_count : nat64;
+  video_url : text;
+  created_by_username : opt text;
+  liked_by_me : bool;
+  created_by_profile_photo_url : opt text;
+};
 type PostDetailsFromFrontend = record {
   hashtags : vec text;
   description : text;
   video_url : text;
+};
+type PostStatus = variant {
+  BannedForExplicitness;
+  BannedDueToUserReporting;
+  Uploaded;
+  CheckingExplicitness;
+  ReadyToView;
+  Transcoding;
+  Deleted;
 };
 type PostViewDetailsFromFrontend = variant {
   WatchedMultipleTimes : record {
@@ -15,8 +36,25 @@ type UserAccessRole = variant {
   ProfileOwner;
   CanisterAdmin;
 };
+type UserProfile = record {
+  unique_user_name : opt text;
+  profile_picture_url : opt text;
+  display_name : opt text;
+  principal_id : principal;
+  profile_stats : UserProfileGlobalStats;
+};
+type UserProfileGlobalStats = record {
+  lifetime_earnings : nat64;
+  lover_count : nat64;
+  hots_earned_count : nat64;
+  nots_earned_count : nat64;
+};
 service : {
   add_post : (PostDetailsFromFrontend) -> (nat64);
+  get_post_with_pagination : (nat64, nat64) -> (
+      vec PostDetailsForFrontend,
+    ) query;
+  get_profile_details : () -> (UserProfile) query;
   get_user_roles : (principal) -> (vec UserAccessRole) query;
   update_post_add_view_details : (nat64, PostViewDetailsFromFrontend) -> ();
   update_post_as_ready_to_view : (nat64) -> ();
