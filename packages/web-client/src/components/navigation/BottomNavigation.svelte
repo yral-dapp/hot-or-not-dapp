@@ -25,25 +25,23 @@ onMount(() => prefetchLinks());
 </script>
 
 <bottom-nav
-	class="flex w-full items-center justify-between px-4 {showBg ? 'bg-black shadow-up' : ''}"
->
+	class="flex w-full items-center justify-between px-4 {showBg ? 'bg-black shadow-up' : ''}">
 	<IconButton
-		href="{`all/${$playerState.currentVideosIndex}`}"
+		href="{`/all/${$playerState.currentVideosIndex}`}"
 		prefetch
-		class="relative flex items-center px-2 py-5"
-	>
+		class="relative flex items-center px-2 py-5">
 		<HomeIcon filled="{path.includes('all')}" class="h-6 w-6 text-white" />
 		<div
 			class:hidden="{!path.includes('all')}"
-			class="absolute bottom-0 w-full bg-primary py-1 blur-md"
-		></div>
+			class="absolute bottom-0 w-full bg-primary py-1 blur-md">
+		</div>
 	</IconButton>
 	<IconButton class="relative flex items-center px-2 py-5">
 		<TrophyIcon class="h-6 w-6 text-white" />
 		<div
 			class:hidden="{!path.includes('trophy')}"
-			class="absolute bottom-0 w-full bg-primary py-1 blur-md"
-		></div>
+			class="absolute bottom-0 w-full bg-primary py-1 blur-md">
+		</div>
 	</IconButton>
 	<IconButton href="/upload" prefetch class="flex items-center rounded-full bg-primary p-3">
 		<PlusIcon class="h-4 w-4 text-white" />
@@ -52,14 +50,14 @@ onMount(() => prefetchLinks());
 		<WalletIcon class="h-6 w-6 text-white" />
 		<div
 			class:hidden="{!path.includes('wallet')}"
-			class="absolute bottom-0 w-full bg-primary py-1 blur-md"
-		></div>
+			class="absolute bottom-0 w-full bg-primary py-1 blur-md">
+		</div>
 	</IconButton>
 	<IconButton href="/menu" prefetch class="relative flex items-center px-2 py-5">
 		<MenuIcon class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
 		<div
 			class:hidden="{!path.includes('menu')}"
-			class="absolute bottom-0 w-full bg-primary py-1 blur-md"
-		></div>
+			class="absolute bottom-0 w-full bg-primary py-1 blur-md">
+		</div>
 	</IconButton>
 </bottom-nav>
