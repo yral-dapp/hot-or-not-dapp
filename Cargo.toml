@@ -2,4 +2,5 @@
 members = [
   "packages/canisters/user_index",
   "packages/canisters/individual_user_template",
+  "packages/canisters/shared_utils",
 ]

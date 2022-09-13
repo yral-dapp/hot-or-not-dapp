@@ -13,8 +13,12 @@ export type PostViewDetailsFromFrontend = {
     }
   } |
   { 'WatchedPartially' : { 'percentage_watched' : number } };
+export type UserAccessRole = { 'CanisterController' : null } |
+  { 'ProfileOwner' : null } |
+  { 'CanisterAdmin' : null };
 export interface _SERVICE {
-  'create_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
+  'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
+  'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
     undefined,
@@ -22,4 +26,9 @@ export interface _SERVICE {
   'update_post_as_ready_to_view' : ActorMethod<[bigint], undefined>,
   'update_post_increment_share_count' : ActorMethod<[bigint], bigint>,
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
+  'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
+  'update_user_remove_role' : ActorMethod<
+    [UserAccessRole, Principal],
+    undefined,
+  >,
 }
