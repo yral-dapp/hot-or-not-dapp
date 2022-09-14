@@ -94,7 +94,7 @@ async function showShareDialog() {
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
-afterNavigate(({ from, to }) => {
+afterNavigate(({ from }) => {
 	if (from) {
 		if (from.pathname.includes('edit')) {
 			back = null;
@@ -142,10 +142,12 @@ afterNavigate(({ from, to }) => {
 			</div>
 			<div
 				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4">
-				<div class="flex flex-col items-center space-y-1 px-4">
+				<a
+					href="{`/profile/${profile.id}/lovers`}"
+					class="flex flex-col items-center space-y-1 px-4">
 					<span class="whitespace-nowrap text-xl font-bold">110</span>
 					<span class="text-sm">Lovers</span>
-				</div>
+				</a>
 				<div class="flex flex-col items-center space-y-1 px-4">
 					<span class="whitespace-nowrap text-xl font-bold">2.2 K</span>
 					<span class="text-sm">Earnings</span>
