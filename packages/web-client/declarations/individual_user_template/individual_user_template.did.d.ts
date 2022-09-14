@@ -16,7 +16,7 @@ export interface PostDetailsForFrontend {
 export interface PostDetailsFromFrontend {
   'hashtags' : Array<string>,
   'description' : string,
-  'video_url' : string,
+  'video_uid' : string,
   'creator_consent_for_inclusion_in_hot_or_not' : boolean,
 }
 export type PostStatus = { 'BannedForExplicitness' : null } |
