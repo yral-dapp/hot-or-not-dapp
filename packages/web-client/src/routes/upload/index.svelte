@@ -335,8 +335,7 @@ onDestroy(async () => {
 			{#if initState != 'allowed'}
 				<div
 					transition:fade|local
-					class="flex h-full flex-col items-center justify-center space-y-8 px-10"
-				>
+					class="flex h-full flex-col items-center justify-center space-y-8 px-10">
 					<CameraAccessIcon class="h-56" />
 					{#if initState == 'denied'}
 						<span class="font-semibold">Enable Camera Access</span>
@@ -358,8 +357,7 @@ onDestroy(async () => {
 							? 'transform: scaleX(-1);'
 							: ''
 						: ''}"
-					class="absolute z-[4] w-full object-cover object-center {useCanvas ? '' : 'h-full'}"
-				>
+					class="absolute z-[4] w-full object-cover object-center {useCanvas ? '' : 'h-full'}">
 				</video>
 				{#if timerInterval}
 					{#key timerCountdown}
@@ -369,8 +367,7 @@ onDestroy(async () => {
 							class="{c(
 								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold opacity-0',
 								timerCountdown > 3 ? 'text-white' : 'text-primary'
-							)}"
-						>
+							)}">
 							{timerCountdown}
 						</div>
 					{/key}
@@ -388,8 +385,8 @@ onDestroy(async () => {
 			<div class="absolute top-4 left-4 right-4 h-2 rounded-full bg-white px-5">
 				<div
 					style="width: {$recordingProgress}%"
-					class="absolute top-0 left-0 h-full max-w-full rounded-full bg-primary"
-				></div>
+					class="absolute top-0 left-0 h-full max-w-full rounded-full bg-primary">
+				</div>
 			</div>
 		{:else}
 			<IconButton href="/all" prefetch class="h-10 w-10 rounded-full bg-black/50">
@@ -407,8 +404,7 @@ onDestroy(async () => {
 					class="{c(
 						'relative mx-auto flex h-14 w-14 select-none items-center justify-center rounded-full ring-8 ring-white/50 transition-all duration-300',
 						recording ? 'z-[5] bg-red-500' : 'bg-white'
-					)}"
-				>
+					)}">
 					<div class="h-4 w-4 rounded-sm bg-white"></div>
 					{#if loading}
 						<LoadingIcon class="absolute mx-auto h-8 w-8 animate-spin-slow text-primary" />
@@ -418,11 +414,10 @@ onDestroy(async () => {
 			{#if !recording && useCanvas}
 				<div
 					on:click="{(e) => !loading && checkClickAndStartRecording(e)}"
-					transition:fade
+					transition:fade|local
 					bind:this="{filtersEl}"
 					on:scroll="{checkWhichEl}"
-					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto"
-				>
+					class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto">
 					<!-- Begin Dumb item -->
 					<div data-filter="clear" class="shrink-0 snap-center">
 						<div class="w-dumb-start shrink-0"></div>
@@ -432,20 +427,17 @@ onDestroy(async () => {
 						<div
 							draggable="false"
 							data-filter="{filter}"
-							class="relative flex h-16 shrink-0 select-none snap-center snap-always items-start"
-						>
+							class="relative flex h-16 shrink-0 select-none snap-center snap-always items-start">
 							<img
 								draggable="false"
 								style="filter: {getFilterCss(filter)}; -webkit-touch-callout: none;"
 								alt="{filter}"
 								src="{filterPreviewImage}"
-								class="h-12 w-12 rounded-full"
-							/>
+								class="h-12 w-12 rounded-full" />
 							<div
 								class="{filter == selectedFilter
 									? 'opacity-0'
-									: 'opacity-100'} absolute inset-x-0 bottom-0 z-[10] flex items-center justify-center transition-opacity duration-200"
-							>
+									: 'opacity-100'} absolute inset-x-0 bottom-0 z-[10] flex items-center justify-center transition-opacity duration-200">
 								<span class="text-xs capitalize text-white">
 									{filter}
 								</span>
@@ -463,8 +455,7 @@ onDestroy(async () => {
 
 	<div
 		class="pointer-events-auto flex h-full select-none flex-col items-center justify-center"
-		slot="right-camera-controls"
-	>
+		slot="right-camera-controls">
 		{#if initState == 'allowed'}
 			<div class="flex flex-col space-y-6 rounded-full bg-black/50 p-3">
 				{#if cameraControls.flash !== 'hide'}
@@ -475,8 +466,7 @@ onDestroy(async () => {
 							class="{c(
 								'flex h-10 w-10 items-center justify-center rounded-full',
 								cameraControls.flash === 'on' ? 'bg-white text-primary' : 'bg-black text-white'
-							)}"
-						>
+							)}">
 							<FlashIcon variant="{cameraControls.flash}" class="h-5 w-5" />
 						</IconButton>
 						<span class="text-xs">Flash</span>
@@ -488,8 +478,7 @@ onDestroy(async () => {
 						<IconButton
 							disabled="{disabled}"
 							on:click="{switchCamera}"
-							class="flex h-10 w-10 items-center justify-center rounded-full bg-black"
-						>
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
 							<FlipIcon disabled="{disabled}" class="h-4 w-4 text-white" />
 						</IconButton>
 						<span class="text-xs">Flip</span>
@@ -502,8 +491,7 @@ onDestroy(async () => {
 						class="{c('flex h-10 w-10 items-center justify-center rounded-full', {
 							'bg-black text-white': cameraControls.timer === 'off',
 							'bg-white text-primary': cameraControls.timer !== 'off'
-						})}"
-					>
+						})}">
 						{#if cameraControls.timer === 'off'}
 							<TimerIcon disabled="{recording}" class="h-5 w-5 " />
 						{:else}
@@ -519,8 +507,7 @@ onDestroy(async () => {
 		class="flex h-full w-full items-center justify-center space-x-16 bg-black/80 transition-all duration-200 {recording
 			? 'opacity-0'
 			: ''}"
-		slot="bottom-navigation"
-	>
+		slot="bottom-navigation">
 		<button class="focus:outline-none" on:click="{() => inputEl.click()}">Gallery</button>
 		<div class="relative">
 			<button class="focus:outline-none">Camera</button>
@@ -535,14 +522,12 @@ onDestroy(async () => {
 	disabled="{loading || recording}"
 	bind:this="{inputEl}"
 	class="hidden"
-	on:change="{(e) => checkFileSelected(e.currentTarget.files)}"
-/>
+	on:change="{(e) => checkFileSelected(e.currentTarget.files)}" />
 
 <Popup
 	showCloseButton
 	on:close="{() => (inputEl.value = '')}"
-	bind:show="{invalidFileSelected.show}"
->
+	bind:show="{invalidFileSelected.show}">
 	<div class="flex flex-col space-y-4">
 		<div>
 			{#if invalidFileSelected.error === 'size'}
@@ -557,8 +542,7 @@ onDestroy(async () => {
 			on:click="{() => {
 				invalidFileSelected.show = false;
 				inputEl.value = '';
-			}}">Okay</Button
-		>
+			}}">Okay</Button>
 	</div>
 </Popup>
 

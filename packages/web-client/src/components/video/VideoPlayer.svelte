@@ -155,7 +155,7 @@ async function handleShare() {
 		</div>
 	{/if}
 
-	<div transition:fade class="absolute z-[10] block h-full w-full">
+	<div transition:fade|local class="absolute z-[10] block h-full w-full">
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="max-w-16 absolute right-4 bottom-20 z-[10]">
