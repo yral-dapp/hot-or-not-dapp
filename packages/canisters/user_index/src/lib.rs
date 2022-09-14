@@ -8,7 +8,6 @@ use ic_stable_memory::{
 use shared_utils::access_control::UserAccessRole;
 
 mod access_control;
-mod canister_management;
 #[cfg(test)]
 mod test;
 mod user_index;
@@ -16,7 +15,8 @@ mod user_index;
 // * Stable Variables
 
 // * Stable collections
-pub type UserIdToCanisterIdMap = SHashMap<SPrincipal, SPrincipal>;
+pub type UserPrincipalIdToCanisterIdMap = SHashMap<SPrincipal, SPrincipal>;
+pub type UniqueUserNameToUserPrincipalIdMap = SHashMap<String, SPrincipal>;
 pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 
 #[init]
@@ -25,7 +25,8 @@ fn init() {
     stable_memory_init(true, 0);
 
     // * initialize stable variables
-    s! { UserIdToCanisterIdMap = UserIdToCanisterIdMap::new_with_capacity(200_000) };
+    s! { UserPrincipalIdToCanisterIdMap = UserPrincipalIdToCanisterIdMap::new_with_capacity(200_000) };
+    s! { UniqueUserNameToUserPrincipalIdMap = UniqueUserNameToUserPrincipalIdMap::new_with_capacity(100_000) };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
 
     // * initialize access control
