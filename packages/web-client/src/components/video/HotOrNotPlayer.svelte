@@ -4,8 +4,11 @@ import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import PieChartIcon from '$components/icons/PieChartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
+import TimerIcon from '$components/icons/TimerIcon.svelte';
+import UsersIcon from '$components/icons/UsersIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
 import type { IndividualUserCanister } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
@@ -21,7 +24,7 @@ export let id: bigint = BigInt('');
 export let i: number;
 export let thumbnail = '';
 export let inView = false;
-export let userName = 'Natasha';
+export let userName = 'Rahul';
 export let videoViews = 254000;
 export let swiperJs;
 export let liked = false;
@@ -180,12 +183,26 @@ async function handleShare() {
 						truncate = !truncate;
 					}}"
 					class="pointer-events-auto w-80 text-left">
-					Lorem ipsum dolor sit amet, consect etur orem ipsum dolor sit amet, consect etur
+					A few weeks ago I was scrolling down on hot or not and I found this very fun choreography
+					by @jorgeandindira. I thought it would be a nice challenge since I've never animated a
+					character dancing before. I hope you like the results.
 				</button>
 				<div class="pointer-events-none flex items-start space-x-2">
-					<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
-					<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
-					<div class="rounded-full bg-black/50 py-1 px-4 text-sm">Tag</div>
+					<div
+						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
+						<TimerIcon class="h-4 w-4" />
+						<span class="shrink-0">50m 55s</span>
+					</div>
+					<div
+						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
+						<UsersIcon class="h-5 w-5" />
+						<span class="shrink-0">48/100</span>
+					</div>
+					<div
+						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
+						<PieChartIcon class="h-4 w-4" />
+						<span class="shrink-0">50m 55s</span>
+					</div>
 				</div>
 			</div>
 			<div class="max-w-16 flex shrink-0 flex-col space-y-6">
