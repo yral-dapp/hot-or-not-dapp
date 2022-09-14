@@ -15,13 +15,14 @@ import { auth } from '$stores/auth';
 import type { IndividualUserCanister } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
+import { generateRandomName } from '$lib/utils/randomUsername';
 
 export let src = '';
 export let id: bigint = BigInt('');
 export let i: number;
 export let thumbnail = '';
 export let inView = false;
-export let userName = 'Natasha';
+export let userName = '';
 export let videoViews = 254000;
 export let swiperJs;
 export let liked = false;
@@ -191,7 +192,9 @@ async function handleShare() {
 					<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
 				</a>
 				<div class="flex flex-col space-y-1">
-					<a href="/profile/{i}" sveltekit:prefetch>{userName}</a>
+					<a href="/profile/{i}" sveltekit:prefetch>
+						@{userName != '' ? userName : generateRandomName('username', i.toString())}
+					</a>
 					<div class="flex items-center space-x-1">
 						<EyeIcon class="h-4 w-4 text-white" />
 						<span class="text-sm">{videoViews}</span>
