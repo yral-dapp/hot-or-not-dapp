@@ -20,6 +20,7 @@ import {
 	type CheckVideoStatusResult
 } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
+import TagsInput from '$components/tags-input/TagsInput.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -62,13 +63,6 @@ async function nextStep() {
 		}
 		startUploading();
 	}
-}
-
-async function updateHashtags() {
-	hashtags = videoHashtags
-		.split(/(?:,| )+/)
-		.filter((o) => !!o)
-		.map((o) => o.replace('#', '').toLowerCase());
 }
 
 async function startUploading() {
@@ -175,12 +169,10 @@ onDestroy(() => {
 	<svelte:fragment slot="top-center">Upload</svelte:fragment>
 	<div
 		slot="content"
-		class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 lg:px-8"
-	>
+		class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 lg:px-8">
 		<div
 			style="{videoWidth && videoHeight ? `aspect-ratio: ${videoWidth}/${videoHeight}` : ''}"
-			class="relative flex max-h-64 max-w-lg items-center justify-center"
-		>
+			class="relative flex max-h-64 max-w-lg items-center justify-center">
 			{#if videoSrc}
 				<!-- svelte-ignore a11y-media-has-caption -->
 				<video
@@ -197,15 +189,13 @@ onDestroy(() => {
 					playsinline
 					autoplay
 					muted="{previewMuted}"
-					class="h-full w-full rounded-xl bg-white/10 ring-4 ring-white/30"
-				>
+					class="h-full w-full rounded-xl bg-white/10 ring-4 ring-white/30">
 				</video>
 			{/if}
 			{#if previewPaused}
 				<div
 					on:click="{() => (previewPaused = false)}"
-					class="absolute inset-0 flex items-center justify-center"
-				>
+					class="absolute inset-0 flex items-center justify-center">
 					<IconButton class="rounded-full bg-black/50 p-4">
 						<PlayIcon class="h-4 w-4" />
 					</IconButton>
@@ -218,28 +208,17 @@ onDestroy(() => {
 				bind:value="{videoDescription}"
 				on:focus="{() => console.log('focus')}"
 				on:blur="{() => console.log('blur')}"
-				class="shrink-0 rounded-xl bg-white/10"
-			/>
+				class="shrink-0 rounded-xl bg-white/10" />
 			{#if descriptionError}
 				<div class="text-xs text-red-500">{descriptionError}</div>
 			{/if}
 			<div class="flex w-full flex-col space-y-2">
 				<span class="text-white/60">Add Hashtags</span>
-				<Input
-					on:input="{updateHashtags}"
+				<TagsInput
+					maxHashtags="{8}"
+					placeholder="#hastag, #hastag2 ..."
 					bind:value="{videoHashtags}"
-					type="text"
-					maxlength="{MAX_HASHTAG_LENGTH}"
-					placeholder="#hastag, #hastag2, #hastag3 ..."
-					class="w-full rounded-xl bg-white/10"
-				/>
-				{#if hashtags.length}
-					<div class="flex w-full flex-wrap items-center gap-2">
-						{#each hashtags as hashtag}
-							<div class="rounded-sm bg-primary/30 px-2 py-1 text-xs text-primary">#{hashtag}</div>
-						{/each}
-					</div>
-				{/if}
+					bind:tags="{hashtags}" />
 			</div>
 			{#if isInputLimitReached}
 				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
@@ -266,8 +245,7 @@ onDestroy(() => {
 							? 'queued'
 							: uploadStep === 'processing'
 							? 'active'
-							: 'finished'}"
-					/>
+							: 'finished'}" />
 					<div class="flex w-full flex-col space-y-2">
 						<span class="text-lg">Processing Checks</span>
 						{#if uploadStep === 'processing' || uploadStep == 'verified'}
