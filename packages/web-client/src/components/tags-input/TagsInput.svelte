@@ -60,6 +60,6 @@ onMount(() => {
 			on:keyup="{handleInput}"
 			placeholder="{placeholder}"
 			style="min-width: 30%;"
-			class="flex-1 border-0 bg-transparent py-[2px] outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+			class="flex-1 border-0 bg-transparent py-[2px] px-0 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
 	{/if}
 </tags-input>
