@@ -17,6 +17,7 @@ export interface PostDetailsFromFrontend {
   'hashtags' : Array<string>,
   'description' : string,
   'video_url' : string,
+  'creator_consent_for_inclusion_in_hot_or_not' : boolean,
 }
 export type PostStatus = { 'BannedForExplicitness' : null } |
   { 'BannedDueToUserReporting' : null } |
@@ -40,17 +41,23 @@ export interface UserProfile {
   'profile_picture_url' : [] | [string],
   'display_name' : [] | [string],
   'principal_id' : Principal,
+  'followers' : Array<Principal>,
+  'following' : Array<Principal>,
   'profile_stats' : UserProfileGlobalStats,
+}
+export interface UserProfileDetailsFromFrontend {
+  'unique_user_name' : [] | [string],
+  'profile_picture_url' : [] | [string],
+  'display_name' : [] | [string],
 }
 export interface UserProfileGlobalStats {
   'lifetime_earnings' : bigint,
-  'lover_count' : bigint,
   'hots_earned_count' : bigint,
   'nots_earned_count' : bigint,
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
-  'get_post_with_pagination' : ActorMethod<
+  'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
     Array<PostDetailsForFrontend>,
   >,
@@ -63,6 +70,18 @@ export interface _SERVICE {
   'update_post_as_ready_to_view' : ActorMethod<[bigint], undefined>,
   'update_post_increment_share_count' : ActorMethod<[bigint], bigint>,
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
+  'update_profile_details' : ActorMethod<
+    [UserProfileDetailsFromFrontend],
+    UserProfile,
+  >,
+  'update_profile_toggle_follower_list_by_calling_principal' : ActorMethod<
+    [],
+    boolean,
+  >,
+  'update_profile_toggle_following_list_by_user_to_follow' : ActorMethod<
+    [Principal],
+    boolean,
+  >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],

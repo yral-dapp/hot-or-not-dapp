@@ -15,6 +15,8 @@ pub fn setup_initial_access_control(
             UserAccessRole::CanisterAdmin,
         ],
     );
+
+    // * add user index parent canister
     user_id_access_control_map.insert(
         SPrincipal(parent_canister_principal_id),
         &vec![
@@ -22,6 +24,8 @@ pub fn setup_initial_access_control(
             UserAccessRole::CanisterAdmin,
         ],
     );
+
+    // * add user whose profile details are stored in this canister
     user_id_access_control_map.insert(
         SPrincipal(parent_canister_owner_principal_id),
         &vec![UserAccessRole::ProfileOwner],

@@ -1,15 +1,24 @@
-use crate::{AllCreatedPosts, Profile};
+use crate::{AccessControlMap, AllCreatedPosts, Profile};
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use internal::{
     Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostStatus, PostViewDetailsFromFrontend,
 };
+use shared_utils::access_control::{does_principal_have_role, UserAccessRole};
 
 pub mod internal;
 
+/// # Access Control
+/// Only the user whose profile details are stored in this canister can create a post.
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 fn add_post(post_details: PostDetailsFromFrontend) -> u64 {
-    // TODO: add validation so only canister owner can add posts
+    // * access control
+    let user_id_access_control_map = s!(AccessControlMap);
+    assert!(does_principal_have_role(
+        &user_id_access_control_map,
+        UserAccessRole::ProfileOwner,
+        SPrincipal(ic_cdk::caller())
+    ));
 
     let mut all_posts_mut = s!(AllCreatedPosts);
     let id = all_posts_mut.len();
@@ -19,6 +28,7 @@ fn add_post(post_details: PostDetailsFromFrontend) -> u64 {
         post_details.description,
         post_details.hashtags,
         post_details.video_url,
+        post_details.creator_consent_for_inclusion_in_hot_or_not,
     );
 
     all_posts_mut.push(&post);
@@ -41,10 +51,20 @@ fn update_post_add_view_details(id: u64, details: PostViewDetailsFromFrontend) {
     s! { AllCreatedPosts = all_posts_mut };
 }
 
+/// # Access Control
+/// Only admin principals allowed
+/// To only be called from a trusted env like a cloud function
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 fn update_post_as_ready_to_view(id: u64) {
-    // TODO: implement access control and allow only principals in allow list. To only be called from a cloud function.
+    // * access control
+    let user_id_access_control_map = s!(AccessControlMap);
+    assert!(does_principal_have_role(
+        &user_id_access_control_map,
+        UserAccessRole::CanisterAdmin,
+        SPrincipal(ic_cdk::caller())
+    ));
+
     let mut all_posts_mut = s!(AllCreatedPosts);
     let mut post_to_update = all_posts_mut.get_cloned(id).unwrap();
     post_to_update.update_status(PostStatus::ReadyToView);
@@ -81,7 +101,7 @@ fn update_post_toggle_like_status_by_caller(id: u64) -> bool {
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
-fn get_post_with_pagination(
+fn get_posts_of_this_user_profile_with_pagination(
     from_inclusive_id: u64,
     mut to_exclusive_id: u64,
 ) -> Vec<PostDetailsForFrontend> {

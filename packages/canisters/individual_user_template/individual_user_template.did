@@ -14,6 +14,7 @@ type PostDetailsFromFrontend = record {
   hashtags : vec text;
   description : text;
   video_url : text;
+  creator_consent_for_inclusion_in_hot_or_not : bool;
 };
 type PostStatus = variant {
   BannedForExplicitness;
@@ -41,17 +42,23 @@ type UserProfile = record {
   profile_picture_url : opt text;
   display_name : opt text;
   principal_id : principal;
+  followers : vec principal;
+  following : vec principal;
   profile_stats : UserProfileGlobalStats;
+};
+type UserProfileDetailsFromFrontend = record {
+  unique_user_name : opt text;
+  profile_picture_url : opt text;
+  display_name : opt text;
 };
 type UserProfileGlobalStats = record {
   lifetime_earnings : nat64;
-  lover_count : nat64;
   hots_earned_count : nat64;
   nots_earned_count : nat64;
 };
 service : {
   add_post : (PostDetailsFromFrontend) -> (nat64);
-  get_post_with_pagination : (nat64, nat64) -> (
+  get_posts_of_this_user_profile_with_pagination : (nat64, nat64) -> (
       vec PostDetailsForFrontend,
     ) query;
   get_profile_details : () -> (UserProfile) query;
@@ -60,6 +67,11 @@ service : {
   update_post_as_ready_to_view : (nat64) -> ();
   update_post_increment_share_count : (nat64) -> (nat64);
   update_post_toggle_like_status_by_caller : (nat64) -> (bool);
+  update_profile_details : (UserProfileDetailsFromFrontend) -> (UserProfile);
+  update_profile_toggle_follower_list_by_calling_principal : () -> (bool);
+  update_profile_toggle_following_list_by_user_to_follow : (principal) -> (
+      bool,
+    );
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();
 }

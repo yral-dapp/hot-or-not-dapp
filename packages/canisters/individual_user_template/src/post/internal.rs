@@ -36,6 +36,7 @@ pub struct PostDetailsFromFrontend {
     pub description: String,
     pub hashtags: Vec<String>,
     pub video_url: String,
+    pub creator_consent_for_inclusion_in_hot_or_not: bool,
 }
 
 #[derive(Readable, Writable)]
@@ -57,6 +58,7 @@ pub struct Post {
     share_count: u64,
     view_stats: PostViewStatistics,
     ranking_score: u64,
+    creator_consent_for_inclusion_in_hot_or_not: bool,
 }
 
 #[derive(Serialize, CandidType)]
@@ -74,7 +76,13 @@ pub struct PostDetailsForFrontend {
 }
 
 impl Post {
-    pub fn new(id: u64, description: String, hashtags: Vec<String>, video_url: String) -> Self {
+    pub fn new(
+        id: u64,
+        description: String,
+        hashtags: Vec<String>,
+        video_url: String,
+        creator_consent_for_inclusion_in_hot_or_not: bool,
+    ) -> Self {
         Post {
             id,
             description,
@@ -95,6 +103,7 @@ impl Post {
                 average_watch_percentage: 0,
             },
             ranking_score: 0,
+            creator_consent_for_inclusion_in_hot_or_not,
         }
     }
 
