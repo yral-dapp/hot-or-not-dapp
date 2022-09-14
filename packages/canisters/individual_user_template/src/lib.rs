@@ -10,7 +10,7 @@ use ic_stable_memory::{
 use post::internal::{
     Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
 };
-use profile::internal::UserProfile;
+use profile::internal::{UserProfile, UserProfileDetailsFromFrontend};
 use shared_utils::access_control::UserAccessRole;
 
 mod access_control;
