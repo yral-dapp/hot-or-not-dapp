@@ -153,7 +153,7 @@ async function handleShare() {
 
 	<div
 		style="-webkit-transform: translate3d(0, 0, 0);"
-		transition:fade
+		transition:fade|local
 		class="absolute z-[10] block h-full w-full">
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
