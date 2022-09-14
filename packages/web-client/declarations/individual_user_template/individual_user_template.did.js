@@ -2,7 +2,7 @@ export const idlFactory = ({ IDL }) => {
   const PostDetailsFromFrontend = IDL.Record({
     'hashtags' : IDL.Vec(IDL.Text),
     'description' : IDL.Text,
-    'video_url' : IDL.Text,
+    'video_uid' : IDL.Text,
     'creator_consent_for_inclusion_in_hot_or_not' : IDL.Bool,
   });
   const PostStatus = IDL.Variant({

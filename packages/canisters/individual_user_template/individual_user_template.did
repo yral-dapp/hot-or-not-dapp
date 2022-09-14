@@ -13,7 +13,7 @@ type PostDetailsForFrontend = record {
 type PostDetailsFromFrontend = record {
   hashtags : vec text;
   description : text;
-  video_url : text;
+  video_uid : text;
   creator_consent_for_inclusion_in_hot_or_not : bool;
 };
 type PostStatus = variant {

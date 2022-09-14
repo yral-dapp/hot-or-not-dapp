@@ -35,7 +35,7 @@ pub enum PostViewDetailsFromFrontend {
 pub struct PostDetailsFromFrontend {
     pub description: String,
     pub hashtags: Vec<String>,
-    pub video_url: String,
+    pub video_uid: String,
     pub creator_consent_for_inclusion_in_hot_or_not: bool,
 }
 
@@ -51,7 +51,7 @@ pub struct Post {
     id: u64,
     description: String,
     hashtags: Vec<String>,
-    video_url: String,
+    video_uid: String,
     status: PostStatus,
     created_at: SystemTime,
     likes: HashSet<SPrincipal>,
@@ -80,14 +80,14 @@ impl Post {
         id: u64,
         description: String,
         hashtags: Vec<String>,
-        video_url: String,
+        video_uid: String,
         creator_consent_for_inclusion_in_hot_or_not: bool,
     ) -> Self {
         Post {
             id,
             description,
             hashtags,
-            video_url,
+            video_uid,
             status: PostStatus::Uploaded,
             created_at: UNIX_EPOCH
                 .checked_add(Duration::new(
@@ -214,7 +214,7 @@ impl Post {
             created_by_profile_photo_url: user_profile.profile_picture_url,
             description: self.description.clone(),
             hashtags: self.hashtags.clone(),
-            video_url: self.video_url.clone(),
+            video_url: self.video_uid.clone(),
             status: self.status.clone(),
             total_view_count: self.view_stats.total_view_count,
             like_count: self.likes.len() as u64,

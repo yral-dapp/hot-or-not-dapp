@@ -27,7 +27,7 @@ fn add_post(post_details: PostDetailsFromFrontend) -> u64 {
         id,
         post_details.description,
         post_details.hashtags,
-        post_details.video_url,
+        post_details.video_uid,
         post_details.creator_consent_for_inclusion_in_hot_or_not,
     );
 
