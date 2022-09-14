@@ -93,7 +93,7 @@ async function showShareDialog() {
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
-afterNavigate(({ from }) => {
+afterNavigate(({ from, to }) => {
 	if (from) {
 		if (from.pathname.includes('edit')) {
 			back = null;
@@ -104,7 +104,9 @@ afterNavigate(({ from }) => {
 
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
-		<IconButton on:click="{() => (back ? goto(back) : goto('/menu'))}" class="shrink-0">
+		<IconButton
+			on:click="{() => (back ? goto(back) : history.length > 2 ? history.back() : goto('/menu'))}"
+			class="shrink-0">
 			<CaretLeftIcon class="h-7 w-7" />
 		</IconButton>
 	</svelte:fragment>
