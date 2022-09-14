@@ -40,7 +40,7 @@ onMount(() => {
 </script>
 
 <tags-input
-	class="relative inline-flex w-full flex-wrap items-center gap-3 rounded-md bg-white/10 p-3">
+	class="relative inline-flex w-full flex-wrap items-center gap-3 rounded-xl bg-white/10 p-3">
 	{#each tags as tag}
 		<div class="flex shrink-0 items-center space-x-2 rounded-sm bg-primary py-1 px-2 text-sm">
 			<span>
@@ -60,6 +60,6 @@ onMount(() => {
 			on:keyup="{handleInput}"
 			placeholder="{placeholder}"
 			style="min-width: 30%;"
-			class="flex-1 border-0 bg-transparent p-0 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+			class="flex-1 border-0 bg-transparent py-[2px] outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
 	{/if}
 </tags-input>
