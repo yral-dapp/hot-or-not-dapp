@@ -10,6 +10,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
+import { generateRandomName } from '$lib/utils/randomUsername';
 
 const code = 'HTRNTWT';
 let selectedTab = 0;
@@ -85,7 +86,7 @@ function copyLink() {
 								alt="avatar"
 								class="h-12 w-12 rounded-full object-cover" />
 							<div class="flex flex-col items-start">
-								<span>Adam Ling</span>
+								<span>{generateRandomName('name', i.toString())}</span>
 								<span class="text-sm text-white/50">10 Aug</span>
 							</div>
 						</div>
