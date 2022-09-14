@@ -2,7 +2,7 @@
 type LoginType = 'nfid' | 'ii';
 const APPLICATION_NAME = encodeURI('Hot or Not');
 const APPLICATION_LOGO_URL = encodeURI(
-	'https://static.wixstatic.com/media/1f4d25_d43585ecba2d4eeeb72a344a1b5896ea~mv2.png'
+	'https://imagedelivery.net/abXI9nS4DYYtyR1yFFtziA/5c66dd44-4bee-47e9-9348-9a20a3358200/public'
 );
 const NFID_AUTH_URL =
 	'https://nfid.one/authenticate/?applicationName=' +
