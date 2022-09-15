@@ -91,12 +91,12 @@ export const idlFactory = ({ IDL }) => {
         [UserProfile],
         [],
       ),
-    'update_profile_toggle_follower_list_by_calling_principal' : IDL.Func(
+    'update_profile_toggle_follower_list_of_followee_by_calling_principal' : IDL.Func(
         [],
         [IDL.Bool],
         [],
       ),
-    'update_profile_toggle_following_list_by_user_to_follow' : IDL.Func(
+    'update_profile_toggle_following_list_of_follower_by_user_to_follow' : IDL.Func(
         [IDL.Principal],
         [IDL.Bool],
         [],

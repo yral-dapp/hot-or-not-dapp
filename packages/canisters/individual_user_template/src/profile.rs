@@ -40,7 +40,9 @@ fn update_profile_details(user_profile_details: UserProfileDetailsFromFrontend) 
 /// Only the user whose profile details are stored in this canister can create a post.
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
-fn update_profile_toggle_following_list_by_user_to_follow(user_to_follow: Principal) -> bool {
+fn update_profile_toggle_following_list_of_follower_by_user_to_follow(
+    user_to_follow: Principal,
+) -> bool {
     // * access control
     let user_id_access_control_map = s!(AccessControlMap);
     assert!(
@@ -53,8 +55,9 @@ fn update_profile_toggle_following_list_by_user_to_follow(user_to_follow: Princi
     );
 
     let mut profile = s!(Profile);
-    let toggle_status =
-        profile.update_profile_toggle_following_list_by_user_to_follow(SPrincipal(user_to_follow));
+    let toggle_status = profile.update_profile_toggle_following_list_of_follower_by_user_to_follow(
+        SPrincipal(user_to_follow),
+    );
     s! {Profile = profile};
 
     toggle_status
@@ -62,10 +65,12 @@ fn update_profile_toggle_following_list_by_user_to_follow(user_to_follow: Princi
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
-fn update_profile_toggle_follower_list_by_calling_principal() -> bool {
+fn update_profile_toggle_follower_list_of_followee_by_calling_principal() -> bool {
     let mut profile = s!(Profile);
     let toggle_status = profile
-        .update_profile_toggle_follower_list_by_calling_principal(SPrincipal(ic_cdk::caller()));
+        .update_profile_toggle_follower_list_of_followee_by_calling_principal(SPrincipal(
+            ic_cdk::caller(),
+        ));
     s! {Profile = profile};
 
     toggle_status

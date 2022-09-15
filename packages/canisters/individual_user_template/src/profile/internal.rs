@@ -65,7 +65,7 @@ impl UserProfile {
         }
     }
 
-    pub fn update_profile_toggle_following_list_by_user_to_follow(
+    pub fn update_profile_toggle_following_list_of_follower_by_user_to_follow(
         &mut self,
         user_to_follow: SPrincipal,
     ) -> bool {
@@ -85,7 +85,7 @@ impl UserProfile {
         }
     }
 
-    pub fn update_profile_toggle_follower_list_by_calling_principal(
+    pub fn update_profile_toggle_follower_list_of_followee_by_calling_principal(
         &mut self,
         user_who_followed_me: SPrincipal,
     ) -> bool {

@@ -74,11 +74,11 @@ export interface _SERVICE {
     [UserProfileDetailsFromFrontend],
     UserProfile,
   >,
-  'update_profile_toggle_follower_list_by_calling_principal' : ActorMethod<
+  'update_profile_toggle_follower_list_of_followee_by_calling_principal' : ActorMethod<
     [],
     boolean,
   >,
-  'update_profile_toggle_following_list_by_user_to_follow' : ActorMethod<
+  'update_profile_toggle_following_list_of_follower_by_user_to_follow' : ActorMethod<
     [Principal],
     boolean,
   >,

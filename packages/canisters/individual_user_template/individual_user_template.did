@@ -68,10 +68,12 @@ service : {
   update_post_increment_share_count : (nat64) -> (nat64);
   update_post_toggle_like_status_by_caller : (nat64) -> (bool);
   update_profile_details : (UserProfileDetailsFromFrontend) -> (UserProfile);
-  update_profile_toggle_follower_list_by_calling_principal : () -> (bool);
-  update_profile_toggle_following_list_by_user_to_follow : (principal) -> (
+  update_profile_toggle_follower_list_of_followee_by_calling_principal : () -> (
       bool,
     );
+  update_profile_toggle_following_list_of_follower_by_user_to_follow : (
+      principal,
+    ) -> (bool);
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();
 }
