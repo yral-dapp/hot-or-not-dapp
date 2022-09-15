@@ -1,5 +1,7 @@
-export function generateRandomNumber(length: number): string {
-	return Math.floor(Math.random() * Math.pow(10, length))
+export function generateRandomNumber(length: number, seed: number): string {
+	let r = Math.sin(seed) * 10;
+	r = r - Math.floor(r);
+	return Math.floor(r * Math.pow(10, length))
 		.toString()
 		.padEnd(length, '0');
 }
@@ -16,6 +18,6 @@ export function generateRandomName(type: 'name' | 'username', seed: string) {
 	if (type === 'name') {
 		return `${r1} ${r2}`;
 	} else {
-		return `${r1.toLowerCase()}-${r2.toLowerCase()}-${generateRandomNumber(4)}`;
+		return `${r1.toLowerCase()}-${r2.toLowerCase()}-${generateRandomNumber(4, sum)}`;
 	}
 }
