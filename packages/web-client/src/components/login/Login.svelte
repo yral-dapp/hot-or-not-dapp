@@ -36,7 +36,6 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
-	// console.log('users canister before login:', canisterId.toText());
 	await $auth.client?.login({
 		maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
 		onSuccess: () => handleSuccessfulLogin(type),
@@ -48,7 +47,7 @@ async function handleLogin(type: LoginType) {
 async function handleSuccessfulLogin(type: LoginType) {
 	$auth.showLogin = false;
 	$auth.isLoggedIn = true;
-	initializeAuthClient();
+	await initializeAuthClient();
 }
 
 function handleError(type: LoginType, e?: string) {
