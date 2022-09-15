@@ -1,5 +1,4 @@
 import { Principal } from '@dfinity/principal';
-import Log from './Log';
 
 const avatars = [
 	'https://i.imgur.com/QlRZXTs.png',
@@ -31,7 +30,6 @@ export default (principal?: Principal | string) => {
 	} else if (principal) {
 		string = principal;
 	}
-	Log({ defaultUrl: string }, 'info');
 	const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0);
 	return avatars[sum % 20];
 };
