@@ -1,16 +1,27 @@
+import Log from '$lib/utils/Log';
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
 import { auth } from '../../stores/auth';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
-	const userCanisterPrincipal = await userIndex().get_users_canister();
-	console.log('updating user index canister', userCanisterPrincipal?.toText());
-	const authStore = get(auth);
-	auth.set({
-		...authStore,
-		userCanisterPrincipal
-	});
+	try {
+		const userCanisterPrincipal = await userIndex().get_user_canister_id_from_user_principal_id();
+		Log(
+			{
+				userCanisterPrincipal: userCanisterPrincipal?.toText(),
+				from: '0 updateUserIndexCanister'
+			},
+			'info'
+		);
+		const authStore = get(auth);
+		auth.set({
+			...authStore,
+			userCanisterPrincipal
+		});
+	} catch (e) {
+		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
+	}
 }
 
 export async function initializeAuthClient(): Promise<void> {
