@@ -13,6 +13,7 @@ export default writable<{
 		hots_earned_count: number;
 		nots_earned_count: number;
 	};
+	updated_at: number;
 }>('user-profile', {
 	unique_user_name: [],
 	profile_picture_url: [],
@@ -23,5 +24,6 @@ export default writable<{
 		lifetime_earnings: 0,
 		hots_earned_count: 0,
 		nots_earned_count: 0
-	}
+	},
+	updated_at: Date.now()
 });
