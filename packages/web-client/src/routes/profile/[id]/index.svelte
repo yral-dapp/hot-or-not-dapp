@@ -63,6 +63,7 @@ import { auth } from '$stores/auth';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { afterNavigate, goto } from '$app/navigation';
 import { generateRandomName } from '$lib/utils/randomUsername';
+import userProfile from '$stores/userProfile';
 
 let profile = {
 	id: $page.params.id,
@@ -134,33 +135,40 @@ afterNavigate(({ from }) => {
 	<svelte:fragment slot="content">
 		<div class="flex h-full w-full flex-col overflow-y-auto ">
 			<div class="flex w-full flex-col items-center justify-center py-8">
-				<img class="h-24 w-24 rounded-full" alt="{profile.name}" src="{profile.avatar}" />
+				<img
+					class="h-24 w-24 rounded-full"
+					alt="{$userProfile.display_name[0]}"
+					src="{$userProfile.profile_picture_url[0] ?? profile.avatar}" />
 				<span class="text-md pt-4 font-bold">
-					{profile.name != ''
-						? profile.name
-						: generateRandomName('name', $auth.principal?.toText() ?? profile.id)}
+					{$userProfile.display_name[0] ??
+						generateRandomName('name', $auth.principal?.toText() ?? profile.id)}
 				</span>
-				<span class="text-sm"
-					>@{generateRandomName('username', $auth.principal?.toText() ?? profile.id)}</span>
+				<span class="text-sm">
+					@{$userProfile.unique_user_name[0] ??
+						generateRandomName('username', $auth.principal?.toText() ?? profile.id)}
+				</span>
 			</div>
 			<div
 				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4">
 				<a
 					href="{`/profile/${profile.id}/lovers`}"
 					class="flex flex-col items-center space-y-1 px-4">
-					<span class="whitespace-nowrap text-xl font-bold">110</span>
+					<span class="whitespace-nowrap text-xl font-bold">{$userProfile.followers.length}</span>
 					<span class="text-sm">Lovers</span>
 				</a>
 				<div class="flex flex-col items-center space-y-1 px-4">
-					<span class="whitespace-nowrap text-xl font-bold">2.2 K</span>
+					<span class="whitespace-nowrap text-xl font-bold"
+						>{$userProfile.profile_stats.lifetime_earnings}</span>
 					<span class="text-sm">Earnings</span>
 				</div>
 				<div class="flex flex-col items-center space-y-1 px-4">
-					<span class="whitespace-nowrap text-xl font-bold">2.2 M</span>
+					<span class="whitespace-nowrap text-xl font-bold"
+						>{$userProfile.profile_stats.hots_earned_count}</span>
 					<span class="text-sm">Hots</span>
 				</div>
 				<div class="flex flex-col items-center space-y-1 px-4">
-					<span class="whitespace-nowrap text-xl font-bold">1.1 M</span>
+					<span class="whitespace-nowrap text-xl font-bold"
+						>{$userProfile.profile_stats.nots_earned_count}</span>
 					<span class="text-sm">Nots</span>
 				</div>
 			</div>

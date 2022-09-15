@@ -18,6 +18,7 @@ import { page } from '$app/stores';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { prefetch } from '$app/navigation';
 import { generateRandomName } from '$lib/utils/randomUsername';
+import userProfile from '$stores/userProfile';
 
 $: links = [
 	{
@@ -78,9 +79,12 @@ onMount(() => prefetchLinks());
 				<img
 					alt="profile"
 					class="h-24 w-24 rounded-full object-cover"
-					src="{getDefaultImageUrl($auth.principal)}" />
+					src="{$userProfile.profile_picture_url[0] ?? getDefaultImageUrl($auth.principal)}" />
 				<div class="flex flex-col space-y-1">
-					<div class="text-xl">{generateRandomName('name', $auth.principal?.toText() ?? '1')}</div>
+					<div class="text-xl">
+						{$userProfile.display_name ??
+							generateRandomName('name', $auth.principal?.toText() ?? '1')}
+					</div>
 					<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
 				</div>
 			</div>
