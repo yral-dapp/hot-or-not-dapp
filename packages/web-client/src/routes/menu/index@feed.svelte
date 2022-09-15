@@ -17,6 +17,7 @@ import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { prefetch } from '$app/navigation';
+import { generateRandomName } from '$lib/utils/randomUsername';
 
 $: links = [
 	{
@@ -79,7 +80,7 @@ onMount(() => prefetchLinks());
 					class="h-24 w-24 rounded-full object-cover"
 					src="{getDefaultImageUrl($auth.principal)}" />
 				<div class="flex flex-col space-y-1">
-					<div class="text-xl">Harsh</div>
+					<div class="text-xl">{generateRandomName('name', $auth.principal?.toText() ?? '1')}</div>
 					<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
 				</div>
 			</div>

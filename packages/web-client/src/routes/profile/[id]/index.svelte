@@ -136,9 +136,12 @@ afterNavigate(({ from }) => {
 			<div class="flex w-full flex-col items-center justify-center py-8">
 				<img class="h-24 w-24 rounded-full" alt="{profile.name}" src="{profile.avatar}" />
 				<span class="text-md pt-4 font-bold">
-					{profile.name != '' ? profile.name : generateRandomName('name', profile.id.toString())}
+					{profile.name != ''
+						? profile.name
+						: generateRandomName('name', $auth.principal?.toText() ?? profile.id)}
 				</span>
-				<span class="text-sm">@{generateRandomName('username', profile.id.toString())}</span>
+				<span class="text-sm"
+					>@{generateRandomName('username', $auth.principal?.toText() ?? profile.id)}</span>
 			</div>
 			<div
 				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4">
