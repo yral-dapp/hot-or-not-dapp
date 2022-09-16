@@ -79,10 +79,10 @@ onMount(() => prefetchLinks());
 				<img
 					alt="profile"
 					class="h-24 w-24 rounded-full object-cover"
-					src="{$userProfile.profile_picture_url[0] ?? getDefaultImageUrl($auth.principal)}" />
+					src="{$userProfile.profile_picture_url?.[0] || getDefaultImageUrl($auth.principal)}" />
 				<div class="flex flex-col space-y-1">
 					<div class="text-xl">
-						{$userProfile.display_name ??
+						{$userProfile.display_name?.[0] ||
 							generateRandomName('name', $auth.principal?.toText() ?? '1')}
 					</div>
 					<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
