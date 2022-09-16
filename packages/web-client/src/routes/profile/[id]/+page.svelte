@@ -17,6 +17,8 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { afterNavigate, goto } from '$app/navigation';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import userProfile from '$stores/userProfile';
+import { onMount } from 'svelte';
+import { Principal } from '@dfinity/principal';
 
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
@@ -99,6 +101,28 @@ afterNavigate(({ from }) => {
 			back = null;
 		} else back = from.url.pathname;
 	} else back = null;
+});
+
+onMount(() => {
+	const id = $page.params.id;
+	if (!id) {
+		goto('/profile');
+		return;
+	}
+	try {
+		const principal = Principal.from(id);
+		if (principal._isPrincipal) {
+			console.log('is a principal', principal.toText());
+			// fetch profile from principal
+		} else {
+			console.log('id is a username', id);
+		}
+	} catch (e) {
+		console.log('error but, id is a username', id);
+		// fetch principal from index canister using username
+		// if no username exists, show invalid username page
+		// else fetch profile from the recvd canister id
+	}
 });
 </script>
 
