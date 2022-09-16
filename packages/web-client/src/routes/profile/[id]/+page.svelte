@@ -1,4 +1,23 @@
-<script lang="ts" context="module">
+<script lang="ts">
+import IconButton from '$components/button/IconButton.svelte';
+import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import PencilIcon from '$components/icons/PencilIcon.svelte';
+import ProfileLayout from '$components/layout/ProfileLayout.svelte';
+import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
+import ProfileTabs from '$components/tabs/ProfileTabs.svelte';
+import ProfilePost from '$components/profile/ProfilePost.svelte';
+import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
+import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
+import Button from '$components/button/Button.svelte';
+import ReportIcon from '$components/icons/ReportIcon.svelte';
+import { page } from '$app/stores';
+import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
+import { auth } from '$stores/auth';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { afterNavigate, goto } from '$app/navigation';
+import { generateRandomName } from '$lib/utils/randomUsername';
+import userProfile from '$stores/userProfile';
+
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
 
@@ -43,27 +62,6 @@ const speculations = [
 		}
 	}
 ];
-</script>
-
-<script lang="ts">
-import IconButton from '$components/button/IconButton.svelte';
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
-import PencilIcon from '$components/icons/PencilIcon.svelte';
-import ProfileLayout from '$components/layout/ProfileLayout.svelte';
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
-import ProfileTabs from '$components/tabs/ProfileTabs.svelte';
-import ProfilePost from '$components/profile/ProfilePost.svelte';
-import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
-import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
-import Button from '$components/button/Button.svelte';
-import ReportIcon from '$components/icons/ReportIcon.svelte';
-import { page } from '$app/stores';
-import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { auth } from '$stores/auth';
-import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
-import { afterNavigate, goto } from '$app/navigation';
-import { generateRandomName } from '$lib/utils/randomUsername';
-import userProfile from '$stores/userProfile';
 
 let profile = {
 	id: $page.params.id,
