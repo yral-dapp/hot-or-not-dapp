@@ -38,6 +38,7 @@ function resetAllFields() {
 
 async function saveChanges() {
 	disabled = true;
+	error = '';
 	if (!name) {
 		error = 'Name is required';
 		disabled = false;
