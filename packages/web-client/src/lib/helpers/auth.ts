@@ -1,7 +1,7 @@
 import Log from '$lib/utils/Log';
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
-import { auth } from '../../stores/auth';
+import { authStore, authClient } from '$stores/auth';
 import { updateProfile } from './profile';
 
 async function updateUserIndexCanister() {
@@ -15,9 +15,9 @@ async function updateUserIndexCanister() {
 			},
 			'info'
 		);
-		const authStore = get(auth);
-		auth.set({
-			...authStore,
+		const authStoreValue = get(authStore);
+		authStore.set({
+			...authStoreValue,
 			userCanisterPrincipal
 		});
 		await updateProfile();
@@ -27,34 +27,31 @@ async function updateUserIndexCanister() {
 }
 
 export async function initializeAuthClient(): Promise<void> {
-	let authStore = get(auth);
-	if (!authStore.client) {
-		const authClient = await AuthClient.create({
+	const authStoreValue = get(authStore);
+	let authClientValue = get(authClient);
+	if (!authClientValue) {
+		const newAuthClient = await AuthClient.create({
 			idleOptions: {
 				disableIdle: true
 			}
 		});
-		auth.update((o) => {
-			return { ...o, client: authClient };
-		});
-		authStore = get(auth);
+		authClient.set(newAuthClient);
+		authClientValue = newAuthClient;
 	}
-	const identity = authStore.client?.getIdentity();
+	const identity = authClientValue?.getIdentity();
 	const principal = await identity?.getPrincipal();
-	if (await authStore.client?.isAuthenticated()) {
-		auth.set({
-			client: authStore.client,
+	if (await authClientValue?.isAuthenticated()) {
+		authStore.set({
 			isLoggedIn: true,
 			identity,
 			principal,
 			showLogin: false
 		});
 	} else {
-		auth.set({
-			client: authStore.client,
+		authStore.set({
 			isLoggedIn: false,
 			principal,
-			showLogin: authStore.showLogin
+			showLogin: authStoreValue.showLogin
 		});
 	}
 	await updateUserIndexCanister();

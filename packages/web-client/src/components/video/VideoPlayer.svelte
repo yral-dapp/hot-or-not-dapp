@@ -11,7 +11,7 @@ import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
-import { auth } from '$stores/auth';
+import { authStore } from '$stores/auth';
 import type { IndividualUserCanister } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
@@ -86,10 +86,10 @@ async function handleClick() {
 }
 
 async function handleLike() {
-	if ($auth.isLoggedIn) {
+	if ($authStore.isLoggedIn) {
 		liked = !liked;
 		individualUser().update_post_toggle_like_status_by_caller(id);
-	} else $auth.showLogin = true;
+	} else $authStore.showLogin = true;
 }
 
 async function handleShare() {

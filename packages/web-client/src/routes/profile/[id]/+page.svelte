@@ -12,11 +12,13 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { auth } from '$stores/auth';
+import { authStore } from '$stores/auth';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { afterNavigate, goto } from '$app/navigation';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import userProfile from '$stores/userProfile';
+import { onMount } from 'svelte';
+import { Principal } from '@dfinity/principal';
 
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
@@ -68,7 +70,7 @@ let profile = {
 	name: '',
 	me: $page.params.id == '1',
 	username: '',
-	avatar: getDefaultImageUrl($auth.principal)
+	avatar: getDefaultImageUrl($authStore.principal)
 };
 
 let posts = [1, 2, 3, 4, 5];
@@ -99,6 +101,28 @@ afterNavigate(({ from }) => {
 			back = null;
 		} else back = from.url.pathname;
 	} else back = null;
+});
+
+onMount(() => {
+	const id = $page.params.id;
+	if (!id) {
+		goto('/profile');
+		return;
+	}
+	try {
+		const principal = Principal.from(id);
+		if (principal._isPrincipal) {
+			console.log('is a principal', principal.toText());
+			// fetch profile from principal
+		} else {
+			console.log('id is a username', id);
+		}
+	} catch (e) {
+		console.log('error but, id is a username', id);
+		// fetch principal from index canister using username
+		// if no username exists, show invalid username page
+		// else fetch profile from the recvd canister id
+	}
 });
 </script>
 
@@ -139,11 +163,11 @@ afterNavigate(({ from }) => {
 					src="{$userProfile.profile_picture_url[0] || profile.avatar}" />
 				<span class="text-md pt-4 font-bold">
 					{$userProfile.display_name[0] ||
-						generateRandomName('name', $auth.principal?.toText() ?? profile.id)}
+						generateRandomName('name', $authStore.principal?.toText() ?? profile.id)}
 				</span>
 				<span class="text-sm">
 					@{$userProfile.unique_user_name[0] ||
-						generateRandomName('username', $auth.principal?.toText() ?? profile.id)}
+						generateRandomName('username', $authStore.principal?.toText() ?? profile.id)}
 				</span>
 			</div>
 			<div

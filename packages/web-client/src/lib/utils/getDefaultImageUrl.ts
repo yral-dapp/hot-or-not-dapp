@@ -25,10 +25,10 @@ const avatars = [
 
 export default (principal?: Principal | string) => {
 	let string = 'random';
-	if (principal instanceof Principal && principal) {
-		string = principal.toText();
-	} else if (principal) {
+	if (typeof principal === 'string') {
 		string = principal;
+	} else if (principal?._isPrincipal) {
+		string = Principal.from(principal).toText();
 	}
 	const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0);
 	return avatars[sum % 20];
