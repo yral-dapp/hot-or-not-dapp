@@ -147,24 +147,24 @@ afterNavigate(({ from }) => {
 				</span>
 			</div>
 			<div
-				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 py-4">
+				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
 				<a
 					href="{`/profile/${profile.id}/lovers`}"
-					class="flex flex-col items-center space-y-1 px-4">
+					class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 					<span class="whitespace-nowrap text-xl font-bold">{$userProfile.followers.length}</span>
 					<span class="text-sm">Lovers</span>
 				</a>
-				<div class="flex flex-col items-center space-y-1 px-4">
+				<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 					<span class="whitespace-nowrap text-xl font-bold"
 						>{$userProfile.profile_stats.lifetime_earnings}</span>
 					<span class="text-sm">Earnings</span>
 				</div>
-				<div class="flex flex-col items-center space-y-1 px-4">
+				<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 					<span class="whitespace-nowrap text-xl font-bold"
 						>{$userProfile.profile_stats.hots_earned_count}</span>
 					<span class="text-sm">Hots</span>
 				</div>
-				<div class="flex flex-col items-center space-y-1 px-4">
+				<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 					<span class="whitespace-nowrap text-xl font-bold"
 						>{$userProfile.profile_stats.nots_earned_count}</span>
 					<span class="text-sm">Nots</span>
