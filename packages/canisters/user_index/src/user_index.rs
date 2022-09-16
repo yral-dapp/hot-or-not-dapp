@@ -48,10 +48,24 @@ fn get_index_details_is_user_name_taken(user_name: String) -> bool {
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
-fn update_index_with_unique_user_name_corresponding_to_user_principal_id(user_name: String) {
+fn update_index_with_unique_user_name_corresponding_to_user_principal_id(
+    old_user_name: String,
+    new_user_name: String,
+) {
     let mut unique_user_name_to_user_principal_id_map = s!(UniqueUserNameToUserPrincipalIdMap);
 
+    assert!(
+        unique_user_name_to_user_principal_id_map
+            .get_cloned(&old_user_name)
+            .unwrap()
+            .0
+            == ic_cdk::caller(),
+        "User name does not belong to caller"
+    );
+
+    unique_user_name_to_user_principal_id_map.remove(&old_user_name);
+
     unique_user_name_to_user_principal_id_map
-        .insert(user_name.clone(), &SPrincipal(ic_cdk::caller()));
+        .insert(new_user_name.clone(), &SPrincipal(ic_cdk::caller()));
     s! { UniqueUserNameToUserPrincipalIdMap = unique_user_name_to_user_principal_id_map };
 }

@@ -10,7 +10,7 @@ export interface _SERVICE {
   'get_user_canister_id_from_user_principal_id' : ActorMethod<[], Principal>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
-    [string],
+    [string, string],
     undefined,
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,

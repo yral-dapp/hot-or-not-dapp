@@ -22,7 +22,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
-        [IDL.Text],
+        [IDL.Text, IDL.Text],
         [],
         [],
       ),
