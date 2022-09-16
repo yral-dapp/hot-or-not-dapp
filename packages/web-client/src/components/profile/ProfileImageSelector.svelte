@@ -6,7 +6,7 @@ import Popup from '$components/popup/Popup.svelte';
 import { uploadProfilePicture } from '$lib/helpers/image';
 import { getCroppedImg } from '$lib/utils/canvas';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
-import auth from '$stores/auth';
+import { authStore } from '$stores/auth';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
 export let src = '';
@@ -56,7 +56,7 @@ let loading = false;
 	{#if !src}
 		<img
 			alt="User avatar"
-			src="{getDefaultImageUrl($auth.principal)}"
+			src="{getDefaultImageUrl($authStore.principal)}"
 			class="h-48 w-48 rounded-full object-cover" />
 	{:else}
 		<img alt="User avatar" src="{src}" class="h-48 w-48 rounded-full object-cover" />

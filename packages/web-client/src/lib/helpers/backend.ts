@@ -5,7 +5,7 @@ import {
 import { createActor as createIndividualUserActor } from '$canisters/individual_user_template';
 import type { _SERVICE as _USER_INDEX_SERVICE } from '$canisters/user_index/user_index.did';
 import type { _SERVICE as _INDIVIDUAL_USER_SERVICE } from '$canisters/individual_user_template/individual_user_template.did';
-import auth from '$stores/auth';
+import { authStore } from '$stores/auth';
 import type { ActorSubclass } from '@dfinity/agent';
 import { get } from 'svelte/store';
 
@@ -30,26 +30,29 @@ const individualUserCanister: {
 };
 
 export function userIndex(): UserIndexActor {
-	const authStore = get(auth);
-	if (!userIndexCanister.actor || userIndexCanister.loginState != authStore.isLoggedIn) {
+	const authStoreValue = get(authStore);
+	if (!userIndexCanister.actor || userIndexCanister.loginState != authStoreValue.isLoggedIn) {
 		userIndexCanister.actor = createUserIndexActor(userIndexCanisterId, {
-			agentOptions: { identity: authStore?.identity, host }
+			agentOptions: { identity: authStoreValue?.identity, host }
 		}) as UserIndexActor;
-		userIndexCanister.loginState = authStore.isLoggedIn;
+		userIndexCanister.loginState = authStoreValue.isLoggedIn;
 		return userIndexCanister.actor;
 	} else return userIndexCanister.actor;
 }
 
 export function individualUser(): IndividualUserCanister {
-	const authStore = get(auth);
-	if (!individualUserCanister.actor || individualUserCanister.loginState != authStore.isLoggedIn) {
+	const authStoreValue = get(authStore);
+	if (
+		!individualUserCanister.actor ||
+		individualUserCanister.loginState != authStoreValue.isLoggedIn
+	) {
 		individualUserCanister.actor = createIndividualUserActor(
-			authStore.userCanisterPrincipal?.toText(),
+			authStoreValue.userCanisterPrincipal?.toText(),
 			{
-				agentOptions: { identity: authStore?.identity, host }
+				agentOptions: { identity: authStoreValue?.identity, host }
 			}
 		) as IndividualUserCanister;
-		individualUserCanister.loginState = authStore.isLoggedIn;
+		individualUserCanister.loginState = authStoreValue.isLoggedIn;
 		return individualUserCanister.actor;
 	} else return individualUserCanister.actor;
 }

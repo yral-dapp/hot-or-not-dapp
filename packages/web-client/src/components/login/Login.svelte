@@ -18,7 +18,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
-import auth from '$stores/auth';
+import { authStore, authClient } from '$stores/auth';
 import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
@@ -36,7 +36,7 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
-	await $auth.client?.login({
+	await $authClient?.login({
 		maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
 		onSuccess: () => handleSuccessfulLogin(type),
 		onError: (e) => handleError(type, e),
@@ -45,8 +45,8 @@ async function handleLogin(type: LoginType) {
 }
 
 async function handleSuccessfulLogin(type: LoginType) {
-	$auth.showLogin = false;
-	$auth.isLoggedIn = true;
+	$authStore.showLogin = false;
+	$authStore.isLoggedIn = true;
 	await initializeAuthClient();
 }
 
@@ -78,7 +78,7 @@ function handleError(type: LoginType, e?: string) {
 		{/if}
 	</div>
 	<div class="absolute top-4 right-4">
-		<IconButton on:click="{() => ($auth.showLogin = false)}">
+		<IconButton on:click="{() => ($authStore.showLogin = false)}">
 			<CloseIcon class="h-8 w-8" />
 		</IconButton>
 	</div>

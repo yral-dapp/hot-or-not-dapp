@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import Popup from './Popup.svelte';
-import auth from '$stores/auth';
+import { authStore, authClient } from '$stores/auth';
 import { initializeAuthClient } from '$lib/helpers/auth';
 
 export let show = false;
@@ -9,10 +9,10 @@ let loading = false;
 
 async function handleLogout() {
 	loading = true;
-	$auth.isLoggedIn = false;
+	$authStore.isLoggedIn = false;
 	loading = false;
 	show = false;
-	await $auth.client?.logout();
+	await $authClient?.logout();
 	await initializeAuthClient();
 }
 </script>
@@ -25,8 +25,7 @@ async function handleLogout() {
 			on:click="{() => (show = false)}"
 			disabled="{loading}"
 			type="secondary"
-			class="border-black/50 text-black/70"
-		>
+			class="border-black/50 text-black/70">
 			Go back
 		</Button>
 	</div>

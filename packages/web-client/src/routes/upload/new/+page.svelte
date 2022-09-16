@@ -12,7 +12,7 @@ import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount, onDestroy } from 'svelte';
 import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
-import auth from '$stores/auth';
+import { authStore } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
 import {
 	checkVideoStatus,
@@ -57,8 +57,8 @@ async function nextStep() {
 			hashtagError = 'Please add atleast 1 hashtag';
 		}
 		if (hashtagError || descriptionError) return;
-		if (!$auth.isLoggedIn) {
-			$auth.showLogin = true;
+		if (!$authStore.isLoggedIn) {
+			$authStore.showLogin = true;
 			return;
 		}
 		startUploading();
