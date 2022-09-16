@@ -8,7 +8,7 @@ import Button from '$components/button/Button.svelte';
 import { page } from '$app/stores';
 import { onMount } from 'svelte';
 import userProfile from '$stores/userProfile';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import Log from '$lib/utils/Log';
 import { updateProfile } from '$lib/helpers/profile';

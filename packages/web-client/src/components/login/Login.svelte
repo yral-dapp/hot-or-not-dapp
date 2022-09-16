@@ -18,7 +18,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import { fade } from 'svelte/transition';
 
 export let hideNfid = false;

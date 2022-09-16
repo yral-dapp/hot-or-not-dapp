@@ -1,4 +1,4 @@
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import { get } from 'svelte/store';
 
 const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST;

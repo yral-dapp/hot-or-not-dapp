@@ -1,7 +1,7 @@
 import Log from '$lib/utils/Log';
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
-import { auth } from '../../stores/auth';
+import auth from '$stores/auth';
 import { updateProfile } from './profile';
 
 async function updateUserIndexCanister() {

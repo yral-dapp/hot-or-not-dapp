@@ -11,7 +11,7 @@ import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';

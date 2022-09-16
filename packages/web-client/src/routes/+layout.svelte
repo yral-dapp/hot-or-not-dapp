@@ -4,7 +4,7 @@ import { onMount } from 'svelte';
 import { Buffer } from 'buffer'; // @dfinity/agent requires this
 import { browser } from '$app/environment';
 import { initializeAuthClient } from '$lib/helpers/auth';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
 

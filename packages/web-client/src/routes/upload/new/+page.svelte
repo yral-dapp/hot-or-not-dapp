@@ -12,7 +12,7 @@ import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount, onDestroy } from 'svelte';
 import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
 import {
 	checkVideoStatus,

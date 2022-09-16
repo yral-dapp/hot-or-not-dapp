@@ -5,7 +5,7 @@ import {
 import { createActor as createIndividualUserActor } from '$canisters/individual_user_template';
 import type { _SERVICE as _USER_INDEX_SERVICE } from '$canisters/user_index/user_index.did';
 import type { _SERVICE as _INDIVIDUAL_USER_SERVICE } from '$canisters/individual_user_template/individual_user_template.did';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import type { ActorSubclass } from '@dfinity/agent';
 import { get } from 'svelte/store';
 

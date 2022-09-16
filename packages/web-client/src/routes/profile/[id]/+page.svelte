@@ -12,7 +12,7 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { afterNavigate, goto } from '$app/navigation';
 import { generateRandomName } from '$lib/utils/randomUsername';

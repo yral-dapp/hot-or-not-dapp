@@ -3,7 +3,7 @@ import type { AuthClient } from '@dfinity/auth-client';
 import type { Principal } from '@dfinity/principal';
 import { writable } from 'svelte/store';
 
-export const auth = writable<{
+export default writable<{
 	client?: AuthClient;
 	isLoggedIn: boolean;
 	identity?: Identity;

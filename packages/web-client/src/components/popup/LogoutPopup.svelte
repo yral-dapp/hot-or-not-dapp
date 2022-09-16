@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import Popup from './Popup.svelte';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import { initializeAuthClient } from '$lib/helpers/auth';
 
 export let show = false;

@@ -15,7 +15,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
-import { auth } from '$stores/auth';
+import auth from '$stores/auth';
 import { playerState } from '$stores/playerState';
 import c from 'clsx';
 import { fade } from 'svelte/transition';
