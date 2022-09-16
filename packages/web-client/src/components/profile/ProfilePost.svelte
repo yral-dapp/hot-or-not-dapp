@@ -8,10 +8,9 @@ export let likes: number;
 
 <a
 	href="{`/all/${id}`}"
-	sveltekit:prefetch
+	data-sveltekit-prefetch
 	class="relative h-40 w-full cursor-pointer rounded-md bg-cover"
-	style="background-image: url('{imageBg}')"
->
+	style="background-image: url('{imageBg}')">
 	<div class="pointer-events-none absolute inset-x-0 left-2 bottom-2 flex items-center space-x-1">
 		<div class="flex h-5 w-5 items-center justify-center rounded-full bg-black/50">
 			<HeartIcon class="h-3 w-3 text-primary" />

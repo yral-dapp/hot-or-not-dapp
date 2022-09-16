@@ -1,5 +1,5 @@
 <script lang="ts">
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 $: innerHeight = browser ? window?.innerHeight : 0;
 </script>
 
@@ -7,8 +7,7 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 
 <camera-layout
 	style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
-	class="relative block h-full w-full overflow-hidden text-white"
->
+	class="relative block h-full w-full overflow-hidden text-white">
 	<slot name="content" />
 	<div class="absolute inset-x-0 top-4 z-[6] flex items-center justify-center">
 		<slot name="top" />

@@ -2,7 +2,8 @@
 import { navigating } from '$app/stores';
 import { fade } from 'svelte/transition';
 
-$: loading = $navigating !== null && $navigating.from.pathname !== $navigating.to.pathname;
+$: loading =
+	$navigating !== null && $navigating?.from?.url?.pathname !== $navigating?.to?.url?.pathname;
 </script>
 
 {#key loading}

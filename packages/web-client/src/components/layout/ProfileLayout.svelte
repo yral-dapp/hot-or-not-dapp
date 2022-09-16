@@ -1,5 +1,5 @@
 <script lang="ts">
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 
 export let testMode = false;
 
@@ -11,11 +11,9 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 
 <profile-layout
 	style="height: {innerHeight ? `${innerHeight}px` : '100vh'}"
-	class="relative flex h-full w-full flex-col overflow-hidden text-white"
->
+	class="relative flex h-full w-full flex-col overflow-hidden text-white">
 	<div
-		class="relative z-[2] flex h-12 w-full items-center justify-center bg-black py-8 shadow-xl shadow-black/50 {testClasses}"
-	>
+		class="relative z-[2] flex h-12 w-full items-center justify-center bg-black py-8 shadow-xl shadow-black/50 {testClasses}">
 		<div class="absolute left-4 top-4">
 			<slot name="top-left" />
 		</div>

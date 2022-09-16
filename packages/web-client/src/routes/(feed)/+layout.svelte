@@ -11,9 +11,9 @@ let back: string | null = null;
 
 afterNavigate(({ from }) => {
 	if (from) {
-		if (from.pathname.includes('edit')) {
+		if (from.url.pathname.includes('edit')) {
 			back = null;
-		} else back = from.pathname;
+		} else back = from.url.pathname;
 	} else back = null;
 });
 </script>

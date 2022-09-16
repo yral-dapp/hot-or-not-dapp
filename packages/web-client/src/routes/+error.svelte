@@ -1,24 +1,18 @@
-<script lang="ts" context="module">
-import type { Load } from '@sveltejs/kit';
-export const load: Load = async ({ error, status }) => {
-	return { props: { error: error?.message, status } };
-};
-</script>
-
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import HotOrNotFireIcon from '$components/icons/HotOrNotFireIcon.svelte';
 import Log from '$lib/utils/Log';
+import { page } from '$app/stores';
 
-export let error: string;
-export let status: string;
+const error = $page.error?.message;
+const status = $page.error;
 
 function getVariant() {
 	return Math.random() < 0.5 ? 'hot' : 'not';
 }
 
 Log({ error: 'Page load error', details: error, status }, 'error');
-$: statusCode = status.toString().split('');
+$: statusCode = status?.toString().split('') || [];
 </script>
 
 <div class="flex h-full w-full flex-col items-center justify-center space-y-8 text-white">
