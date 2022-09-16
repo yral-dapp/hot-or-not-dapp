@@ -85,7 +85,7 @@ onMount(() => prefetchLinks());
 						{$userProfile.display_name?.[0] ||
 							generateRandomName('name', $auth.principal?.toText() ?? '1')}
 					</div>
-					<a href="/profile/1" sveltekit:prefetch class=" text-primary">View Profile</a>
+					<a href="/profile/1" data-sveltekit-prefetch class=" text-primary">View Profile</a>
 				</div>
 			</div>
 		{:else}
@@ -100,7 +100,7 @@ onMount(() => prefetchLinks());
 					this="{link.href ? 'a' : 'button'}"
 					on:click="{link.onClick}"
 					href="{link.href}"
-					sveltekit:prefetch="{link.href ? true : null}"
+					data-sveltekit-prefetch="{link.href ? true : null}"
 					class="flex items-center justify-between">
 					<div class="flex items-center space-x-4 text-white">
 						<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />

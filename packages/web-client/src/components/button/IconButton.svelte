@@ -23,7 +23,7 @@ $: classes = c(
 		<slot />
 	</a>
 {:else if href && prefetch}
-	<a style="{style}" on:click sveltekit:prefetch href="{href}" class="{classes}">
+	<a style="{style}" on:click data-sveltekit-prefetch href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else}

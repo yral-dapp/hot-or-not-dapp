@@ -166,11 +166,11 @@ async function handleShare() {
 				<div
 					on:click="{(e) => e.stopImmediatePropagation()}"
 					class="pointer-events-auto flex space-x-3">
-					<a href="/profile/{i}" sveltekit:prefetch class="h-12 w-12">
+					<a href="/profile/{i}" data-sveltekit-prefetch class="h-12 w-12">
 						<Avatar class="h-12 w-12 shrink-0" src="{getDefaultImageUrl(i.toString())}" />
 					</a>
 					<div class="flex flex-col space-y-1">
-						<a href="/profile/{i}" sveltekit:prefetch>
+						<a href="/profile/{i}" data-sveltekit-prefetch>
 							@{userName != '' ? userName : generateRandomName('username', i.toString())}
 						</a>
 						<div class="flex items-center space-x-1">
