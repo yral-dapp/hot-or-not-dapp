@@ -5,14 +5,14 @@ import Log from '$lib/utils/Log';
 import { page } from '$app/stores';
 
 const error = $page.error?.message;
-const status = $page.error;
+const status = $page.status;
 
 function getVariant() {
 	return Math.random() < 0.5 ? 'hot' : 'not';
 }
 
 Log({ error: 'Page load error', details: error, status }, 'error');
-$: statusCode = status?.toString().split('') || [];
+$: statusCode = status.toString().split('');
 </script>
 
 <div class="flex h-full w-full flex-col items-center justify-center space-y-8 text-white">
