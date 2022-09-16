@@ -138,13 +138,13 @@ afterNavigate(({ from }) => {
 				<img
 					class="h-24 w-24 rounded-full"
 					alt="{$userProfile.display_name[0]}"
-					src="{$userProfile.profile_picture_url[0] ?? profile.avatar}" />
+					src="{$userProfile.profile_picture_url[0] || profile.avatar}" />
 				<span class="text-md pt-4 font-bold">
-					{$userProfile.display_name[0] ??
+					{$userProfile.display_name[0] ||
 						generateRandomName('name', $auth.principal?.toText() ?? profile.id)}
 				</span>
 				<span class="text-sm">
-					@{$userProfile.unique_user_name[0] ??
+					@{$userProfile.unique_user_name[0] ||
 						generateRandomName('username', $auth.principal?.toText() ?? profile.id)}
 				</span>
 			</div>
