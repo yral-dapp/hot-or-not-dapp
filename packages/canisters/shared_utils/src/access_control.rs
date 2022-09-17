@@ -16,7 +16,12 @@ pub enum UserAccessRole {
 }
 
 pub fn get_global_sprincipal() -> SPrincipal {
-    SPrincipal(Principal::from_text(GLOBAL_OWNER_PRINCIPAL_ID).unwrap())
+    SPrincipal(
+        Principal::from_text(
+            option_env!("GLOBAL_OWNER_PRINCIPAL_ID").unwrap_or(GLOBAL_OWNER_PRINCIPAL_ID),
+        )
+        .unwrap(),
+    )
 }
 
 /// Helper method to check if a principal has requisite access

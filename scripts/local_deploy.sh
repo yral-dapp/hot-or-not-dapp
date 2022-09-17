@@ -3,7 +3,8 @@ set -euo pipefail
 
 cargo test
 
-dfx deploy --no-wallet internet_identity
+# dfx deploy --no-wallet internet_identity
+export GLOBAL_OWNER_PRINCIPAL_ID=$(dfx identity get-principal)
 dfx canister create --no-wallet individual_user_template
 dfx build individual_user_template
 dfx generate individual_user_template
