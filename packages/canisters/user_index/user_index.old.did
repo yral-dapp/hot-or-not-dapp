@@ -10,6 +10,7 @@ service : {
   get_user_roles : (principal) -> (vec UserAccessRole) query;
   update_index_with_unique_user_name_corresponding_to_user_principal_id : (
       text,
+      text,
     ) -> ();
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();
