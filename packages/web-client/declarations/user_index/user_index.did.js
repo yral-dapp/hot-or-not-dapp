@@ -11,6 +11,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Bool],
         ['query'],
       ),
+    'get_user_canister_id_from_unique_user_name' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(IDL.Principal)],
+        ['query'],
+      ),
     'get_user_canister_id_from_user_principal_id' : IDL.Func(
         [],
         [IDL.Principal],
