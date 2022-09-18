@@ -128,7 +128,7 @@ fn get_posts_of_this_user_profile_with_pagination(
                 .get_cloned(id)
                 .unwrap()
                 .get_post_details_for_frontend_for_this_post(
-                    user_profile.get_post_attached_user_profile_details_for_frontend(),
+                    user_profile.get_user_profile_details_for_frontend(),
                     SPrincipal(ic_cdk::caller()),
                 )
         })

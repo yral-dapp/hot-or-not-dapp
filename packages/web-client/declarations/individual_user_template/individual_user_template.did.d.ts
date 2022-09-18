@@ -33,9 +33,13 @@ export type PostViewDetailsFromFrontend = {
     }
   } |
   { 'WatchedPartially' : { 'percentage_watched' : number } };
+export type Result = { 'Ok' : UserProfileDetailsForFrontend } |
+  { 'Err' : UpdateProfileDetailsError };
+export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
-  { 'CanisterAdmin' : null };
+  { 'CanisterAdmin' : null } |
+  { 'ProjectCanister' : null };
 export interface UserProfile {
   'unique_user_name' : [] | [string],
   'profile_picture_url' : [] | [string],
@@ -44,6 +48,12 @@ export interface UserProfile {
   'followers' : Array<Principal>,
   'following' : Array<Principal>,
   'profile_stats' : UserProfileGlobalStats,
+}
+export interface UserProfileDetailsForFrontend {
+  'unique_user_name' : [] | [string],
+  'profile_picture_url' : [] | [string],
+  'display_name' : [] | [string],
+  'principal_id' : Principal,
 }
 export interface UserProfileDetailsFromFrontend {
   'unique_user_name' : [] | [string],
@@ -72,7 +82,7 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_profile_details' : ActorMethod<
     [UserProfileDetailsFromFrontend],
-    UserProfile,
+    Result,
   >,
   'update_profile_toggle_follower_list_of_followee_by_calling_principal' : ActorMethod<
     [],

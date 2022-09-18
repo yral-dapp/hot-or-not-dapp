@@ -1,8 +1,7 @@
 use candid::{CandidType, Deserialize, Principal};
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use std::collections::BTreeSet;
-// use shared_utils::generated::generate_random_names;
 use speedy::{Readable, Writable};
+use std::collections::BTreeSet;
 
 #[derive(Readable, Writable, CandidType)]
 pub struct UserProfile {
@@ -23,9 +22,10 @@ pub struct UserProfileGlobalStats {
 }
 
 #[derive(CandidType)]
-pub struct PostAttachedUserProfileDetailsForFrontend {
+pub struct UserProfileDetailsForFrontend {
     pub principal_id: Principal,
     pub display_name: Option<String>,
+    pub unique_user_name: Option<String>,
     pub profile_picture_url: Option<String>,
 }
 
@@ -55,12 +55,11 @@ impl UserProfile {
         }
     }
 
-    pub fn get_post_attached_user_profile_details_for_frontend(
-        &self,
-    ) -> PostAttachedUserProfileDetailsForFrontend {
-        PostAttachedUserProfileDetailsForFrontend {
+    pub fn get_user_profile_details_for_frontend(&self) -> UserProfileDetailsForFrontend {
+        UserProfileDetailsForFrontend {
             principal_id: self.principal_id.0,
             display_name: self.display_name.clone(),
+            unique_user_name: self.unique_user_name.clone(),
             profile_picture_url: self.profile_picture_url.clone(),
         }
     }

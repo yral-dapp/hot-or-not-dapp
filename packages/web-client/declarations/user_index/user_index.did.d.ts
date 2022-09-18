@@ -3,7 +3,8 @@ import type { ActorMethod } from '@dfinity/agent';
 
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
-  { 'CanisterAdmin' : null };
+  { 'CanisterAdmin' : null } |
+  { 'ProjectCanister' : null };
 export interface _SERVICE {
   'delete_user_index_reset_user_canisters' : ActorMethod<[], undefined>,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,

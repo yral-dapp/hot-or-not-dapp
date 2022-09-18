@@ -3,6 +3,7 @@ export const idlFactory = ({ IDL }) => {
     'CanisterController' : IDL.Null,
     'ProfileOwner' : IDL.Null,
     'CanisterAdmin' : IDL.Null,
+    'ProjectCanister' : IDL.Null,
   });
   return IDL.Service({
     'delete_user_index_reset_user_canisters' : IDL.Func([], [], []),

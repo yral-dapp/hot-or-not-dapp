@@ -22,6 +22,7 @@ pub fn setup_initial_access_control(
         &vec![
             UserAccessRole::CanisterController,
             UserAccessRole::CanisterAdmin,
+            UserAccessRole::ProjectCanister,
         ],
     );
 

@@ -1352,6 +1352,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-kit",
  "ic-stable-memory",
+ "serde",
  "shared_utils",
  "speedy",
 ]

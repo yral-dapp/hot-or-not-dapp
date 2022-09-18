@@ -13,6 +13,8 @@ pub enum UserAccessRole {
     CanisterAdmin,
     /// Data in this canister is the data of this user
     ProfileOwner,
+    /// This principal is for a canister part of this project
+    ProjectCanister,
 }
 
 pub fn get_global_sprincipal() -> SPrincipal {

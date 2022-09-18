@@ -32,10 +32,16 @@ type PostViewDetailsFromFrontend = variant {
   };
   WatchedPartially : record { percentage_watched : nat8 };
 };
+type Result = variant {
+  Ok : UserProfileDetailsForFrontend;
+  Err : UpdateProfileDetailsError;
+};
+type UpdateProfileDetailsError = variant { NotAuthorized };
 type UserAccessRole = variant {
   CanisterController;
   ProfileOwner;
   CanisterAdmin;
+  ProjectCanister;
 };
 type UserProfile = record {
   unique_user_name : opt text;
@@ -45,6 +51,12 @@ type UserProfile = record {
   followers : vec principal;
   following : vec principal;
   profile_stats : UserProfileGlobalStats;
+};
+type UserProfileDetailsForFrontend = record {
+  unique_user_name : opt text;
+  profile_picture_url : opt text;
+  display_name : opt text;
+  principal_id : principal;
 };
 type UserProfileDetailsFromFrontend = record {
   unique_user_name : opt text;
@@ -67,7 +79,7 @@ service : {
   update_post_as_ready_to_view : (nat64) -> ();
   update_post_increment_share_count : (nat64) -> (nat64);
   update_post_toggle_like_status_by_caller : (nat64) -> (bool);
-  update_profile_details : (UserProfileDetailsFromFrontend) -> (UserProfile);
+  update_profile_details : (UserProfileDetailsFromFrontend) -> (Result);
   update_profile_toggle_follower_list_of_followee_by_calling_principal : () -> (
       bool,
     );

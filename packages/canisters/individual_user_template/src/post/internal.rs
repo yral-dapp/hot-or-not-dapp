@@ -1,4 +1,4 @@
-use crate::profile::internal::PostAttachedUserProfileDetailsForFrontend;
+use crate::profile::internal::UserProfileDetailsForFrontend;
 use candid::{CandidType, Deserialize};
 use ic_cdk::api;
 use ic_stable_memory::utils::ic_types::SPrincipal;
@@ -205,7 +205,7 @@ impl Post {
 
     pub fn get_post_details_for_frontend_for_this_post(
         &self,
-        user_profile: PostAttachedUserProfileDetailsForFrontend,
+        user_profile: UserProfileDetailsForFrontend,
         caller: SPrincipal,
     ) -> PostDetailsForFrontend {
         PostDetailsForFrontend {

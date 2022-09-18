@@ -44,6 +44,7 @@ export const idlFactory = ({ IDL }) => {
     'CanisterController' : IDL.Null,
     'ProfileOwner' : IDL.Null,
     'CanisterAdmin' : IDL.Null,
+    'ProjectCanister' : IDL.Null,
   });
   const PostViewDetailsFromFrontend = IDL.Variant({
     'WatchedMultipleTimes' : IDL.Record({
@@ -56,6 +57,17 @@ export const idlFactory = ({ IDL }) => {
     'unique_user_name' : IDL.Opt(IDL.Text),
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
+  });
+  const UserProfileDetailsForFrontend = IDL.Record({
+    'unique_user_name' : IDL.Opt(IDL.Text),
+    'profile_picture_url' : IDL.Opt(IDL.Text),
+    'display_name' : IDL.Opt(IDL.Text),
+    'principal_id' : IDL.Principal,
+  });
+  const UpdateProfileDetailsError = IDL.Variant({ 'NotAuthorized' : IDL.Null });
+  const Result = IDL.Variant({
+    'Ok' : UserProfileDetailsForFrontend,
+    'Err' : UpdateProfileDetailsError,
   });
   return IDL.Service({
     'add_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
@@ -88,7 +100,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_profile_details' : IDL.Func(
         [UserProfileDetailsFromFrontend],
-        [UserProfile],
+        [Result],
         [],
       ),
     'update_profile_toggle_follower_list_of_followee_by_calling_principal' : IDL.Func(
