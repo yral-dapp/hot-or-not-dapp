@@ -1026,6 +1026,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "post_cache"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "ic-cdk-macros",
+ "ic-stable-memory",
+ "serde",
+ "shared_utils",
+ "speedy",
+]
+
+[[package]]
 name = "precomputed-hash"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
