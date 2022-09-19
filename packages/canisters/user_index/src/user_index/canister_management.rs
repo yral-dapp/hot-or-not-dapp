@@ -39,8 +39,7 @@ pub async fn create_users_canister(caller: Principal) -> Principal {
     .0
     .canister_id;
 
-    let arg =
-        candid::encode_args((ic::id(), caller)).expect("Failed to serialize the install argument.");
+    let arg = candid::encode_args((caller,)).expect("Failed to serialize the install argument.");
 
     management::InstallCode::perform(
         Principal::management_canister(),

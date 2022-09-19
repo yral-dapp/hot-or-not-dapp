@@ -43,8 +43,7 @@ fn init() {
     let mut user_id_access_control_map = s!(AccessControlMap);
     setup_initial_access_control(
         &mut user_id_access_control_map,
-        call::arg_data::<(Principal, Principal)>().0,
-        call::arg_data::<(Principal, Principal)>().1,
+        call::arg_data::<(Principal,)>().0,
     );
     s! { AccessControlMap = user_id_access_control_map };
 }
