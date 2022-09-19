@@ -7,5 +7,5 @@ fn save_candid() {
     use std::path::PathBuf;
 
     let dir: PathBuf = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    write(dir.join("user_index.did"), export_candid()).expect("Write failed.");
+    write(dir.join("can.did"), export_candid()).expect("Write failed.");
 }
