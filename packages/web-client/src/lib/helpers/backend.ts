@@ -8,6 +8,7 @@ import type { _SERVICE as _INDIVIDUAL_USER_SERVICE } from '$canisters/individual
 import { authStore } from '$stores/auth';
 import type { ActorSubclass } from '@dfinity/agent';
 import { get } from 'svelte/store';
+import type { Principal } from '@dfinity/principal';
 
 export const host =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://ic0.app';
@@ -40,14 +41,14 @@ export function userIndex(): UserIndexActor {
 	} else return userIndexCanister.actor;
 }
 
-export function individualUser(): IndividualUserCanister {
+export function individualUser(principal?: Principal): IndividualUserCanister {
 	const authStoreValue = get(authStore);
 	if (
 		!individualUserCanister.actor ||
 		individualUserCanister.loginState != authStoreValue.isLoggedIn
 	) {
 		individualUserCanister.actor = createIndividualUserActor(
-			authStoreValue.userCanisterPrincipal?.toText(),
+			principal?.toText() || authStoreValue.userCanisterPrincipal?.toText(),
 			{
 				agentOptions: { identity: authStoreValue?.identity, host }
 			}

@@ -95,6 +95,22 @@ async function showShareDialog() {
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
+async function loveUser() {
+	const individualUser = (await import('$lib/helpers/backend')).individualUser;
+	const userPrincipal = Principal.from(profile.id);
+	const res = await Promise.all([
+		individualUser().update_profile_toggle_following_list_of_follower_by_user_to_follow(
+			userPrincipal
+		),
+		individualUser(
+			userPrincipal
+		).update_profile_toggle_follower_list_of_followee_by_calling_principal()
+	]);
+	if (res) {
+	} else {
+	}
+}
+
 afterNavigate(({ from }) => {
 	if (from) {
 		if (from.url.pathname.includes('edit')) {
@@ -196,8 +212,8 @@ onMount(() => {
 			</div>
 			{#if !profile.me}
 				<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-					<Button class="w-full">Love</Button>
-					<Button type="secondary" class="w-full">Send tokens</Button>
+					<Button on:click="{loveUser}" class="mx-auto w-[10rem]">Love</Button>
+					<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
 				</div>
 			{/if}
 			<div class="px-6 pt-2">

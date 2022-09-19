@@ -17,6 +17,7 @@ let disabled = true;
 let src = '';
 let name = '';
 let username = '';
+let oldUsername = '';
 let error = '';
 
 async function isUsernameTaken() {
@@ -60,15 +61,21 @@ async function saveChanges() {
 
 	try {
 		const { individualUser, userIndex } = await import('$lib/helpers/backend');
-		const res = await Promise.all([
-			individualUser().update_profile_details({
-				display_name: [name],
-				unique_user_name: [username],
-				profile_picture_url: [src]
-			}),
-			userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(username)
-		]);
-		await updateProfile(res[0]);
+		if (oldUsername !== username) {
+			await userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
+				oldUsername,
+				username
+			);
+		}
+		const res = await individualUser().update_profile_details({
+			display_name: [name],
+			unique_user_name: [username],
+			profile_picture_url: [src]
+		});
+		console.log('res', res);
+		// if (res.Ok) {
+		// 	await updateProfile(res.Ok);
+		// }
 		disabled = false;
 	} catch (e) {
 		disabled = false;
@@ -84,6 +91,7 @@ onMount(async () => {
 	username =
 		$userProfile.unique_user_name[0] ??
 		generateRandomName('username', $authStore.principal?.toString() ?? $page.params.id);
+	oldUsername = username;
 	disabled = false;
 });
 </script>
