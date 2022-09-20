@@ -5,7 +5,7 @@ import {
 import { createActor as createIndividualUserActor } from '$canisters/individual_user_template';
 import type { _SERVICE as _USER_INDEX_SERVICE } from '$canisters/user_index/user_index.did';
 import type { _SERVICE as _INDIVIDUAL_USER_SERVICE } from '$canisters/individual_user_template/individual_user_template.did';
-import { authStore } from '$stores/auth';
+import { authHelper, authState } from '$stores/auth';
 import type { ActorSubclass } from '@dfinity/agent';
 import { get } from 'svelte/store';
 import type { Principal } from '@dfinity/principal';
@@ -31,29 +31,31 @@ const individualUserCanister: {
 };
 
 export function userIndex(): UserIndexActor {
-	const authStoreValue = get(authStore);
-	if (!userIndexCanister.actor || userIndexCanister.loginState != authStoreValue.isLoggedIn) {
+	const authStateData = get(authState);
+	if (!userIndexCanister.actor || userIndexCanister.loginState != authStateData.isLoggedIn) {
+		const authHelperData = get(authHelper);
 		userIndexCanister.actor = createUserIndexActor(userIndexCanisterId, {
-			agentOptions: { identity: authStoreValue?.identity, host }
+			agentOptions: { identity: authHelperData?.identity, host }
 		}) as UserIndexActor;
-		userIndexCanister.loginState = authStoreValue.isLoggedIn;
+		userIndexCanister.loginState = authStateData.isLoggedIn;
 		return userIndexCanister.actor;
 	} else return userIndexCanister.actor;
 }
 
 export function individualUser(principal?: Principal): IndividualUserCanister {
-	const authStoreValue = get(authStore);
+	const authStateData = get(authState);
 	if (
 		!individualUserCanister.actor ||
-		individualUserCanister.loginState != authStoreValue.isLoggedIn
+		individualUserCanister.loginState != authStateData.isLoggedIn
 	) {
+		const authHelperData = get(authHelper);
 		individualUserCanister.actor = createIndividualUserActor(
-			principal?.toText() || authStoreValue.userCanisterPrincipal?.toText(),
+			principal?.toText() || authStateData.userCanisterId,
 			{
-				agentOptions: { identity: authStoreValue?.identity, host }
+				agentOptions: { identity: authHelperData?.identity, host }
 			}
 		) as IndividualUserCanister;
-		individualUserCanister.loginState = authStoreValue.isLoggedIn;
+		individualUserCanister.loginState = authStateData.isLoggedIn;
 		return individualUserCanister.actor;
 	} else return individualUserCanister.actor;
 }

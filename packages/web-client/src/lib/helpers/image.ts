@@ -1,16 +1,16 @@
 import Log from '$lib/utils/Log';
-import { authStore } from '$stores/auth';
+import { authState } from '$stores/auth';
 import { get } from 'svelte/store';
 
 const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST;
 
 async function generateUrl() {
 	try {
-		const authStoreValue = get(authStore);
+		const authStateData = get(authState);
 		const res = await fetch(`${cfWorkerHost}/image/getImageUploadURL`, {
 			method: 'POST',
 			body: JSON.stringify({
-				principalId: authStoreValue.principal?.toText() || '',
+				principalId: authStateData.idString || '',
 				fileName: Date.now().toString()
 			})
 		});
