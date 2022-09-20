@@ -4,7 +4,7 @@ import { onMount } from 'svelte';
 import { Buffer } from 'buffer'; // @dfinity/agent requires this
 import { browser } from '$app/environment';
 import { initializeAuthClient } from '$lib/helpers/auth';
-import { authStore } from '$stores/auth';
+import { authState } from '$stores/auth';
 import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
 
@@ -24,7 +24,7 @@ onMount(async () => {
 });
 </script>
 
-{#if $authStore.showLogin}
+{#if $authState.showLogin}
 	<Login />
 {/if}
 
