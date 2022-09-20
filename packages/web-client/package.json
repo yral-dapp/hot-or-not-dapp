@@ -22,6 +22,7 @@
 		"@dfinity/principal": "0.12.2",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
+		"idb-keyval": "^6.2.0",
 		"svelte-local-storage-store": "^0.3.1",
 		"swiper": "^8.4.2",
 		"throttle-debounce": "5.0.0"
