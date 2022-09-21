@@ -6,7 +6,10 @@ export function generateRandomNumber(length: number, seed: number): string {
 		.padEnd(length, '0');
 }
 
-export function generateRandomName(type: 'name' | 'username', seed: string) {
+export function generateRandomName(type: 'name' | 'username', seed?: string) {
+	if (!seed) {
+		seed = 'random';
+	}
 	const sum = seed.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0);
 
 	const n1 = ['Blue', 'Green', 'Red', 'Orange', 'Violet', 'Indigo', 'Yellow'];

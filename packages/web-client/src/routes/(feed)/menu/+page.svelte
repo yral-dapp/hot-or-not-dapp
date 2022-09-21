@@ -15,9 +15,7 @@ import { authState } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
-import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { prefetch } from '$app/navigation';
-import { generateRandomName } from '$lib/utils/randomUsername';
 import userProfile from '$stores/userProfile';
 
 $: links = [
@@ -63,7 +61,10 @@ function prefetchLinks() {
 	links.forEach((link) => {
 		link.href && prefetch(link.href);
 	});
-	prefetch('/profile/1');
+	if ($authState.isLoggedIn) {
+		const id = $userProfile.unique_user_name || $authState.idString;
+		prefetch(`/profile/${id}`);
+	}
 }
 
 onMount(() => prefetchLinks());
@@ -79,14 +80,15 @@ onMount(() => prefetchLinks());
 				<img
 					alt="profile"
 					class="h-24 w-24 rounded-full object-cover"
-					src="{$userProfile.profile_picture_url?.[0] ||
-						getDefaultImageUrl($authState.idString)}" />
+					src="{$userProfile.profile_picture_url}" />
 				<div class="flex flex-col space-y-1">
 					<div class="text-xl">
-						{$userProfile.display_name?.[0] ||
-							generateRandomName('name', $authState.idString ?? '1')}
+						{$userProfile.display_name}
 					</div>
-					<a href="/profile/1" data-sveltekit-prefetch class=" text-primary">View Profile</a>
+					<a
+						href="/profile/{$userProfile.unique_user_name}"
+						data-sveltekit-prefetch
+						class=" text-primary">View Profile</a>
 				</div>
 			</div>
 		{:else}

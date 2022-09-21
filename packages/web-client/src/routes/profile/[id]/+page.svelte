@@ -12,13 +12,14 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { authState } from '$stores/auth';
-import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { afterNavigate, goto } from '$app/navigation';
-import { generateRandomName } from '$lib/utils/randomUsername';
 import userProfile from '$stores/userProfile';
-import { onMount } from 'svelte';
 import { Principal } from '@dfinity/principal';
+import { onMount } from 'svelte';
+import type { PageData } from './$types';
+
+export let data: PageData;
+const { me, profile } = data;
 
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
@@ -65,13 +66,7 @@ const speculations = [
 	}
 ];
 
-let profile = {
-	id: $page.params.id,
-	name: '',
-	me: $page.params.id == '1',
-	username: '',
-	avatar: getDefaultImageUrl($authState.idString)
-};
+let loaded = false;
 
 let posts = [1, 2, 3, 4, 5];
 
@@ -97,7 +92,7 @@ let selectedTab: 'posts' | 'trophy' = 'posts';
 
 async function loveUser() {
 	const individualUser = (await import('$lib/helpers/backend')).individualUser;
-	const userPrincipal = Principal.from(profile.id);
+	const userPrincipal = Principal.from(profile.principal_id);
 	const res = await Promise.all([
 		individualUser().update_profile_toggle_following_list_of_follower_by_user_to_follow(
 			userPrincipal
@@ -120,147 +115,130 @@ afterNavigate(({ from }) => {
 });
 
 onMount(() => {
-	const id = $page.params.id;
-	if (!id) {
-		goto('/profile');
-		return;
-	}
-	try {
-		const principal = Principal.from(id);
-		if (principal._isPrincipal) {
-			console.log('is a principal', principal.toText());
-			// fetch profile from principal
-		} else {
-			console.log('id is a username', id);
-		}
-	} catch (e) {
-		console.log('error but, id is a username', id);
-		// fetch principal from index canister using username
-		// if no username exists, show invalid username page
-		// else fetch profile from the recvd canister id
-	}
+	loaded = true;
+	console.log({ me, $userProfile });
 });
 </script>
 
-<ProfileLayout>
-	<svelte:fragment slot="top-left">
-		<IconButton
-			on:click="{() => (back ? goto(back) : history.length > 2 ? history.back() : goto('/menu'))}"
-			class="shrink-0">
-			<CaretLeftIcon class="h-7 w-7" />
-		</IconButton>
-	</svelte:fragment>
-	<div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
-		<IconButton on:click="{showShareDialog}">
-			<ShareArrowIcon class="h-6 w-6" />
-		</IconButton>
-		{#if profile.me}
-			<IconButton href="{`/profile/${$page.params.id}/edit`}">
-				<PencilIcon class="h-5 w-5" />
+{#if loaded}
+	<ProfileLayout>
+		<svelte:fragment slot="top-left">
+			<IconButton
+				on:click="{() => (back ? goto(back) : history.length > 2 ? history.back() : goto('/menu'))}"
+				class="shrink-0">
+				<CaretLeftIcon class="h-7 w-7" />
 			</IconButton>
-		{:else}
-			<IconButton>
-				<ReportIcon class="h-5 w-5" />
+		</svelte:fragment>
+		<div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
+			<IconButton on:click="{showShareDialog}">
+				<ShareArrowIcon class="h-6 w-6" />
 			</IconButton>
-		{/if}
-	</div>
-	<div slot="top-center" class="text-lg font-bold">
-		{#if profile.me}
-			Your profile
-		{/if}
-	</div>
-
-	<svelte:fragment slot="content">
-		<div class="flex h-full w-full flex-col overflow-y-auto ">
-			<div class="flex w-full flex-col items-center justify-center py-8">
-				<img
-					class="h-24 w-24 rounded-full"
-					alt="{$userProfile.display_name[0]}"
-					src="{$userProfile.profile_picture_url[0] || profile.avatar}" />
-				<span class="text-md pt-4 font-bold">
-					{$userProfile.display_name[0] ||
-						generateRandomName('name', $authState.idString ?? profile.id)}
-				</span>
-				<span class="text-sm">
-					@{$userProfile.unique_user_name[0] ||
-						generateRandomName('username', $authState.idString ?? profile.id)}
-				</span>
-			</div>
-			<div
-				class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-				<a
-					href="{`/profile/${profile.id}/lovers`}"
-					class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-					<span class="whitespace-nowrap text-xl font-bold">{$userProfile.followers.length}</span>
-					<span class="text-sm">Lovers</span>
-				</a>
-				<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-					<span class="whitespace-nowrap text-xl font-bold"
-						>{$userProfile.profile_stats.lifetime_earnings}</span>
-					<span class="text-sm">Earnings</span>
-				</div>
-				<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-					<span class="whitespace-nowrap text-xl font-bold"
-						>{$userProfile.profile_stats.hots_earned_count}</span>
-					<span class="text-sm">Hots</span>
-				</div>
-				<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-					<span class="whitespace-nowrap text-xl font-bold"
-						>{$userProfile.profile_stats.nots_earned_count}</span>
-					<span class="text-sm">Nots</span>
-				</div>
-			</div>
-			{#if !profile.me}
-				<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-					<Button on:click="{loveUser}" class="mx-auto w-[10rem]">Love</Button>
-					<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
-				</div>
+			{#if me}
+				<IconButton href="{`/profile/${profile.unique_user_name}/edit`}">
+					<PencilIcon class="h-5 w-5" />
+				</IconButton>
+			{:else}
+				<IconButton>
+					<ReportIcon class="h-5 w-5" />
+				</IconButton>
 			{/if}
-			<div class="px-6 pt-2">
-				<ProfileTabs bind:selected="{selectedTab}" />
-			</div>
-			<div class="flex h-full flex-col px-6 py-6">
-				{#if selectedTab === 'posts'}
-					{#if posts.length}
-						<div class="grid grid-cols-3 gap-3">
-							{#each posts as post}
-								<ProfilePost id="{`${post}`}" likes="{500}" imageBg="{dummyPost}" />
+		</div>
+		<div slot="top-center" class="text-lg font-bold">
+			{#if me}
+				Your profile
+			{/if}
+		</div>
+
+		<svelte:fragment slot="content">
+			<div class="flex h-full w-full flex-col overflow-y-auto ">
+				<div class="flex w-full flex-col items-center justify-center py-8">
+					<img
+						class="h-24 w-24 rounded-full {$userProfile.profile_picture_url}"
+						alt="{$userProfile.display_name}"
+						src="{$userProfile.profile_picture_url}" />
+					<span class="text-md pt-4 font-bold">
+						{$userProfile.display_name}
+					</span>
+					<span class="text-sm">
+						{`@${$userProfile.unique_user_name}`}
+					</span>
+				</div>
+				<div
+					class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
+					<a
+						href="{`/profile/${profile.unique_user_name}/lovers`}"
+						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+						<span class="whitespace-nowrap text-xl font-bold">{$userProfile.followers.length}</span>
+						<span class="text-sm">Lovers</span>
+					</a>
+					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+						<span class="whitespace-nowrap text-xl font-bold"
+							>{$userProfile.profile_stats.lifetime_earnings}</span>
+						<span class="text-sm">Earnings</span>
+					</div>
+					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+						<span class="whitespace-nowrap text-xl font-bold"
+							>{$userProfile.profile_stats.hots_earned_count}</span>
+						<span class="text-sm">Hots</span>
+					</div>
+					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+						<span class="whitespace-nowrap text-xl font-bold"
+							>{$userProfile.profile_stats.nots_earned_count}</span>
+						<span class="text-sm">Nots</span>
+					</div>
+				</div>
+				{#if !me}
+					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
+						<Button on:click="{loveUser}" class="mx-auto w-[10rem]">Love</Button>
+						<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
+					</div>
+				{/if}
+				<div class="px-6 pt-2">
+					<ProfileTabs bind:selected="{selectedTab}" />
+				</div>
+				<div class="flex h-full flex-col px-6 py-6">
+					{#if selectedTab === 'posts'}
+						{#if posts.length}
+							<div class="grid grid-cols-3 gap-3">
+								{#each posts as post}
+									<ProfilePost id="{`${post}`}" likes="{500}" imageBg="{dummyPost}" />
+								{/each}
+							</div>
+						{:else}
+							<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+								<NoPostsIcon class="w-52" />
+								<div class="text-center text-lg font-bold">
+									{#if me}
+										You have not uploaded any videos yet
+									{:else}
+										This user has not uploaded any videos yet
+									{/if}
+								</div>
+								{#if me}
+									<Button href="/upload" prefetch class="w-full">Upload your first video</Button>
+								{/if}
+							</div>
+						{/if}
+					{:else if speculations.length}
+						<div class="grid grid-cols-2 gap-3">
+							{#each speculations as speculation}
+								<SpeculationPost me="{me}" {...speculation} />
 							{/each}
 						</div>
 					{:else}
 						<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-							<NoPostsIcon class="w-52" />
+							<NoBetsIcon class="w-52" />
 							<div class="text-center text-lg font-bold">
-								{#if profile.me}
-									You have not uploaded any videos yet
+								{#if me}
+									You don't have any current bets yet
 								{:else}
-									This user has not uploaded any videos yet
+									This user has not placed any bets yet
 								{/if}
 							</div>
-							{#if profile.me}
-								<Button href="/upload" prefetch class="w-full">Upload your first video</Button>
-							{/if}
 						</div>
 					{/if}
-				{:else if speculations.length}
-					<div class="grid grid-cols-2 gap-3">
-						{#each speculations as speculation}
-							<SpeculationPost me="{profile.me}" {...speculation} />
-						{/each}
-					</div>
-				{:else}
-					<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-						<NoBetsIcon class="w-52" />
-						<div class="text-center text-lg font-bold">
-							{#if profile.me}
-								You don't have any current bets yet
-							{:else}
-								This user has not placed any bets yet
-							{/if}
-						</div>
-					</div>
-				{/if}
+				</div>
 			</div>
-		</div>
-	</svelte:fragment>
-</ProfileLayout>
+		</svelte:fragment>
+	</ProfileLayout>
+{/if}
