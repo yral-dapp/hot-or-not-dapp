@@ -209,8 +209,6 @@ onDestroy(() => {
 			<InputBox
 				placeholder="Write your description here ..."
 				bind:value="{videoDescription}"
-				on:focus="{() => console.log('focus')}"
-				on:blur="{() => console.log('blur')}"
 				class="shrink-0 rounded-xl bg-white/10" />
 			{#if descriptionError}
 				<div class="text-xs text-red-500">{descriptionError}</div>

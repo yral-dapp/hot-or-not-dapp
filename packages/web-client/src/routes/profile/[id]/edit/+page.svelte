@@ -67,26 +67,31 @@ async function saveChanges() {
 
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
-	try {
-		const { individualUser, userIndex } = await import('$lib/helpers/backend');
-		if (profile.unique_user_name !== values.username) {
+	const { individualUser, userIndex } = await import('$lib/helpers/backend');
+	if (profile.unique_user_name !== values.username) {
+		try {
 			await userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
 				profile.unique_user_name,
 				values.username
 			);
+		} catch (e) {
+			disabled = false;
+			Log({ error: e, from: '1 saveChanges' }, 'error');
 		}
+	}
+	try {
 		const res = await individualUser().update_profile_details({
 			display_name: [values.name],
 			unique_user_name: [values.username],
 			profile_picture_url: [values.imageSrc]
 		});
-		console.log('res', res);
 		// if (res) {
 		// }
 		disabled = false;
+		console.log('res', res);
 	} catch (e) {
 		disabled = false;
-		Log({ error: e }, 'error');
+		Log({ error: e, from: '2 saveChanges' }, 'error');
 	}
 }
 
