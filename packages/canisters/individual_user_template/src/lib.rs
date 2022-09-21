@@ -14,11 +14,14 @@ use profile::{
     internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileDetailsFromFrontend},
     UpdateProfileDetailsError,
 };
-use shared_utils::access_control::UserAccessRole;
+use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::PostScoreIndexItem};
+use std::collections::BTreeSet;
 
 mod access_control;
+mod periodic_update;
 mod post;
 mod profile;
+mod score_ranking;
 #[cfg(test)]
 mod test;
 
@@ -28,6 +31,7 @@ pub type Profile = UserProfile;
 // * Stable Collections
 pub type AllCreatedPosts = SVec<Post>;
 pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
+pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
 
 #[init]
 fn init() {
@@ -35,17 +39,24 @@ fn init() {
     stable_memory_init(true, 0);
 
     // * initialize stable variables
+    s! {Profile = Profile::new(call::arg_data::<(Principal, Principal)>().1)};
+
+    // * initialize stable collections
     s! {AllCreatedPosts = AllCreatedPosts::new()};
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
-    s! {Profile = Profile::new(call::arg_data::<(Principal, Principal)>().1)};
+    s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
     setup_initial_access_control(
         &mut user_id_access_control_map,
-        call::arg_data::<(Principal,)>().0,
+        call::arg_data::<(Principal, Principal)>().0,
+        call::arg_data::<(Principal, Principal)>().1,
     );
     s! { AccessControlMap = user_id_access_control_map };
+
+    // * initialize periodic update
+    periodic_update::share_top_post_scores_with_post_cache_canister();
 }
 
 #[pre_upgrade]

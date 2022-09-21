@@ -18,6 +18,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_user_canister_id_from_user_principal_id' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(IDL.Principal)],
+        ['query'],
+      ),
+    'get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id' : IDL.Func(
         [],
         [IDL.Principal],
         [],

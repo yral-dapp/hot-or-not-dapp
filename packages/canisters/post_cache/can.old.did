@@ -1,0 +1,11 @@
+type UserAccessRole = variant {
+  CanisterController;
+  ProfileOwner;
+  CanisterAdmin;
+  ProjectCanister;
+};
+service : {
+  get_user_roles : (principal) -> (vec UserAccessRole) query;
+  update_user_add_role : (UserAccessRole, principal) -> ();
+  update_user_remove_role : (UserAccessRole, principal) -> ();
+}

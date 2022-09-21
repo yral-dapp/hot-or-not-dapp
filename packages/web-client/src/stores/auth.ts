@@ -4,15 +4,19 @@ import type { Principal } from '@dfinity/principal';
 import { writable as localWritable } from 'svelte-local-storage-store';
 import { writable } from 'svelte/store';
 
-export const authClient = writable<AuthClient | undefined>(undefined);
-
-export const authStore = localWritable<{
-	isLoggedIn: boolean;
+export const authHelper = writable<{
+	client?: AuthClient;
 	identity?: Identity;
-	principal?: Principal;
-	showLogin: boolean;
+	idPrincipal?: Principal;
 	userCanisterPrincipal?: Principal;
-}>('auth-store', {
+}>({});
+
+export const authState = localWritable<{
+	isLoggedIn: boolean;
+	idString?: string;
+	userCanisterId?: string;
+	showLogin: boolean;
+}>('auth-state', {
 	isLoggedIn: false,
 	showLogin: false
 });

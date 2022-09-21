@@ -8,10 +8,9 @@ import Button from '$components/button/Button.svelte';
 import { page } from '$app/stores';
 import { onMount } from 'svelte';
 import userProfile from '$stores/userProfile';
-import { authStore } from '$stores/auth';
+import { authState } from '$stores/auth';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import Log from '$lib/utils/Log';
-import { updateProfile } from '$lib/helpers/profile';
 
 let disabled = true;
 let src = '';
@@ -87,10 +86,10 @@ onMount(async () => {
 	src = $userProfile.profile_picture_url[0] ?? '';
 	name =
 		$userProfile.display_name[0] ??
-		generateRandomName('name', $authStore.principal?.toString() ?? $page.params.id);
+		generateRandomName('name', $authState.idString ?? $page.params.id);
 	username =
 		$userProfile.unique_user_name[0] ??
-		generateRandomName('username', $authStore.principal?.toString() ?? $page.params.id);
+		generateRandomName('username', $authState.idString ?? $page.params.id);
 	oldUsername = username;
 	disabled = false;
 });

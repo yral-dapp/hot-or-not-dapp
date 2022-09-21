@@ -4,6 +4,7 @@ use shared_utils::access_control::{get_global_sprincipal, UserAccessRole};
 
 pub fn setup_initial_access_control(
     user_id_access_control_map: &mut SHashMap<SPrincipal, Vec<UserAccessRole>>,
+    parent_canister_principal_id: Principal,
     parent_canister_owner_principal_id: Principal,
 ) {
     // * add global owner
@@ -17,7 +18,7 @@ pub fn setup_initial_access_control(
 
     // * add user index parent canister
     user_id_access_control_map.insert(
-        SPrincipal(Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap()),
+        SPrincipal(parent_canister_principal_id),
         &vec![
             UserAccessRole::CanisterController,
             UserAccessRole::CanisterAdmin,

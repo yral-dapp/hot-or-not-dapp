@@ -12,7 +12,14 @@ export interface _SERVICE {
     [string],
     [] | [Principal],
   >,
-  'get_user_canister_id_from_user_principal_id' : ActorMethod<[], Principal>,
+  'get_user_canister_id_from_user_principal_id' : ActorMethod<
+    [Principal],
+    [] | [Principal],
+  >,
+  'get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id' : ActorMethod<
+    [],
+    Principal,
+  >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, string],

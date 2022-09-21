@@ -67,6 +67,10 @@ export interface UserProfileGlobalStats {
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
+  'get_individual_post_details_by_id' : ActorMethod<
+    [bigint],
+    PostDetailsForFrontend,
+  >,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
     Array<PostDetailsForFrontend>,

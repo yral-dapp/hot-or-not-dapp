@@ -1,4 +1,7 @@
-use crate::profile::internal::UserProfileDetailsForFrontend;
+use crate::{
+    profile::internal::UserProfileDetailsForFrontend,
+    score_ranking::internal::update_post_score_index_on_post_score_recalculation,
+};
 use candid::{CandidType, Deserialize};
 use ic_cdk::api;
 use ic_stable_memory::utils::ic_types::SPrincipal;
@@ -141,7 +144,7 @@ impl Post {
             / (self.view_stats.total_view_count + additional_views as u64)) as u8
     }
 
-    fn recalculate_score(&mut self) -> u64 {
+    fn recalculate_score(&mut self) {
         let likes_component =
             1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count;
         let threshold_views_component =
@@ -169,7 +172,8 @@ impl Post {
             + post_share_component
             + age_of_video_component;
 
-        return self.ranking_score;
+        // * update score index for top posts of this user
+        update_post_score_index_on_post_score_recalculation(self.id, self.ranking_score);
     }
 
     pub fn add_view_details(&mut self, details: PostViewDetailsFromFrontend) {

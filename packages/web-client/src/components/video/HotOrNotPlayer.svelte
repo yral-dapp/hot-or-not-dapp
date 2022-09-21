@@ -15,7 +15,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
-import { authStore } from '$stores/auth';
+import { authState } from '$stores/auth';
 import { playerState } from '$stores/playerState';
 import c from 'clsx';
 import { fade } from 'svelte/transition';
@@ -90,10 +90,10 @@ async function handleClick() {
 }
 
 async function handleLike() {
-	if ($authStore.isLoggedIn) {
+	if ($authState.isLoggedIn) {
 		liked = !liked;
 		individualUser().update_post_toggle_like_status_by_caller(id);
-	} else $authStore.showLogin = true;
+	} else $authState.showLogin = true;
 }
 
 async function handleShare() {

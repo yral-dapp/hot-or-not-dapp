@@ -70,6 +70,7 @@ type UserProfileGlobalStats = record {
 };
 service : {
   add_post : (PostDetailsFromFrontend) -> (nat64);
+  get_individual_post_details_by_id : (nat64) -> (PostDetailsForFrontend) query;
   get_posts_of_this_user_profile_with_pagination : (nat64, nat64) -> (
       vec PostDetailsForFrontend,
     ) query;

@@ -12,7 +12,7 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { authStore } from '$stores/auth';
+import { authState } from '$stores/auth';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { afterNavigate, goto } from '$app/navigation';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -70,7 +70,7 @@ let profile = {
 	name: '',
 	me: $page.params.id == '1',
 	username: '',
-	avatar: getDefaultImageUrl($authStore.principal)
+	avatar: getDefaultImageUrl($authState.idString)
 };
 
 let posts = [1, 2, 3, 4, 5];
@@ -179,11 +179,11 @@ onMount(() => {
 					src="{$userProfile.profile_picture_url[0] || profile.avatar}" />
 				<span class="text-md pt-4 font-bold">
 					{$userProfile.display_name[0] ||
-						generateRandomName('name', $authStore.principal?.toText() ?? profile.id)}
+						generateRandomName('name', $authState.idString ?? profile.id)}
 				</span>
 				<span class="text-sm">
 					@{$userProfile.unique_user_name[0] ||
-						generateRandomName('username', $authStore.principal?.toText() ?? profile.id)}
+						generateRandomName('username', $authState.idString ?? profile.id)}
 				</span>
 			</div>
 			<div

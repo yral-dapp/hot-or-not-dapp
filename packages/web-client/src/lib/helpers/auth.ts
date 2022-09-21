@@ -1,7 +1,7 @@
 import Log from '$lib/utils/Log';
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
-import { authStore, authClient } from '$stores/auth';
+import { authState, authHelper } from '$stores/auth';
 import { updateProfile } from './profile';
 
 async function updateUserIndexCanister() {
@@ -15,44 +15,63 @@ async function updateUserIndexCanister() {
 			},
 			'info'
 		);
-		const authStoreValue = get(authStore);
-		authStore.set({
-			...authStoreValue,
+		const authStateData = get(authState);
+		const authHelperData = get(authHelper);
+		authHelper.set({
+			...authHelperData,
 			userCanisterPrincipal
 		});
-		await updateProfile();
+		authState.set({
+			...authStateData,
+			userCanisterId: userCanisterPrincipal?.toText()
+		});
 	} catch (e) {
 		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
 	}
 }
 
 export async function initializeAuthClient(): Promise<void> {
-	const authStoreValue = get(authStore);
-	let authClientValue = get(authClient);
-	if (!authClientValue) {
-		const newAuthClient = await AuthClient.create({
+	const authStateData = get(authState);
+	const authHelperData = get(authHelper);
+	let client: AuthClient | undefined = undefined;
+	if (!authHelperData.client) {
+		client = await AuthClient.create({
 			idleOptions: {
 				disableIdle: true
 			}
 		});
-		authClient.set(newAuthClient);
-		authClientValue = newAuthClient;
+	} else {
+		client = authHelperData.client;
 	}
-	const identity = authClientValue?.getIdentity();
+	const identity = client?.getIdentity();
 	const principal = await identity?.getPrincipal();
-	if (await authClientValue?.isAuthenticated()) {
-		authStore.set({
+	if (await client?.isAuthenticated()) {
+		authState.set({
+			userCanisterId: authStateData.userCanisterId,
 			isLoggedIn: true,
-			identity,
-			principal,
+			idString: principal?.toText(),
 			showLogin: false
 		});
+
+		authHelper.set({
+			client,
+			userCanisterPrincipal: authHelperData.userCanisterPrincipal,
+			identity,
+			idPrincipal: principal
+		});
 	} else {
-		authStore.set({
+		authState.set({
 			isLoggedIn: false,
-			principal,
-			showLogin: authStoreValue.showLogin
+			idString: principal?.toText(),
+			showLogin: false
+		});
+
+		authHelper.set({
+			client,
+			identity,
+			idPrincipal: principal
 		});
 	}
 	await updateUserIndexCanister();
+	await updateProfile();
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import Popup from './Popup.svelte';
-import { authStore, authClient } from '$stores/auth';
+import { authHelper, authState } from '$stores/auth';
 import { initializeAuthClient } from '$lib/helpers/auth';
 
 export let show = false;
@@ -9,10 +9,10 @@ let loading = false;
 
 async function handleLogout() {
 	loading = true;
-	$authStore.isLoggedIn = false;
+	$authState.isLoggedIn = false;
 	loading = false;
 	show = false;
-	await $authClient?.logout();
+	await $authHelper.client?.logout();
 	await initializeAuthClient();
 }
 </script>

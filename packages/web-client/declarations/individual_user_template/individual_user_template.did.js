@@ -71,6 +71,11 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'add_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
+    'get_individual_post_details_by_id' : IDL.Func(
+        [IDL.Nat64],
+        [PostDetailsForFrontend],
+        ['query'],
+      ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [IDL.Vec(PostDetailsForFrontend)],

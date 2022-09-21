@@ -11,7 +11,7 @@ import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import { onMount } from 'svelte';
-import { authStore } from '$stores/auth';
+import { authState } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
@@ -53,7 +53,7 @@ $: links = [
 		title: 'Logout',
 		class: 'w-5 h-5 pl-1',
 		onClick: () => (showLogoutPopup = true),
-		hide: !$authStore.isLoggedIn
+		hide: !$authState.isLoggedIn
 	}
 ];
 
@@ -74,24 +74,24 @@ onMount(() => prefetchLinks());
 <div
 	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
 	<div class="flex w-full shrink-0 flex-col space-y-10">
-		{#if $authStore.isLoggedIn}
+		{#if $authState.isLoggedIn}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
 				<img
 					alt="profile"
 					class="h-24 w-24 rounded-full object-cover"
 					src="{$userProfile.profile_picture_url?.[0] ||
-						getDefaultImageUrl($authStore.principal)}" />
+						getDefaultImageUrl($authState.idString)}" />
 				<div class="flex flex-col space-y-1">
 					<div class="text-xl">
 						{$userProfile.display_name?.[0] ||
-							generateRandomName('name', $authStore.principal?.toText() ?? '1')}
+							generateRandomName('name', $authState.idString ?? '1')}
 					</div>
 					<a href="/profile/1" data-sveltekit-prefetch class=" text-primary">View Profile</a>
 				</div>
 			</div>
 		{:else}
 			<div class="flex h-24 w-full items-center justify-center">
-				<Button on:click="{() => ($authStore.showLogin = true)}" class="w-full">Login</Button>
+				<Button on:click="{() => ($authState.showLogin = true)}" class="w-full">Login</Button>
 			</div>
 		{/if}
 		<div class="my-8 h-[1px] w-full bg-white/10"></div>
