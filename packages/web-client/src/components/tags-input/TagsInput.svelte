@@ -12,7 +12,6 @@ function handleInput(e: KeyboardEvent) {
 	if (value.trim() && (e.key === ',' || e.key === ' ')) {
 		const val = value.replace('#', '').replace(',', '').replace(' ', '').toLowerCase();
 		value = '';
-		console.log('val', val);
 		tags.push(val);
 		tags = tags;
 	} else if (value == '' && e.key == 'Backspace' && tags.length > 0) {
