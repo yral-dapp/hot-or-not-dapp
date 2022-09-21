@@ -1,0 +1,25 @@
+type PostScoreIndexItem = record {
+  post_id : nat64;
+  score : nat64;
+  publisher_canister_id : principal;
+};
+type Result = variant { Ok : vec PostScoreIndexItem; Err : TopPostsFetchError };
+type TopPostsFetchError = variant {
+  RequestedLowerBoundIsGreaterThanTotalNumberOfPostsAvailable;
+  MaxFetchLimitExceeded;
+};
+type UserAccessRole = variant {
+  CanisterController;
+  ProfileOwner;
+  CanisterAdmin;
+  ProjectCanister;
+};
+service : {
+  get_top_posts_aggregated_from_canisters_on_this_network : (nat64, nat64) -> (
+      Result,
+    ) query;
+  get_user_roles : (principal) -> (vec UserAccessRole) query;
+  receive_top_posts_from_publishing_canister : (vec PostScoreIndexItem) -> ();
+  update_user_add_role : (UserAccessRole, principal) -> ();
+  update_user_remove_role : (UserAccessRole, principal) -> ();
+}

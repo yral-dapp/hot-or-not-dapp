@@ -1,0 +1,45 @@
+export const idlFactory = ({ IDL }) => {
+  const PostScoreIndexItem = IDL.Record({
+    'post_id' : IDL.Nat64,
+    'score' : IDL.Nat64,
+    'publisher_canister_id' : IDL.Principal,
+  });
+  const TopPostsFetchError = IDL.Variant({
+    'RequestedLowerBoundIsGreaterThanTotalNumberOfPostsAvailable' : IDL.Null,
+    'MaxFetchLimitExceeded' : IDL.Null,
+  });
+  const Result = IDL.Variant({
+    'Ok' : IDL.Vec(PostScoreIndexItem),
+    'Err' : TopPostsFetchError,
+  });
+  const UserAccessRole = IDL.Variant({
+    'CanisterController' : IDL.Null,
+    'ProfileOwner' : IDL.Null,
+    'CanisterAdmin' : IDL.Null,
+    'ProjectCanister' : IDL.Null,
+  });
+  return IDL.Service({
+    'get_top_posts_aggregated_from_canisters_on_this_network' : IDL.Func(
+        [IDL.Nat64, IDL.Nat64],
+        [Result],
+        ['query'],
+      ),
+    'get_user_roles' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(UserAccessRole)],
+        ['query'],
+      ),
+    'receive_top_posts_from_publishing_canister' : IDL.Func(
+        [IDL.Vec(PostScoreIndexItem)],
+        [],
+        [],
+      ),
+    'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
+    'update_user_remove_role' : IDL.Func(
+        [UserAccessRole, IDL.Principal],
+        [],
+        [],
+      ),
+  });
+};
+export const init = ({ IDL }) => { return []; };

@@ -1,0 +1,37 @@
+use crate::score_ranking::send_top_post_scores_to_post_cache_canister;
+use candid::{CandidType, Deserialize};
+use ic_cron::types::{Iterations, SchedulingOptions};
+
+ic_cron::implement_cron!();
+
+#[derive(CandidType, Deserialize)]
+enum TaskKind {
+    ShareTopPostScoresWithPostCacheCanister,
+    UpdatePostScoresEvery30Minutes,
+}
+
+#[ic_cdk_macros::heartbeat]
+fn heartbeat() {
+    // cron_ready_tasks will only return tasks which should be executed right now
+    for task in cron_ready_tasks() {
+        let kind = task.get_payload::<TaskKind>().expect("Serialization error");
+
+        match kind {
+            TaskKind::ShareTopPostScoresWithPostCacheCanister => {
+                send_top_post_scores_to_post_cache_canister();
+            }
+            TaskKind::UpdatePostScoresEvery30Minutes => {}
+        };
+    }
+}
+
+pub fn share_top_post_scores_with_post_cache_canister() {
+    let _ = cron_enqueue(
+        TaskKind::ShareTopPostScoresWithPostCacheCanister,
+        SchedulingOptions {
+            delay_nano: 0,
+            interval_nano: 1_000_000_000 * 60 * 30,
+            iterations: Iterations::Infinite,
+        },
+    );
+}

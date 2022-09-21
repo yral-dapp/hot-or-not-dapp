@@ -31,4 +31,10 @@ pub fn setup_initial_access_control(
         SPrincipal(parent_canister_owner_principal_id),
         &vec![UserAccessRole::ProfileOwner],
     );
+
+    // * add post_cache canister as a project sibling canister
+    user_id_access_control_map.insert(
+        SPrincipal(Principal::from_text(option_env!("CANISTER_ID_post_cache").unwrap()).unwrap()),
+        &vec![UserAccessRole::ProjectCanister],
+    );
 }
