@@ -11,8 +11,8 @@ use post::internal::{
     Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
 };
 use profile::{
-    internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileDetailsFromFrontend},
-    UpdateProfileDetailsError,
+    internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
+    UpdateProfileDetailsError, UpdateProfileSetUniqueUsernameError,
 };
 use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::PostScoreIndexItem};
 use std::collections::BTreeSet;
