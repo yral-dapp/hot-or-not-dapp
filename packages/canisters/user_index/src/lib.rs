@@ -5,7 +5,9 @@ use ic_stable_memory::{
     collections::hash_map::SHashMap, s, stable_memory_init, stable_memory_post_upgrade,
     stable_memory_pre_upgrade, utils::ic_types::SPrincipal,
 };
-use shared_utils::access_control::UserAccessRole;
+use shared_utils::{
+    access_control::UserAccessRole, shared_types::user_index::error_types::SetUniqueUsernameError,
+};
 
 mod access_control;
 #[cfg(test)]

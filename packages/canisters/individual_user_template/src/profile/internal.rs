@@ -30,9 +30,8 @@ pub struct UserProfileDetailsForFrontend {
 }
 
 #[derive(Deserialize, CandidType)]
-pub struct UserProfileDetailsFromFrontend {
+pub struct UserProfileUpdateDetailsFromFrontend {
     pub display_name: Option<String>,
-    pub unique_user_name: Option<String>,
     pub profile_picture_url: Option<String>,
 }
 
@@ -104,9 +103,15 @@ impl UserProfile {
         }
     }
 
-    pub fn update_profile_details(&mut self, user_profile_details: UserProfileDetailsFromFrontend) {
+    pub fn update_profile_details(
+        &mut self,
+        user_profile_details: UserProfileUpdateDetailsFromFrontend,
+    ) {
         self.display_name = user_profile_details.display_name;
-        self.unique_user_name = user_profile_details.unique_user_name;
         self.profile_picture_url = user_profile_details.profile_picture_url;
+    }
+
+    pub fn set_unique_user_name(&mut self, unique_user_name: String) {
+        self.unique_user_name = Some(unique_user_name);
     }
 }
