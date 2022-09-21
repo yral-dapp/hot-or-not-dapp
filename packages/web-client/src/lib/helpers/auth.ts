@@ -7,7 +7,8 @@ import { updateProfile } from './profile';
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
 	try {
-		const userCanisterPrincipal = await userIndex().get_user_canister_id_from_user_principal_id();
+		const userCanisterPrincipal =
+			await userIndex().get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id();
 		Log(
 			{
 				userCanisterPrincipal: userCanisterPrincipal?.toText(),
