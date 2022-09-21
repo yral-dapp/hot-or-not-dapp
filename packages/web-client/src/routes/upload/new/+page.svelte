@@ -3,7 +3,6 @@ import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import PlayIcon from '$components/icons/PlayIcon.svelte';
-import Input from '$components/input/Input.svelte';
 import InputBox from '$components/input/InputBox.svelte';
 import UploadLayout from '$components/layout/UploadLayout.svelte';
 import { tweened } from 'svelte/motion';
@@ -21,6 +20,8 @@ import {
 } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
+import { individualUser } from '$lib/helpers/backend';
+import userProfile from '$stores/userProfile';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -95,7 +96,7 @@ async function checkVideoProcessingStatus(uid: string) {
 			const videoStatus = await checkVideoStatus(uid);
 			Log({ videoStatus, source: '0 checkVideoProcessingStatus' }, 'info');
 			if (videoStatus.success && videoStatus.result.readyToStream) {
-				handleSuccessfulUpload(videoStatus.result);
+				handleSuccessfulUpload(uid);
 				clearInterval(videoStatusInterval);
 			} else throw new Error();
 		} catch (_) {
@@ -109,17 +110,19 @@ async function checkVideoProcessingStatus(uid: string) {
 	}, 4000);
 }
 
-async function handleSuccessfulUpload(result: CheckVideoStatusResult) {
+async function handleSuccessfulUpload(videoUid: string) {
 	try {
-		Log({ result, source: '0 handleSuccessfulUpload' }, 'info');
-		// const postId = individualUser().create_post({
-		// 	description: videoDescription,
-		// 	hashtags: hashtags,
-		// 	video_url: ''
-		// });
+		Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
+		const postId = await individualUser().add_post({
+			description: videoDescription,
+			hashtags,
+			video_uid: videoUid,
+			creator_consent_for_inclusion_in_hot_or_not: false
+		});
+		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
-		// prefetch(`/all/${postId}`); //prefetch the newly uploaded video page
+		prefetch(`/profile/${$userProfile.unique_user_name}/posts/${postId}`); //prefetch the newly uploaded video page
 	} catch (_) {
 		Log({ error: 'Couldnt send details to backend', source: '1 handleSuccessfulUpload' }, 'error');
 		console.error('Couldnt send details to backend');
