@@ -18,7 +18,9 @@ export async function getCanisterId(id: string) {
 		const { userIndex } = await import('$lib/helpers/backend');
 		try {
 			if (await isPrincipal(id)) {
-				const res = await userIndex().get_user_canister_id_from_user_principal_id();
+				const res = await userIndex().get_user_canister_id_from_user_principal_id(
+					Principal.from(id)
+				);
 				set(id, res.toString());
 				return res.toString();
 			} else {
