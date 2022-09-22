@@ -32,30 +32,38 @@ const individualUserCanister: {
 
 export function userIndex(): UserIndexActor {
 	const authStateData = get(authState);
-	if (!userIndexCanister.actor || userIndexCanister.loginState != authStateData.isLoggedIn) {
+	if (userIndexCanister.actor && userIndexCanister.loginState === authStateData.isLoggedIn) {
+		return userIndexCanister.actor;
+	} else {
 		const authHelperData = get(authHelper);
 		userIndexCanister.actor = createUserIndexActor(userIndexCanisterId, {
 			agentOptions: { identity: authHelperData?.identity, host }
 		}) as UserIndexActor;
 		userIndexCanister.loginState = authStateData.isLoggedIn;
 		return userIndexCanister.actor;
-	} else return userIndexCanister.actor;
+	}
 }
 
 export function individualUser(principal?: Principal): IndividualUserCanister {
 	const authStateData = get(authState);
 	if (
-		!individualUserCanister.actor ||
-		individualUserCanister.loginState != authStateData.isLoggedIn
+		!principal &&
+		individualUserCanister.actor &&
+		individualUserCanister.loginState == authStateData.isLoggedIn
 	) {
-		const authHelperData = get(authHelper);
-		individualUserCanister.actor = createIndividualUserActor(
-			principal?.toText() || authStateData.userCanisterId,
-			{
-				agentOptions: { identity: authHelperData?.identity, host }
-			}
-		) as IndividualUserCanister;
-		individualUserCanister.loginState = authStateData.isLoggedIn;
 		return individualUserCanister.actor;
-	} else return individualUserCanister.actor;
+	} else {
+		const authHelperData = get(authHelper);
+		if (principal) {
+			return createIndividualUserActor(principal.toText(), {
+				agentOptions: { identity: authHelperData?.identity, host }
+			}) as IndividualUserCanister;
+		} else {
+			individualUserCanister.actor = createIndividualUserActor(authStateData.userCanisterId, {
+				agentOptions: { identity: authHelperData?.identity, host }
+			}) as IndividualUserCanister;
+			individualUserCanister.loginState = authStateData.isLoggedIn;
+			return individualUserCanister.actor;
+		}
+	}
 }
