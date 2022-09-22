@@ -1,3 +1,19 @@
+type AnotherUserFollowedMeError = variant {
+  UserIndexCrossCanisterCallFailed;
+  FollowersListFull;
+  NotAuthorized;
+  UserTryingToFollowMeDoesNotExist;
+};
+type FollowAnotherUserProfileError = variant {
+  UserToFollowDoesNotExist;
+  UserIndexCrossCanisterCallFailed;
+  UserITriedToFollowCrossCanisterCallFailed;
+  UsersICanFollowListIsFull;
+  MyCanisterIDDoesNotMatchMyPrincipalCanisterIDMappingSeenByUserITriedToFollow;
+  UserITriedToFollowDidNotFindMe;
+  NotAuthorized;
+  UserITriedToFollowHasTheirFollowersListFull;
+};
 type PostDetailsForFrontend = record {
   id : nat64;
   status : PostStatus;
@@ -34,11 +50,13 @@ type PostViewDetailsFromFrontend = variant {
   };
   WatchedPartially : record { percentage_watched : nat8 };
 };
-type Result = variant {
+type Result = variant { Ok : bool; Err : FollowAnotherUserProfileError };
+type Result_1 = variant { Ok : bool; Err : AnotherUserFollowedMeError };
+type Result_2 = variant {
   Ok : UserProfileDetailsForFrontend;
   Err : UpdateProfileDetailsError;
 };
-type Result_1 = variant { Ok; Err : UpdateProfileSetUniqueUsernameError };
+type Result_3 = variant { Ok; Err : UpdateProfileSetUniqueUsernameError };
 type UpdateProfileDetailsError = variant { NotAuthorized };
 type UpdateProfileSetUniqueUsernameError = variant {
   UsernameAlreadyTaken;
@@ -58,8 +76,6 @@ type UserProfile = record {
   profile_picture_url : opt text;
   display_name : opt text;
   principal_id : principal;
-  followers : vec principal;
-  following : vec principal;
   profile_stats : UserProfileGlobalStats;
 };
 type UserProfileDetailsForFrontend = record {
@@ -89,16 +105,16 @@ service : {
   update_post_as_ready_to_view : (nat64) -> ();
   update_post_increment_share_count : (nat64) -> (nat64);
   update_post_toggle_like_status_by_caller : (nat64) -> (bool);
-  update_profile_display_details : (UserProfileUpdateDetailsFromFrontend) -> (
-      Result,
-    );
-  update_profile_set_unique_username_once : (text) -> (Result_1);
-  update_profile_toggle_follower_list_of_followee_by_calling_principal : () -> (
-      bool,
-    );
-  update_profile_toggle_following_list_of_follower_by_user_to_follow : (
+  update_principals_i_follow_toggle_list_with_principal_specified : (
       principal,
-    ) -> (bool);
+    ) -> (Result);
+  update_principals_that_follow_me_toggle_list_with_specified_principal : (
+      principal,
+    ) -> (Result_1);
+  update_profile_display_details : (UserProfileUpdateDetailsFromFrontend) -> (
+      Result_2,
+    );
+  update_profile_set_unique_username_once : (text) -> (Result_3);
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();
 }
