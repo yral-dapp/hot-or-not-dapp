@@ -12,7 +12,8 @@ use post::internal::{
 };
 use profile::{
     internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
-    UpdateProfileDetailsError, UpdateProfileSetUniqueUsernameError,
+    AnotherUserFollowedMeError, FollowAnotherUserProfileError, UpdateProfileDetailsError,
+    UpdateProfileSetUniqueUsernameError,
 };
 use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::PostScoreIndexItem};
 use std::collections::BTreeSet;
@@ -32,6 +33,8 @@ pub type Profile = UserProfile;
 pub type AllCreatedPosts = SVec<Post>;
 pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
+pub type PrincipalsIFollow = BTreeSet<SPrincipal>;
+pub type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
 
 #[init]
 fn init() {
