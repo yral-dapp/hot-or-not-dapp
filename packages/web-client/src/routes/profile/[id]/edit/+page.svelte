@@ -11,7 +11,7 @@ import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 
 export let data: PageData;
-const { username, username_set, displayName, imgSrc } = data;
+let { username, username_set, displayName, imgSrc, userPrincipal } = data;
 
 let loaded = false;
 let disabled = true;
@@ -70,25 +70,31 @@ async function saveChanges() {
 	const { individualUser, userIndex } = await import('$lib/helpers/backend');
 	if (username !== values.username) {
 		try {
-			await userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
-				username ?? '',
-				values.username
-			);
+			Promise.all([
+				userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
+					values.username,
+					userPrincipal
+				),
+				individualUser().update_profile_set_unique_username_once(values.username)
+			]);
+			username_set = true;
+			username = values.username;
 		} catch (e) {
 			disabled = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
 		}
 	}
 	try {
-		const res = await individualUser().update_profile_details({
+		const res = await individualUser().update_profile_display_details({
 			display_name: [values.name],
-			unique_user_name: [values.username],
 			profile_picture_url: [values.imageSrc]
 		});
+		displayName = values.name;
+		imgSrc = values.imageSrc;
+		console.log('res', res);
 		// if (res) {
 		// }
 		disabled = false;
-		console.log('res', res);
 	} catch (e) {
 		disabled = false;
 		Log({ error: e, from: '2 saveChanges' }, 'error');
