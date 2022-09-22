@@ -11,15 +11,18 @@ import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { goto } from '$app/navigation';
-import userProfile from '$stores/userProfile';
+import userProfile, { type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
+import { page } from '$app/stores';
+import { sanitizeProfile } from '$lib/helpers/profile';
+import Log from '$lib/utils/Log';
 
 export let data: PageData;
-const { me, profile } = data;
+const { me, fetchedProfile } = data;
+let profile: UserProfile;
 
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
@@ -105,8 +108,13 @@ async function loveUser() {
 }
 
 onMount(() => {
+	if (me) {
+		profile = $userProfile;
+	} else if (fetchedProfile) {
+		profile = sanitizeProfile(fetchedProfile, $page.params.id);
+	}
 	loaded = true;
-	console.log({ me, $userProfile });
+	Log({ from: 'load menu[id]', me, profile }, 'info');
 });
 </script>
 
@@ -143,14 +151,14 @@ onMount(() => {
 			<div class="flex h-full w-full flex-col overflow-y-auto ">
 				<div class="flex w-full flex-col items-center justify-center py-8">
 					<img
-						class="h-24 w-24 rounded-full {$userProfile.profile_picture_url}"
-						alt="{$userProfile.display_name}"
-						src="{$userProfile.profile_picture_url}" />
+						class="h-24 w-24 rounded-full {profile.profile_picture_url}"
+						alt="{profile.display_name}"
+						src="{profile.profile_picture_url}" />
 					<span class="text-md pt-4 font-bold">
-						{$userProfile.display_name}
+						{profile.display_name}
 					</span>
 					<span class="text-sm">
-						{`@${$userProfile.unique_user_name}`}
+						{`@${profile.unique_user_name}`}
 					</span>
 				</div>
 				<div
@@ -158,22 +166,22 @@ onMount(() => {
 					<a
 						href="{`/profile/${profile.unique_user_name}/lovers`}"
 						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-						<span class="whitespace-nowrap text-xl font-bold">{$userProfile.followers.length}</span>
+						<span class="whitespace-nowrap text-xl font-bold">{profile.followers.length}</span>
 						<span class="text-sm">Lovers</span>
 					</a>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold"
-							>{$userProfile.profile_stats.lifetime_earnings}</span>
+							>{profile.profile_stats.lifetime_earnings}</span>
 						<span class="text-sm">Earnings</span>
 					</div>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold"
-							>{$userProfile.profile_stats.hots_earned_count}</span>
+							>{profile.profile_stats.hots_earned_count}</span>
 						<span class="text-sm">Hots</span>
 					</div>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold"
-							>{$userProfile.profile_stats.nots_earned_count}</span>
+							>{profile.profile_stats.nots_earned_count}</span>
 						<span class="text-sm">Nots</span>
 					</div>
 				</div>
