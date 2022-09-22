@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
-import userProfile from '$stores/userProfile';
+import { updateProfile } from '$lib/helpers/profile';
+import Log from '$lib/utils/Log';
 import { redirect } from '@sveltejs/kit';
-import { get } from 'svelte/store';
 
 import type { PageLoad } from './$types';
 
@@ -13,10 +13,21 @@ export const load: PageLoad = async ({ params }) => {
 	if (!id) {
 		throw redirect(307, '/404');
 	}
-	const userProfileData = get(userProfile);
-	if (id === userProfileData.unique_user_name) {
-		return { profile: userProfileData };
-	} else {
+	const { individualUser } = await import('$lib/helpers/backend');
+	try {
+		const profile = await individualUser().get_profile_details();
+		if (!!profile.unique_user_name[0] && profile.unique_user_name[0] !== id) {
+			throw redirect(307, `/profile/${params.id}`);
+		}
+		updateProfile(profile);
+		return {
+			username_set: !!profile.unique_user_name[0],
+			username: profile.unique_user_name[0],
+			displayName: profile.display_name[0],
+			imgSrc: profile.profile_picture_url[0]
+		};
+	} catch (e) {
+		Log({ error: e, from: '1 fetchProfile' }, 'error');
 		throw redirect(307, `/profile/${params.id}`);
 	}
 };
