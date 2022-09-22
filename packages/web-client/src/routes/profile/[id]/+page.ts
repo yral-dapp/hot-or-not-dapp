@@ -26,11 +26,9 @@ export const load: PageLoad = async ({ params }) => {
 			Log({ from: '1 noCanId' }, 'warn');
 			throw redirect(307, '/404');
 		}
-		console.log({ canId });
-		const individualUser = (await import('$lib/helpers/backend')).individualUser(
-			Principal.from(canId)
-		);
-		const profile = await individualUser.get_profile_details();
-		return { me: false, profile };
+		Log({ canId, from: '0 canId' }, 'info');
+		const individualUser = (await import('$lib/helpers/backend')).individualUser;
+		const profile = await individualUser(Principal.from(canId)).get_profile_details();
+		return { me: false, fetchedProfile: profile };
 	}
 };
