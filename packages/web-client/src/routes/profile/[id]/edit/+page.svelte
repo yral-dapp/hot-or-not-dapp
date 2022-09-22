@@ -5,7 +5,6 @@ import ProfileLayout from '$components/layout/ProfileLayout.svelte';
 import ProfileImageSelector from '$components/profile/ProfileImageSelector.svelte';
 import Input from '$components/input/Input.svelte';
 import Button from '$components/button/Button.svelte';
-import { page } from '$app/stores';
 import { onMount } from 'svelte';
 import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
