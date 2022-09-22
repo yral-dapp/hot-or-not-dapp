@@ -51,7 +51,7 @@ export async function initializeAuthClient(): Promise<void> {
 			userCanisterId: authStateData.userCanisterId,
 			isLoggedIn: true,
 			idString: principal?.toText(),
-			showLogin: false
+			showLogin: authStateData.showLogin
 		});
 
 		authHelper.set({
@@ -64,7 +64,7 @@ export async function initializeAuthClient(): Promise<void> {
 		authState.set({
 			isLoggedIn: false,
 			idString: principal?.toText(),
-			showLogin: false
+			showLogin: authStateData.showLogin
 		});
 
 		authHelper.set({
@@ -73,6 +73,7 @@ export async function initializeAuthClient(): Promise<void> {
 			idPrincipal: principal
 		});
 	}
+	console.log('test');
 	await updateUserIndexCanister();
 	await updateProfile();
 }
