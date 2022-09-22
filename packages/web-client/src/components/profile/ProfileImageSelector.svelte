@@ -6,11 +6,13 @@ import Popup from '$components/popup/Popup.svelte';
 import { uploadProfilePicture } from '$lib/helpers/image';
 import { getCroppedImg } from '$lib/utils/canvas';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import Log from '$lib/utils/Log';
 import { authState } from '$stores/auth';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
 export let src = '';
-export let croppedSrc = '';
+export let error = '';
+export let loading = false;
 
 let latestCropDetails: {
 	x: number;
@@ -18,6 +20,12 @@ let latestCropDetails: {
 	height: number;
 	width: number;
 } | null = null;
+
+let menuPopup = false;
+let cropPopup = false;
+let inputEl: HTMLInputElement;
+let toCropSrc = '';
+let toUploadSrc = '';
 
 function checkFileSelected(files: FileList | null) {
 	loading = true;
@@ -33,34 +41,44 @@ function checkFileSelected(files: FileList | null) {
 		// 	loading = false;
 		// 	return;
 		// }
-		croppedSrc = URL.createObjectURL(files[0]);
+		toCropSrc = URL.createObjectURL(files[0]);
 		loading = false;
 	}
 }
 
 async function uploadImage(blob: Blob) {
-	const img = await uploadProfilePicture(blob);
-	if (!img) {
-		//do something
-	} else {
-		src = img;
+	try {
+		loading = true;
+		const img = await uploadProfilePicture(blob);
+		if (img) {
+			src = img;
+		} else {
+			toUploadSrc = '';
+			error = 'Something went wrong while uploading the photo. Please try again.';
+			Log({ error: 'Something went wrong', from: '1 uploadImage' }, 'error');
+		}
+
+		loading = false;
+	} catch (e) {
+		error = 'Could not upload profile photo. Please try again.';
+		toUploadSrc = '';
+		loading = false;
+		Log({ error: e, from: '1 uploadImage' }, 'error');
 	}
 }
-
-let menuPopup = false;
-let cropPopup = false;
-let inputEl: HTMLInputElement;
-let loading = false;
 </script>
 
 <div class="relative flex h-48 w-48">
-	{#if !src}
+	{#if src}
+		<img alt="User avatar" src="{src}" class="h-48 w-48 rounded-full object-cover" />
+	{:else if toUploadSrc}
+		<img alt="User avatar" src="{toUploadSrc}" class="h-48 w-48 rounded-full object-cover" />
+		<div class="absolute inset-0 z-[5] flex items-center justify-center bg-black/50">Uploading</div>
+	{:else}
 		<img
 			alt="User avatar"
 			src="{getDefaultImageUrl($authState.idString)}"
 			class="h-48 w-48 rounded-full object-cover" />
-	{:else}
-		<img alt="User avatar" src="{src}" class="h-48 w-48 rounded-full object-cover" />
 	{/if}
 	<IconButton
 		on:click="{() => (menuPopup = true)}"
@@ -112,10 +130,11 @@ let loading = false;
 	bind:show="{cropPopup}">
 	<button
 		on:click="{async () => {
-			const blob = await getCroppedImg(croppedSrc, latestCropDetails);
-			uploadImage(blob);
-			src = URL.createObjectURL(blob);
 			cropPopup = false;
+			loading = true;
+			const blob = await getCroppedImg(toCropSrc, latestCropDetails);
+			toUploadSrc = URL.createObjectURL(blob);
+			uploadImage(blob);
 		}}"
 		class="absolute inset-x-0 bottom-0 z-[100] flex items-center justify-center rounded-b-md bg-primary py-2 text-white">
 		Continue
@@ -124,7 +143,7 @@ let loading = false;
 	<Cropper
 		cropShape="round"
 		on:cropcomplete="{({ detail }) => (latestCropDetails = detail.pixels)}"
-		image="{croppedSrc}"
+		image="{toCropSrc}"
 		aspect="{1}"
 		crop="{{ x: 0, y: 0 }}"
 		zoom="{1}" />

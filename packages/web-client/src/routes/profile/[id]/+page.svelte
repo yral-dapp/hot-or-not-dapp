@@ -198,7 +198,7 @@ onMount(() => {
 				</div>
 				{#if !me}
 					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-						<Button on:click="{loveUser}" class="mx-auto w-[10rem]">
+						<Button disabled="{loading}" on:click="{loveUser}" class="mx-auto w-[10rem]">
 							{#if profile.followers.filter((o) => o.toText() === $authState.idString)}
 								Loving
 							{:else}

@@ -13,8 +13,8 @@ import userProfile from '$stores/userProfile';
 export let data: PageData;
 let { username, username_set, displayName, imgSrc, userPrincipal } = data;
 
-let loaded = false;
-let disabled = true;
+let pageLoaded = false;
+let loading = true;
 let error = '';
 let values: {
 	username: string;
@@ -38,29 +38,25 @@ async function isUsernameTaken() {
 }
 
 function resetAllFields() {
-	values = {
-		username: '',
-		name: '',
-		imageSrc: ''
-	};
+	values.name = values.imageSrc = '';
 }
 
 async function saveChanges() {
-	disabled = true;
+	loading = true;
 	error = '';
 	if (!values.name) {
 		error = 'Name is required';
-		disabled = false;
+		loading = false;
 		Log({ error }, 'error');
 		return;
 	} else if (!values.username) {
 		error = 'Username is required';
-		disabled = false;
+		loading = false;
 		Log({ error }, 'error');
 		return;
 	} else if (!username_set && (await isUsernameTaken())) {
 		error = 'This username is already taken';
-		disabled = false;
+		loading = false;
 		Log({ error }, 'error');
 		return;
 	}
@@ -83,7 +79,7 @@ async function saveChanges() {
 			$userProfile.username_set = true;
 			$userProfile.unique_user_name = values.username;
 		} catch (e) {
-			disabled = false;
+			loading = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
 		}
 	}
@@ -99,10 +95,12 @@ async function saveChanges() {
 		if ('Ok' in res) {
 			$userProfile.display_name = res.Ok.display_name[0] ?? '';
 			$userProfile.profile_picture_url = res.Ok.profile_picture_url[0] ?? '';
+		} else {
+			error = 'Could not save your profile. Please login again to try again.';
 		}
-		disabled = false;
+		loading = false;
 	} catch (e) {
-		disabled = false;
+		loading = false;
 		Log({ error: e, from: '2 saveChanges' }, 'error');
 	}
 }
@@ -113,16 +111,16 @@ onMount(async () => {
 		name: displayName ?? '',
 		imageSrc: imgSrc ?? ''
 	};
-	disabled = false;
-	loaded = true;
+	loading = false;
+	pageLoaded = true;
 });
 </script>
 
-{#if loaded}
+{#if pageLoaded}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
 			<IconButton
-				disabled="{disabled}"
+				disabled="{loading}"
 				href="{`/profile/${$userProfile.unique_user_name}`}"
 				class="shrink-0">
 				<CaretLeftIcon class="h-7 w-7" />
@@ -134,11 +132,11 @@ onMount(async () => {
 		<svelte:fragment slot="content">
 			<div
 				class="flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-auto p-8">
-				<ProfileImageSelector bind:src="{values.imageSrc}" />
+				<ProfileImageSelector bind:src="{values.imageSrc}" bind:error bind:loading />
 				<div class="flex w-full flex-col space-y-2">
 					<span class="text-white/60">Your name</span>
 					<Input
-						disabled="{disabled}"
+						disabled="{loading}"
 						bind:value="{values.name}"
 						type="text"
 						placeholder="Enter your name here"
@@ -147,7 +145,7 @@ onMount(async () => {
 				<div class="flex w-full flex-col space-y-2">
 					<span class="text-white/60">Username</span>
 					<Input
-						disabled="{disabled || username_set}"
+						disabled="{loading || username_set}"
 						bind:value="{values.username}"
 						type="text"
 						placeholder="Enter your username here"
@@ -166,13 +164,13 @@ onMount(async () => {
 				{/if}
 				<div class="flex w-full items-center justify-between space-x-4 pt-16">
 					<Button
-						disabled="{disabled}"
+						disabled="{loading}"
 						on:click="{resetAllFields}"
 						type="secondary"
 						class="w-full flex-1">
 						Reset
 					</Button>
-					<Button disabled="{disabled}" on:click="{saveChanges}" prefetch class="w-full flex-1">
+					<Button disabled="{loading}" on:click="{saveChanges}" prefetch class="w-full flex-1">
 						Save changes
 					</Button>
 				</div>
