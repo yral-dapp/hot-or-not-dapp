@@ -8,8 +8,10 @@ export interface PostDetailsForFrontend {
   'like_count' : bigint,
   'description' : string,
   'total_view_count' : bigint,
+  'created_by_display_name' : [] | [string],
+  'created_by_unique_user_name' : [] | [string],
   'video_url' : string,
-  'created_by_username' : [] | [string],
+  'created_by_user_principal_id' : Principal,
   'liked_by_me' : boolean,
   'created_by_profile_photo_url' : [] | [string],
 }
