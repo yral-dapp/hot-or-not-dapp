@@ -7,10 +7,17 @@ import { initializeAuthClient } from '$lib/helpers/auth';
 import { authState } from '$stores/auth';
 import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
+import { beforeNavigate } from '$app/navigation';
+import navigateBack from '$stores/navigateBack';
+
+beforeNavigate(({ from }) => {
+	$navigateBack = from?.url.pathname ?? null;
+});
 
 onMount(async () => {
 	if (browser) {
 		try {
+			$navigateBack = null;
 			window.Buffer = Buffer;
 			if (process.env.NODE_ENV != 'development') {
 				(window as any).LogRocket && (window as any).LogRocket.init('c77ths/hotornot');

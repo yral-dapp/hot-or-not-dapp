@@ -73,7 +73,6 @@ export async function initializeAuthClient(): Promise<void> {
 			idPrincipal: principal
 		});
 	}
-	console.log('test');
 	await updateUserIndexCanister();
 	await updateProfile();
 }
