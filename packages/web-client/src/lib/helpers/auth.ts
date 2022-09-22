@@ -3,6 +3,7 @@ import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
 import { authState, authHelper } from '$stores/auth';
 import { updateProfile } from './profile';
+import { loadingAuthStatus } from '$stores/loading';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
@@ -32,6 +33,7 @@ async function updateUserIndexCanister() {
 }
 
 export async function initializeAuthClient(): Promise<void> {
+	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
 	const authHelperData = get(authHelper);
 	let client: AuthClient | undefined = undefined;
@@ -75,4 +77,5 @@ export async function initializeAuthClient(): Promise<void> {
 	}
 	await updateUserIndexCanister();
 	await updateProfile();
+	loadingAuthStatus.set(false);
 }
