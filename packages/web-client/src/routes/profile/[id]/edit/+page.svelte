@@ -9,6 +9,7 @@ import { page } from '$app/stores';
 import { onMount } from 'svelte';
 import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
+import userProfile from '$stores/userProfile';
 
 export let data: PageData;
 let { username, username_set, displayName, imgSrc, userPrincipal } = data;
@@ -79,6 +80,9 @@ async function saveChanges() {
 			]);
 			username_set = true;
 			username = values.username;
+
+			$userProfile.username_set = true;
+			$userProfile.unique_user_name = values.username;
 		} catch (e) {
 			disabled = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
@@ -89,11 +93,14 @@ async function saveChanges() {
 			display_name: [values.name],
 			profile_picture_url: [values.imageSrc]
 		});
+
 		displayName = values.name;
 		imgSrc = values.imageSrc;
 		console.log('res', res);
-		// if (res) {
-		// }
+		if ('Ok' in res) {
+			$userProfile.display_name = res.Ok.display_name[0] ?? '';
+			$userProfile.profile_picture_url = res.Ok.profile_picture_url[0] ?? '';
+		}
 		disabled = false;
 	} catch (e) {
 		disabled = false;
@@ -115,7 +122,7 @@ onMount(async () => {
 {#if loaded}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
-			<IconButton disabled="{disabled}" href="{`/profile/${$page.params.id}`}" class="shrink-0">
+			<IconButton disabled="{disabled}" href="{`/profile/${username}`}" class="shrink-0">
 				<CaretLeftIcon class="h-7 w-7" />
 			</IconButton>
 		</svelte:fragment>
@@ -144,9 +151,12 @@ onMount(async () => {
 						placeholder="Enter your username here"
 						class="w-full rounded-md bg-white/10 py-4" />
 					{#if username_set}
-						<span class="text-xs opacity-50">You cannot change your username</span>
+						<span class="text-xs opacity-50">
+							You have already set your username, it cannot be changed now. You can change your
+							display name or profile picture
+						</span>
 					{:else}
-						<span class="text-xs opacity-50">You can only change your username once</span>
+						<span class="text-xs opacity-50">You can only set/change your username once</span>
 					{/if}
 				</div>
 				{#if error}
