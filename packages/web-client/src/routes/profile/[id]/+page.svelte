@@ -10,13 +10,13 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
-import { page } from '$app/stores';
 import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import { afterNavigate, goto } from '$app/navigation';
+import { goto } from '$app/navigation';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { onMount } from 'svelte';
 import type { PageData } from './$types';
+import navigateBack from '$stores/navigateBack';
 
 export let data: PageData;
 const { me, profile } = data;
@@ -70,8 +70,6 @@ let loaded = false;
 
 let posts = [1, 2, 3, 4, 5];
 
-let back: string | null = null;
-
 async function showShareDialog() {
 	try {
 		if (!navigator.canShare) {
@@ -106,14 +104,6 @@ async function loveUser() {
 	}
 }
 
-afterNavigate(({ from }) => {
-	if (from) {
-		if (from.url.pathname.includes('edit')) {
-			back = null;
-		} else back = from.url.pathname;
-	} else back = null;
-});
-
 onMount(() => {
 	loaded = true;
 	console.log({ me, $userProfile });
@@ -124,7 +114,7 @@ onMount(() => {
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
 			<IconButton
-				on:click="{() => (back ? goto(back) : history.length > 2 ? history.back() : goto('/menu'))}"
+				href="{$navigateBack && !$navigateBack.includes('edit') ? $navigateBack : '/menu'}"
 				class="shrink-0">
 				<CaretLeftIcon class="h-7 w-7" />
 			</IconButton>
