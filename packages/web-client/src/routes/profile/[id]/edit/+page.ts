@@ -24,7 +24,8 @@ export const load: PageLoad = async ({ params }) => {
 			username_set: !!profile.unique_user_name[0],
 			username: profile.unique_user_name[0],
 			displayName: profile.display_name[0],
-			imgSrc: profile.profile_picture_url[0]
+			imgSrc: profile.profile_picture_url[0],
+			userPrincipal: profile.principal_id
 		};
 	} catch (e) {
 		Log({ error: e, from: '1 fetchProfile' }, 'error');
