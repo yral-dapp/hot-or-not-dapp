@@ -1,10 +1,12 @@
 import Log from '$lib/utils/Log';
-import { AuthClient } from '@dfinity/auth-client';
+import { AuthClient, LocalStorage } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
 import { authState, authHelper } from '$stores/auth';
 import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
 import { set } from 'idb-keyval';
+import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Identity, SignIdentity } from '@dfinity/agent';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
@@ -36,6 +38,24 @@ async function updateUserIndexCanister() {
 	}
 }
 
+async function checkIdentityInLocal() {
+	try {
+		const storage = new LocalStorage('ic-');
+		const identityKey: string | null = await storage.get('identity');
+		const delegationChain: string | null = await storage.get('delegation');
+		if (identityKey && delegationChain) {
+			const chain: DelegationChain = DelegationChain.fromJSON(delegationChain);
+			const key: Ed25519KeyIdentity = Ed25519KeyIdentity.fromJSON(identityKey);
+			const identity: Identity = DelegationIdentity.fromDelegation(key, chain);
+			return identity as SignIdentity;
+		} else {
+			return undefined;
+		}
+	} catch (_) {
+		return undefined;
+	}
+}
+
 export async function initializeAuthClient(): Promise<void> {
 	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
@@ -43,6 +63,7 @@ export async function initializeAuthClient(): Promise<void> {
 	let client: AuthClient | undefined = undefined;
 	if (!authHelperData.client) {
 		client = await AuthClient.create({
+			identity: await checkIdentityInLocal(),
 			idleOptions: {
 				disableIdle: true
 			}

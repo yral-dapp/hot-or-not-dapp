@@ -13,11 +13,7 @@ import { fileToUpload } from '$stores/fileUpload';
 import { goto, prefetch } from '$app/navigation';
 import { authState } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
-import {
-	checkVideoStatus,
-	uploadVideoToStream,
-	type CheckVideoStatusResult
-} from '$lib/helpers/stream';
+import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
 import { individualUser } from '$lib/helpers/backend';
@@ -123,8 +119,11 @@ async function handleSuccessfulUpload(videoUid: string) {
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 		prefetch(`/profile/${$userProfile.unique_user_name}/posts/${postId}`); //prefetch the newly uploaded video page
-	} catch (_) {
-		Log({ error: 'Couldnt send details to backend', source: '1 handleSuccessfulUpload' }, 'error');
+	} catch (e) {
+		Log(
+			{ error: 'Couldnt send details to backend', e, source: '1 handleSuccessfulUpload' },
+			'error'
+		);
 		console.error('Couldnt send details to backend');
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
