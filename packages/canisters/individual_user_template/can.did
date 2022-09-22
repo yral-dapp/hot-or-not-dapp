@@ -36,7 +36,15 @@ type Result = variant {
   Ok : UserProfileDetailsForFrontend;
   Err : UpdateProfileDetailsError;
 };
+type Result_1 = variant { Ok; Err : UpdateProfileSetUniqueUsernameError };
 type UpdateProfileDetailsError = variant { NotAuthorized };
+type UpdateProfileSetUniqueUsernameError = variant {
+  UsernameAlreadyTaken;
+  UserIndexCrossCanisterCallFailed;
+  SendingCanisterDoesNotMatchUserCanisterId;
+  NotAuthorized;
+  UserCanisterEntryDoesNotExist;
+};
 type UserAccessRole = variant {
   CanisterController;
   ProfileOwner;
@@ -58,15 +66,14 @@ type UserProfileDetailsForFrontend = record {
   display_name : opt text;
   principal_id : principal;
 };
-type UserProfileDetailsFromFrontend = record {
-  unique_user_name : opt text;
-  profile_picture_url : opt text;
-  display_name : opt text;
-};
 type UserProfileGlobalStats = record {
   lifetime_earnings : nat64;
   hots_earned_count : nat64;
   nots_earned_count : nat64;
+};
+type UserProfileUpdateDetailsFromFrontend = record {
+  profile_picture_url : opt text;
+  display_name : opt text;
 };
 service : {
   add_post : (PostDetailsFromFrontend) -> (nat64);
@@ -80,7 +87,10 @@ service : {
   update_post_as_ready_to_view : (nat64) -> ();
   update_post_increment_share_count : (nat64) -> (nat64);
   update_post_toggle_like_status_by_caller : (nat64) -> (bool);
-  update_profile_details : (UserProfileDetailsFromFrontend) -> (Result);
+  update_profile_display_details : (UserProfileUpdateDetailsFromFrontend) -> (
+      Result,
+    );
+  update_profile_set_unique_username_once : (text) -> (Result_1);
   update_profile_toggle_follower_list_of_followee_by_calling_principal : () -> (
       bool,
     );

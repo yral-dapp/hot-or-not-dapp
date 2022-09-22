@@ -1,6 +1,11 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export type Result = { 'Ok' : null } |
+  { 'Err' : SetUniqueUsernameError };
+export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
+  { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
+  { 'UserCanisterEntryDoesNotExist' : null };
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |
@@ -22,8 +27,8 @@ export interface _SERVICE {
   >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
-    [string, string],
-    undefined,
+    [string, Principal],
+    Result,
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<

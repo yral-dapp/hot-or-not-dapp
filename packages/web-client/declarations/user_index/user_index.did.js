@@ -5,6 +5,15 @@ export const idlFactory = ({ IDL }) => {
     'CanisterAdmin' : IDL.Null,
     'ProjectCanister' : IDL.Null,
   });
+  const SetUniqueUsernameError = IDL.Variant({
+    'UsernameAlreadyTaken' : IDL.Null,
+    'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
+    'UserCanisterEntryDoesNotExist' : IDL.Null,
+  });
+  const Result = IDL.Variant({
+    'Ok' : IDL.Null,
+    'Err' : SetUniqueUsernameError,
+  });
   return IDL.Service({
     'delete_user_index_reset_user_canisters' : IDL.Func([], [], []),
     'get_index_details_is_user_name_taken' : IDL.Func(
@@ -33,8 +42,8 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
-        [IDL.Text, IDL.Text],
-        [],
+        [IDL.Text, IDL.Principal],
+        [Result],
         [],
       ),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
