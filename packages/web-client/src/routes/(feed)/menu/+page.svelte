@@ -18,6 +18,7 @@ import { page } from '$app/stores';
 import { prefetch } from '$app/navigation';
 import userProfile from '$stores/userProfile';
 import { loadingAuthStatus } from '$stores/loading';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 
 $: links = [
 	{
@@ -77,7 +78,10 @@ onMount(() => prefetchLinks());
 	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
 	<div class="flex w-full shrink-0 flex-col space-y-10">
 		{#if $loadingAuthStatus}
-			<div class="flex h-[6.5rem] items-center justify-center opacity-20">Loading</div>
+			<div class="flex h-[6.5rem] items-center justify-center space-x-2">
+				<LoadingIcon class="h-4 w-4 animate-spin" />
+				<span class="opacity-20"> Loading </span>
+			</div>
 		{:else if $authState.isLoggedIn}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
 				<img
