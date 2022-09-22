@@ -18,12 +18,14 @@ import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
+import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
 
 let error = '';
+let loading = false;
 function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
 		case 'ii':
@@ -36,6 +38,7 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
+	loading = true;
 	await $authHelper.client?.login({
 		maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
 		onSuccess: () => handleSuccessfulLogin(type),
@@ -45,13 +48,21 @@ async function handleLogin(type: LoginType) {
 }
 
 async function handleSuccessfulLogin(type: LoginType) {
-	$authState.showLogin = false;
+	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
 	$authState.isLoggedIn = true;
-	await initializeAuthClient();
+	try {
+		await initializeAuthClient();
+		loading = false;
+		$authState.showLogin = false;
+	} catch (_) {
+		loading = false;
+		error = 'Something went wrong. Please refresh the page and try login again.';
+	}
 }
 
 function handleError(type: LoginType, e?: string) {
 	error = 'Error while logging in. Please try again or use a different method';
+	loading = false;
 	console.warn('Error while logging in using,', type, ', Details: ', e);
 }
 </script>
@@ -61,21 +72,31 @@ function handleError(type: LoginType, e?: string) {
 		<span class="text-3xl font-bold">Join GoBazzinga</span>
 		<div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
 			<span>Create an account using</span>
-			<Button on:click="{() => handleLogin('ii')}" class="w-full space-x-2 py-3">
+			<Button
+				disabled="{loading}"
+				on:click="{async () => await handleLogin('ii')}"
+				class="w-full space-x-2 py-3">
 				<span> Internet Identity </span>
 				<DfinityIcon class="w-8" />
 			</Button>
 			{#if !hideNfid}
-				<Button on:click="{() => handleLogin('nfid')}" type="secondary" class="w-full py-3">
+				<Button
+					disabled="{loading}"
+					on:click="{async () => await handleLogin('nfid')}"
+					type="secondary"
+					class="w-full py-3">
 					Google via NFID
 				</Button>
 			{/if}
+
+			{#if error}
+				<div class="text-xs text-red-600">
+					{error}
+				</div>
+			{:else if loading}
+				<span class="text-xs opacity-50">Please wait ...</span>
+			{/if}
 		</div>
-		{#if error}
-			<div class="text-xs text-red-600">
-				{error}
-			</div>
-		{/if}
 	</div>
 	<div class="absolute top-4 right-4">
 		<IconButton on:click="{() => ($authState.showLogin = false)}">
