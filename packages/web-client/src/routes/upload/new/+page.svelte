@@ -10,7 +10,7 @@ import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
 import { onMount, onDestroy } from 'svelte';
 import { fileToUpload } from '$stores/fileUpload';
-import { goto, prefetch } from '$app/navigation';
+import { goto } from '$app/navigation';
 import { authState } from '$stores/auth';
 import type { UploadStatus } from '$components/upload/UploadTypes';
 import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream';
@@ -39,6 +39,7 @@ let isInputLimitReached = false;
 const MAX_HASHTAG_LENGTH = 60;
 let videoSrc = '';
 let previewMuted = true;
+let uploadedVideoId;
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
@@ -91,15 +92,18 @@ async function checkVideoProcessingStatus(uid: string) {
 		try {
 			const videoStatus = await checkVideoStatus(uid);
 			Log({ videoStatus, source: '0 checkVideoProcessingStatus' }, 'info');
-			if (videoStatus.success && videoStatus.result.readyToStream) {
+			if (!videoStatus.success) {
+				clearInterval(videoStatusInterval);
+				throw new Error(JSON.stringify(videoStatus));
+			} else if (videoStatus.result.readyToStream) {
 				handleSuccessfulUpload(uid);
 				clearInterval(videoStatusInterval);
-			} else throw new Error();
-		} catch (_) {
-			Log({ error: 'Processing error', source: '1 checkVideoProcessingStatus' }, 'error');
-			console.error('Processing error');
+			}
+		} catch (e) {
+			Log({ error: 'Processing error', e, source: '1 checkVideoProcessingStatus' }, 'error');
 			hashtagError = 'Uploading failed. Please try again';
 			uploadStatus = 'to-upload';
+			uploadStep = 'uploading';
 			uploadProgress.set(0);
 			return;
 		}
@@ -115,16 +119,15 @@ async function handleSuccessfulUpload(videoUid: string) {
 			video_uid: videoUid,
 			creator_consent_for_inclusion_in_hot_or_not: false
 		});
-		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
+		uploadedVideoId = Number(postId);
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
-		prefetch(`/profile/${$userProfile.unique_user_name}/posts/${postId}`); //prefetch the newly uploaded video page
+		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
 	} catch (e) {
 		Log(
 			{ error: 'Couldnt send details to backend', e, source: '1 handleSuccessfulUpload' },
 			'error'
 		);
-		console.error('Couldnt send details to backend');
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
 		uploadProgress.set(0);
@@ -135,7 +138,7 @@ async function handleSuccessfulUpload(videoUid: string) {
 async function showShareDialog() {
 	try {
 		if (!navigator.canShare) {
-			console.error('Browser does not support share dialog');
+			Log({ error: 'Browser does not support share dialog', source: '1 showShareDialog' }, 'error');
 			return;
 		}
 		await navigator.share({
@@ -144,8 +147,13 @@ async function showShareDialog() {
 			url: 'https://v2.gobazzinga.io/all/1'
 		});
 	} catch (err) {
-		console.error('Cannot open share dialog', err);
+		Log({ error: 'Could not open share dialog', source: '1 showShareDialog' }, 'error');
 	}
+}
+
+function getVideoLink() {
+	const username = $userProfile.username_set ? $userProfile.unique_user_name : $authState.idString;
+	return `/profile/${username}/post/${uploadedVideoId}`;
 }
 
 onMount(async () => {
@@ -279,7 +287,7 @@ onDestroy(() => {
 			{:else if uploadStatus === 'uploaded'}
 				<div class="flex items-center justify-between space-x-4">
 					<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
-					<Button href="/all" prefetch class="w-full">View Video</Button>
+					<Button href="{getVideoLink()}" prefetch class="w-full">View Video</Button>
 				</div>
 			{/if}
 		</div>
