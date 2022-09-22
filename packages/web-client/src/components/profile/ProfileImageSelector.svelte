@@ -10,7 +10,8 @@ import { authState } from '$stores/auth';
 import Cropper from 'svelte-easy-crop/src/index.svelte';
 
 export let src = '';
-export let cropSrc = '';
+export let croppedSrc = '';
+
 let latestCropDetails: {
 	x: number;
 	y: number;
@@ -32,7 +33,7 @@ function checkFileSelected(files: FileList | null) {
 		// 	loading = false;
 		// 	return;
 		// }
-		cropSrc = URL.createObjectURL(files[0]);
+		croppedSrc = URL.createObjectURL(files[0]);
 		loading = false;
 	}
 }
@@ -111,7 +112,7 @@ let loading = false;
 	bind:show="{cropPopup}">
 	<button
 		on:click="{async () => {
-			const blob = await getCroppedImg(cropSrc, latestCropDetails);
+			const blob = await getCroppedImg(croppedSrc, latestCropDetails);
 			uploadImage(blob);
 			src = URL.createObjectURL(blob);
 			cropPopup = false;
@@ -123,7 +124,7 @@ let loading = false;
 	<Cropper
 		cropShape="round"
 		on:cropcomplete="{({ detail }) => (latestCropDetails = detail.pixels)}"
-		image="{cropSrc}"
+		image="{croppedSrc}"
 		aspect="{1}"
 		crop="{{ x: 0, y: 0 }}"
 		zoom="{1}" />
