@@ -16,54 +16,17 @@ export const host =
 export type UserIndexActor = ActorSubclass<_USER_INDEX_SERVICE>;
 export type IndividualUserCanister = ActorSubclass<_INDIVIDUAL_USER_SERVICE>;
 
-const userIndexCanister: {
-	actor?: UserIndexActor;
-	loginState: boolean;
-} = {
-	loginState: false
-};
-
-const individualUserCanister: {
-	actor?: IndividualUserCanister;
-	loginState: boolean;
-} = {
-	loginState: false
-};
-
 export function userIndex(): UserIndexActor {
-	const authStateData = get(authState);
-	if (userIndexCanister.actor && userIndexCanister.loginState === authStateData.isLoggedIn) {
-		return userIndexCanister.actor;
-	} else {
-		const authHelperData = get(authHelper);
-		userIndexCanister.actor = createUserIndexActor(userIndexCanisterId, {
-			agentOptions: { identity: authHelperData?.identity, host }
-		}) as UserIndexActor;
-		userIndexCanister.loginState = authStateData.isLoggedIn;
-		return userIndexCanister.actor;
-	}
+	const authHelperData = get(authHelper);
+	return createUserIndexActor(userIndexCanisterId, {
+		agentOptions: { identity: authHelperData?.identity, host }
+	}) as UserIndexActor;
 }
 
 export function individualUser(principal?: Principal): IndividualUserCanister {
+	const authHelperData = get(authHelper);
 	const authStateData = get(authState);
-	if (
-		!principal &&
-		individualUserCanister.actor &&
-		individualUserCanister.loginState == authStateData.isLoggedIn
-	) {
-		return individualUserCanister.actor;
-	} else {
-		const authHelperData = get(authHelper);
-		if (principal) {
-			return createIndividualUserActor(principal.toText(), {
-				agentOptions: { identity: authHelperData?.identity, host }
-			}) as IndividualUserCanister;
-		} else {
-			individualUserCanister.actor = createIndividualUserActor(authStateData.userCanisterId, {
-				agentOptions: { identity: authHelperData?.identity, host }
-			}) as IndividualUserCanister;
-			individualUserCanister.loginState = authStateData.isLoggedIn;
-			return individualUserCanister.actor;
-		}
-	}
+	return createIndividualUserActor(principal ? principal.toText() : authStateData.userCanisterId, {
+		agentOptions: { identity: authHelperData?.identity, host }
+	}) as IndividualUserCanister;
 }
