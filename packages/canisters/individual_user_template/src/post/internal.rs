@@ -2,7 +2,7 @@ use crate::{
     profile::internal::UserProfileDetailsForFrontend,
     score_ranking::internal::update_post_score_index_on_post_score_recalculation,
 };
-use candid::{CandidType, Deserialize};
+use candid::{CandidType, Deserialize, Principal};
 use ic_cdk::api;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
@@ -67,7 +67,9 @@ pub struct Post {
 #[derive(Serialize, CandidType)]
 pub struct PostDetailsForFrontend {
     pub id: u64,
-    pub created_by_username: Option<String>,
+    pub created_by_display_name: Option<String>,
+    pub created_by_unique_user_name: Option<String>,
+    pub created_by_user_principal_id: Principal,
     pub created_by_profile_photo_url: Option<String>,
     pub description: String,
     pub hashtags: Vec<String>,
@@ -214,7 +216,9 @@ impl Post {
     ) -> PostDetailsForFrontend {
         PostDetailsForFrontend {
             id: self.id,
-            created_by_username: user_profile.display_name,
+            created_by_display_name: user_profile.display_name,
+            created_by_unique_user_name: user_profile.unique_user_name,
+            created_by_user_principal_id: user_profile.principal_id,
             created_by_profile_photo_url: user_profile.profile_picture_url,
             description: self.description.clone(),
             hashtags: self.hashtags.clone(),
