@@ -1,34 +1,11 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte';
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
-import PencilIcon from '$components/icons/PencilIcon.svelte';
-import ProfileLayout from '$components/layout/ProfileLayout.svelte';
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
-import ProfileTabs from '$components/tabs/ProfileTabs.svelte';
-import ProfilePost from '$components/profile/ProfilePost.svelte';
-import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
-import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
-import Button from '$components/button/Button.svelte';
-import ReportIcon from '$components/icons/ReportIcon.svelte';
-import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
-import userProfile, { type UserProfile } from '$stores/userProfile';
-import { Principal } from '@dfinity/principal';
-import { onMount } from 'svelte';
-import type { PageData } from './$types';
-import navigateBack from '$stores/navigateBack';
-import { page } from '$app/stores';
-import { sanitizeProfile } from '$lib/helpers/profile';
-import Log from '$lib/utils/Log';
-
-export let data: PageData;
-const { me, fetchedProfile } = data;
-let profile: UserProfile;
-
 const dummyPost =
 	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
 
 const dummySpeculation =
 	'https://images.pexels.com/photos/13151933/pexels-photo-13151933.jpeg?auto=compress&cs=tinysrgb&h=400';
+
+const posts = [1, 2, 3, 4, 5];
 
 const speculations = [
 	{
@@ -69,9 +46,35 @@ const speculations = [
 	}
 ];
 
-let loaded = false;
+import IconButton from '$components/button/IconButton.svelte';
+import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import PencilIcon from '$components/icons/PencilIcon.svelte';
+import ProfileLayout from '$components/layout/ProfileLayout.svelte';
+import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
+import ProfileTabs from '$components/tabs/ProfileTabs.svelte';
+import ProfilePost from '$components/profile/ProfilePost.svelte';
+import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
+import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
+import Button from '$components/button/Button.svelte';
+import ReportIcon from '$components/icons/ReportIcon.svelte';
+import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
+import userProfile, { type UserProfile } from '$stores/userProfile';
+import { Principal } from '@dfinity/principal';
+import { onMount } from 'svelte';
+import type { PageData } from './$types';
+import navigateBack from '$stores/navigateBack';
+import { page } from '$app/stores';
+import { sanitizeProfile } from '$lib/helpers/profile';
+import Log from '$lib/utils/Log';
+import { authHelper, authState } from '$stores/auth';
+import { getCanisterId } from '$lib/helpers/idb';
 
-let posts = [1, 2, 3, 4, 5];
+export let data: PageData;
+const { me, fetchedProfile } = data;
+
+let profile: UserProfile;
+let pageLoaded = false;
+let loading = false;
 
 async function showShareDialog() {
 	try {
@@ -92,18 +95,26 @@ async function showShareDialog() {
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
 async function loveUser() {
+	loading = true;
 	const individualUser = (await import('$lib/helpers/backend')).individualUser;
 	const userPrincipal = Principal.from(profile.principal_id);
-	const res = await Promise.all([
-		individualUser().update_profile_toggle_following_list_of_follower_by_user_to_follow(
-			userPrincipal
-		),
-		individualUser(
-			userPrincipal
-		).update_profile_toggle_follower_list_of_followee_by_calling_principal()
-	]);
-	if (res) {
-	} else {
+	const canId = await getCanisterId($page.params.id);
+	try {
+		const res = await Promise.all([
+			individualUser().update_profile_toggle_following_list_of_follower_by_user_to_follow(
+				userPrincipal
+			),
+			individualUser(
+				Principal.from(canId)
+			).update_profile_toggle_follower_list_of_followee_by_calling_principal()
+		]);
+		if ($authHelper.idPrincipal && res[0]) {
+			profile.followers.push($authHelper.idPrincipal);
+			profile = profile;
+		}
+		loading = false;
+	} catch (e) {
+		loading = false;
 	}
 }
 
@@ -113,12 +124,12 @@ onMount(() => {
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
 	}
-	loaded = true;
-	Log({ from: 'load menu[id]', me, profile }, 'info');
+	pageLoaded = true;
+	Log({ from: '0 menuMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>
 
-{#if loaded}
+{#if pageLoaded}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
 			<IconButton
@@ -187,7 +198,13 @@ onMount(() => {
 				</div>
 				{#if !me}
 					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-						<Button on:click="{loveUser}" class="mx-auto w-[10rem]">Love</Button>
+						<Button on:click="{loveUser}" class="mx-auto w-[10rem]">
+							{#if profile.followers.filter((o) => o.toText() === $authState.idString)}
+								Loving
+							{:else}
+								Love
+							{/if}
+						</Button>
 						<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
 					</div>
 				{/if}
@@ -207,9 +224,9 @@ onMount(() => {
 								<NoPostsIcon class="w-52" />
 								<div class="text-center text-lg font-bold">
 									{#if me}
-										You have not uploaded any videos yet
+										You have not uppageLoaded any videos yet
 									{:else}
-										This user has not uploaded any videos yet
+										This user has not uppageLoaded any videos yet
 									{/if}
 								</div>
 								{#if me}
