@@ -4,6 +4,7 @@ import { get } from 'svelte/store';
 import { authState, authHelper } from '$stores/auth';
 import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
+import { set } from 'idb-keyval';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
@@ -27,6 +28,9 @@ async function updateUserIndexCanister() {
 			...authStateData,
 			userCanisterId: userCanisterPrincipal?.toText()
 		});
+		if (authStateData.isLoggedIn && authStateData.idString && userCanisterPrincipal) {
+			set(authStateData.idString, userCanisterPrincipal.toText());
+		}
 	} catch (e) {
 		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
 	}
