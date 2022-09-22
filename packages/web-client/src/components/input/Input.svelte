@@ -29,5 +29,4 @@ onMount(() => {
 	on:change
 	on:focus
 	on:blur
-	class="grow border-none py-3 px-4 focus:ring-transparent {exportClass}"
-/>
+	class="grow border-none py-3 px-4 focus:ring-transparent disabled:opacity-50 {exportClass}" />

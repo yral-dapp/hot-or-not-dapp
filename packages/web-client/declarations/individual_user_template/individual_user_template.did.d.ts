@@ -35,7 +35,16 @@ export type PostViewDetailsFromFrontend = {
   { 'WatchedPartially' : { 'percentage_watched' : number } };
 export type Result = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
+export type Result_1 = { 'Ok' : null } |
+  { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
+export type UpdateProfileSetUniqueUsernameError = {
+    'UsernameAlreadyTaken' : null
+  } |
+  { 'UserIndexCrossCanisterCallFailed' : null } |
+  { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
+  { 'NotAuthorized' : null } |
+  { 'UserCanisterEntryDoesNotExist' : null };
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |
@@ -55,15 +64,14 @@ export interface UserProfileDetailsForFrontend {
   'display_name' : [] | [string],
   'principal_id' : Principal,
 }
-export interface UserProfileDetailsFromFrontend {
-  'unique_user_name' : [] | [string],
-  'profile_picture_url' : [] | [string],
-  'display_name' : [] | [string],
-}
 export interface UserProfileGlobalStats {
   'lifetime_earnings' : bigint,
   'hots_earned_count' : bigint,
   'nots_earned_count' : bigint,
+}
+export interface UserProfileUpdateDetailsFromFrontend {
+  'profile_picture_url' : [] | [string],
+  'display_name' : [] | [string],
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
@@ -84,10 +92,11 @@ export interface _SERVICE {
   'update_post_as_ready_to_view' : ActorMethod<[bigint], undefined>,
   'update_post_increment_share_count' : ActorMethod<[bigint], bigint>,
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
-  'update_profile_details' : ActorMethod<
-    [UserProfileDetailsFromFrontend],
+  'update_profile_display_details' : ActorMethod<
+    [UserProfileUpdateDetailsFromFrontend],
     Result,
   >,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_1>,
   'update_profile_toggle_follower_list_of_followee_by_calling_principal' : ActorMethod<
     [],
     boolean,

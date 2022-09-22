@@ -53,8 +53,7 @@ export const idlFactory = ({ IDL }) => {
     }),
     'WatchedPartially' : IDL.Record({ 'percentage_watched' : IDL.Nat8 }),
   });
-  const UserProfileDetailsFromFrontend = IDL.Record({
-    'unique_user_name' : IDL.Opt(IDL.Text),
+  const UserProfileUpdateDetailsFromFrontend = IDL.Record({
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
   });
@@ -68,6 +67,17 @@ export const idlFactory = ({ IDL }) => {
   const Result = IDL.Variant({
     'Ok' : UserProfileDetailsForFrontend,
     'Err' : UpdateProfileDetailsError,
+  });
+  const UpdateProfileSetUniqueUsernameError = IDL.Variant({
+    'UsernameAlreadyTaken' : IDL.Null,
+    'UserIndexCrossCanisterCallFailed' : IDL.Null,
+    'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
+    'NotAuthorized' : IDL.Null,
+    'UserCanisterEntryDoesNotExist' : IDL.Null,
+  });
+  const Result_1 = IDL.Variant({
+    'Ok' : IDL.Null,
+    'Err' : UpdateProfileSetUniqueUsernameError,
   });
   return IDL.Service({
     'add_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
@@ -103,9 +113,14 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Bool],
         [],
       ),
-    'update_profile_details' : IDL.Func(
-        [UserProfileDetailsFromFrontend],
+    'update_profile_display_details' : IDL.Func(
+        [UserProfileUpdateDetailsFromFrontend],
         [Result],
+        [],
+      ),
+    'update_profile_set_unique_username_once' : IDL.Func(
+        [IDL.Text],
+        [Result_1],
         [],
       ),
     'update_profile_toggle_follower_list_of_followee_by_calling_principal' : IDL.Func(
