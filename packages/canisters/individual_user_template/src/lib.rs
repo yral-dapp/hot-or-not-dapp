@@ -7,8 +7,11 @@ use ic_stable_memory::{
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
     utils::ic_types::SPrincipal,
 };
-use post::internal::{
-    Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
+use post::{
+    internal::{
+        Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
+    },
+    GetPostsOfUserProfileError,
 };
 use profile::{
     internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},

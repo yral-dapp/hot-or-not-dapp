@@ -17,8 +17,8 @@ dfx build individual_user_template
 dfx build user_index
 dfx build post_cache
 
-dfx canister install user_index
-dfx canister install post_cache
+dfx canister install --mode=upgrade user_index
+dfx canister install --mode=upgrade post_cache
 
 dfx generate individual_user_template
 dfx generate user_index
