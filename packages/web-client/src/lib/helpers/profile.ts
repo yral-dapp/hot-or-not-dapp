@@ -1,4 +1,7 @@
-import type { UserProfile as ServerUserProfile } from '$canisters/individual_user_template/individual_user_template.did';
+import type {
+	GetPostsOfUserProfileError,
+	UserProfile as ServerUserProfile
+} from '$canisters/individual_user_template/individual_user_template.did';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -56,10 +59,28 @@ export async function fetchPosts(id: string, skipCount: number = 0) {
 	try {
 		const canId = await getCanisterId(id);
 		const { individualUser } = await import('./backend');
-		return await individualUser(canId).get_posts_of_this_user_profile_with_pagination(
+		const res = await individualUser(canId).get_posts_of_this_user_profile_with_pagination(
 			BigInt(skipCount),
 			BigInt(10)
 		);
+		if ('Ok' in res) {
+			return res.Ok;
+		} else if ('Err' in res) {
+			type UnionKeyOf<U> = U extends U ? keyof U : never;
+			type errors = UnionKeyOf<GetPostsOfUserProfileError>;
+			const err = Object.keys(res.Err)[0] as errors;
+			switch (err) {
+				case 'ExceededMaxNumberOfPostsAllowedInOneRequest':
+					//TODO
+					break;
+				case 'InvalidBoundsPassed':
+					//TODO
+					break;
+				case 'LowerBoundExceedsTotalPosts':
+					//TODO
+					break;
+			}
+		}
 	} catch (e) {
 		Log({ error: e, from: '1 fetchPosts' }, 'error');
 	}
