@@ -60,15 +60,20 @@ export async function updateProfile(profile?: ServerUserProfile) {
 	}
 }
 
-export async function fetchPosts(id: string, skipCount: number = 0) {
+export async function fetchPosts(id: string, from: number) {
 	try {
 		const canId = await getCanisterId(id);
 		const { individualUser } = await import('./backend');
 		const res = await individualUser(
 			Principal.from(canId)
-		).get_posts_of_this_user_profile_with_pagination(BigInt(skipCount), BigInt(10));
+		).get_posts_of_this_user_profile_with_pagination(BigInt(from), BigInt(from + 10));
 		if ('Ok' in res) {
-			return { error: false, posts: res.Ok };
+			return {
+				error: false,
+				posts: res.Ok,
+				noMorePosts: res.Ok.length < 10,
+				to: from + res.Ok.length
+			};
 		} else if ('Err' in res) {
 			type UnionKeyOf<U> = U extends U ? keyof U : never;
 			type errors = UnionKeyOf<GetPostsOfUserProfileError>;
