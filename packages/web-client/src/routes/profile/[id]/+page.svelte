@@ -68,7 +68,6 @@ import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
-import { error } from '@sveltejs/kit';
 
 export let data: PageData;
 const { me, fetchedProfile } = data;
@@ -78,9 +77,11 @@ let load = {
 	posts: true,
 	follow: false
 };
+
 let profile: UserProfile;
 let fetchedPosts: PostDetailsForFrontend[] = [];
 let errorWhileFetching = false;
+let noMorePosts = false;
 
 async function showShareDialog() {
 	try {
@@ -120,18 +121,22 @@ async function loveUser() {
 }
 
 async function loadPosts() {
-	load.posts = true;
-	errorWhileFetching = false;
-	const res = await fetchPosts($page.params.id);
-	if (res.error) {
-		errorWhileFetching = true;
-		// clear observer
-	} else {
-		fetchedPosts.push(...res.posts);
-		fetchedPosts = fetchedPosts;
-		console.log({ fetchedPosts });
+	if (!noMorePosts) {
+		load.posts = true;
+		errorWhileFetching = false;
+		const res = await fetchPosts($page.params.id);
+		if (res.noMorePosts) {
+			noMorePosts = true;
+		} else if (res.error) {
+			errorWhileFetching = true;
+			// clear observer
+		} else {
+			fetchedPosts.push(...res.posts);
+			fetchedPosts = fetchedPosts;
+			console.log({ fetchedPosts });
+		}
+		load.posts = false;
 	}
-	load.posts = false;
 }
 
 onMount(() => {
