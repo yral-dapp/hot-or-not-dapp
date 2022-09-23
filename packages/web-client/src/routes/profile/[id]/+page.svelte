@@ -65,19 +65,22 @@ import { page } from '$app/stores';
 import { fetchPosts, sanitizeProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
-import { getCanisterId } from '$lib/helpers/idb';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
+import { error } from '@sveltejs/kit';
 
 export let data: PageData;
 const { me, fetchedProfile } = data;
 
+let load = {
+	page: true,
+	posts: true,
+	follow: false
+};
 let profile: UserProfile;
-let pageLoaded = false;
-let loading = false;
-let loadingPosts = true;
 let fetchedPosts: PostDetailsForFrontend[] = [];
+let errorWhileFetching = false;
 
 async function showShareDialog() {
 	try {
@@ -98,7 +101,7 @@ async function showShareDialog() {
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
 async function loveUser() {
-	loading = true;
+	load.follow = true;
 	const individualUser = (await import('$lib/helpers/backend')).individualUser;
 	const userPrincipal = Principal.from(profile.principal_id);
 	try {
@@ -110,17 +113,25 @@ async function loveUser() {
 			profile.followers.push($authHelper.idPrincipal);
 			profile = profile;
 		}
-		loading = false;
+		load.follow = false;
 	} catch (e) {
-		loading = false;
+		load.follow = false;
 	}
 }
 
 async function loadPosts() {
-	loadingPosts = true;
-	fetchedPosts = (await fetchPosts($page.params.id)) ?? [];
-	loadingPosts = false;
-	console.log({ fetchedPosts });
+	load.posts = true;
+	errorWhileFetching = false;
+	const res = await fetchPosts($page.params.id);
+	if (res.error) {
+		errorWhileFetching = true;
+		// clear observer
+	} else {
+		fetchedPosts.push(...res.posts);
+		fetchedPosts = fetchedPosts;
+		console.log({ fetchedPosts });
+	}
+	load.posts = false;
 }
 
 onMount(() => {
@@ -130,12 +141,12 @@ onMount(() => {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
 	}
 	loadPosts();
-	pageLoaded = true;
+	load.page = false;
 	Log({ from: '0 menuMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>
 
-{#if pageLoaded}
+{#if !load.page}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
 			<IconButton
@@ -209,7 +220,7 @@ onMount(() => {
 				</div>
 				{#if !me}
 					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-						<Button disabled="{loading}" on:click="{loveUser}" class="mx-auto w-[10rem]">
+						<Button disabled="{load.follow}" on:click="{loveUser}" class="mx-auto w-[10rem]">
 							{#if profile.followers.filter((o) => o.toText() === $authState.idString)}
 								Loving
 							{:else}
@@ -233,7 +244,7 @@ onMount(() => {
 										imageBg="{getThumbnailUrl(post.video_uid)}" />
 								{/each}
 							</div>
-						{:else if !loadingPosts}
+						{:else if !load.posts && !errorWhileFetching}
 							<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 								<NoPostsIcon class="w-52" />
 								<div class="text-center text-lg font-bold">
@@ -248,7 +259,17 @@ onMount(() => {
 								{/if}
 							</div>
 						{/if}
-						{#if loadingPosts}
+						{#if errorWhileFetching}
+							<div class="flex w-full flex-col items-center justify-center space-y-2 py-8 ">
+								<div class="flex items-center space-x-2 text-sm text-red-500">
+									<ReportIcon class="h-4 w-4" />
+									<span>Error while fetching posts</span>
+								</div>
+								<Button on:click="{loadPosts}" type="secondary" class="py-2 px-6 text-xs">
+									Try again
+								</Button>
+							</div>
+						{:else if load.posts}
 							<div class="flex w-full items-center justify-center space-x-2 py-8">
 								<LoadingIcon class="h-4 w-4 animate-spin" />
 								<span>Fetching posts</span>
