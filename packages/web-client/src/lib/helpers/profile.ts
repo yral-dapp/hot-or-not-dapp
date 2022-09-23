@@ -27,7 +27,7 @@ export function sanitizeProfile(profile: ServerUserProfile, userId: string): Use
 		unique_user_name: profile.unique_user_name[0] || generateRandomName('username', userId),
 		profile_picture_url: profile.profile_picture_url[0] || getDefaultImageUrl(userId),
 		display_name: profile.display_name[0] || generateRandomName('name', userId),
-		principal_id: profile.principal_id,
+		principal_id: profile.principal_id.toText(),
 		followers: [],
 		following: [],
 		profile_stats: {
@@ -60,15 +60,19 @@ export async function updateProfile(profile?: ServerUserProfile) {
 	}
 }
 
-export async function fetchPosts(id: string, skipCount: number = 0) {
+export async function fetchPosts(id: string, from: number) {
 	try {
 		const canId = await getCanisterId(id);
 		const { individualUser } = await import('./backend');
 		const res = await individualUser(
 			Principal.from(canId)
-		).get_posts_of_this_user_profile_with_pagination(BigInt(skipCount), BigInt(10));
+		).get_posts_of_this_user_profile_with_pagination(BigInt(from), BigInt(from + 10));
 		if ('Ok' in res) {
-			return { error: false, posts: res.Ok };
+			return {
+				error: false,
+				posts: res.Ok,
+				noMorePosts: res.Ok.length < 10
+			};
 		} else if ('Err' in res) {
 			type UnionKeyOf<U> = U extends U ? keyof U : never;
 			type errors = UnionKeyOf<GetPostsOfUserProfileError>;

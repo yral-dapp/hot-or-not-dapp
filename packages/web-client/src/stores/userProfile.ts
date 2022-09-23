@@ -6,7 +6,7 @@ export type UserProfile = {
 	unique_user_name: string;
 	profile_picture_url: string;
 	display_name: string;
-	principal_id?: Principal;
+	principal_id?: string;
 	followers: Principal[];
 	following: Principal[];
 	profile_stats: {
