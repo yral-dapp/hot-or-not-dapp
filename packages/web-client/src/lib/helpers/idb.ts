@@ -21,13 +21,15 @@ export async function getCanisterId(id: string) {
 				const res = await userIndex().get_user_canister_id_from_user_principal_id(
 					Principal.from(id)
 				);
-				console.log('res1', res);
-				set(id, res.toString());
+				if (res[0]) {
+					set(id, res[0].toString());
+				}
 				return res.toString();
 			} else {
 				const res = await userIndex().get_user_canister_id_from_unique_user_name(id);
-				console.log('res2', res);
-				set(id, res.toString());
+				if (res[0]) {
+					set(id, res[0].toString());
+				}
 				return res.toString();
 			}
 		} catch (e) {
