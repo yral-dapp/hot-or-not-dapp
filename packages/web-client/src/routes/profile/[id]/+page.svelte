@@ -126,8 +126,10 @@ async function loadPosts() {
 		load.posts = true;
 		errorWhileFetching = false;
 		const res = await fetchPosts($page.params.id, fetchedPostsCount);
+		console.log('res', res);
 		if (res.noMorePosts) {
 			noMorePosts = true;
+			//// clear observer
 		} else if (res.error) {
 			errorWhileFetching = true;
 			// clear observer
@@ -136,6 +138,11 @@ async function loadPosts() {
 			fetchedPosts = fetchedPosts;
 			console.log({ fetchedPosts });
 		}
+
+		if (!res.error && !res.noMorePosts) {
+			// intersection
+		}
+
 		fetchedPostsCount = fetchedPosts.length;
 		load.posts = false;
 	}
