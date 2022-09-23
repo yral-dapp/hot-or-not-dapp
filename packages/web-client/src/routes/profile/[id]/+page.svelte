@@ -82,6 +82,7 @@ let profile: UserProfile;
 let fetchedPosts: PostDetailsForFrontend[] = [];
 let errorWhileFetching = false;
 let noMorePosts = false;
+let fetchedPostsCount = 0;
 
 async function showShareDialog() {
 	try {
@@ -124,7 +125,7 @@ async function loadPosts() {
 	if (!noMorePosts) {
 		load.posts = true;
 		errorWhileFetching = false;
-		const res = await fetchPosts($page.params.id);
+		const res = await fetchPosts($page.params.id, fetchedPostsCount);
 		if (res.noMorePosts) {
 			noMorePosts = true;
 		} else if (res.error) {
@@ -135,6 +136,7 @@ async function loadPosts() {
 			fetchedPosts = fetchedPosts;
 			console.log({ fetchedPosts });
 		}
+		fetchedPostsCount = fetchedPosts.length;
 		load.posts = false;
 	}
 }
