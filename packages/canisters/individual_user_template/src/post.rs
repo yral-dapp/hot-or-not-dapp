@@ -119,7 +119,7 @@ fn get_posts_of_this_user_profile_with_pagination(
         to_exclusive_id = all_posts.len();
     }
 
-    if from_inclusive_id >= to_exclusive_id {
+    if from_inclusive_id > to_exclusive_id {
         return Err(GetPostsOfUserProfileError::InvalidBoundsPassed);
     }
 

@@ -59,13 +59,16 @@ $: links = [
 
 let showLogoutPopup = false;
 
+$: userId = $userProfile.username_set
+	? $userProfile.unique_user_name || $authState.idString
+	: $authState.idString;
+
 function prefetchLinks() {
 	links.forEach((link) => {
 		link.href && prefetch(link.href);
 	});
 	if ($authState.isLoggedIn) {
-		const id = $userProfile.unique_user_name || $authState.idString;
-		prefetch(`/profile/${id}`);
+		prefetch(`/profile/${userId}`);
 	}
 }
 
@@ -92,10 +95,7 @@ onMount(() => prefetchLinks());
 					<div class="text-xl">
 						{$userProfile.display_name}
 					</div>
-					<a
-						href="/profile/{$userProfile.unique_user_name}"
-						data-sveltekit-prefetch
-						class=" text-primary">View Profile</a>
+					<a href="/profile/{userId}" data-sveltekit-prefetch class=" text-primary">View Profile</a>
 				</div>
 			</div>
 		{:else}
