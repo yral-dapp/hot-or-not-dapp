@@ -16,7 +16,10 @@ export const load: PageLoad = async ({ params }) => {
 	const { individualUser } = await import('$lib/helpers/backend');
 	try {
 		const profile = await individualUser().get_profile_details();
-		if (!!profile.unique_user_name[0] && profile.unique_user_name[0] !== id) {
+		if (
+			!!profile.unique_user_name[0] &&
+			(profile.unique_user_name[0] !== id || profile.principal_id.toText() !== id)
+		) {
 			throw redirect(307, `/profile/${params.id}`);
 		}
 		updateProfile(profile);
