@@ -18,7 +18,8 @@ export const load: PageLoad = async ({ params }) => {
 		throw redirect(307, '/404');
 	}
 	const userProfileData = get(userProfile);
-	if (id === userProfileData.unique_user_name) {
+
+	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
 		return { me: true, profile: userProfileData };
 	} else {
 		const canId = await getCanisterId(id);

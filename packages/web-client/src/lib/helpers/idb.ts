@@ -2,8 +2,9 @@ import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 import { get, set } from 'idb-keyval';
 
-async function isPrincipal(p: string) {
+export async function isPrincipal(p?: any) {
 	try {
+		if (!p) return false;
 		const r = Principal.from(p);
 		return r._isPrincipal ? true : false;
 	} catch (_) {

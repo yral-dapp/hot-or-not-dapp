@@ -121,7 +121,9 @@ onMount(async () => {
 		<svelte:fragment slot="top-left">
 			<IconButton
 				disabled="{loading}"
-				href="{`/profile/${$userProfile.unique_user_name}`}"
+				href="{`/profile/${
+					username_set ? $userProfile.unique_user_name : $userProfile.principal_id
+				}`}"
 				class="shrink-0">
 				<CaretLeftIcon class="h-7 w-7" />
 			</IconButton>

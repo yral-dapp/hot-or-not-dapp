@@ -27,7 +27,7 @@ export function sanitizeProfile(profile: ServerUserProfile, userId: string): Use
 		unique_user_name: profile.unique_user_name[0] || generateRandomName('username', userId),
 		profile_picture_url: profile.profile_picture_url[0] || getDefaultImageUrl(userId),
 		display_name: profile.display_name[0] || generateRandomName('name', userId),
-		principal_id: profile.principal_id,
+		principal_id: profile.principal_id.toText(),
 		followers: [],
 		following: [],
 		profile_stats: {
