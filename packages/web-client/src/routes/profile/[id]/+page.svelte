@@ -5,8 +5,6 @@ const dummyPost =
 const dummySpeculation =
 	'https://images.pexels.com/photos/13151933/pexels-photo-13151933.jpeg?auto=compress&cs=tinysrgb&h=400';
 
-const posts = [1, 2, 3, 4, 5];
-
 const speculations = [
 	{
 		id: '1',
@@ -64,10 +62,13 @@ import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import { sanitizeProfile } from '$lib/helpers/profile';
+import { fetchPosts, sanitizeProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import { getCanisterId } from '$lib/helpers/idb';
+import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import { getThumbnailUrl } from '$lib/utils/cloudflare';
 
 export let data: PageData;
 const { me, fetchedProfile } = data;
@@ -75,6 +76,8 @@ const { me, fetchedProfile } = data;
 let profile: UserProfile;
 let pageLoaded = false;
 let loading = false;
+let loadingPosts = true;
+let fetchedPosts: PostDetailsForFrontend[] = [];
 
 async function showShareDialog() {
 	try {
@@ -118,12 +121,20 @@ async function loveUser() {
 	}
 }
 
+async function loadPosts() {
+	loadingPosts = true;
+	fetchedPosts = (await fetchPosts($page.params.id)) ?? [];
+	loadingPosts = false;
+	console.log({ fetchedPosts });
+}
+
 onMount(() => {
 	if (me) {
 		profile = $userProfile;
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
 	}
+	loadPosts();
 	pageLoaded = true;
 	Log({ from: '0 menuMount', id: $page.params.id, me, profile }, 'info');
 });
@@ -177,22 +188,27 @@ onMount(() => {
 					<a
 						href="{`/profile/${profile.unique_user_name}/lovers`}"
 						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-						<span class="whitespace-nowrap text-xl font-bold">{profile.followers.length}</span>
+						<span class="whitespace-nowrap text-xl font-bold">
+							{profile.followers.length}
+						</span>
 						<span class="text-sm">Lovers</span>
 					</a>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-						<span class="whitespace-nowrap text-xl font-bold"
-							>{profile.profile_stats.lifetime_earnings}</span>
+						<span class="whitespace-nowrap text-xl font-bold">
+							{profile.profile_stats.lifetime_earnings}
+						</span>
 						<span class="text-sm">Earnings</span>
 					</div>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-						<span class="whitespace-nowrap text-xl font-bold"
-							>{profile.profile_stats.hots_earned_count}</span>
+						<span class="whitespace-nowrap text-xl font-bold">
+							{profile.profile_stats.hots_earned_count}
+						</span>
 						<span class="text-sm">Hots</span>
 					</div>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-						<span class="whitespace-nowrap text-xl font-bold"
-							>{profile.profile_stats.nots_earned_count}</span>
+						<span class="whitespace-nowrap text-xl font-bold">
+							{profile.profile_stats.nots_earned_count}
+						</span>
 						<span class="text-sm">Nots</span>
 					</div>
 				</div>
@@ -213,25 +229,34 @@ onMount(() => {
 				</div>
 				<div class="flex h-full flex-col px-6 py-6">
 					{#if selectedTab === 'posts'}
-						{#if posts.length}
+						{#if fetchedPosts.length}
 							<div class="grid grid-cols-3 gap-3">
-								{#each posts as post}
-									<ProfilePost id="{`${post}`}" likes="{500}" imageBg="{dummyPost}" />
+								{#each fetchedPosts as post}
+									<ProfilePost
+										id="{Number(post.id)}"
+										likes="{Number(post.like_count)}"
+										imageBg="{getThumbnailUrl(post.video_uid)}" />
 								{/each}
 							</div>
-						{:else}
+						{:else if !loadingPosts}
 							<div class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 								<NoPostsIcon class="w-52" />
 								<div class="text-center text-lg font-bold">
 									{#if me}
-										You have not uppageLoaded any videos yet
+										You have not uploaded any videos yet
 									{:else}
-										This user has not uppageLoaded any videos yet
+										This user has not uploaded any videos yet
 									{/if}
 								</div>
 								{#if me}
 									<Button href="/upload" prefetch class="w-full">Upload your first video</Button>
 								{/if}
+							</div>
+						{/if}
+						{#if loadingPosts}
+							<div class="flex w-full items-center justify-center space-x-2 py-8">
+								<LoadingIcon class="h-4 w-4 animate-spin" />
+								<span>Fetching posts</span>
 							</div>
 						{/if}
 					{:else if speculations.length}
