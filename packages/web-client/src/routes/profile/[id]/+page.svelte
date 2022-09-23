@@ -98,16 +98,11 @@ async function loveUser() {
 	loading = true;
 	const individualUser = (await import('$lib/helpers/backend')).individualUser;
 	const userPrincipal = Principal.from(profile.principal_id);
-	const canId = await getCanisterId($page.params.id);
 	try {
-		const res = await Promise.all([
-			individualUser().update_profile_toggle_following_list_of_follower_by_user_to_follow(
+		const res =
+			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
 				userPrincipal
-			),
-			individualUser(
-				Principal.from(canId)
-			).update_profile_toggle_follower_list_of_followee_by_calling_principal()
-		]);
+			);
 		if ($authHelper.idPrincipal && res[0]) {
 			profile.followers.push($authHelper.idPrincipal);
 			profile = profile;
