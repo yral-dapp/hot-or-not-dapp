@@ -71,8 +71,7 @@ export async function fetchPosts(id: string, from: number) {
 			return {
 				error: false,
 				posts: res.Ok,
-				noMorePosts: res.Ok.length < 10,
-				to: from + res.Ok.length
+				noMorePosts: res.Ok.length < 10
 			};
 		} else if ('Err' in res) {
 			type UnionKeyOf<U> = U extends U ? keyof U : never;
