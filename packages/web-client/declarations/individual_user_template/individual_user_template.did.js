@@ -28,6 +28,15 @@ export const idlFactory = ({ IDL }) => {
     'liked_by_me' : IDL.Bool,
     'created_by_profile_photo_url' : IDL.Opt(IDL.Text),
   });
+  const GetPostsOfUserProfileError = IDL.Variant({
+    'LowerBoundExceedsTotalPosts' : IDL.Null,
+    'ExceededMaxNumberOfPostsAllowedInOneRequest' : IDL.Null,
+    'InvalidBoundsPassed' : IDL.Null,
+  });
+  const Result = IDL.Variant({
+    'Ok' : IDL.Vec(PostDetailsForFrontend),
+    'Err' : GetPostsOfUserProfileError,
+  });
   const UserProfileGlobalStats = IDL.Record({
     'lifetime_earnings' : IDL.Nat64,
     'hots_earned_count' : IDL.Nat64,
@@ -63,7 +72,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserITriedToFollowHasTheirFollowersListFull' : IDL.Null,
   });
-  const Result = IDL.Variant({
+  const Result_1 = IDL.Variant({
     'Ok' : IDL.Bool,
     'Err' : FollowAnotherUserProfileError,
   });
@@ -73,7 +82,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserTryingToFollowMeDoesNotExist' : IDL.Null,
   });
-  const Result_1 = IDL.Variant({
+  const Result_2 = IDL.Variant({
     'Ok' : IDL.Bool,
     'Err' : AnotherUserFollowedMeError,
   });
@@ -88,7 +97,7 @@ export const idlFactory = ({ IDL }) => {
     'principal_id' : IDL.Principal,
   });
   const UpdateProfileDetailsError = IDL.Variant({ 'NotAuthorized' : IDL.Null });
-  const Result_2 = IDL.Variant({
+  const Result_3 = IDL.Variant({
     'Ok' : UserProfileDetailsForFrontend,
     'Err' : UpdateProfileDetailsError,
   });
@@ -99,7 +108,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_3 = IDL.Variant({
+  const Result_4 = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : UpdateProfileSetUniqueUsernameError,
   });
@@ -112,7 +121,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
-        [IDL.Vec(PostDetailsForFrontend)],
+        [Result],
         ['query'],
       ),
     'get_profile_details' : IDL.Func([], [UserProfile], ['query']),
@@ -139,22 +148,22 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_principals_i_follow_toggle_list_with_principal_specified' : IDL.Func(
         [IDL.Principal],
-        [Result],
+        [Result_1],
         [],
       ),
     'update_principals_that_follow_me_toggle_list_with_specified_principal' : IDL.Func(
         [IDL.Principal],
-        [Result_1],
+        [Result_2],
         [],
       ),
     'update_profile_display_details' : IDL.Func(
         [UserProfileUpdateDetailsFromFrontend],
-        [Result_2],
+        [Result_3],
         [],
       ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
-        [Result_3],
+        [Result_4],
         [],
       ),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),

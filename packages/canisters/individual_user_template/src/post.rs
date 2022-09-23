@@ -1,4 +1,5 @@
 use crate::{AccessControlMap, AllCreatedPosts, Profile};
+use candid::CandidType;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use internal::{
     Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostStatus, PostViewDetailsFromFrontend,
@@ -99,30 +100,40 @@ fn update_post_toggle_like_status_by_caller(id: u64) -> bool {
     updated_like_status
 }
 
+#[derive(CandidType)]
+pub enum GetPostsOfUserProfileError {
+    InvalidBoundsPassed,
+    LowerBoundExceedsTotalPosts,
+    ExceededMaxNumberOfPostsAllowedInOneRequest,
+}
+
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
 fn get_posts_of_this_user_profile_with_pagination(
     from_inclusive_id: u64,
     mut to_exclusive_id: u64,
-) -> Vec<PostDetailsForFrontend> {
+) -> Result<Vec<PostDetailsForFrontend>, GetPostsOfUserProfileError> {
     let all_posts = s!(AllCreatedPosts);
 
     if to_exclusive_id > (all_posts.len()) {
         to_exclusive_id = all_posts.len();
     }
 
-    assert!(
-        from_inclusive_id < all_posts.len(),
-        "From value cannot be greater than total number of posts"
-    );
-    assert!(
-        (to_exclusive_id - from_inclusive_id) <= 100,
-        "Cannot fetch more than 100 posts in a single request"
-    );
+    if from_inclusive_id >= to_exclusive_id {
+        return Err(GetPostsOfUserProfileError::InvalidBoundsPassed);
+    }
+
+    if from_inclusive_id > all_posts.len() {
+        return Err(GetPostsOfUserProfileError::LowerBoundExceedsTotalPosts);
+    }
+
+    if (to_exclusive_id - from_inclusive_id) > 100 {
+        return Err(GetPostsOfUserProfileError::ExceededMaxNumberOfPostsAllowedInOneRequest);
+    }
 
     let user_profile = s!(Profile);
 
-    (from_inclusive_id..to_exclusive_id)
+    Ok((from_inclusive_id..to_exclusive_id)
         .map(|id| {
             all_posts
                 .get_cloned(id)
@@ -132,7 +143,7 @@ fn get_posts_of_this_user_profile_with_pagination(
                     SPrincipal(ic_cdk::caller()),
                 )
         })
-        .collect()
+        .collect())
 }
 
 #[ic_cdk_macros::query]

@@ -19,6 +19,11 @@ export type FollowAnotherUserProfileError = {
   { 'UserITriedToFollowDidNotFindMe' : null } |
   { 'NotAuthorized' : null } |
   { 'UserITriedToFollowHasTheirFollowersListFull' : null };
+export type GetPostsOfUserProfileError = {
+    'LowerBoundExceedsTotalPosts' : null
+  } |
+  { 'ExceededMaxNumberOfPostsAllowedInOneRequest' : null } |
+  { 'InvalidBoundsPassed' : null };
 export interface PostDetailsForFrontend {
   'id' : bigint,
   'status' : PostStatus,
@@ -53,13 +58,15 @@ export type PostViewDetailsFromFrontend = {
     }
   } |
   { 'WatchedPartially' : { 'percentage_watched' : number } };
-export type Result = { 'Ok' : boolean } |
-  { 'Err' : FollowAnotherUserProfileError };
+export type Result = { 'Ok' : Array<PostDetailsForFrontend> } |
+  { 'Err' : GetPostsOfUserProfileError };
 export type Result_1 = { 'Ok' : boolean } |
+  { 'Err' : FollowAnotherUserProfileError };
+export type Result_2 = { 'Ok' : boolean } |
   { 'Err' : AnotherUserFollowedMeError };
-export type Result_2 = { 'Ok' : UserProfileDetailsForFrontend } |
+export type Result_3 = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
-export type Result_3 = { 'Ok' : null } |
+export type Result_4 = { 'Ok' : null } |
   { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
 export type UpdateProfileSetUniqueUsernameError = {
@@ -103,7 +110,7 @@ export interface _SERVICE {
   >,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Array<PostDetailsForFrontend>,
+    Result,
   >,
   'get_profile_details' : ActorMethod<[], UserProfile>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
@@ -116,17 +123,17 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_principals_i_follow_toggle_list_with_principal_specified' : ActorMethod<
     [Principal],
-    Result,
+    Result_1,
   >,
   'update_principals_that_follow_me_toggle_list_with_specified_principal' : ActorMethod<
     [Principal],
-    Result_1,
+    Result_2,
   >,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_2,
+    Result_3,
   >,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_3>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_4>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
