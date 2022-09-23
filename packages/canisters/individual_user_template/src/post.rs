@@ -1,10 +1,15 @@
-use crate::{AccessControlMap, AllCreatedPosts, Profile};
-use candid::CandidType;
+use crate::{
+    AccessControlMap, AllCreatedPosts, PrincipalsIFollow, PrincipalsThatFollowMe, Profile,
+};
+use candid::{CandidType, Principal};
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use internal::{
     Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostStatus, PostViewDetailsFromFrontend,
 };
-use shared_utils::access_control::{does_principal_have_role, UserAccessRole};
+use shared_utils::{
+    access_control::{does_principal_have_role, UserAccessRole},
+    pagination::{self, PaginationError},
+};
 
 pub mod internal;
 
@@ -111,25 +116,23 @@ pub enum GetPostsOfUserProfileError {
 #[candid::candid_method(query)]
 fn get_posts_of_this_user_profile_with_pagination(
     from_inclusive_id: u64,
-    mut to_exclusive_id: u64,
+    to_exclusive_id: u64,
 ) -> Result<Vec<PostDetailsForFrontend>, GetPostsOfUserProfileError> {
     let all_posts = s!(AllCreatedPosts);
 
-    if to_exclusive_id > (all_posts.len()) {
-        to_exclusive_id = all_posts.len();
-    }
-
-    if from_inclusive_id > to_exclusive_id {
-        return Err(GetPostsOfUserProfileError::InvalidBoundsPassed);
-    }
-
-    if from_inclusive_id > all_posts.len() {
-        return Err(GetPostsOfUserProfileError::LowerBoundExceedsTotalPosts);
-    }
-
-    if (to_exclusive_id - from_inclusive_id) > 100 {
-        return Err(GetPostsOfUserProfileError::ExceededMaxNumberOfPostsAllowedInOneRequest);
-    }
+    let (from_inclusive_id, to_exclusive_id) =
+        pagination::get_pagination_bounds(from_inclusive_id, to_exclusive_id, all_posts.len())
+            .map_err(|e| match e {
+                PaginationError::InvalidBoundsPassed => {
+                    GetPostsOfUserProfileError::InvalidBoundsPassed
+                }
+                PaginationError::LowerBoundExceedsTotalItems => {
+                    GetPostsOfUserProfileError::LowerBoundExceedsTotalPosts
+                }
+                PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest => {
+                    GetPostsOfUserProfileError::ExceededMaxNumberOfPostsAllowedInOneRequest
+                }
+            })?;
 
     let user_profile = s!(Profile);
 
@@ -159,4 +162,73 @@ pub fn get_individual_post_details_by_id(post_id: u64) -> PostDetailsForFrontend
             user_profile.get_user_profile_details_for_frontend(),
             SPrincipal(ic_cdk::caller()),
         )
+}
+
+#[derive(CandidType)]
+pub enum GetFollowerOrFollowingError {
+    InvalidBoundsPassed,
+    LowerBoundExceedsTotalFollowersOrFollowings,
+    ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest,
+}
+
+#[ic_cdk_macros::query]
+#[candid::candid_method(query)]
+pub fn get_principals_i_follow_paginated(
+    from_inclusive_index: u64,
+    to_exclusive_index: u64,
+) -> Result<Vec<Principal>, GetFollowerOrFollowingError> {
+    let principals_i_follow = s!(PrincipalsIFollow);
+
+    let (from_inclusive_index, to_exclusive_index) = pagination::get_pagination_bounds(
+        from_inclusive_index,
+        to_exclusive_index,
+        principals_i_follow.len() as u64,
+    )
+    .map_err(|e| match e {
+        PaginationError::InvalidBoundsPassed => GetFollowerOrFollowingError::InvalidBoundsPassed,
+        PaginationError::LowerBoundExceedsTotalItems => {
+            GetFollowerOrFollowingError::LowerBoundExceedsTotalFollowersOrFollowings
+        }
+        PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest => {
+            GetFollowerOrFollowingError::ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest
+        }
+    })?;
+
+    Ok(principals_i_follow
+        .iter()
+        .skip(from_inclusive_index as usize)
+        .take(to_exclusive_index as usize)
+        .map(|sprincipal| sprincipal.0)
+        .collect())
+}
+
+#[ic_cdk_macros::query]
+#[candid::candid_method(query)]
+pub fn get_principals_that_follow_me_paginated(
+    from_inclusive_index: u64,
+    to_exclusive_index: u64,
+) -> Result<Vec<Principal>, GetFollowerOrFollowingError> {
+    let principals_that_follow_me = s!(PrincipalsThatFollowMe);
+
+    let (from_inclusive_index, to_exclusive_index) = pagination::get_pagination_bounds(
+        from_inclusive_index,
+        to_exclusive_index,
+        principals_that_follow_me.len() as u64,
+    )
+    .map_err(|e| match e {
+        PaginationError::InvalidBoundsPassed => GetFollowerOrFollowingError::InvalidBoundsPassed,
+        PaginationError::LowerBoundExceedsTotalItems => {
+            GetFollowerOrFollowingError::LowerBoundExceedsTotalFollowersOrFollowings
+        }
+        PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest => {
+            GetFollowerOrFollowingError::ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest
+        }
+    })?;
+
+    Ok(principals_that_follow_me
+        .iter()
+        .skip(from_inclusive_index as usize)
+        .take(to_exclusive_index as usize)
+        .map(|sprincipal| sprincipal.0)
+        .collect())
 }
