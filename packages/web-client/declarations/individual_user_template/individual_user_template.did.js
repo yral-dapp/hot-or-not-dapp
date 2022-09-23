@@ -23,7 +23,7 @@ export const idlFactory = ({ IDL }) => {
     'total_view_count' : IDL.Nat64,
     'created_by_display_name' : IDL.Opt(IDL.Text),
     'created_by_unique_user_name' : IDL.Opt(IDL.Text),
-    'video_url' : IDL.Text,
+    'video_uid' : IDL.Text,
     'created_by_user_principal_id' : IDL.Principal,
     'liked_by_me' : IDL.Bool,
     'created_by_profile_photo_url' : IDL.Opt(IDL.Text),
