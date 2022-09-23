@@ -5,6 +5,7 @@ import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
 import userProfile, { type UserProfile } from '$stores/userProfile';
 import { get } from 'svelte/store';
+import { getCanisterId } from './idb';
 
 async function fetchProfile() {
 	const { individualUser } = await import('./backend');
@@ -22,8 +23,8 @@ export function sanitizeProfile(profile: ServerUserProfile, userId: string): Use
 		profile_picture_url: profile.profile_picture_url[0] || getDefaultImageUrl(userId),
 		display_name: profile.display_name[0] || generateRandomName('name', userId),
 		principal_id: profile.principal_id,
-		followers: profile.followers,
-		following: profile.following,
+		followers: profile.followers ?? [],
+		following: profile.following ?? [],
 		profile_stats: {
 			hots_earned_count: Number(profile.profile_stats.hots_earned_count) || 0,
 			lifetime_earnings: Number(profile.profile_stats.hots_earned_count) || 0,
@@ -48,5 +49,18 @@ export async function updateProfile(profile?: ServerUserProfile) {
 		Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
 	} else {
 		Log({ error: 'No profile fetched', from: '1 updateProfile' }, 'error');
+	}
+}
+
+export async function fetchPosts(id: string, skipCount: number = 0) {
+	try {
+		const canId = await getCanisterId(id);
+		const { individualUser } = await import('./backend');
+		return await individualUser(canId).get_posts_of_this_user_profile_with_pagination(
+			BigInt(skipCount),
+			BigInt(10)
+		);
+	} catch (e) {
+		Log({ error: e, from: '1 fetchPosts' }, 'error');
 	}
 }
