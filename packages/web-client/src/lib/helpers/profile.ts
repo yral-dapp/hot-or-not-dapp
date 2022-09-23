@@ -81,7 +81,7 @@ export async function fetchPosts(id: string, skipCount: number = 0) {
 				case 'LowerBoundExceedsTotalPosts':
 					return { error: false, noMorePosts: true, posts: [] };
 			}
-		}
+		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
 	} catch (e) {
 		Log({ error: e, from: '11 fetchPosts' }, 'error');
 		return { error: true, posts: [] };
