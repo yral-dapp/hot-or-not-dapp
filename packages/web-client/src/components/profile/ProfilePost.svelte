@@ -1,7 +1,7 @@
 <script lang="ts">
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 
-export let id: string;
+export let id: number;
 export let imageBg: string;
 export let likes: number;
 </script>
@@ -9,7 +9,7 @@ export let likes: number;
 <a
 	href="{`/all/${id}`}"
 	data-sveltekit-prefetch
-	class="relative h-40 w-full cursor-pointer rounded-md bg-cover"
+	class="relative h-40 w-full cursor-pointer rounded-md border-[1px] border-white/5 bg-cover"
 	style="background-image: url('{imageBg}')">
 	<div class="pointer-events-none absolute inset-x-0 left-2 bottom-2 flex items-center space-x-1">
 		<div class="flex h-5 w-5 items-center justify-center rounded-full bg-black/50">
