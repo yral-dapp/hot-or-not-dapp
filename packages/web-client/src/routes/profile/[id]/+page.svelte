@@ -84,6 +84,10 @@ let errorWhileFetching = false;
 let noMorePosts = false;
 let fetchedPostsCount = 0;
 
+$: userId = $userProfile.username_set
+	? $userProfile.unique_user_name || $authState.idString
+	: $authState.idString;
+
 async function showShareDialog() {
 	try {
 		if (!navigator.canShare) {
@@ -174,7 +178,7 @@ onMount(() => {
 				<ShareArrowIcon class="h-6 w-6" />
 			</IconButton>
 			{#if me}
-				<IconButton href="{`/profile/${profile.unique_user_name}/edit`}">
+				<IconButton href="{`/profile/${userId}/edit`}">
 					<PencilIcon class="h-5 w-5" />
 				</IconButton>
 			{:else}
@@ -206,7 +210,7 @@ onMount(() => {
 				<div
 					class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
 					<a
-						href="{`/profile/${profile.unique_user_name}/lovers`}"
+						href="{`/profile/${userId}/lovers`}"
 						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.followers.length}
