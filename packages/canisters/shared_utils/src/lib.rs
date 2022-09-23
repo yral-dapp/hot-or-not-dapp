@@ -1,4 +1,4 @@
 pub mod access_control;
 pub mod constant;
-pub mod generated;
+pub mod pagination;
 pub mod shared_types;

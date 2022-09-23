@@ -11,7 +11,7 @@ use post::{
     internal::{
         Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
     },
-    GetPostsOfUserProfileError,
+    GetFollowerOrFollowingError, GetPostsOfUserProfileError,
 };
 use profile::{
     internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
