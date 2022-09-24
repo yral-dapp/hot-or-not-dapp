@@ -24,7 +24,7 @@
 			"name": "All Videos",
 			"short_name": "Videos",
 			"description": "View sizzling videos on Hot or Not",
-			"url": "/all",
+			"url": "/feed",
 			"icons": [
 				{
 					"src": "/assets/logos/logo-symbol-square-192.png",

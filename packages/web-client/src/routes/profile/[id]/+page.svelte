@@ -97,7 +97,7 @@ async function showShareDialog() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: 'https://v2.gobazzinga.io/all/1'
+			url: 'https://v2.gobazzinga.io/feed/'
 		});
 	} catch (err) {
 		console.error('Cannot open share dialog', err);

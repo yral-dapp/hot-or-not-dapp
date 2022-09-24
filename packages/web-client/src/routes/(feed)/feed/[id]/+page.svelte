@@ -1,14 +1,15 @@
 <script lang="ts">
+import 'swiper/css';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { db, type VideoDB } from '$lib/db/mockDb';
+import type { IndividualUserCanister } from '$lib/helpers/backend';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
-import VideoPlayer from './VideoPlayer.svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
-import 'swiper/css';
 import { debounce } from 'throttle-debounce';
-import type { IndividualUserCanister } from '$lib/helpers/backend';
+import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
+import VideoPlayer from '$components/video/VideoPlayer.svelte';
 
 export let fetchFromId: number = 0;
 export let videos: VideoDB[] = [];
@@ -75,6 +76,8 @@ onMount(async () => {
 });
 </script>
 
+<SplashScreen />
+
 <Swiper
 	direction="{'vertical'}"
 	observer
@@ -82,8 +85,7 @@ onMount(async () => {
 	on:slideChange="{handleChange}"
 	cssMode
 	spaceBetween="{100}"
-	class="h-full w-full"
->
+	class="h-full w-full">
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
@@ -93,8 +95,7 @@ onMount(async () => {
 					individualUser="{individualUser}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
-					src="{video.url}"
-				/>
+					src="{video.url}" />
 			{/if}
 		</SwiperSlide>
 	{/each}

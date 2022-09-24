@@ -26,7 +26,7 @@ $: YOU = me ? 'You' : '';
 </script>
 
 <a
-	href="{`/all/${id}`}"
+	href="{`/feed/${id}`}"
 	data-sveltekit-prefetch
 	class="relative h-64 w-full cursor-pointer rounded-md bg-cover"
 	style="background-image: url('{imageBg}')">
