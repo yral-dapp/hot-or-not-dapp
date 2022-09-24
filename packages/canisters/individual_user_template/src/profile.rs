@@ -3,7 +3,6 @@ use crate::{AccessControlMap, PrincipalsIFollow, PrincipalsThatFollowMe, Profile
 use candid::{CandidType, Deserialize, Principal};
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use internal::UserProfile;
 use shared_utils::{
     access_control::{does_principal_have_role, UserAccessRole},
     constant::MAX_USERS_IN_FOLLOWER_FOLLOWING_LIST,
@@ -14,8 +13,10 @@ pub mod internal;
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
-fn get_profile_details() -> UserProfile {
-    s!(Profile)
+fn get_profile_details() -> UserProfileDetailsForFrontend {
+    let profile = s!(Profile);
+
+    profile.get_user_profile_details_for_frontend()
 }
 
 #[derive(CandidType)]

@@ -87,18 +87,14 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |
   { 'ProjectCanister' : null };
-export interface UserProfile {
+export interface UserProfileDetailsForFrontend {
   'unique_user_name' : [] | [string],
+  'following_count' : bigint,
   'profile_picture_url' : [] | [string],
   'display_name' : [] | [string],
   'principal_id' : Principal,
   'profile_stats' : UserProfileGlobalStats,
-}
-export interface UserProfileDetailsForFrontend {
-  'unique_user_name' : [] | [string],
-  'profile_picture_url' : [] | [string],
-  'display_name' : [] | [string],
-  'principal_id' : Principal,
+  'followers_count' : bigint,
 }
 export interface UserProfileGlobalStats {
   'lifetime_earnings' : bigint,
@@ -128,7 +124,7 @@ export interface _SERVICE {
     [bigint, bigint],
     Result_1,
   >,
-  'get_profile_details' : ActorMethod<[], UserProfile>,
+  'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],

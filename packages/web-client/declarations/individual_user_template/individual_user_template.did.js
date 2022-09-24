@@ -51,12 +51,14 @@ export const idlFactory = ({ IDL }) => {
     'hots_earned_count' : IDL.Nat64,
     'nots_earned_count' : IDL.Nat64,
   });
-  const UserProfile = IDL.Record({
+  const UserProfileDetailsForFrontend = IDL.Record({
     'unique_user_name' : IDL.Opt(IDL.Text),
+    'following_count' : IDL.Nat64,
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
     'principal_id' : IDL.Principal,
     'profile_stats' : UserProfileGlobalStats,
+    'followers_count' : IDL.Nat64,
   });
   const UserAccessRole = IDL.Variant({
     'CanisterController' : IDL.Null,
@@ -98,12 +100,6 @@ export const idlFactory = ({ IDL }) => {
   const UserProfileUpdateDetailsFromFrontend = IDL.Record({
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
-  });
-  const UserProfileDetailsForFrontend = IDL.Record({
-    'unique_user_name' : IDL.Opt(IDL.Text),
-    'profile_picture_url' : IDL.Opt(IDL.Text),
-    'display_name' : IDL.Opt(IDL.Text),
-    'principal_id' : IDL.Principal,
   });
   const UpdateProfileDetailsError = IDL.Variant({ 'NotAuthorized' : IDL.Null });
   const Result_4 = IDL.Variant({
@@ -148,7 +144,11 @@ export const idlFactory = ({ IDL }) => {
         [Result_1],
         ['query'],
       ),
-    'get_profile_details' : IDL.Func([], [UserProfile], ['query']),
+    'get_profile_details' : IDL.Func(
+        [],
+        [UserProfileDetailsForFrontend],
+        ['query'],
+      ),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],
