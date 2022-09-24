@@ -123,6 +123,11 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'add_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
+    'get_following_status_do_i_follow_this_user' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Bool],
+        ['query'],
+      ),
     'get_individual_post_details_by_id' : IDL.Func(
         [IDL.Nat64],
         [PostDetailsForFrontend],
