@@ -1,6 +1,8 @@
 use candid::{CandidType, Deserialize, Principal};
-use ic_stable_memory::utils::ic_types::SPrincipal;
+use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use speedy::{Readable, Writable};
+
+use crate::{PrincipalsIFollow, PrincipalsThatFollowMe};
 
 #[derive(Readable, Writable, CandidType)]
 pub struct UserProfile {
@@ -11,7 +13,7 @@ pub struct UserProfile {
     profile_stats: UserProfileGlobalStats,
 }
 
-#[derive(Readable, Writable, CandidType)]
+#[derive(Readable, Writable, CandidType, Clone, Copy)]
 pub struct UserProfileGlobalStats {
     lifetime_earnings: u64,
     hots_earned_count: u64,
@@ -24,6 +26,9 @@ pub struct UserProfileDetailsForFrontend {
     pub display_name: Option<String>,
     pub unique_user_name: Option<String>,
     pub profile_picture_url: Option<String>,
+    profile_stats: UserProfileGlobalStats,
+    followers_count: u64,
+    following_count: u64,
 }
 
 #[derive(Deserialize, CandidType)]
@@ -50,11 +55,17 @@ impl UserProfile {
     }
 
     pub fn get_user_profile_details_for_frontend(&self) -> UserProfileDetailsForFrontend {
+        let followers = s!(PrincipalsThatFollowMe);
+        let following = s!(PrincipalsIFollow);
+
         UserProfileDetailsForFrontend {
             principal_id: self.principal_id.0,
             display_name: self.display_name.clone(),
             unique_user_name: self.unique_user_name.clone(),
             profile_picture_url: self.profile_picture_url.clone(),
+            profile_stats: self.profile_stats,
+            followers_count: followers.len() as u64,
+            following_count: following.len() as u64,
         }
     }
 
