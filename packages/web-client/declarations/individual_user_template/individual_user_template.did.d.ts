@@ -111,6 +111,10 @@ export interface UserProfileUpdateDetailsFromFrontend {
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
+  'get_following_status_do_i_follow_this_user' : ActorMethod<
+    [Principal],
+    boolean,
+  >,
   'get_individual_post_details_by_id' : ActorMethod<
     [bigint],
     PostDetailsForFrontend,
