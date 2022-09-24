@@ -67,6 +67,9 @@ export async function initializeAuthClient(): Promise<void> {
 			identity,
 			idPrincipal: principal
 		});
+
+		await updateUserIndexCanister();
+		await updateProfile();
 	} else {
 		authState.set({
 			isLoggedIn: false,
@@ -79,8 +82,8 @@ export async function initializeAuthClient(): Promise<void> {
 			identity,
 			idPrincipal: principal
 		});
+
+		await updateUserIndexCanister();
 	}
-	await updateUserIndexCanister();
-	await updateProfile();
 	loadingAuthStatus.set(false);
 }
