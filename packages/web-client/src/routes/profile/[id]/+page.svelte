@@ -116,7 +116,7 @@ async function loveUser() {
 				userPrincipal
 			);
 		if ($authHelper.idPrincipal && res[0]) {
-			profile.followers.push($authHelper.idPrincipal);
+			profile.followers_count++;
 			profile = profile;
 		}
 		load.follow = false;
@@ -213,7 +213,7 @@ onMount(() => {
 						href="{`/profile/${userId}/lovers`}"
 						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
-							{profile.followers.length}
+							{profile.followers_count}
 						</span>
 						<span class="text-sm">Lovers</span>
 					</a>
@@ -239,11 +239,7 @@ onMount(() => {
 				{#if !me}
 					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
 						<Button disabled="{load.follow}" on:click="{loveUser}" class="mx-auto w-[10rem]">
-							{#if profile.followers.filter((o) => o.toText() === $authState.idString)}
-								Loving
-							{:else}
-								Love
-							{/if}
+							Love
 						</Button>
 						<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
 					</div>

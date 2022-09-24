@@ -1,4 +1,3 @@
-import type { Principal } from '@dfinity/principal';
 import { writable } from 'svelte-local-storage-store';
 
 export type UserProfile = {
@@ -7,8 +6,8 @@ export type UserProfile = {
 	profile_picture_url: string;
 	display_name: string;
 	principal_id?: string;
-	followers: Principal[];
-	following: Principal[];
+	followers_count: number;
+	following_count: number;
 	profile_stats: {
 		lifetime_earnings: number;
 		hots_earned_count: number;
@@ -22,8 +21,8 @@ export default writable<UserProfile>('user-profile', {
 	unique_user_name: '',
 	profile_picture_url: '',
 	display_name: '',
-	followers: [],
-	following: [],
+	followers_count: 0,
+	following_count: 0,
 	profile_stats: {
 		lifetime_earnings: 0,
 		hots_earned_count: 0,
