@@ -1,8 +1,7 @@
 <script lang="ts">
 import 'swiper/css';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import { db, type VideoDB } from '$lib/db/mockDb';
-import type { IndividualUserCanister } from '$lib/helpers/backend';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import { playerState } from '$stores/playerState';
 import { onMount, tick } from 'svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
@@ -10,36 +9,47 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
+import { getTopPosts, populatePosts, type PostPopulated } from '$lib/helpers/feed';
+import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 
-export let fetchFromId: number = 0;
-export let videos: VideoDB[] = [];
-export let fetchCount: number = 5;
-export let keepVideosLoadedCount: number = 4;
-
+const fetchCount = 5;
+let videos: PostPopulated[] = [];
+let keepVideosLoadedCount: number = 4;
 let currentVideoIndex = 0;
 let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
-let individualUser: () => IndividualUserCanister;
+let individualUser: () => IndividualUserActor;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
 	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
-			Log({ res: 'fetching', fetchFromId, source: '0 fetchNextVideos' }, 'info');
+			Log({ res: 'fetching from ' + videos.length, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const res = db.getVideos(fetchFromId);
-			videos = [...videos, ...res.videos];
+			const { error, posts, noMorePosts } = await getTopPosts(videos.length);
+			if (error || !posts) {
+				//handle
+				return;
+			}
+
+			moreVideos = !noMorePosts;
+			const populatedPosts = await populatePosts(posts);
+
+			if (!populatedPosts) {
+				//handle
+				return;
+			}
+			videos.push(...populatedPosts);
+
 			await tick();
-			fetchFromId = res.nextCount;
-			moreVideos = res.videosLeft;
 			loading = false;
 
-			Log({ res: 'fetched', fetchFromId, moreVideos, source: '0 fetchNextVideos' }, 'info');
+			Log({ res: 'fetched', moreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
-			Log({ error: e, fetchFromId, moreVideos, source: '1 fetchNextVideos' }, 'error');
+			Log({ error: e, moreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
 	}
@@ -49,7 +59,7 @@ async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
-	$playerState.currentVideosIndex = videos[currentVideoIndex].id;
+	$playerState.currentVideosIndex = index;
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
@@ -95,7 +105,8 @@ onMount(async () => {
 					individualUser="{individualUser}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
-					src="{video.url}" />
+					thumbnail="{getThumbnailUrl(video.video_uid)}"
+					src="{getMp4Url(video.video_uid)}" />
 			{/if}
 		</SwiperSlide>
 	{/each}
