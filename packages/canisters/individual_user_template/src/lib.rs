@@ -51,6 +51,8 @@ fn init() {
     s! {AllCreatedPosts = AllCreatedPosts::new()};
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
+    s! { PrincipalsIFollow = PrincipalsIFollow::new() };
+    s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
