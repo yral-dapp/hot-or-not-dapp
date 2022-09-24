@@ -99,7 +99,7 @@ async function handleShare() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: `https://hotornot.wtf/all/${i}`
+			url: `https://hotornot.wtf/feed/${i}`
 		});
 		individualUser().update_post_increment_share_count(id);
 	}

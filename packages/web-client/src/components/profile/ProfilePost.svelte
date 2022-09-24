@@ -7,7 +7,7 @@ export let likes: number;
 </script>
 
 <a
-	href="{`/all/${id}`}"
+	href="{`/feed/${id}`}"
 	data-sveltekit-prefetch
 	class="relative h-40 w-full cursor-pointer rounded-md border-[1px] border-white/5 bg-cover"
 	style="background-image: url('{imageBg}')">

@@ -305,7 +305,7 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 }
 
 function prefetchLinks() {
-	prefetch('/all');
+	prefetch('/feed');
 	prefetch('/upload/new');
 }
 
@@ -389,7 +389,7 @@ onDestroy(async () => {
 				</div>
 			</div>
 		{:else}
-			<IconButton href="/all" prefetch class="h-10 w-10 rounded-full bg-black/50">
+			<IconButton href="/feed" prefetch class="h-10 w-10 rounded-full bg-black/50">
 				<CloseIcon class="h-6 w-6 text-white" />
 			</IconButton>
 		{/if}
