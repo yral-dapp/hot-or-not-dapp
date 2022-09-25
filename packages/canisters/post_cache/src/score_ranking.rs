@@ -19,5 +19,10 @@ pub fn receive_top_posts_from_publishing_canister(
         posts_index_sorted_by_score = posts_index_sorted_by_score.into_iter().take(1000).collect();
     }
 
+    ic_cdk::print(format!(
+        "Posts index sorted by score: {:?}",
+        posts_index_sorted_by_score
+    ));
+
     s! { PostsIndexSortedByScore = posts_index_sorted_by_score };
 }

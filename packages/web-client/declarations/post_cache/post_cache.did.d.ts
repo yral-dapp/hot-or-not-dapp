@@ -8,10 +8,9 @@ export interface PostScoreIndexItem {
 }
 export type Result = { 'Ok' : Array<PostScoreIndexItem> } |
   { 'Err' : TopPostsFetchError };
-export type TopPostsFetchError = {
-    'RequestedLowerBoundIsGreaterThanTotalNumberOfPostsAvailable' : null
-  } |
-  { 'MaxFetchLimitExceeded' : null };
+export type TopPostsFetchError = { 'ReachedEndOfItemsList' : null } |
+  { 'InvalidBoundsPassed' : null } |
+  { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |

@@ -3,8 +3,8 @@ use crate::constant::MAX_POSTS_IN_ONE_REQUEST;
 #[derive(PartialEq, Debug)]
 pub enum PaginationError {
     InvalidBoundsPassed,
-    LowerBoundExceedsTotalItems,
-    ExceededMaxNumberOfPostsAllowedInOneRequest,
+    ReachedEndOfItemsList,
+    ExceededMaxNumberOfItemsAllowedInOneRequest,
 }
 
 pub fn get_pagination_bounds(
@@ -22,12 +22,12 @@ pub fn get_pagination_bounds(
         return Err(PaginationError::InvalidBoundsPassed);
     }
 
-    if from_inclusive_id > total_items {
-        return Err(PaginationError::LowerBoundExceedsTotalItems);
+    if from_inclusive_id >= total_items {
+        return Err(PaginationError::ReachedEndOfItemsList);
     }
 
     if (to_exclusive_id - from_inclusive_id) > MAX_POSTS_IN_ONE_REQUEST {
-        return Err(PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest);
+        return Err(PaginationError::ExceededMaxNumberOfItemsAllowedInOneRequest);
     }
 
     Ok((from_inclusive_id, upper_bound_exclusive))
@@ -39,9 +39,6 @@ mod test {
 
     #[test]
     fn test_get_pagination_bounds() {
-        // number of items is zero
-        assert_eq!(get_pagination_bounds(0, 10, 0), Ok((0, 0)));
-
         // exact number of items as upper bound
         assert_eq!(get_pagination_bounds(0, 10, 10), Ok((0, 10)));
 
@@ -57,16 +54,22 @@ mod test {
             Err(PaginationError::InvalidBoundsPassed)
         );
 
+        // number of items is zero
+        assert_eq!(
+            get_pagination_bounds(0, 10, 0),
+            Err(PaginationError::ReachedEndOfItemsList)
+        );
+
         // lower bound exceeds total items
         assert_eq!(
             get_pagination_bounds(10, 20, 5),
-            Err(PaginationError::LowerBoundExceedsTotalItems)
+            Err(PaginationError::ReachedEndOfItemsList)
         );
 
         // number of items fetched exceeds max allowed
         assert_eq!(
             get_pagination_bounds(0, 110, 250),
-            Err(PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest)
+            Err(PaginationError::ExceededMaxNumberOfItemsAllowedInOneRequest)
         );
     }
 }

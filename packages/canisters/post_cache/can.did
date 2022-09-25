@@ -5,8 +5,9 @@ type PostScoreIndexItem = record {
 };
 type Result = variant { Ok : vec PostScoreIndexItem; Err : TopPostsFetchError };
 type TopPostsFetchError = variant {
-  RequestedLowerBoundIsGreaterThanTotalNumberOfPostsAvailable;
-  MaxFetchLimitExceeded;
+  ReachedEndOfItemsList;
+  InvalidBoundsPassed;
+  ExceededMaxNumberOfItemsAllowedInOneRequest;
 };
 type UserAccessRole = variant {
   CanisterController;

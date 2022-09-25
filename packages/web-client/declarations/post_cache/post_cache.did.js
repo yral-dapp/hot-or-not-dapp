@@ -5,8 +5,9 @@ export const idlFactory = ({ IDL }) => {
     'publisher_canister_id' : IDL.Principal,
   });
   const TopPostsFetchError = IDL.Variant({
-    'RequestedLowerBoundIsGreaterThanTotalNumberOfPostsAvailable' : IDL.Null,
-    'MaxFetchLimitExceeded' : IDL.Null,
+    'ReachedEndOfItemsList' : IDL.Null,
+    'InvalidBoundsPassed' : IDL.Null,
+    'ExceededMaxNumberOfItemsAllowedInOneRequest' : IDL.Null,
   });
   const Result = IDL.Variant({
     'Ok' : IDL.Vec(PostScoreIndexItem),

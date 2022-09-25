@@ -108,8 +108,8 @@ fn update_post_toggle_like_status_by_caller(id: u64) -> bool {
 #[derive(CandidType)]
 pub enum GetPostsOfUserProfileError {
     InvalidBoundsPassed,
-    LowerBoundExceedsTotalPosts,
-    ExceededMaxNumberOfPostsAllowedInOneRequest,
+    ReachedEndOfItemsList,
+    ExceededMaxNumberOfItemsAllowedInOneRequest,
 }
 
 #[ic_cdk_macros::query]
@@ -126,11 +126,11 @@ fn get_posts_of_this_user_profile_with_pagination(
                 PaginationError::InvalidBoundsPassed => {
                     GetPostsOfUserProfileError::InvalidBoundsPassed
                 }
-                PaginationError::LowerBoundExceedsTotalItems => {
-                    GetPostsOfUserProfileError::LowerBoundExceedsTotalPosts
+                PaginationError::ReachedEndOfItemsList => {
+                    GetPostsOfUserProfileError::ReachedEndOfItemsList
                 }
-                PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest => {
-                    GetPostsOfUserProfileError::ExceededMaxNumberOfPostsAllowedInOneRequest
+                PaginationError::ExceededMaxNumberOfItemsAllowedInOneRequest => {
+                    GetPostsOfUserProfileError::ExceededMaxNumberOfItemsAllowedInOneRequest
                 }
             })?;
 
@@ -167,8 +167,8 @@ pub fn get_individual_post_details_by_id(post_id: u64) -> PostDetailsForFrontend
 #[derive(CandidType)]
 pub enum GetFollowerOrFollowingError {
     InvalidBoundsPassed,
-    LowerBoundExceedsTotalFollowersOrFollowings,
-    ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest,
+    ReachedEndOfItemsList,
+    ExceededMaxNumberOfItemsAllowedInOneRequest,
 }
 
 #[ic_cdk_macros::query]
@@ -186,11 +186,11 @@ pub fn get_principals_i_follow_paginated(
     )
     .map_err(|e| match e {
         PaginationError::InvalidBoundsPassed => GetFollowerOrFollowingError::InvalidBoundsPassed,
-        PaginationError::LowerBoundExceedsTotalItems => {
-            GetFollowerOrFollowingError::LowerBoundExceedsTotalFollowersOrFollowings
+        PaginationError::ReachedEndOfItemsList => {
+            GetFollowerOrFollowingError::ReachedEndOfItemsList
         }
-        PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest => {
-            GetFollowerOrFollowingError::ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest
+        PaginationError::ExceededMaxNumberOfItemsAllowedInOneRequest => {
+            GetFollowerOrFollowingError::ExceededMaxNumberOfItemsAllowedInOneRequest
         }
     })?;
 
@@ -217,11 +217,11 @@ pub fn get_principals_that_follow_me_paginated(
     )
     .map_err(|e| match e {
         PaginationError::InvalidBoundsPassed => GetFollowerOrFollowingError::InvalidBoundsPassed,
-        PaginationError::LowerBoundExceedsTotalItems => {
-            GetFollowerOrFollowingError::LowerBoundExceedsTotalFollowersOrFollowings
+        PaginationError::ReachedEndOfItemsList => {
+            GetFollowerOrFollowingError::ReachedEndOfItemsList
         }
-        PaginationError::ExceededMaxNumberOfPostsAllowedInOneRequest => {
-            GetFollowerOrFollowingError::ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest
+        PaginationError::ExceededMaxNumberOfItemsAllowedInOneRequest => {
+            GetFollowerOrFollowingError::ExceededMaxNumberOfItemsAllowedInOneRequest
         }
     })?;
 

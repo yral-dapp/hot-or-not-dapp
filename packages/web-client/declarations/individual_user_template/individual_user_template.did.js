@@ -29,22 +29,17 @@ export const idlFactory = ({ IDL }) => {
     'created_by_profile_photo_url' : IDL.Opt(IDL.Text),
   });
   const GetPostsOfUserProfileError = IDL.Variant({
-    'LowerBoundExceedsTotalPosts' : IDL.Null,
-    'ExceededMaxNumberOfPostsAllowedInOneRequest' : IDL.Null,
+    'ReachedEndOfItemsList' : IDL.Null,
     'InvalidBoundsPassed' : IDL.Null,
+    'ExceededMaxNumberOfItemsAllowedInOneRequest' : IDL.Null,
   });
   const Result = IDL.Variant({
     'Ok' : IDL.Vec(PostDetailsForFrontend),
     'Err' : GetPostsOfUserProfileError,
   });
-  const GetFollowerOrFollowingError = IDL.Variant({
-    'LowerBoundExceedsTotalFollowersOrFollowings' : IDL.Null,
-    'InvalidBoundsPassed' : IDL.Null,
-    'ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest' : IDL.Null,
-  });
   const Result_1 = IDL.Variant({
     'Ok' : IDL.Vec(IDL.Principal),
-    'Err' : GetFollowerOrFollowingError,
+    'Err' : GetPostsOfUserProfileError,
   });
   const UserProfileGlobalStats = IDL.Record({
     'lifetime_earnings' : IDL.Nat64,

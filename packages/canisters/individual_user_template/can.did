@@ -14,15 +14,10 @@ type FollowAnotherUserProfileError = variant {
   NotAuthorized;
   UserITriedToFollowHasTheirFollowersListFull;
 };
-type GetFollowerOrFollowingError = variant {
-  LowerBoundExceedsTotalFollowersOrFollowings;
-  InvalidBoundsPassed;
-  ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest;
-};
 type GetPostsOfUserProfileError = variant {
-  LowerBoundExceedsTotalPosts;
-  ExceededMaxNumberOfPostsAllowedInOneRequest;
+  ReachedEndOfItemsList;
   InvalidBoundsPassed;
+  ExceededMaxNumberOfItemsAllowedInOneRequest;
 };
 type PostDetailsForFrontend = record {
   id : nat64;
@@ -66,7 +61,7 @@ type Result = variant {
 };
 type Result_1 = variant {
   Ok : vec principal;
-  Err : GetFollowerOrFollowingError;
+  Err : GetPostsOfUserProfileError;
 };
 type Result_2 = variant { Ok : bool; Err : FollowAnotherUserProfileError };
 type Result_3 = variant { Ok : bool; Err : AnotherUserFollowedMeError };
