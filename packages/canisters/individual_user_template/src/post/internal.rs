@@ -103,7 +103,7 @@ impl Post {
             likes: HashSet::new(),
             share_count: 0,
             view_stats: PostViewStatistics {
-                total_view_count: 0,
+                total_view_count: 1, // To not have divide by zero errors
                 threshold_view_count: 0,
                 average_watch_percentage: 0,
             },

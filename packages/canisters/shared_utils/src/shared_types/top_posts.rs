@@ -3,7 +3,7 @@ use ic_stable_memory::utils::ic_types::SPrincipal;
 use speedy::{Readable, Writable};
 use std::cmp::Ordering;
 
-#[derive(Readable, Writable, Eq, Clone, CandidType, Deserialize)]
+#[derive(Readable, Writable, Eq, Clone, CandidType, Deserialize, Debug)]
 pub struct PostScoreIndexItem {
     pub score: u64,
     pub post_id: u64,
@@ -80,6 +80,6 @@ impl PartialOrd for PostScoreIndexItem {
 
 impl PartialEq for PostScoreIndexItem {
     fn eq(&self, other: &Self) -> bool {
-        self.post_id == other.post_id && self.publisher_canister_id == other.publisher_canister_id
+        self.publisher_canister_id == other.publisher_canister_id && self.post_id == other.post_id
     }
 }

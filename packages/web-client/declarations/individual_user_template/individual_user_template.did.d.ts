@@ -19,16 +19,9 @@ export type FollowAnotherUserProfileError = {
   { 'UserITriedToFollowDidNotFindMe' : null } |
   { 'NotAuthorized' : null } |
   { 'UserITriedToFollowHasTheirFollowersListFull' : null };
-export type GetFollowerOrFollowingError = {
-    'LowerBoundExceedsTotalFollowersOrFollowings' : null
-  } |
+export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
-  { 'ExceededMaxNumberOfFollowersOrFollowingAllowedInOneRequest' : null };
-export type GetPostsOfUserProfileError = {
-    'LowerBoundExceedsTotalPosts' : null
-  } |
-  { 'ExceededMaxNumberOfPostsAllowedInOneRequest' : null } |
-  { 'InvalidBoundsPassed' : null };
+  { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export interface PostDetailsForFrontend {
   'id' : bigint,
   'status' : PostStatus,
@@ -66,7 +59,7 @@ export type PostViewDetailsFromFrontend = {
 export type Result = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
 export type Result_1 = { 'Ok' : Array<Principal> } |
-  { 'Err' : GetFollowerOrFollowingError };
+  { 'Err' : GetPostsOfUserProfileError };
 export type Result_2 = { 'Ok' : boolean } |
   { 'Err' : FollowAnotherUserProfileError };
 export type Result_3 = { 'Ok' : boolean } |
