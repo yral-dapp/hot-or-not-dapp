@@ -9,7 +9,7 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import { getTopPosts, populatePosts, type PostPopulated } from '$lib/helpers/feed';
+import { getTopPosts, type PostPopulated } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 
 const fetchCount = 5;
@@ -29,26 +29,15 @@ async function fetchNextVideos() {
 			Log({ res: 'fetching from ' + videos.length, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const { error, posts, noMorePosts } = await getTopPosts(videos.length);
-
-			if (noMorePosts) {
-				loading = false;
-				moreVideos = false;
-				return;
-			} else if (error || !posts) {
-				//handle
+			const res = await getTopPosts(videos.length);
+			if (res.error) {
+				//TODO: Handle error
 				loading = false;
 				return;
 			}
 
-			moreVideos = !noMorePosts;
-			const populatedPosts = await populatePosts(posts);
-
-			if (!populatedPosts) {
-				//handle
-				return;
-			}
-			videos.push(...populatedPosts);
+			videos.push(...res.posts);
+			videos = videos;
 
 			await tick();
 			loading = false;
