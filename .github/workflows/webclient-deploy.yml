@@ -19,8 +19,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run web-client:tsc
-      - run: npm run web-client:check
       - run: npm run web-client:build:static
       - run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
@@ -38,8 +36,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run web-client:tsc
-      - run: npm run web-client:check
       - run: npm run web-client:build
       - uses: cloudflare/wrangler-action@2.0.0
         with:
