@@ -81,11 +81,10 @@ export async function fetchPosts(id: string, from: number) {
 			type errors = UnionKeyOf<GetPostsOfUserProfileError>;
 			const err = Object.keys(res.Err)[0] as errors;
 			switch (err) {
-				case 'ExceededMaxNumberOfPostsAllowedInOneRequest':
-					return { error: true, posts: [] };
+				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
 				case 'InvalidBoundsPassed':
 					return { error: true, posts: [] };
-				case 'LowerBoundExceedsTotalPosts':
+				case 'ReachedEndOfItemsList':
 					return { error: false, noMorePosts: true, posts: [] };
 			}
 		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
