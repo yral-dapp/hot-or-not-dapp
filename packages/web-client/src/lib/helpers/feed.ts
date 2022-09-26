@@ -12,7 +12,7 @@ export async function getTopPosts(from: number) {
 			BigInt(from),
 			BigInt(from + 10)
 		);
-		Log({ res, from: '0 getTopPosts' }, 'error');
+		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
 			return {
 				error: false,
