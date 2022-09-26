@@ -24,9 +24,10 @@ export async function getTopPosts(from: number) {
 			type errors = UnionKeyOf<TopPostsFetchError>;
 			const err = Object.keys(res.Err)[0] as errors;
 			switch (err) {
-				case 'MaxFetchLimitExceeded':
+				case 'InvalidBoundsPassed':
+				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
 					return { error: true, posts: [] };
-				case 'RequestedLowerBoundIsGreaterThanTotalNumberOfPostsAvailable':
+				case 'ReachedEndOfItemsList':
 					return { error: false, noMorePosts: true };
 			}
 		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
