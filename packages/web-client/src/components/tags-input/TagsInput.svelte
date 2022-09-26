@@ -8,12 +8,14 @@ export let placeholder = '';
 export let maxHashtags = -1;
 export let tags: string[] = [];
 
+let _tags = new Set<string>();
+
 function handleInput(e: KeyboardEvent) {
 	if (value.trim() && (e.key === ',' || e.key === ' ')) {
 		const val = value.replace('#', '').replace(',', '').replace(' ', '').toLowerCase();
 		value = '';
-		tags.push(val);
-		tags = tags;
+		_tags.add(val);
+		tags = Array.from(_tags);
 	} else if (value == '' && e.key == 'Backspace' && tags.length > 0) {
 		tags.pop();
 		tags = tags;
