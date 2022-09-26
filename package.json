@@ -4,6 +4,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "npm run web-client:build",
+		"web-client:check": "npm run --prefix ./packages/web-client check",
+		"web-client:tsc": "npm run --prefix ./packages/web-client tsc",
 		"web-client:build": "npm run --prefix ./packages/web-client build",
 		"web-client:build:static": "npm run --prefix ./packages/web-client build:static",
 		"web-client:preview": "npm run --prefix ./packages/web-client preview",

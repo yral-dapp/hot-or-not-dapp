@@ -8,8 +8,9 @@
 		"preview": "vite preview",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build --threshold warning --diagnostic-sources \"js,ts,svelte\"",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+		"tsc": "tsc -b",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
