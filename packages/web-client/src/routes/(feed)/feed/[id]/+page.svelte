@@ -30,8 +30,14 @@ async function fetchNextVideos() {
 
 			loading = true;
 			const { error, posts, noMorePosts } = await getTopPosts(videos.length);
-			if (error || !posts) {
+			console.log({ error, posts, noMorePosts });
+			if (noMorePosts) {
+				loading = false;
+				moreVideos = false;
+				return;
+			} else if (error || !posts) {
 				//handle
+				loading = false;
 				return;
 			}
 
@@ -54,6 +60,8 @@ async function fetchNextVideos() {
 		}
 	}
 }
+
+$: console.log({ videos, moreVideos, loading });
 
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
