@@ -38,3 +38,7 @@ runs:
         FIREBASE_APP_ID: "1:442139438721:web:b7e616f50feaa67ad12780"
         FIREBASE_MEASUREMENT_ID: "G-LDBZXMYM4E"
         CLOUDFLARE_WORKERS_API_HOST: "https://hot-or-not-upload-api-main.go-bazzinga.workers.dev"
+    - run: npm web-client:tsc
+      shell: bash
+    - run: npm web-client:check
+      shell: bash
