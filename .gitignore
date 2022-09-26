@@ -2,7 +2,7 @@
 .DS_Store
 .dfx
 node_modules
-.env.*
+.env
 *.wasm
 target
 internet_identity.old.did
