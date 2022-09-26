@@ -12,7 +12,7 @@ dfx canister create --no-wallet post_cache
 
 export CANISTER_ID_user_index=$(dfx canister id user_index)
 export CANISTER_ID_post_cache=$(dfx canister id post_cache)
-export LOCAL_TOP_POSTS_SYNC_INTERVAL="5000000000"
+export LOCAL_TOP_POSTS_SYNC_INTERVAL="30000000000"
 
 dfx build individual_user_template
 dfx build user_index
