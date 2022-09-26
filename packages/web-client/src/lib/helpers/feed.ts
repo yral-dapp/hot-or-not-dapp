@@ -5,6 +5,20 @@ import { Principal } from '@dfinity/principal';
 
 export interface PostPopulated extends PostScoreIndexItem, PostDetailsForFrontend {}
 
+export type FeedResponse =
+	| {
+			posts: PostPopulated[];
+			error: false;
+			noMorePosts: boolean;
+	  }
+	| {
+			error: true;
+	  }
+	| {
+			error: false;
+			noMorePosts: true;
+	  };
+
 export async function getTopPosts(from: number) {
 	try {
 		const { postCache } = await import('./backend');
