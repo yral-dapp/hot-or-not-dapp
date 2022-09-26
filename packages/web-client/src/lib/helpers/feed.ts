@@ -5,18 +5,31 @@ import { Principal } from '@dfinity/principal';
 
 export interface PostPopulated extends PostScoreIndexItem, PostDetailsForFrontend {}
 
-export async function getTopPosts(from: number) {
+export type FeedResponse =
+	| {
+			posts: PostPopulated[];
+			error: false;
+			noMorePosts: boolean;
+	  }
+	| {
+			error: true;
+	  };
+export async function getTopPosts(from: number): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
 		const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
 			BigInt(from),
 			BigInt(from + 10)
 		);
-		Log({ res, from: '0 getTopPosts' }, 'error');
+		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
+			const populatedRes = await populatePosts(res.Ok);
+			if (populatedRes.error) {
+				throw new Error(`Error while populating, ${JSON.stringify(populatedRes)}`);
+			}
 			return {
 				error: false,
-				posts: res.Ok,
+				posts: populatedRes.posts,
 				noMorePosts: res.Ok.length < 10
 			};
 		} else if ('Err' in res) {
@@ -26,37 +39,33 @@ export async function getTopPosts(from: number) {
 			switch (err) {
 				case 'InvalidBoundsPassed':
 				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-					return { error: true, posts: [] };
+					return { error: true };
 				case 'ReachedEndOfItemsList':
-					return { error: false, noMorePosts: true };
+					return { error: false, noMorePosts: true, posts: [] };
 			}
 		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
 	} catch (e) {
 		Log({ error: e, from: '11 getTopPosts' }, 'error');
-		return { error: true, posts: [] };
+		return { error: true };
 	}
 }
 
-export async function populatePosts(posts: PostScoreIndexItem[]): Promise<PostPopulated[] | false> {
+async function populatePosts(posts: PostScoreIndexItem[]) {
 	try {
 		const { individualUser } = await import('./backend');
 
 		const res = await Promise.all(
-			posts.map((post) =>
-				individualUser(
+			posts.map(async (post) => {
+				const r = await individualUser(
 					Principal.from(post.publisher_canister_id)
-				).get_individual_post_details_by_id(post.post_id)
-			)
+				).get_individual_post_details_by_id(post.post_id);
+				return { ...r, ...post };
+			})
 		);
 
-		console.log('res', res);
-
-		const populatePosts: PostPopulated[] = [];
-
-		// res.forEach(())
-		return populatePosts;
+		return { posts: res as PostPopulated[], error: false };
 	} catch (e) {
 		Log({ error: e, from: '11 populatePosts' }, 'error');
-		return false;
+		return { error: true, posts: [] };
 	}
 }
