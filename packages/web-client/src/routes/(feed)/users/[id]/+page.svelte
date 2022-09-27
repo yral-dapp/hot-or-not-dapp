@@ -4,8 +4,6 @@ import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
-
-let startingVideoIndex = Number($page.params.id) ?? 0;
 </script>
 
 <HomeLayout>
