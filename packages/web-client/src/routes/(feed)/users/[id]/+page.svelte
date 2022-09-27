@@ -1,7 +1,6 @@
 <script lang="ts">
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
-import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 </script>
