@@ -121,35 +121,41 @@ async function loveUser() {
 		}
 		load.follow = false;
 	} catch (e) {
+		console.log('loveUser, error', e);
 		load.follow = false;
 	}
 }
 
+async function likePost(id: bigint) {
+	const individualUser = (await import('$lib/helpers/backend')).individualUser;
+	await individualUser().update_post_toggle_like_status_by_caller(id);
+}
+
 async function loadPosts() {
-	if (!noMorePosts) {
-		load.posts = true;
-		errorWhileFetching = false;
-		const res = await fetchPosts($page.params.id, fetchedPostsCount);
-		console.log('res', res);
-		if (res.noMorePosts) {
-			noMorePosts = true;
-			//// clear observer
-		} else if (res.error) {
-			errorWhileFetching = true;
-			// clear observer
-		} else {
-			fetchedPosts.push(...res.posts);
-			fetchedPosts = fetchedPosts;
-			console.log({ fetchedPosts });
-		}
-
-		if (!res.error && !res.noMorePosts) {
-			// intersection
-		}
-
-		fetchedPostsCount = fetchedPosts.length;
-		load.posts = false;
+	if (noMorePosts) {
+		return;
 	}
+
+	load.posts = true;
+	errorWhileFetching = false;
+	const res = await fetchPosts($page.params.id, fetchedPostsCount);
+
+	if (res.error) {
+		errorWhileFetching = true;
+		load.posts = false;
+		return;
+	}
+
+	fetchedPosts.push(...res.posts);
+	fetchedPosts = fetchedPosts;
+	noMorePosts = res.noMorePosts;
+	fetchedPostsCount = fetchedPosts.length;
+	load.posts = false;
+	if (!noMorePosts) {
+		//// clear observer and return
+	}
+
+	// udpate intersection?
 }
 
 onMount(() => {
@@ -253,6 +259,7 @@ onMount(() => {
 							<div class="grid grid-cols-3 gap-3">
 								{#each fetchedPosts as post}
 									<ProfilePost
+										on:click="{() => likePost(post.id)}"
 										id="{Number(post.id)}"
 										likes="{Number(post.like_count)}"
 										imageBg="{getThumbnailUrl(post.video_uid)}" />

@@ -20,7 +20,9 @@ const handler = async (request) => {
 		let mp4Url = '';
 
 		if (cloudflareQueryResponse.result.status.state === 'ready') {
+			console.log('ready state');
 			const res = await enableMp4Download(cloudflareVideoUid);
+			console.log('ready state res', res);
 			if (!res.error) {
 				mp4Url = res.url;
 			}
@@ -64,6 +66,7 @@ async function enableMp4Download() {
 			}
 		);
 		const res = await req.json();
+		console.log('enableMp4Download res', res);
 		if (res && res.result && res.result.default) {
 			return res.result.default;
 		}

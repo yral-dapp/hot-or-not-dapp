@@ -1,5 +1,6 @@
 import type {
 	GetPostsOfUserProfileError,
+	PostDetailsForFrontend,
 	UserProfileDetailsForFrontend
 } from '$canisters/individual_user_template/individual_user_template.did';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
@@ -63,7 +64,17 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
 	}
 }
 
-export async function fetchPosts(id: string, from: number) {
+type ProfilePostsResponse =
+	| {
+			error: true;
+	  }
+	| {
+			error: false;
+			posts: PostDetailsForFrontend[];
+			noMorePosts: boolean;
+	  };
+
+export async function fetchPosts(id: string, from: number): Promise<ProfilePostsResponse> {
 	try {
 		const canId = await getCanisterId(id);
 		const { individualUser } = await import('./backend');
@@ -83,13 +94,13 @@ export async function fetchPosts(id: string, from: number) {
 			switch (err) {
 				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
 				case 'InvalidBoundsPassed':
-					return { error: true, posts: [] };
+					return { error: true };
 				case 'ReachedEndOfItemsList':
 					return { error: false, noMorePosts: true, posts: [] };
 			}
 		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
 	} catch (e) {
 		Log({ error: e, from: '11 fetchPosts' }, 'error');
-		return { error: true, posts: [] };
+		return { error: true };
 	}
 }
