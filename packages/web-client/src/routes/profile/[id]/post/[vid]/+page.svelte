@@ -9,6 +9,8 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
 
 export let data: PageData;
 
@@ -32,7 +34,9 @@ onMount(async () => {
 		{/if}
 
 		<div class="absolute top-4 left-4">
-			<IconButton on:click="{() => history.back()}">
+			<IconButton
+				on:click="{() =>
+					history.length > 2 ? history.back() : goto(`/profile/${$page.params.id}`)}">
 				<CaretLeftIcon class="h-5 w-5" />
 			</IconButton>
 		</div>
