@@ -10,6 +10,7 @@
 		"web-client:build:static": "npm run --prefix ./packages/web-client build:static",
 		"web-client:preview": "npm run --prefix ./packages/web-client preview",
 		"web-client:dev": "npm run --prefix ./packages/web-client dev",
+		"web-client:sync": "npm run --prefix ./packages/web-client sync",
 		"workers:dev": "npm run --prefix ./src/workers dev",
 		"workers:publish": "npm run --prefix ./src/workers publish",
 		"postinstall": "find ./packages/* -maxdepth 2 -name package.json -execdir npm install \\;"
