@@ -9,6 +9,7 @@ import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
+import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
 
 beforeNavigate(({ from }) => {
 	$navigateBack = from?.url.pathname ?? null;
@@ -34,5 +35,7 @@ onMount(async () => {
 {#if $authState.showLogin}
 	<Login />
 {/if}
+
+<CornerRibbon>Aplha</CornerRibbon>
 
 <slot />
