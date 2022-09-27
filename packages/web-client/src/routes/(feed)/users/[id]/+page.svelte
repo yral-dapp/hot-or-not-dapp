@@ -4,7 +4,6 @@ import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
-import VideosSwiper from '$components/video/VideosSwiper.svelte';
 
 let startingVideoIndex = Number($page.params.id) ?? 0;
 </script>
@@ -18,9 +17,7 @@ let startingVideoIndex = Number($page.params.id) ?? 0;
 			</IconButton>
 		</div>
 	</svelte:fragment>
-	<svelte:fragment slot="content">
-		<VideosSwiper fetchFromId="{startingVideoIndex}" />
-	</svelte:fragment>
+	<svelte:fragment slot="content">content</svelte:fragment>
 	<div class="w-full" slot="bottom-navigation">
 		<BottomNavigation />
 	</div>
