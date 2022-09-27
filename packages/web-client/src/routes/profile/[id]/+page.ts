@@ -17,6 +17,7 @@ export const load: PageLoad = async ({ params }) => {
 		Log({ from: '1 noId' }, 'warn');
 		throw redirect(307, '/404');
 	}
+
 	const userProfileData = get(userProfile);
 
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
