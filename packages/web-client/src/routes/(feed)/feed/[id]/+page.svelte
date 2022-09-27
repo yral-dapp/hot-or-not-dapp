@@ -36,6 +36,8 @@ async function fetchNextVideos() {
 				return;
 			}
 
+			moreVideos = !res.noMorePosts;
+
 			videos.push(...res.posts);
 			videos = videos;
 
@@ -92,16 +94,25 @@ onMount(async () => {
 	spaceBetween="{100}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
+		{@const src = getMp4Url(video.video_uid)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
+					id="{video.id}"
+					userName="{video.created_by_unique_user_name[0]}"
+					profileLink="{video.created_by_unique_user_name[0] ??
+						video.created_by_user_principal_id.toText()}"
+					liked="{video.liked_by_me}"
+					videoViews="{Number(video.total_view_count)}"
+					publisherCanisterId="{video.publisher_canister_id}"
+					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
-					src="{getMp4Url(video.video_uid)}" />
+					src="{src}" />
 			{/if}
 		</SwiperSlide>
 	{/each}
