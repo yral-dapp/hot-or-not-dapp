@@ -7,7 +7,7 @@ import Selector from '$components/home/Selector.svelte';
 
 <HomeLayout>
 	<svelte:fragment slot="top">
-		{#if $page.url.pathname.includes('all')}
+		{#if $page.url.pathname.includes('feed')}
 			<Selector selected="videos" />
 		{:else if $page.url.pathname.includes('menu')}
 			<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
