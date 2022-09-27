@@ -11,7 +11,7 @@ import { playerState } from '$stores/playerState';
 import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
-$: showBg = !path.includes('all');
+$: showBg = !path.includes('feed');
 
 function prefetchLinks() {
 	!path.includes('menu') && prefetch('/menu');
@@ -29,9 +29,9 @@ onMount(() => prefetchLinks());
 		href="{`/feed/${$playerState.currentVideosIndex}`}"
 		prefetch
 		class="relative flex items-center px-2 py-5">
-		<HomeIcon filled="{path.includes('all')}" class="h-6 w-6 text-white" />
+		<HomeIcon filled="{path.includes('feed')}" class="h-6 w-6 text-white" />
 		<div
-			class:hidden="{!path.includes('all')}"
+			class:hidden="{!path.includes('feed')}"
 			class="absolute bottom-0 w-full bg-primary py-1 blur-md">
 		</div>
 	</IconButton>
