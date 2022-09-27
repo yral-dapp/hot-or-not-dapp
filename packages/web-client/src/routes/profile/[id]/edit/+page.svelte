@@ -9,6 +9,7 @@ import { onMount } from 'svelte';
 import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 import userProfile from '$stores/userProfile';
+import type { KeyboardEvents } from 'swiper/types';
 
 export let data: PageData;
 let { username, username_set, displayName, imgSrc, userPrincipal } = data;
@@ -25,12 +26,12 @@ let values: {
 async function isUsernameTaken() {
 	if (!username_set) {
 		return false;
-	} else if (values.username === username) {
+	} else if (values.username.toLowerCase() === username.toLowerCase()) {
 		return false;
 	} else {
 		try {
 			const { userIndex } = await import('$lib/helpers/backend');
-			return await userIndex().get_index_details_is_user_name_taken(values.username);
+			return await userIndex().get_index_details_is_user_name_taken(values.username.toLowerCase());
 		} catch (e) {
 			return true;
 		}
@@ -39,6 +40,12 @@ async function isUsernameTaken() {
 
 function resetAllFields() {
 	values.name = values.imageSrc = '';
+}
+
+function filterUsernameKeystrokes(e: KeyboardEvent) {
+	if (!/^\w+$/.test(e.key)) {
+		e.preventDefault();
+	}
 }
 
 async function saveChanges() {
@@ -64,20 +71,20 @@ async function saveChanges() {
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
 	const { individualUser, userIndex } = await import('$lib/helpers/backend');
-	if (username !== values.username) {
+	if (username.toLowerCase() !== values.username.toLowerCase()) {
 		try {
 			Promise.all([
 				userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
-					values.username,
+					values.username.toLowerCase(),
 					userPrincipal
 				),
-				individualUser().update_profile_set_unique_username_once(values.username)
+				individualUser().update_profile_set_unique_username_once(values.username.toLowerCase())
 			]);
 			username_set = true;
-			username = values.username;
+			username = values.username.toLowerCase();
 
 			$userProfile.username_set = true;
-			$userProfile.unique_user_name = values.username;
+			$userProfile.unique_user_name = values.username.toLowerCase();
 		} catch (e) {
 			loading = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
@@ -149,9 +156,10 @@ onMount(async () => {
 					<Input
 						disabled="{loading || username_set}"
 						bind:value="{values.username}"
+						on:keydown="{filterUsernameKeystrokes}"
 						type="text"
 						placeholder="Enter your username here"
-						class="w-full rounded-md bg-white/10 py-4" />
+						class="w-full rounded-md bg-white/10 py-4 lowercase" />
 					{#if username_set}
 						<span class="text-xs opacity-50">
 							You have already set your username, it cannot be changed now. You can change your
