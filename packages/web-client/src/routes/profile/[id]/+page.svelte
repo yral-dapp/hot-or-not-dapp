@@ -259,7 +259,6 @@ onMount(() => {
 							<div class="grid grid-cols-3 gap-3">
 								{#each fetchedPosts as post}
 									<ProfilePost
-										on:click="{() => likePost(post.id)}"
 										id="{Number(post.id)}"
 										likes="{Number(post.like_count)}"
 										imageBg="{getThumbnailUrl(post.video_uid)}" />
