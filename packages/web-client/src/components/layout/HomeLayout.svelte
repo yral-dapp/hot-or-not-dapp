@@ -15,10 +15,10 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 	style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
 	class="relative block h-full w-full overflow-hidden text-white">
 	<slot name="content" />
-	<div class="absolute inset-x-0 top-0 z-[5] {testClasses}">
+	<div class="absolute inset-x-0 top-0 z-[11] {testClasses}">
 		<slot name="top" />
 	</div>
-	<div class="absolute inset-x-0 bottom-0 z-[5] max-h-16 {testClasses}">
+	<div class="absolute inset-x-0 bottom-0 z-[10] max-h-16 {testClasses}">
 		<slot name="bottom-navigation" />
 	</div>
 </home>

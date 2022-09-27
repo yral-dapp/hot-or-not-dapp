@@ -11,6 +11,7 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build --threshold warning --diagnostic-sources \"js,ts,svelte\"",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"tsc": "tsc -b",
+		"sync": "svelte-kit sync",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
@@ -31,7 +32,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^1.0.0-next.38",
 		"@sveltejs/adapter-static": "1.0.0-next.43",
-		"@sveltejs/kit": "1.0.0-next.504",
+		"@sveltejs/kit": "1.0.0-next.500",
 		"@tailwindcss/forms": "0.5.3",
 		"@types/gtag.js": "0.0.11",
 		"@types/lodash-es": "4.17.6",

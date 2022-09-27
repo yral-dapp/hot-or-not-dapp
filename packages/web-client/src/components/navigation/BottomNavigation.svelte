@@ -11,7 +11,7 @@ import { playerState } from '$stores/playerState';
 import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
-$: showBg = !path.includes('feed');
+$: showBg = !(path.includes('feed') || path.includes('post'));
 
 function prefetchLinks() {
 	!path.includes('menu') && prefetch('/menu');
