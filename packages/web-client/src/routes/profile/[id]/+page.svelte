@@ -1,49 +1,4 @@
 <script lang="ts">
-const dummyPost =
-	'https://images.pexels.com/photos/11042025/pexels-photo-11042025.jpeg?auto=compress&cs=tinysrgb&h=200';
-
-const dummySpeculation =
-	'https://images.pexels.com/photos/13151933/pexels-photo-13151933.jpeg?auto=compress&cs=tinysrgb&h=400';
-
-const speculations = [
-	{
-		id: '1',
-		imageBg: dummySpeculation,
-		username: 'Adrian440',
-		bet: {
-			tokens: 100,
-			status: 'lost' as BetStatus
-		}
-	},
-	{
-		id: '2',
-		imageBg: dummySpeculation,
-		username: 'Natasha009',
-		bet: {
-			tokens: 80,
-			status: 'won' as BetStatus
-		}
-	},
-	{
-		id: '3',
-		imageBg: dummySpeculation,
-		username: 'WWEKarun',
-		bet: {
-			tokens: 500,
-			status: 'pending' as BetStatus
-		}
-	},
-	{
-		id: '4',
-		imageBg: dummySpeculation,
-		username: 'Aaron500',
-		bet: {
-			tokens: 20,
-			status: 'lost' as BetStatus
-		}
-	}
-];
-
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import PencilIcon from '$components/icons/PencilIcon.svelte';
@@ -77,6 +32,8 @@ let load = {
 	posts: true,
 	follow: false
 };
+
+const speculations: any = [];
 
 let profile: UserProfile;
 let fetchedPosts: PostDetailsForFrontend[] = [];
