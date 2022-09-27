@@ -39,7 +39,7 @@ let isInputLimitReached = false;
 const MAX_HASHTAG_LENGTH = 60;
 let videoSrc = '';
 let previewMuted = true;
-let uploadedVideoId;
+let uploadedVideoId = 0;
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
