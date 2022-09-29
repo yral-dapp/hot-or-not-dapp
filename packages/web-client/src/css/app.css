@@ -36,6 +36,10 @@
 	}
 }
 
+.safe-bottom {
+	padding-bottom: env(safe-area-inset-bottom);
+}
+
 button {
 	-webkit-tap-highlight-color: transparent;
 }

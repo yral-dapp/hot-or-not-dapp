@@ -16,7 +16,6 @@ import type { UploadStatus } from '$components/upload/UploadTypes';
 import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
-import { individualUser } from '$lib/helpers/backend';
 import userProfile from '$stores/userProfile';
 
 let uploadStatus: UploadStatus = 'to-upload';
@@ -113,6 +112,7 @@ async function checkVideoProcessingStatus(uid: string) {
 async function handleSuccessfulUpload(videoUid: string) {
 	try {
 		Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
+		const individualUser = (await import('$lib/helpers/backend')).individualUser;
 		const postId = await individualUser().add_post({
 			description: videoDescription,
 			hashtags,
@@ -159,7 +159,9 @@ function getVideoLink() {
 onMount(async () => {
 	if ($fileToUpload) {
 		videoSrc = URL.createObjectURL($fileToUpload);
-	} else goto('/upload');
+	} else {
+		goto('/upload');
+	}
 });
 
 onDestroy(() => {
@@ -228,6 +230,7 @@ onDestroy(() => {
 					bind:value="{videoHashtags}"
 					bind:tags="{hashtags}" />
 			</div>
+
 			{#if isInputLimitReached}
 				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
 			{/if}
@@ -275,7 +278,7 @@ onDestroy(() => {
 				</div>
 			</div>
 		{/if}
-		<div class="pt-16 pb-24 shadow-up shadow-black/50">
+		<div class="pt-16 pb-24">
 			<div class="pb-4">
 				<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 				deleted.
