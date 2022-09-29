@@ -10,6 +10,10 @@ import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 import userProfile from '$stores/userProfile';
 import type { Principal } from '@dfinity/principal';
+import { set } from 'idb-keyval';
+import { getCanisterId } from '$lib/helpers/idb';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { page } from '$app/stores';
 
 export let data: PageData;
 //@ts-ignore
@@ -37,14 +41,15 @@ let values: {
 };
 
 async function isUsernameTaken() {
+	const newUsername = values.username.toLowerCase().trim();
 	if (!username_set) {
 		return false;
-	} else if (values.username.toLowerCase() === username) {
+	} else if (newUsername === username) {
 		return false;
 	} else {
 		try {
 			const { userIndex } = await import('$lib/helpers/backend');
-			return await userIndex().get_index_details_is_user_name_taken(values.username.toLowerCase());
+			return await userIndex().get_index_details_is_user_name_taken(newUsername);
 		} catch (e) {
 			return true;
 		}
@@ -84,20 +89,23 @@ async function saveChanges() {
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
 	const { individualUser, userIndex } = await import('$lib/helpers/backend');
-	if (username !== values.username.toLowerCase()) {
+	const newUsername = values.username.toLowerCase().trim();
+	if (username !== newUsername) {
 		try {
 			Promise.all([
 				userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
-					values.username.toLowerCase(),
+					newUsername,
 					userPrincipal
 				),
-				individualUser().update_profile_set_unique_username_once(values.username.toLowerCase())
+				individualUser().update_profile_set_unique_username_once(newUsername)
 			]);
 			username_set = true;
-			username = values.username.toLowerCase();
+			username = newUsername;
 
 			$userProfile.username_set = true;
-			$userProfile.unique_user_name = values.username.toLowerCase();
+			$userProfile.unique_user_name = newUsername;
+			const canId = await getCanisterId(userPrincipal.toString());
+			if (canId) set(newUsername, canId);
 		} catch (e) {
 			loading = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
@@ -114,7 +122,8 @@ async function saveChanges() {
 		console.log('res', res);
 		if ('Ok' in res) {
 			$userProfile.display_name = res.Ok.display_name[0] ?? '';
-			$userProfile.profile_picture_url = res.Ok.profile_picture_url[0] ?? '';
+			$userProfile.profile_picture_url =
+				res.Ok.profile_picture_url[0] ?? getDefaultImageUrl($page.params.id);
 		} else {
 			error = 'Could not save your profile. Please login again to try again.';
 		}
