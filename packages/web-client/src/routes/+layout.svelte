@@ -36,6 +36,6 @@ onMount(async () => {
 	<Login />
 {/if}
 
-<CornerRibbon>Aplha</CornerRibbon>
+<CornerRibbon>Alpha</CornerRibbon>
 
 <slot />
