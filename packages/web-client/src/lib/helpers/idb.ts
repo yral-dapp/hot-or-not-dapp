@@ -12,7 +12,7 @@ export async function isPrincipal(p?: any) {
 	}
 }
 
-export async function getCanisterId(id: string) {
+export async function getCanisterId(id: string): Promise<string | false> {
 	const canId = await get(id);
 	if (canId) return canId;
 	else {
@@ -35,7 +35,7 @@ export async function getCanisterId(id: string) {
 			}
 		} catch (e) {
 			Log({ error: e, from: '1 getCanisterId' }, 'error');
-			return;
+			return false;
 		}
 	}
 }
