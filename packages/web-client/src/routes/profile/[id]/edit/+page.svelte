@@ -71,7 +71,7 @@ async function saveChanges() {
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
 	const { individualUser, userIndex } = await import('$lib/helpers/backend');
-	if (username.toLowerCase() !== values.username.toLowerCase()) {
+	if (username !== values.username.toLowerCase()) {
 		try {
 			Promise.all([
 				userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
