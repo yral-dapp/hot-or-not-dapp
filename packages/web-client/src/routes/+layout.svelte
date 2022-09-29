@@ -36,7 +36,7 @@ onMount(async () => {
 	<Login />
 {/if}
 
-<div class="safe-bottom relative h-full w-full overflow-hidden">
+<div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
 	<CornerRibbon>Alpha</CornerRibbon>
 
 	<slot />
