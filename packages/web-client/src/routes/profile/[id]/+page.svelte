@@ -172,14 +172,12 @@ onMount(() => {
 				</div>
 				<div
 					class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-					<a
-						href="{`/profile/${userId}/lovers`}"
-						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.followers_count}
 						</span>
 						<span class="text-sm">Lovers</span>
-					</a>
+					</div>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.profile_stats.lifetime_earnings}
