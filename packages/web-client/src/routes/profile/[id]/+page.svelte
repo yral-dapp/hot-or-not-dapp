@@ -23,6 +23,7 @@ import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 
 export let data: PageData;
 const { me, fetchedProfile } = data;
@@ -123,7 +124,7 @@ onMount(() => {
 	}
 	loadPosts();
 	load.page = false;
-	Log({ from: '0 menuMount', id: $page.params.id, me, profile }, 'info');
+	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>
 
@@ -160,7 +161,7 @@ onMount(() => {
 			<div class="flex h-full w-full flex-col overflow-y-auto ">
 				<div class="flex w-full flex-col items-center justify-center py-8">
 					<img
-						class="h-24 w-24 rounded-full {profile.profile_picture_url}"
+						class="h-24 w-24 rounded-full"
 						alt="{profile.display_name}"
 						src="{profile.profile_picture_url}" />
 					<span class="text-md pt-4 font-bold">
