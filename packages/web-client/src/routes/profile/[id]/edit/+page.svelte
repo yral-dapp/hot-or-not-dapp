@@ -9,10 +9,23 @@ import { onMount } from 'svelte';
 import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 import userProfile from '$stores/userProfile';
-import type { KeyboardEvents } from 'swiper/types';
+import type { Principal } from '@dfinity/principal';
 
 export let data: PageData;
-let { username, username_set, displayName, imgSrc, userPrincipal } = data;
+//@ts-ignore
+let {
+	username,
+	username_set,
+	displayName,
+	imgSrc,
+	userPrincipal
+}: {
+	username_set: boolean;
+	username?: string;
+	displayName?: string;
+	imgSrc?: string;
+	userPrincipal: Principal;
+} = data;
 
 let pageLoaded = false;
 let loading = true;
@@ -26,7 +39,7 @@ let values: {
 async function isUsernameTaken() {
 	if (!username_set) {
 		return false;
-	} else if (values.username.toLowerCase() === username.toLowerCase()) {
+	} else if (values.username.toLowerCase() === username) {
 		return false;
 	} else {
 		try {
