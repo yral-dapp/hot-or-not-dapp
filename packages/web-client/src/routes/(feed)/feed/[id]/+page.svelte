@@ -11,6 +11,7 @@ import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { getTopPosts, type PostPopulated } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import type { Principal } from '@dfinity/principal';
 
 const fetchCount = 5;
 let videos: PostPopulated[] = [];
@@ -20,7 +21,16 @@ let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
-let individualUser: () => IndividualUserActor;
+let individualUser: (principal?: Principal) => IndividualUserActor;
+let videoStats: Record<
+	number,
+	{
+		progress: number;
+		videoId: bigint;
+		canisterId: Principal;
+		count: number;
+	}
+> = {};
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -52,10 +62,29 @@ async function fetchNextVideos() {
 	}
 }
 
+async function updateStats(oldIndex) {
+	const stats = videoStats[oldIndex];
+	delete videoStats[oldIndex];
+	const payload =
+		stats.count == 0
+			? {
+					WatchedPartially: { percentage_watched: Math.floor(stats.progress) }
+			  }
+			: {
+					WatchedMultipleTimes: {
+						percentage_watched: Math.floor(stats.progress),
+						watch_count: stats.count
+					}
+			  };
+	Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
+	await individualUser(stats.canisterId).update_post_add_view_details(stats.videoId, payload);
+}
+
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
+	updateStats(currentPlayingIndex);
 	$playerState.currentVideosIndex = index;
 	playVideo(index);
 	fetchNextVideos();
@@ -72,6 +101,20 @@ const playVideo = debounce(50, async (index: number) => {
 function updateURL() {
 	if (videos[currentVideoIndex])
 		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
+}
+
+function recordStats(progress: number, canisterId: Principal, videoId: bigint) {
+	if (videoStats[currentPlayingIndex]) {
+		videoStats[currentPlayingIndex].progress = progress;
+		if (progress == 0) videoStats[currentPlayingIndex].count++;
+	} else {
+		videoStats[currentPlayingIndex] = {
+			progress,
+			videoId,
+			canisterId,
+			count: 0
+		};
+	}
 }
 
 onMount(async () => {
@@ -98,6 +141,8 @@ onMount(async () => {
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
+					on:watchedPercentage="{({ detail }) =>
+						recordStats(detail, video.publisher_canister_id, video.id)}"
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
 					id="{video.id}"
