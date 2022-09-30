@@ -105,6 +105,7 @@ onMount(async () => {
 					profileLink="{video.created_by_unique_user_name[0] ??
 						video.created_by_user_principal_id.toText()}"
 					liked="{video.liked_by_me}"
+					createdById="{video.created_by_user_principal_id.toText()}"
 					videoViews="{Number(video.total_view_count)}"
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"

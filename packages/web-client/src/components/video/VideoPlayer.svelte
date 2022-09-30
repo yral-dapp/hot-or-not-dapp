@@ -30,6 +30,7 @@ export let videoViews = 254000;
 export let publisherCanisterId: Principal;
 export let userProfileSrc = '';
 export let liked = false;
+export let createdById = '';
 export let individualUser: (user: Principal) => IndividualUserActor;
 
 let videoEl: HTMLVideoElement;
@@ -188,11 +189,11 @@ async function handleShare() {
 				on:click="{(e) => e.stopImmediatePropagation()}"
 				class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
-					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(i.toString())}" />
+					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
 				<div class="flex flex-col space-y-1">
 					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
-						{displayName || generateRandomName('name', i.toString())}
+						{displayName || generateRandomName('name', createdById)}
 					</a>
 					<div class="flex items-center space-x-1">
 						<EyeIcon class="h-4 w-4 text-white" />
