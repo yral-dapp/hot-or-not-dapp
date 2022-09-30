@@ -13,7 +13,7 @@ import type { Principal } from '@dfinity/principal';
 import { set } from 'idb-keyval';
 import { getCanisterId } from '$lib/helpers/idb';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
-import { page } from '$app/stores';
+import { authState } from '$stores/auth';
 
 export let data: PageData;
 //@ts-ignore
@@ -121,9 +121,9 @@ async function saveChanges() {
 		imgSrc = values.imageSrc;
 		console.log('res', res);
 		if ('Ok' in res) {
-			$userProfile.display_name = res.Ok.display_name[0] ?? '';
+			$userProfile.display_name = res.Ok.display_name[0] || '';
 			$userProfile.profile_picture_url =
-				res.Ok.profile_picture_url[0] ?? getDefaultImageUrl($page.params.id);
+				res.Ok.profile_picture_url[0] || getDefaultImageUrl($authState.idString);
 		} else {
 			error = 'Could not save your profile. Please login again to try again.';
 		}
