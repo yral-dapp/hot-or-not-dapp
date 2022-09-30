@@ -17,6 +17,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
+import { createEventDispatcher } from 'svelte';
 
 export let swiperJs: boolean;
 export let src;
@@ -33,11 +34,16 @@ export let liked = false;
 export let createdById = '';
 export let individualUser: (user: Principal) => IndividualUserActor;
 
+const dispatch = createEventDispatcher<{
+	watchedPercentage: number;
+}>();
+
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
+let currentTime = 0;
+let duration = 0;
 let loaded = false;
 let paused = true;
-
 let playPromise: Promise<void> | undefined = undefined;
 
 export async function play() {
@@ -103,6 +109,10 @@ async function handleShare() {
 	});
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
+
+$: if (inView && !paused) {
+	dispatch('watchedPercentage', (currentTime / duration) * 100);
+}
 </script>
 
 <player
@@ -122,6 +132,8 @@ async function handleShare() {
 		autoplay
 		muted
 		bind:paused
+		bind:currentTime
+		bind:duration
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
