@@ -101,7 +101,7 @@ onMount(async () => {
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
 					id="{video.id}"
-					userName="{video.created_by_unique_user_name[0]}"
+					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ??
 						video.created_by_user_principal_id.toText()}"
 					liked="{video.liked_by_me}"

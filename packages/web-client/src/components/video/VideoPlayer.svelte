@@ -24,7 +24,7 @@ export let i: number;
 export let id: bigint;
 export let inView = false;
 export let thumbnail = '';
-export let userName = '';
+export let displayName = '';
 export let profileLink = '';
 export let videoViews = 254000;
 export let publisherCanisterId: Principal;
@@ -192,7 +192,7 @@ async function handleShare() {
 				</a>
 				<div class="flex flex-col space-y-1">
 					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
-						@{userName || generateRandomName('username', i.toString())}
+						{displayName || generateRandomName('name', i.toString())}
 					</a>
 					<div class="flex items-center space-x-1">
 						<EyeIcon class="h-4 w-4 text-white" />
