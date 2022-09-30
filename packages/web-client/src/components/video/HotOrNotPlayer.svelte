@@ -10,7 +10,7 @@ import SoundIcon from '$components/icons/SoundIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import UsersIcon from '$components/icons/UsersIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
-import type { IndividualUserCanister } from '$lib/helpers/backend';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
@@ -31,7 +31,7 @@ export let swiperJs;
 export let liked = false;
 export let shareCount = 0;
 export let shared = false;
-export let individualUser: () => IndividualUserCanister;
+export let individualUser: () => IndividualUserActor;
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
