@@ -10,7 +10,7 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
-import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
+import SpeculationPost from '$components/profile/SpeculationPost.svelte';
 import userProfile, { type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { onMount } from 'svelte';
@@ -23,7 +23,6 @@ import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
-import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 
 export let data: PageData;
 const { me, fetchedProfile } = data;
