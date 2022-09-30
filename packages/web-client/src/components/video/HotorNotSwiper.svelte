@@ -5,7 +5,7 @@ import { onMount, tick } from 'svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import 'swiper/css';
 import { debounce } from 'throttle-debounce';
-import type { IndividualUserCanister } from '$lib/helpers/backend';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import HotOrNotPlayer from './HotOrNotPlayer.svelte';
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
@@ -21,7 +21,7 @@ let moreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: HotOrNotPlayer[] = [];
-let individualUser: () => IndividualUserCanister;
+let individualUser: () => IndividualUserActor;
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -86,8 +86,7 @@ onMount(async () => {
 		on:slideChange="{handleChange}"
 		cssMode
 		spaceBetween="{100}"
-		class="h-full w-full"
-	>
+		class="h-full w-full">
 		{#each videos as video, i (i)}
 			<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 				{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
@@ -97,16 +96,14 @@ onMount(async () => {
 						individualUser="{individualUser}"
 						inView="{i == currentVideoIndex}"
 						swiperJs
-						src="{video.url}"
-					/>
+						src="{video.url}" />
 				{/if}
 			</SwiperSlide>
 		{/each}
 		{#if loading}
 			<SwiperSlide class="flex h-full w-full items-center justify-center">
 				<div
-					class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8"
-				>
+					class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 					<div class="text-center text-lg font-bold">Loading</div>
 				</div>
 			</SwiperSlide>
@@ -114,8 +111,7 @@ onMount(async () => {
 		{#if !moreVideos}
 			<SwiperSlide class="relative h-full w-full items-center justify-center">
 				<div
-					class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8"
-				>
+					class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8">
 					<NoBetsIcon class="w-56" />
 					<div class="text-center text-lg font-bold">There are no more videos to bet on</div>
 					<div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
