@@ -176,6 +176,9 @@ async function handleShare() {
 					<ShareMessageIcon class="h-6 w-6" />
 				</IconButton>
 				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+					}}"
 					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
 					<FireIcon class="h-5 w-5" />
 				</IconButton>
