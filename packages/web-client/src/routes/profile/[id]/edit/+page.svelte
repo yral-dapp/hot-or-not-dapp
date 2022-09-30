@@ -14,6 +14,7 @@ import { set } from 'idb-keyval';
 import { getCanisterId } from '$lib/helpers/idb';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { authState } from '$stores/auth';
+import { goto } from '$app/navigation';
 
 export let data: PageData;
 //@ts-ignore
@@ -128,6 +129,7 @@ async function saveChanges() {
 			error = 'Could not save your profile. Please login again to try again.';
 		}
 		loading = false;
+		goto(`/profile/${username_set ? $userProfile.unique_user_name : $userProfile.principal_id}`);
 	} catch (e) {
 		loading = false;
 		Log({ error: e, from: '2 saveChanges' }, 'error');
