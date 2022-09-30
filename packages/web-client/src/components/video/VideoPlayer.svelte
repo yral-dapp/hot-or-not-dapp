@@ -194,7 +194,7 @@ async function handleShare() {
 				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
-				<div class="flex flex-col space-y-1">
+				<div class="flex flex-col space-y-1 capitalize">
 					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
 						{displayName || generateRandomName('name', createdById)}
 					</a>
