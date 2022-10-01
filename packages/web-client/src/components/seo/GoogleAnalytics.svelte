@@ -36,7 +36,9 @@ export const registerEvent = (
 import { afterNavigate } from '$app/navigation';
 
 afterNavigate(({ to }) => {
-	registerPageview(new URL(to.href));
+	if (to) {
+		registerPageview(new URL(to.url.href));
+	}
 });
 </script>
 
