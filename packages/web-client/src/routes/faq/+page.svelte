@@ -34,7 +34,7 @@ function toggleAccordion(i: number) {
 			<DotTabs
 				on:click="{() => (expandedIndex = -1)}"
 				bind:selectedIndex="{selectedTab}"
-				tabs="{['General', 'Payments', 'Registration']}" />
+				tabs="{['General', 'Tokens', 'NFTs']}" />
 			{#if selectedTab == 0}
 				{#each faq.general as q, i}
 					<Accordion on:click="{() => toggleAccordion(i)}" expanded="{expandedIndex == i}">
@@ -45,7 +45,7 @@ function toggleAccordion(i: number) {
 					</Accordion>
 				{/each}
 			{:else if selectedTab == 1}
-				{#each faq.payments as q, i}
+				{#each faq.tokens as q, i}
 					<Accordion on:click="{() => toggleAccordion(i)}" expanded="{expandedIndex == i}">
 						<div class="w-full truncate" slot="title">{q.title}</div>
 						<div transition:slide|local slot="body" class="text-sm opacity-70">
@@ -54,7 +54,7 @@ function toggleAccordion(i: number) {
 					</Accordion>
 				{/each}
 			{:else}
-				{#each faq.registration as q, i}
+				{#each faq.nfts as q, i}
 					<Accordion on:click="{() => toggleAccordion(i)}" expanded="{expandedIndex == i}">
 						<div class="w-full truncate" slot="title">{q.title}</div>
 						<div transition:slide|local slot="body" class="text-sm opacity-70">
