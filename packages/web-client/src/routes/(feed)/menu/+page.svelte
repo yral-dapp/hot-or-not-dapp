@@ -25,7 +25,7 @@ $: links = [
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
 		class: 'w-5 h-5',
-		href: '/refer-earn'
+		href: '/refer'
 	},
 	{
 		icon: CenterTextIcon,
