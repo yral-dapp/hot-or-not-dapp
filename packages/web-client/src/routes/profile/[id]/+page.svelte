@@ -83,11 +83,6 @@ async function loveUser() {
 	}
 }
 
-async function likePost(id: bigint) {
-	const individualUser = (await import('$lib/helpers/backend')).individualUser;
-	await individualUser().update_post_toggle_like_status_by_caller(id);
-}
-
 async function loadPosts() {
 	if (noMorePosts) {
 		return;
