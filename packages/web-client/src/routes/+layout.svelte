@@ -41,6 +41,5 @@ onMount(async () => {
 
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
 	<CornerRibbon>Alpha</CornerRibbon>
-
 	<slot />
 </div>
