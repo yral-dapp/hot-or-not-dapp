@@ -15,7 +15,7 @@ export const load: PageLoad = async ({ params }) => {
 	const id = params.id;
 	if (!id) {
 		Log({ from: '1 noId' }, 'warn');
-		throw redirect(307, '/404');
+		throw redirect(307, '/menu');
 	}
 
 	const userProfileData = get(userProfile);
@@ -26,7 +26,7 @@ export const load: PageLoad = async ({ params }) => {
 		const canId = await getCanisterId(id);
 		if (!canId) {
 			Log({ from: '1 noCanId' }, 'warn');
-			throw redirect(307, '/404');
+			throw new Error("Couldn't find canister Id");
 		}
 		Log({ canId, from: '0 canId' }, 'info');
 		const individualUser = (await import('$lib/helpers/backend')).individualUser;
