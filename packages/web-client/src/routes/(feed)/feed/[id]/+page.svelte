@@ -65,7 +65,9 @@ async function fetchNextVideos() {
 async function updateStats(oldIndex) {
 	const stats = videoStats[oldIndex];
 	delete videoStats[oldIndex];
-
+	if (stats.count === 0 && stats.progress === 0) {
+		return;
+	}
 	const payload =
 		stats.count == 0
 			? {
