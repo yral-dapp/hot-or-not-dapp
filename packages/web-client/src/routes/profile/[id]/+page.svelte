@@ -31,7 +31,7 @@ const { me, fetchedProfile } = data;
 
 let load = {
 	page: true,
-	posts: false,
+	posts: true,
 	follow: false
 };
 
@@ -90,13 +90,9 @@ async function loadPosts() {
 		return;
 	}
 
-	console.log('load post called');
-
 	load.posts = true;
 	errorWhileFetching = false;
 	const res = await fetchPosts($page.params.id, fetchedPostsCount);
-
-	console.log('res', res);
 
 	if (res.error) {
 		errorWhileFetching = true;
@@ -251,7 +247,7 @@ onMount(() => {
 							loading="{load.posts}"
 							intersect="{!noMorePosts}">
 							<svelte:fragment>
-								<div class="h-4 w-full"></div>
+								<div class="h-2 w-full"></div>
 							</svelte:fragment>
 						</IntersectionObserver>
 					{:else if speculations.length}
