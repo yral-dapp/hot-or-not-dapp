@@ -3,7 +3,7 @@ import { createEventDispatcher, onMount } from 'svelte';
 
 export let threshold: number = 1;
 export let intersect: boolean;
-export let loading: boolean;
+export let disabled: boolean;
 
 const dispatch = createEventDispatcher<{
 	intersected: void;
@@ -28,7 +28,7 @@ function initIntersectionObserver() {
 	observer = new IntersectionObserver(
 		async (entries) => {
 			if (entries[0].isIntersecting) {
-				if (intersect && !loading) {
+				if (intersect && !disabled) {
 					dispatch('intersected');
 				} else {
 					observer.disconnect();

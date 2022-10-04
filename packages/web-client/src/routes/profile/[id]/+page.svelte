@@ -249,7 +249,7 @@ onMount(() => {
 
 						<IntersectionObserver
 							on:intersected="{loadPosts}"
-							loading="{load.posts || errorWhileFetching}"
+							disabled="{load.posts || errorWhileFetching}"
 							intersect="{!noMorePosts}">
 							<svelte:fragment>
 								<div class="h-2 w-full"></div>
