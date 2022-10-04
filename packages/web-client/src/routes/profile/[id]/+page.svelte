@@ -31,7 +31,7 @@ const { me, fetchedProfile } = data;
 
 let load = {
 	page: true,
-	posts: true,
+	posts: false,
 	follow: false
 };
 
@@ -90,9 +90,13 @@ async function loadPosts() {
 		return;
 	}
 
+	console.log('load post called');
+
 	load.posts = true;
 	errorWhileFetching = false;
 	const res = await fetchPosts($page.params.id, fetchedPostsCount);
+
+	console.log('res', res);
 
 	if (res.error) {
 		errorWhileFetching = true;
