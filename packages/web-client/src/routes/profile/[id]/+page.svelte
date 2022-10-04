@@ -105,11 +105,6 @@ async function loadPosts() {
 	noMorePosts = res.noMorePosts;
 	fetchedPostsCount = fetchedPosts.length;
 	load.posts = false;
-	if (!noMorePosts) {
-		//// clear observer and return
-	}
-
-	// udpate intersection?
 }
 
 onMount(() => {
