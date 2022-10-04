@@ -241,8 +241,8 @@ onMount(() => {
 								<span>Fetching posts</span>
 							</div>
 						{/if}
-						{#if noMorePosts}
-							<div class="flex w-full items-center justify-center space-x-2 py-8">
+						{#if noMorePosts && fetchedPosts.length}
+							<div class="flex w-full items-center justify-center space-x-2 py-8 opacity-40">
 								<span>No more posts</span>
 							</div>
 						{/if}
