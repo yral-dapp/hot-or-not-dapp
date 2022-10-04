@@ -247,7 +247,10 @@ onMount(() => {
 							</div>
 						{/if}
 
-						<IntersectionObserver on:intersected="{loadPosts}" intersect="{!noMorePosts}">
+						<IntersectionObserver
+							on:intersected="{loadPosts}"
+							loading="{load.posts}"
+							intersect="{!noMorePosts}">
 							<svelte:fragment>
 								<div class="h-4 w-full"></div>
 							</svelte:fragment>
