@@ -23,13 +23,15 @@ import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
+import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 
 export let data: PageData;
+//@ts-ignore
 const { me, fetchedProfile } = data;
 
 let load = {
 	page: true,
-	posts: true,
+	posts: false,
 	follow: false
 };
 
@@ -103,11 +105,6 @@ async function loadPosts() {
 	noMorePosts = res.noMorePosts;
 	fetchedPostsCount = fetchedPosts.length;
 	load.posts = false;
-	if (!noMorePosts) {
-		//// clear observer and return
-	}
-
-	// udpate intersection?
 }
 
 onMount(() => {
@@ -116,7 +113,6 @@ onMount(() => {
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
 	}
-	loadPosts();
 	load.page = false;
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
@@ -245,6 +241,20 @@ onMount(() => {
 								<span>Fetching posts</span>
 							</div>
 						{/if}
+						{#if noMorePosts && fetchedPosts.length}
+							<div class="flex w-full items-center justify-center space-x-2 py-8 opacity-40">
+								<span>No more posts</span>
+							</div>
+						{/if}
+
+						<IntersectionObserver
+							on:intersected="{loadPosts}"
+							disabled="{load.posts || errorWhileFetching}"
+							intersect="{!noMorePosts}">
+							<svelte:fragment>
+								<div class="h-2 w-full"></div>
+							</svelte:fragment>
+						</IntersectionObserver>
 					{:else if speculations.length}
 						<div class="grid grid-cols-2 gap-3">
 							{#each speculations as speculation}
