@@ -31,7 +31,7 @@ const { me, fetchedProfile } = data;
 
 let load = {
 	page: true,
-	posts: true,
+	posts: false,
 	follow: false
 };
 
