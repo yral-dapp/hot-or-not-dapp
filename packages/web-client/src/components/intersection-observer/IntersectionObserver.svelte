@@ -15,7 +15,6 @@ let intersectionWrapperEl: HTMLElement;
 function selectListElementAndWatch() {
 	try {
 		const el = intersectionWrapperEl.children[0];
-		console.log('sel el', el);
 		if (el) {
 			observer.observe(el);
 		}
