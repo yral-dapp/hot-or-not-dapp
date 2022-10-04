@@ -241,6 +241,11 @@ onMount(() => {
 								<span>Fetching posts</span>
 							</div>
 						{/if}
+						{#if noMorePosts}
+							<div class="flex w-full items-center justify-center space-x-2 py-8">
+								<span>No more posts</span>
+							</div>
+						{/if}
 
 						<IntersectionObserver
 							on:intersected="{loadPosts}"
