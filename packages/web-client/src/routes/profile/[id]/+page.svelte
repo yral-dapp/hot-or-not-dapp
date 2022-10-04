@@ -10,7 +10,7 @@ import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
-import SpeculationPost, { type BetStatus } from '$components/profile/SpeculationPost.svelte';
+import SpeculationPost from '$components/profile/SpeculationPost.svelte';
 import userProfile, { type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { onMount } from 'svelte';
@@ -23,13 +23,15 @@ import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
+import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 
 export let data: PageData;
+//@ts-ignore
 const { me, fetchedProfile } = data;
 
 let load = {
 	page: true,
-	posts: true,
+	posts: false,
 	follow: false
 };
 
@@ -54,7 +56,7 @@ async function showShareDialog() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: 'https://v2.gobazzinga.io/feed/'
+			url: `https://v2.gobazzinga.io/profile/${userId}`
 		});
 	} catch (err) {
 		console.error('Cannot open share dialog', err);
@@ -83,11 +85,6 @@ async function loveUser() {
 	}
 }
 
-async function likePost(id: bigint) {
-	const individualUser = (await import('$lib/helpers/backend')).individualUser;
-	await individualUser().update_post_toggle_like_status_by_caller(id);
-}
-
 async function loadPosts() {
 	if (noMorePosts) {
 		return;
@@ -108,11 +105,6 @@ async function loadPosts() {
 	noMorePosts = res.noMorePosts;
 	fetchedPostsCount = fetchedPosts.length;
 	load.posts = false;
-	if (!noMorePosts) {
-		//// clear observer and return
-	}
-
-	// udpate intersection?
 }
 
 onMount(() => {
@@ -121,9 +113,8 @@ onMount(() => {
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
 	}
-	loadPosts();
 	load.page = false;
-	Log({ from: '0 menuMount', id: $page.params.id, me, profile }, 'info');
+	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>
 
@@ -160,7 +151,7 @@ onMount(() => {
 			<div class="flex h-full w-full flex-col overflow-y-auto ">
 				<div class="flex w-full flex-col items-center justify-center py-8">
 					<img
-						class="h-24 w-24 rounded-full {profile.profile_picture_url}"
+						class="h-24 w-24 rounded-full"
 						alt="{profile.display_name}"
 						src="{profile.profile_picture_url}" />
 					<span class="text-md pt-4 font-bold">
@@ -172,14 +163,12 @@ onMount(() => {
 				</div>
 				<div
 					class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-					<a
-						href="{`/profile/${userId}/lovers`}"
-						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.followers_count}
 						</span>
 						<span class="text-sm">Lovers</span>
-					</a>
+					</div>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.profile_stats.lifetime_earnings}
@@ -252,6 +241,20 @@ onMount(() => {
 								<span>Fetching posts</span>
 							</div>
 						{/if}
+						{#if noMorePosts && fetchedPosts.length}
+							<div class="flex w-full items-center justify-center space-x-2 py-8 opacity-40">
+								<span>No more posts</span>
+							</div>
+						{/if}
+
+						<IntersectionObserver
+							on:intersected="{loadPosts}"
+							disabled="{load.posts || errorWhileFetching}"
+							intersect="{!noMorePosts}">
+							<svelte:fragment>
+								<div class="h-2 w-full"></div>
+							</svelte:fragment>
+						</IntersectionObserver>
 					{:else if speculations.length}
 						<div class="grid grid-cols-2 gap-3">
 							{#each speculations as speculation}

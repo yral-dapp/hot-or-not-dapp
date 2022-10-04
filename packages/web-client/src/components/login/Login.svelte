@@ -17,9 +17,11 @@ import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
+import userProfile from '$stores/userProfile';
 import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
@@ -52,6 +54,11 @@ async function handleSuccessfulLogin(type: LoginType) {
 	$authState.isLoggedIn = true;
 	try {
 		await initializeAuthClient();
+		registerEvent('login', {
+			screen_name: $userProfile.display_name,
+			username: $userProfile.unique_user_name,
+			principal_id: $userProfile.principal_id
+		});
 		loading = false;
 		$authState.showLogin = false;
 	} catch (_) {
@@ -67,7 +74,7 @@ function handleError(type: LoginType, e?: string) {
 }
 </script>
 
-<login transition:fade|local class="absolute z-[10] block h-full w-full bg-black/90 text-white">
+<login transition:fade|local class="absolute z-[100] block h-full w-full bg-black/90 text-white">
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
 		<span class="text-3xl font-bold">Join GoBazzinga</span>
 		<div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">

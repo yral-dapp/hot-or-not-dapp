@@ -24,6 +24,6 @@ export let showDot: 'videos' | 'hot-or-not' | null = null;
 		{/if}
 
 		<a href="/feed" on:click="{() => (selected = 'videos')}" class="z-[2]">Videos</a>
-		<a href="/hot" on:click="{() => (selected = 'hot-or-not')}" class="z-[2]">Hot or Not</a>
+		<a href="/hotornot" on:click="{() => (selected = 'hot-or-not')}" class="z-[2]">Hot or Not</a>
 	</div>
 </home-selector>

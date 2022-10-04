@@ -29,7 +29,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-dir }}
       env:
-        GA_TRACKING_ID: "G-KXNH2F9QXW"
+        GA_TRACKING_ID: "G-S9P26021F9"
         FIREBASE_API_KEY: "AIzaSyAeTkffJlMN3pnzU4sBzxwo6NCl4giaOTY"
         FIREBASE_AUTH_DOMAIN: "hot-or-not-5d8ad.firebaseapp.com"
         FIREBASE_PROJECT_ID: "hot-or-not-5d8ad"

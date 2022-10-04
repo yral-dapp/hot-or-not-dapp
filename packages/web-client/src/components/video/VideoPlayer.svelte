@@ -17,6 +17,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
+import { createEventDispatcher } from 'svelte';
 
 export let swiperJs: boolean;
 export let src;
@@ -24,19 +25,25 @@ export let i: number;
 export let id: bigint;
 export let inView = false;
 export let thumbnail = '';
-export let userName = '';
+export let displayName = '';
 export let profileLink = '';
 export let videoViews = 254000;
 export let publisherCanisterId: Principal;
 export let userProfileSrc = '';
 export let liked = false;
+export let createdById = '';
 export let individualUser: (user: Principal) => IndividualUserActor;
+
+const dispatch = createEventDispatcher<{
+	watchedPercentage: number;
+}>();
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
+let currentTime = 0;
+let duration = 0;
 let loaded = false;
 let paused = true;
-
 let playPromise: Promise<void> | undefined = undefined;
 
 export async function play() {
@@ -98,9 +105,13 @@ async function handleShare() {
 	await navigator.share({
 		title: 'Hot or Not',
 		text: 'Video title',
-		url: `https://hotornot.wtf/feed/${i}`
+		url: `https://hotornot.wtf/profile/${profileLink}/post/${id}`
 	});
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
+}
+
+$: if (inView && !paused) {
+	dispatch('watchedPercentage', (currentTime / duration) * 100);
 }
 </script>
 
@@ -121,6 +132,8 @@ async function handleShare() {
 		autoplay
 		muted
 		bind:paused
+		bind:currentTime
+		bind:duration
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
@@ -175,6 +188,9 @@ async function handleShare() {
 					<ShareMessageIcon class="h-6 w-6" />
 				</IconButton>
 				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+					}}"
 					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
 					<FireIcon class="h-5 w-5" />
 				</IconButton>
@@ -188,11 +204,11 @@ async function handleShare() {
 				on:click="{(e) => e.stopImmediatePropagation()}"
 				class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
-					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(i.toString())}" />
+					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
-				<div class="flex flex-col space-y-1">
+				<div class="flex flex-col space-y-1 capitalize">
 					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
-						@{userName || generateRandomName('username', i.toString())}
+						{displayName || generateRandomName('name', createdById)}
 					</a>
 					<div class="flex items-center space-x-1">
 						<EyeIcon class="h-4 w-4 text-white" />

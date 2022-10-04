@@ -47,11 +47,12 @@ onMount(async () => {
 				<VideoPlayer
 					i="{0}"
 					id="{video.id}"
-					userName="{video.created_by_unique_user_name[0]}"
+					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ??
 						video.created_by_user_principal_id.toText()}"
 					liked="{video.liked_by_me}"
 					videoViews="{Number(video.total_view_count)}"
+					createdById="{video.created_by_user_principal_id.toText()}"
 					publisherCanisterId="{Principal.from(publisherId)}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"

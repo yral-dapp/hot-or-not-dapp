@@ -61,7 +61,7 @@ async function enableMp4Download() {
 				method: 'POST',
 				headers: {
 					// eslint-disable-next-line no-undef
-					Authorization: CLOUDFLARE_API_TOKEN
+					Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`
 				}
 			}
 		);

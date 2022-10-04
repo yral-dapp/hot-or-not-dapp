@@ -1,3 +1,4 @@
+import Log from '$lib/utils/Log';
 import { authState } from '$stores/auth';
 import { get } from 'svelte/store';
 
@@ -53,6 +54,9 @@ export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {
 			method: 'GET'
 		});
 		const result: CheckVideoStatusResult = await req.json();
+		if (result.readyToStream && result.mp4Url == '') {
+			enableMp4Downloads(uid);
+		}
 		return {
 			success: true,
 			result
@@ -65,6 +69,16 @@ export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {
 	}
 }
 
+export async function enableMp4Downloads(uid: string) {
+	try {
+		await fetch(`${cfWorkerHost}/video/${uid}/enableMp4Download`, {
+			method: 'GET'
+		});
+	} catch (e) {
+		Log({ error: e, from: '1 enableMp4Downloads' }, 'error');
+	}
+}
+
 type RequestError = {
 	success: false;
 	error: string;
@@ -73,6 +87,7 @@ type RequestError = {
 export type CheckVideoStatusResult = {
 	readyToStream: boolean;
 	thumbnail: string;
+	mp4Url: string;
 	playback?: {
 		hls?: string;
 		dash?: string;

@@ -9,10 +9,28 @@ import { onMount } from 'svelte';
 import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 import userProfile from '$stores/userProfile';
-import type { KeyboardEvents } from 'swiper/types';
+import type { Principal } from '@dfinity/principal';
+import { set } from 'idb-keyval';
+import { getCanisterId } from '$lib/helpers/idb';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { authState } from '$stores/auth';
+import { goto } from '$app/navigation';
 
 export let data: PageData;
-let { username, username_set, displayName, imgSrc, userPrincipal } = data;
+//@ts-ignore
+let {
+	username,
+	username_set,
+	displayName,
+	imgSrc,
+	userPrincipal
+}: {
+	username_set: boolean;
+	username?: string;
+	displayName?: string;
+	imgSrc?: string;
+	userPrincipal: Principal;
+} = data;
 
 let pageLoaded = false;
 let loading = true;
@@ -24,14 +42,15 @@ let values: {
 };
 
 async function isUsernameTaken() {
+	const newUsername = values.username.toLowerCase().trim();
 	if (!username_set) {
 		return false;
-	} else if (values.username.toLowerCase() === username.toLowerCase()) {
+	} else if (newUsername === username) {
 		return false;
 	} else {
 		try {
 			const { userIndex } = await import('$lib/helpers/backend');
-			return await userIndex().get_index_details_is_user_name_taken(values.username.toLowerCase());
+			return await userIndex().get_index_details_is_user_name_taken(newUsername);
 		} catch (e) {
 			return true;
 		}
@@ -71,20 +90,23 @@ async function saveChanges() {
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
 	const { individualUser, userIndex } = await import('$lib/helpers/backend');
-	if (username.toLowerCase() !== values.username.toLowerCase()) {
+	const newUsername = values.username.toLowerCase().trim();
+	if (username !== newUsername) {
 		try {
 			Promise.all([
 				userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
-					values.username.toLowerCase(),
+					newUsername,
 					userPrincipal
 				),
-				individualUser().update_profile_set_unique_username_once(values.username.toLowerCase())
+				individualUser().update_profile_set_unique_username_once(newUsername)
 			]);
 			username_set = true;
-			username = values.username.toLowerCase();
+			username = newUsername;
 
 			$userProfile.username_set = true;
-			$userProfile.unique_user_name = values.username.toLowerCase();
+			$userProfile.unique_user_name = newUsername;
+			const canId = await getCanisterId(userPrincipal.toString());
+			if (canId) set(newUsername, canId);
 		} catch (e) {
 			loading = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
@@ -100,12 +122,14 @@ async function saveChanges() {
 		imgSrc = values.imageSrc;
 		console.log('res', res);
 		if ('Ok' in res) {
-			$userProfile.display_name = res.Ok.display_name[0] ?? '';
-			$userProfile.profile_picture_url = res.Ok.profile_picture_url[0] ?? '';
+			$userProfile.display_name = res.Ok.display_name[0] || '';
+			$userProfile.profile_picture_url =
+				res.Ok.profile_picture_url[0] || getDefaultImageUrl($authState.idString);
 		} else {
 			error = 'Could not save your profile. Please login again to try again.';
 		}
 		loading = false;
+		goto(`/profile/${username_set ? $userProfile.unique_user_name : $userProfile.principal_id}`);
 	} catch (e) {
 		loading = false;
 		Log({ error: e, from: '2 saveChanges' }, 'error');
