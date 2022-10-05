@@ -11,6 +11,10 @@ const config = {
 		postcss: true
 	}),
 	kit: {
+		csp: {
+			mode: 'hash',
+			directives: { 'script-src': ['self'] }
+		},
 		adapter: isSSR
 			? cfAdapter()
 			: staticAdapter({
