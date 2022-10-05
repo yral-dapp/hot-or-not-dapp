@@ -113,6 +113,8 @@ async function handleShare() {
 $: if (inView && !paused) {
 	dispatch('watchedPercentage', (currentTime / duration) * 100);
 }
+
+console.log({ displayName, publisherCanisterId, createdById });
 </script>
 
 <player
