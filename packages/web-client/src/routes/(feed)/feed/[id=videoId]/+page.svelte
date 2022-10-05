@@ -103,7 +103,11 @@ const playVideo = debounce(50, async (index: number) => {
 
 function updateURL() {
 	if (videos[currentVideoIndex])
-		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
+		window.history.replaceState(
+			'',
+			'',
+			`${videos[currentVideoIndex].publisher_canister_id}:${videos[currentVideoIndex].post_id}`
+		);
 }
 
 function recordStats(progress: number, canisterId: Principal, videoId: bigint) {
