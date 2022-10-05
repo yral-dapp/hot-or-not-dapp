@@ -93,7 +93,7 @@ async function loadLovers() {
 			{#if loading}
 				<div class="flex w-full items-center justify-center space-x-2 py-8">
 					<LoadingIcon class="h-4 w-4 animate-spin" />
-					<span>Fetching posts</span>
+					<span>Loading</span>
 				</div>
 			{/if}
 			<IntersectionObserver
