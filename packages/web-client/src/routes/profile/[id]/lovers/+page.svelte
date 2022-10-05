@@ -4,6 +4,7 @@ import { page } from '$app/stores';
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import ProfileLayout from '$components/layout/ProfileLayout.svelte';
 import { fetchLovers } from '$lib/helpers/profile';
@@ -89,6 +90,12 @@ async function loadLovers() {
 					</div>
 				</div>
 			{/each}
+			{#if loading}
+				<div class="flex w-full items-center justify-center space-x-2 py-8">
+					<LoadingIcon class="h-4 w-4 animate-spin" />
+					<span>Fetching posts</span>
+				</div>
+			{/if}
 			<IntersectionObserver
 				on:intersected="{loadLovers}"
 				disabled="{loading || errorWhileFetching}"
