@@ -4,16 +4,57 @@ import { page } from '$app/stores';
 import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import ProfileLayout from '$components/layout/ProfileLayout.svelte';
+import { fetchLovers } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
+import type { Principal } from '@dfinity/principal';
 
 let profile = {
 	id: $page.params.id,
 	me: $page.params.id == '1'
 };
 
-let lovers = [1, 2, 3, 4, 5];
+let loading = false;
+let errorWhileFetching = false;
+let noMoreLovers = false;
+let fetchedLoversCount = 0;
+let lovers: Principal[] = [];
+
+async function loadLovers() {
+	if (noMoreLovers) {
+		return;
+	}
+
+	loading = true;
+	errorWhileFetching = false;
+	try {
+		const res = await fetchLovers($page.params.id, fetchedLoversCount);
+
+		if (res.error) {
+			errorWhileFetching = true;
+			loading = false;
+			return;
+		}
+
+		if (!res.lovers) {
+			return;
+		}
+
+		lovers.push(...res.lovers);
+		lovers = lovers;
+		noMoreLovers = res.noMoreLovers;
+		fetchedLoversCount = lovers.length;
+		loading = false;
+	} catch (e) {
+		Log({ error: e, from: '1 loadLovers' }, 'error');
+	}
+
+	loading = false;
+}
 </script>
 
 <ProfileLayout>
@@ -49,6 +90,20 @@ let lovers = [1, 2, 3, 4, 5];
 					</div>
 				</div>
 			{/each}
+			{#if loading}
+				<div class="flex w-full items-center justify-center space-x-2 py-8">
+					<LoadingIcon class="h-4 w-4 animate-spin" />
+					<span>Loading</span>
+				</div>
+			{/if}
+			<IntersectionObserver
+				on:intersected="{loadLovers}"
+				disabled="{loading || errorWhileFetching}"
+				intersect="{!noMoreLovers}">
+				<svelte:fragment>
+					<div class="h-2 w-full"></div>
+				</svelte:fragment>
+			</IntersectionObserver>
 		</div>
 	</svelte:fragment>
 </ProfileLayout>
