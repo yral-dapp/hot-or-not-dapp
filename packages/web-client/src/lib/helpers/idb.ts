@@ -2,7 +2,7 @@ import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 import { get, set } from 'idb-keyval';
 
-export async function isPrincipal(p?: any) {
+export function isPrincipal(p?: any) {
 	try {
 		if (!p) return false;
 		const r = Principal.from(p);
@@ -18,7 +18,7 @@ export async function getCanisterId(id: string): Promise<string | false> {
 	else {
 		const { userIndex } = await import('$lib/helpers/backend');
 		try {
-			if (await isPrincipal(id)) {
+			if (isPrincipal(id)) {
 				const res = await userIndex().get_user_canister_id_from_user_principal_id(
 					Principal.from(id)
 				);
