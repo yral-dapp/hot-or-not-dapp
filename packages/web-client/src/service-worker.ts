@@ -8,7 +8,7 @@ const CACHE_NAME = `static-cache-${version}`;
 const to_cache = build.concat(files);
 
 worker.addEventListener('install', (event) => {
-	console.log('[ServiceWorker] Install', to_cache, event);
+	console.log('[ServiceWorker] Install', to_cache[0], event['test']);
 
 	// event.waitUntil(
 	// 	caches.open(CACHE_NAME).then((cache) => {
