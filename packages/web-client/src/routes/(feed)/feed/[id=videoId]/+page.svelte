@@ -87,7 +87,6 @@ async function handleChange(e: CustomEvent) {
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
-	$playerState.currentVideosIndex = index;
 	playVideo(index);
 	fetchNextVideos();
 	updateURL();
@@ -102,11 +101,10 @@ const playVideo = debounce(50, async (index: number) => {
 
 function updateURL() {
 	if (videos[currentVideoIndex]) {
-		window.history.replaceState(
-			'',
-			'',
-			`${videos[currentVideoIndex].publisher_canister_id}@${videos[currentVideoIndex].post_id}`
-		);
+		const url =
+			videos[currentVideoIndex].publisher_canister_id + '@' + videos[currentVideoIndex].post_id;
+		$playerState.currentVideoUrl = url;
+		window.history.replaceState('', '', url);
 	}
 }
 
