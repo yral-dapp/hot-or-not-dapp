@@ -89,7 +89,12 @@ async function handleChange(e: CustomEvent) {
 	updateStats(currentPlayingIndex);
 	playVideo(index);
 	fetchNextVideos();
-	updateURL();
+	updateURL(videos[currentVideoIndex]);
+	updateMetadata(videos[currentVideoIndex]);
+}
+
+function updateMetadata(video?: PostPopulated) {
+	if (!video) return;
 }
 
 const playVideo = debounce(50, async (index: number) => {
@@ -99,13 +104,11 @@ const playVideo = debounce(50, async (index: number) => {
 	currentPlayingIndex = index;
 });
 
-function updateURL() {
-	if (videos[currentVideoIndex]) {
-		const url =
-			videos[currentVideoIndex].publisher_canister_id + '@' + videos[currentVideoIndex].post_id;
-		$playerState.currentVideoUrl = url;
-		window.history.replaceState('', '', url);
-	}
+function updateURL(video?: PostPopulated) {
+	if (!video) return;
+	const url = video.publisher_canister_id + '@' + video.post_id;
+	$playerState.currentVideoUrl = url;
+	window.history.replaceState('', '', url);
 }
 
 function recordStats(progress: number, canisterId: Principal, videoId: bigint) {
