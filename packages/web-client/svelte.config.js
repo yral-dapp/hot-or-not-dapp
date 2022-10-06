@@ -12,12 +12,13 @@ const config = {
 		postcss: true
 	}),
 	kit: {
-		csp: isDev
-			? undefined
-			: {
-					mode: 'hash',
-					directives: { 'script-src': ['self'] }
-			  },
+		// Todo: add CSP config
+		// csp: isDev
+		// 	? undefined
+		// 	: {
+		// 			mode: 'hash',
+		// 			directives: { 'script-src': ['self'] }
+		// 	  },
 		adapter: isSSR
 			? cfAdapter()
 			: staticAdapter({
