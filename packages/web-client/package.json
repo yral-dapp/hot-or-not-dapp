@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": " NODE_ENV=dev vite dev --host",
+		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"build:static": "BUILD_MODE=static vite build",
