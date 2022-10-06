@@ -95,6 +95,13 @@ async function handleChange(e: CustomEvent) {
 
 function updateMetadata(video?: PostPopulated) {
 	if (!video) return;
+	if (!('mediaSession' in navigator)) return;
+	navigator.mediaSession.metadata = new MediaMetadata({
+		title: video.description,
+		artist: video.created_by_display_name[0] || video.created_by_unique_user_name[0] || '',
+		album: 'Hot or Not',
+		artwork: [{ src: getThumbnailUrl(video.video_uid), type: 'image/png' }]
+	});
 }
 
 const playVideo = debounce(50, async (index: number) => {
