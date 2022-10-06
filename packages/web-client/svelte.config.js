@@ -3,7 +3,8 @@ import cfAdapter from '@sveltejs/adapter-cloudflare';
 import preprocess from 'svelte-preprocess';
 
 const isSSR = process.env.BUILD_MODE != 'static';
-console.log('svelte in', isSSR ? 'ssr' : 'static', 'build mode');
+const isDev = process.env.NODE_ENV == 'dev';
+console.log('svelte in', isSSR ? 'ssr' : 'static', 'build mode; csp enabled', isDev);
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -11,10 +12,13 @@ const config = {
 		postcss: true
 	}),
 	kit: {
-		csp: {
-			mode: 'hash',
-			directives: { 'script-src': ['self'] }
-		},
+		// Todo: add CSP config
+		// csp: isDev
+		// 	? undefined
+		// 	: {
+		// 			mode: 'hash',
+		// 			directives: { 'script-src': ['self'] }
+		// 	  },
 		adapter: isSSR
 			? cfAdapter()
 			: staticAdapter({
