@@ -105,7 +105,7 @@ function updateURL() {
 		window.history.replaceState(
 			'',
 			'',
-			`${videos[currentVideoIndex].publisher_canister_id}:${videos[currentVideoIndex].post_id}`
+			`${videos[currentVideoIndex].publisher_canister_id}@${videos[currentVideoIndex].post_id}`
 		);
 	}
 }
