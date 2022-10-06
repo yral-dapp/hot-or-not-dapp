@@ -22,15 +22,14 @@ let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
 let individualUser: (principal?: Principal) => IndividualUserActor;
-let videoStats: Record<
-	number,
-	{
-		progress: number;
-		videoId: bigint;
-		canisterId: Principal;
-		count: number;
-	}
-> = {};
+
+type VideoViewReport = {
+	progress: number;
+	videoId: bigint;
+	canisterId: Principal;
+	count: number;
+};
+let videoStats: Record<number, VideoViewReport> = {};
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -63,11 +62,11 @@ async function fetchNextVideos() {
 }
 
 async function updateStats(oldIndex) {
-	const stats = videoStats[oldIndex];
-	delete videoStats[oldIndex];
-	if (stats.count === 0 && stats.progress === 0) {
+	const stats = videoStats[oldIndex] as VideoViewReport | undefined;
+	if (!stats || (stats?.count === 0 && stats?.progress === 0)) {
 		return;
 	}
+	delete videoStats[oldIndex];
 	const payload =
 		stats.count == 0
 			? {
