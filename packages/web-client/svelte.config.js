@@ -1,6 +1,7 @@
 import staticAdapter from '@sveltejs/adapter-static';
 import cfAdapter from '@sveltejs/adapter-cloudflare';
 import preprocess from 'svelte-preprocess';
+import directives from './directives.js';
 
 const isSSR = process.env.BUILD_MODE != 'static';
 console.log('svelte in', isSSR ? 'ssr' : 'static', 'build mode');
@@ -13,7 +14,7 @@ const config = {
 	kit: {
 		csp: {
 			mode: 'hash',
-			directives: { 'script-src': ['self'] }
+			directives
 		},
 		adapter: isSSR
 			? cfAdapter()
