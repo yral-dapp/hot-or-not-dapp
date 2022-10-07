@@ -7,7 +7,7 @@ use ic_kit::{
     },
 };
 use shared_utils::constant::{
-    DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE, GLOBAL_OWNER_PRINCIPAL_ID,
+    get_global_owner_principal_id, DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE,
 };
 
 const WASM: &[u8] = include_bytes!(
@@ -15,13 +15,14 @@ const WASM: &[u8] = include_bytes!(
 );
 
 pub async fn create_users_canister(caller: Principal) -> Principal {
+    // TODO: update this to read from env variable if available
     let arg = management::CreateCanisterArgument {
         settings: Some(management::CanisterSettings {
             controllers: Some(vec![
                 // this canister
                 ic::id(),
                 // hot or not global owner principal
-                Principal::from_text(GLOBAL_OWNER_PRINCIPAL_ID).unwrap(),
+                get_global_owner_principal_id(),
             ]),
             compute_allocation: Some(0.into()),
             memory_allocation: Some(0.into()),
