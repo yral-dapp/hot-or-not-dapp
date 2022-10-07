@@ -15,6 +15,7 @@ const WASM: &[u8] = include_bytes!(
 );
 
 pub async fn create_users_canister(caller: Principal) -> Principal {
+    // TODO: update this to read from env variable if available
     let arg = management::CreateCanisterArgument {
         settings: Some(management::CanisterSettings {
             controllers: Some(vec![

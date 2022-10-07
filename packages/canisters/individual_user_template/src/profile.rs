@@ -78,6 +78,8 @@ async fn update_profile_set_unique_username_once(
 
     // * cross canister call
 
+    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
+    // TODO: Basically have a single call to get well known canister ids
     let (response,): (Result<(), SetUniqueUsernameError>,) = call::call(
         Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap(),
         "update_index_with_unique_user_name_corresponding_to_user_principal_id",
@@ -140,6 +142,8 @@ async fn update_principals_i_follow_toggle_list_with_principal_specified(
         return Err(FollowAnotherUserProfileError::UsersICanFollowListIsFull);
     }
 
+    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
+    // TODO: Basically have a single call to get well known canister ids
     // inter canister call to user index to get the user canister id of the user to follow
     let (followee_canister_id,): (Option<Principal>,) = call::call(
         Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap(),
@@ -202,6 +206,8 @@ pub enum AnotherUserFollowedMeError {
 async fn update_principals_that_follow_me_toggle_list_with_specified_principal(
     user_principal_id_whos_trying_to_follow_me: Principal,
 ) -> Result<bool, AnotherUserFollowedMeError> {
+    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
+    // TODO: Basically have a single call to get well known canister ids
     let (user_trying_to_follow_me_canister_id,): (Option<Principal>,) = call::call(
         Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap(),
         "get_user_canister_id_from_user_principal_id",
