@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^1.0.0-next.38",
 		"@sveltejs/adapter-static": "1.0.0-next.44",
-		"@sveltejs/kit": "1.0.0-next.510",
+		"@sveltejs/kit": "1.0.0-next.511",
 		"@tailwindcss/forms": "0.5.3",
 		"@types/gtag.js": "0.0.12",
 		"@types/lodash-es": "4.17.6",
