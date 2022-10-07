@@ -141,10 +141,11 @@ async function showShareDialog() {
 			Log({ error: 'Browser does not support share dialog', source: '1 showShareDialog' }, 'error');
 			return;
 		}
+		const videoLink = getVideoLink();
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: 'https://v2.gobazzinga.io/feed/1'
+			url: 'https://hotornot.wtf/' + videoLink
 		});
 	} catch (err) {
 		Log({ error: 'Could not open share dialog', source: '1 showShareDialog' }, 'error');

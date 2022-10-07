@@ -1,5 +1,4 @@
-use crate::constant::GLOBAL_OWNER_PRINCIPAL_ID;
-use candid::{CandidType, Deserialize, Principal};
+use candid::{CandidType, Deserialize};
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
 use speedy::{Readable, Writable};
 
@@ -15,15 +14,6 @@ pub enum UserAccessRole {
     ProfileOwner,
     /// This principal is for a canister part of this project
     ProjectCanister,
-}
-
-pub fn get_global_sprincipal() -> SPrincipal {
-    SPrincipal(
-        Principal::from_text(
-            option_env!("GLOBAL_OWNER_PRINCIPAL_ID").unwrap_or(GLOBAL_OWNER_PRINCIPAL_ID),
-        )
-        .unwrap(),
-    )
 }
 
 /// Helper method to check if a principal has requisite access

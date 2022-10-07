@@ -6,7 +6,7 @@ export default {
 		},
 		{
 			title: 'How does the Hot or Not monetisation work?',
-			body: `The current app is the alpha version which does not contain the Hot or Not monetisation system. This will be added to the platform in the coming months, in accordance with GoBazzinga’s Dfinity grant milestones.
+			body: `The current app is the alpha version which does not contain the Hot or Not monetisation system. This will be added to the platform in the coming months, in accordance with GoBazzinga's Dfinity grant milestones.
 			The platform will contain an in-app game called “Hot or Not”. Users can stake their COYN tokens on any video, on either “Hot” or “Not” outcomes, depending on their thoughts on the viral capacity of the video. 
 			If the user stakes their token on the side of the majority, they win and earn double their tokens back. 
 			If the user stakes their tokens on the minority side, they lose all the tokens staked on that particular video.
@@ -14,7 +14,7 @@ export default {
 		},
 		{
 			title: 'How to be a part of the Hot or Not family?',
-			body: 'If you’re reading this, you are already a part of the family. In order to make the most of the app, we would recommend logging in through your Internet Identity or NFID, to start uploading videos and to enjoy a personalised feed and experience.'
+			body: "If you're reading this, you are already a part of the family. In order to make the most of the app, we would recommend logging in through your Internet Identity or NFID, to start uploading videos and to enjoy a personalised feed and experience."
 		},
 		{
 			title: 'What devices is “Hot or Not” available on?',
@@ -61,7 +61,7 @@ export default {
 		},
 		{
 			title: 'How do I add or change my profile picture?',
-			body: 'You can go to Menu > View Profile. Once you’re on your profile page, you will see an edit icon on the top right hand corner of the screen. It will open an edit window which will allow you to change your profile picture and name.'
+			body: "You can go to Menu > View Profile. Once you're on your profile page, you will see an edit icon on the top right hand corner of the screen. It will open an edit window which will allow you to change your profile picture and name."
 		},
 		{
 			title: 'How can I add a profile name ?',

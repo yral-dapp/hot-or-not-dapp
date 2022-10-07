@@ -104,3 +104,35 @@ export async function fetchPosts(id: string, from: number): Promise<ProfilePosts
 		return { error: true };
 	}
 }
+
+export async function fetchLovers(id: string, from: number) {
+	try {
+		const canId = await getCanisterId(id);
+		const { individualUser } = await import('./backend');
+		const res = await individualUser(Principal.from(canId)).get_principals_that_follow_me_paginated(
+			BigInt(from),
+			BigInt(from + 10)
+		);
+		if ('Ok' in res) {
+			return {
+				error: false,
+				lovers: res.Ok,
+				noMoreLovers: res.Ok.length < 10
+			};
+		} else if ('Err' in res) {
+			type UnionKeyOf<U> = U extends U ? keyof U : never;
+			type errors = UnionKeyOf<GetPostsOfUserProfileError>;
+			const err = Object.keys(res.Err)[0] as errors;
+			switch (err) {
+				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
+				case 'InvalidBoundsPassed':
+					return { error: true };
+				case 'ReachedEndOfItemsList':
+					return { error: false, noMoreLovers: true, lovers: [] };
+			}
+		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
+	} catch (e) {
+		Log({ error: e, from: '11 fetchPosts' }, 'error');
+		return { error: true };
+	}
+}

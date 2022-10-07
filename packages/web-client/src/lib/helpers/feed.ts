@@ -14,12 +14,12 @@ export type FeedResponse =
 	| {
 			error: true;
 	  };
-export async function getTopPosts(from: number): Promise<FeedResponse> {
+export async function getTopPosts(from: number, numberOfPosts: number = 10): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
 		const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
 			BigInt(from),
-			BigInt(from + 10)
+			BigInt(from + numberOfPosts)
 		);
 		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
@@ -30,7 +30,7 @@ export async function getTopPosts(from: number): Promise<FeedResponse> {
 			return {
 				error: false,
 				posts: populatedRes.posts,
-				noMorePosts: res.Ok.length < 10
+				noMorePosts: res.Ok.length < numberOfPosts
 			};
 		} else if ('Err' in res) {
 			type UnionKeyOf<U> = U extends U ? keyof U : never;

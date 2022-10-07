@@ -5,7 +5,7 @@ use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::{does_principal_have_role, UserAccessRole},
-    constant::MAX_USERS_IN_FOLLOWER_FOLLOWING_LIST,
+    constant::{get_user_index_canister_principal_id, MAX_USERS_IN_FOLLOWER_FOLLOWING_LIST},
     shared_types::user_index::error_types::SetUniqueUsernameError,
 };
 
@@ -77,11 +77,8 @@ async fn update_profile_set_unique_username_once(
     }
 
     // * cross canister call
-
-    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
-    // TODO: Basically have a single call to get well known canister ids
     let (response,): (Result<(), SetUniqueUsernameError>,) = call::call(
-        Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap(),
+        get_user_index_canister_principal_id(),
         "update_index_with_unique_user_name_corresponding_to_user_principal_id",
         (new_unique_username.clone(), ic_cdk::caller()),
     )
@@ -142,11 +139,9 @@ async fn update_principals_i_follow_toggle_list_with_principal_specified(
         return Err(FollowAnotherUserProfileError::UsersICanFollowListIsFull);
     }
 
-    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
-    // TODO: Basically have a single call to get well known canister ids
-    // inter canister call to user index to get the user canister id of the user to follow
+    // * inter canister call to user index to get the user canister id of the user to follow
     let (followee_canister_id,): (Option<Principal>,) = call::call(
-        Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap(),
+        get_user_index_canister_principal_id(),
         "get_user_canister_id_from_user_principal_id",
         (user_to_follow,),
     )
@@ -209,7 +204,7 @@ async fn update_principals_that_follow_me_toggle_list_with_specified_principal(
     // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
     // TODO: Basically have a single call to get well known canister ids
     let (user_trying_to_follow_me_canister_id,): (Option<Principal>,) = call::call(
-        Principal::from_text(option_env!("CANISTER_ID_user_index").unwrap()).unwrap(),
+        get_user_index_canister_principal_id(),
         "get_user_canister_id_from_user_principal_id",
         (user_principal_id_whos_trying_to_follow_me,),
     )

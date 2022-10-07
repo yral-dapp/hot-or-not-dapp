@@ -22,15 +22,14 @@ let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
 let individualUser: (principal?: Principal) => IndividualUserActor;
-let videoStats: Record<
-	number,
-	{
-		progress: number;
-		videoId: bigint;
-		canisterId: Principal;
-		count: number;
-	}
-> = {};
+
+type VideoViewReport = {
+	progress: number;
+	videoId: bigint;
+	canisterId: Principal;
+	count: number;
+};
+let videoStats: Record<number, VideoViewReport> = {};
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
@@ -63,11 +62,11 @@ async function fetchNextVideos() {
 }
 
 async function updateStats(oldIndex) {
-	const stats = videoStats[oldIndex];
-	delete videoStats[oldIndex];
-	if (stats.count === 0 && stats.progress === 0) {
+	const stats = videoStats[oldIndex] as VideoViewReport | undefined;
+	if (!stats || (stats?.count === 0 && stats?.progress === 0)) {
 		return;
 	}
+	delete videoStats[oldIndex];
 	const payload =
 		stats.count == 0
 			? {
@@ -88,10 +87,21 @@ async function handleChange(e: CustomEvent) {
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
-	$playerState.currentVideosIndex = index;
 	playVideo(index);
 	fetchNextVideos();
-	updateURL();
+	updateURL(videos[currentVideoIndex]);
+	updateMetadata(videos[currentVideoIndex]);
+}
+
+function updateMetadata(video?: PostPopulated) {
+	if (!video) return;
+	if (!('mediaSession' in navigator)) return;
+	navigator.mediaSession.metadata = new MediaMetadata({
+		title: video.description,
+		artist: video.created_by_display_name[0] || video.created_by_unique_user_name[0] || '',
+		album: 'Hot or Not',
+		artwork: [{ src: getThumbnailUrl(video.video_uid), type: 'image/png' }]
+	});
 }
 
 const playVideo = debounce(50, async (index: number) => {
@@ -101,9 +111,11 @@ const playVideo = debounce(50, async (index: number) => {
 	currentPlayingIndex = index;
 });
 
-function updateURL() {
-	if (videos[currentVideoIndex])
-		window.history.replaceState('', '', `${videos[currentVideoIndex].id}`);
+function updateURL(video?: PostPopulated) {
+	if (!video) return;
+	const url = video.publisher_canister_id + '@' + video.post_id;
+	$playerState.currentVideoUrl = url;
+	window.history.replaceState('', '', url);
 }
 
 function recordStats(progress: number, canisterId: Principal, videoId: bigint) {
