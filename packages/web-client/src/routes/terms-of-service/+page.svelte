@@ -135,7 +135,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 						who has uploaded such Content and the views expressed are their own. Hot or Not is not responsible
 						for the Content posted by you. You shall be solely responsible for the Content posted, shared,
 						modified, uploaded, transmitted, updated and hosted by you. You agree that your use of Hot
-						or Not’s services will conform to the Community Guidelines. You agree that in case of non-compliance
+						or Not's services will conform to the Community Guidelines. You agree that in case of non-compliance
 						with applicable laws, or with these terms and conditions, or with the Hot or Not privacy
 						policy or with our community Guidelines, we have the right to terminate your access or usage
 						rights to Hot or Not immediately and remove non-compliant content from Hot or Not. You hereby
@@ -152,7 +152,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 				</div>
 			</div>
 			<div class="flex flex-col space-y-2">
-				<div class="text-sm">4. Children’s Privacy</div>
+				<div class="text-sm">4. Children's Privacy</div>
 				<div class="text-xs">
 					These Services are not for any child under the age of 13. We do not knowingly collect
 					personally identifiable information from children under 13. In case we discover that a
@@ -201,7 +201,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 					You agree to defend, indemnify, and hold harmless us, our parent(s), subsidiaries, and
 					affiliates, and each of their respective officers, directors, employees, agents and
 					advisors from any and all claims, liabilities, costs, and expenses, including, but not
-					limited to, attorneys’ fees and expenses, arising out of a breach by you or any user of
+					limited to, attorneys' fees and expenses, arising out of a breach by you or any user of
 					your account of these Terms or the privacy policy or community guidelines and your
 					obligations, representation and warranties therein.
 				</div>
@@ -209,7 +209,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 			<div class="flex flex-col space-y-2">
 				<div class="text-sm">10. Exclusion of Warranties</div>
 				<div class="text-xs">
-					The Services are provided to you on an 'as is’ basis and we do not represent or warrant
+					The Services are provided to you on an 'as is' basis and we do not represent or warrant
 					that the use of the Services will be uninterrupted, timely, secure or free from error;
 					that any information obtained by you as a result of the use of services will be accurate.
 					Implied warranties as to the satisfactory quality, fitness for purpose or merchantability

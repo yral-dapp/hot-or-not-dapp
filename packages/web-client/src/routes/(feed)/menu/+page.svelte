@@ -19,6 +19,7 @@ import { prefetch } from '$app/navigation';
 import userProfile from '$stores/userProfile';
 import { loadingAuthStatus } from '$stores/loading';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
 
 $: links = [
 	{
@@ -143,6 +144,9 @@ onMount(() => prefetchLinks());
 					<Ic0Icon class="h-5 w-5" />
 				</a>
 			{/if}
+		</div>
+		<div class="pb-2">
+			<OnChainDfinityIcon class="w-full" />
 		</div>
 	</div>
 </div>
