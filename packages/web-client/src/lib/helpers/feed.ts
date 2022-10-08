@@ -17,6 +17,7 @@ export type FeedResponse =
 	| {
 			posts: PostPopulated[];
 			error: false;
+			from: number;
 			noMorePosts: boolean;
 	  }
 	| {
@@ -38,6 +39,14 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 	return filtered;
 }
 
+export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
+	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
+	if (!values.length) return [];
+	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
+	return sorted;
+}
+
 export async function getTopPosts(from: number, numberOfPosts: number = 10): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
@@ -48,16 +57,13 @@ export async function getTopPosts(from: number, numberOfPosts: number = 10): Pro
 		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
 			const filteredPosts = await filterPosts(res.Ok);
-			if (filterPosts.length != res.Ok.length && res.Ok.length == numberOfPosts) {
-				// some posts have been removed, but there are more available as well. So fetch more before populating
-				const morePosts = await getTopPosts(from + res.Ok.length);
-			}
 			const populatedRes = await populatePosts(filteredPosts);
 			if (populatedRes.error) {
 				throw new Error(`Error while populating, ${JSON.stringify(populatedRes)}`);
 			}
 			return {
 				error: false,
+				from: from + res.Ok.length,
 				posts: populatedRes.posts,
 				noMorePosts: res.Ok.length < numberOfPosts
 			};
@@ -70,7 +76,7 @@ export async function getTopPosts(from: number, numberOfPosts: number = 10): Pro
 				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
 					return { error: true };
 				case 'ReachedEndOfItemsList':
-					return { error: false, noMorePosts: true, posts: [] };
+					return { error: false, noMorePosts: true, from, posts: [] };
 			}
 		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
 	} catch (e) {
