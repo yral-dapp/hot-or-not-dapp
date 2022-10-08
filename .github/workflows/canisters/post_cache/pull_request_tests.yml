@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - 'packages/canisters/post_cache/**'
+      - '.github/workflows/canisters/post_cache/pull_request_tests.yml'
 
 jobs:
   cargo-test:
