@@ -9,6 +9,10 @@ export interface PostPopulated
 	created_by_user_principal_id: string;
 }
 
+export interface PostPopulatedHistory extends PostPopulated {
+	watched_at: number;
+}
+
 export type FeedResponse =
 	| {
 			posts: PostPopulated[];
@@ -18,6 +22,22 @@ export type FeedResponse =
 	| {
 			error: true;
 	  };
+
+async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexItem[]> {
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
+	const keys = (await watchHistoryIdb.keys()) as string[];
+	if (!keys.length) return posts;
+	const keyMap = keys.reduce((acc, o) => {
+		const idSplit = o.split('@');
+		return {
+			...acc,
+			[idSplit[0]]: [idSplit[1]]
+		};
+	}, {});
+	const filtered = posts.filter((o) => keyMap[o.publisher_canister_id.toText()] != o.post_id);
+	return filtered;
+}
+
 export async function getTopPosts(from: number, numberOfPosts: number = 10): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
@@ -27,7 +47,12 @@ export async function getTopPosts(from: number, numberOfPosts: number = 10): Pro
 		);
 		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
-			const populatedRes = await populatePosts(res.Ok);
+			const filteredPosts = await filterPosts(res.Ok);
+			if (filterPosts.length != res.Ok.length && res.Ok.length == numberOfPosts) {
+				// some posts have been removed, but there are more available as well. So fetch more before populating
+				const morePosts = await getTopPosts(from + res.Ok.length);
+			}
+			const populatedRes = await populatePosts(filteredPosts);
 			if (populatedRes.error) {
 				throw new Error(`Error while populating, ${JSON.stringify(populatedRes)}`);
 			}
