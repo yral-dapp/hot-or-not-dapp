@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: rustc --version
+      - run: cargo --version
       # - run: cargo test
       # - uses: actions/setup-node@v2
       #   with:
