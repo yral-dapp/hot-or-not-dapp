@@ -14,7 +14,7 @@
 			"type": "custom",
 			"candid": "internet_identity.did",
 			"wasm": "internet_identity.wasm",
-			"build": "./scripts/canisters/local_internet_identity_install.sh"
+			"build": "./scripts/canisters/local_deploy/internet_identity.sh"
 		},
 		"post_cache": {
 			"type": "rust",
