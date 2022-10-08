@@ -82,12 +82,19 @@ async function updateStats(oldIndex) {
 	await individualUser(stats.canisterId).update_post_add_view_details(stats.videoId, payload);
 }
 
+async function recordView(post?: PostPopulated) {
+	if (!post) return;
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
+	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, post);
+}
+
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
 	playVideo(index);
+	recordView(videos[currentVideoIndex]);
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
