@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cargo test
-
 export GLOBAL_OWNER_PRINCIPAL_ID=$(dfx identity get-principal)
 
 dfx canister create --no-wallet user_index
@@ -13,6 +11,8 @@ export CANISTER_ID_post_cache=$(dfx canister id post_cache)
 export LOCAL_TOP_POSTS_SYNC_INTERVAL="10000000000"
 
 dfx build post_cache
+
+cargo test --package post_cache
 
 dfx canister install post_cache --mode upgrade
 
