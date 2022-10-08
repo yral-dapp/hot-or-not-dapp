@@ -9,7 +9,7 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import { getTopPosts, type PostPopulated } from '$lib/helpers/feed';
+import { getTopPosts, type PostPopulated, type PostPopulatedHistory } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { Principal } from '@dfinity/principal';
 
@@ -85,7 +85,11 @@ async function updateStats(oldIndex) {
 async function recordView(post?: PostPopulated) {
 	if (!post) return;
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, post);
+	const postHistory: PostPopulatedHistory = {
+		...post,
+		watched_at: Date.now()
+	};
+	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
 }
 
 async function handleChange(e: CustomEvent) {
