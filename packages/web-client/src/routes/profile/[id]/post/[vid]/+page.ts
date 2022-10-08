@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { getCanisterId } from '$lib/helpers/idb';
+import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';

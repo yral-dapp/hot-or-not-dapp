@@ -19,7 +19,7 @@ import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
-import { getCanisterId } from '$lib/helpers/idb';
+import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';

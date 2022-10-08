@@ -1,7 +1,6 @@
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
-import { get, set } from 'idb-keyval';
-
+import { canisterIdb } from '$lib/utils/idb';
 export function isPrincipal(p?: any) {
 	try {
 		if (!p) return false;
@@ -13,7 +12,7 @@ export function isPrincipal(p?: any) {
 }
 
 export async function getCanisterId(id: string): Promise<string | undefined> {
-	const canId = await get(id);
+	const canId = await canisterIdb.get(id);
 	if (canId) return canId;
 	else {
 		const { userIndex } = await import('$lib/helpers/backend');
@@ -23,13 +22,13 @@ export async function getCanisterId(id: string): Promise<string | undefined> {
 					Principal.from(id)
 				);
 				if (res[0]) {
-					set(id, res[0].toString());
+					canisterIdb.set(id, res[0].toString());
 					return res[0].toString();
 				}
 			} else {
 				const res = await userIndex().get_user_canister_id_from_unique_user_name(id);
 				if (res[0]) {
-					set(id, res[0].toString());
+					canisterIdb.set(id, res[0].toString());
 					return res[0].toString();
 				}
 			}
