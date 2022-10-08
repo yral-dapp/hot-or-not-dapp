@@ -6,6 +6,7 @@
 		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
+		"test": "playwright test",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build --threshold warning --diagnostic-sources \"js,ts,svelte\"",
