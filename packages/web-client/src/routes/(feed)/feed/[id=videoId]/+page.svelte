@@ -111,9 +111,9 @@ const playVideo = debounce(50, async (index: number) => {
 	currentPlayingIndex = index;
 });
 
-function updateURL(video?: PostPopulated) {
-	if (!video) return;
-	const url = video.publisher_canister_id + '@' + video.post_id;
+function updateURL(post?: PostPopulated) {
+	if (!post) return;
+	const url = post.publisher_canister_id + '@' + post.post_id;
 	$playerState.currentVideoUrl = url;
 	window.history.replaceState('', '', url);
 }
@@ -162,10 +162,9 @@ onMount(async () => {
 					i="{i}"
 					id="{video.id}"
 					displayName="{video.created_by_display_name[0]}"
-					profileLink="{video.created_by_unique_user_name[0] ??
-						video.created_by_user_principal_id.toText()}"
+					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
 					liked="{video.liked_by_me}"
-					createdById="{video.created_by_user_principal_id.toText()}"
+					createdById="{video.created_by_user_principal_id}"
 					videoViews="{Number(video.total_view_count)}"
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
