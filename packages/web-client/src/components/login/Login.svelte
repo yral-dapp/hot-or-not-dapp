@@ -19,6 +19,7 @@ import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
+import { getCanisterId } from '$lib/helpers/idb';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
@@ -53,8 +54,13 @@ async function handleSuccessfulLogin(type: LoginType) {
 	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
 	$authState.isLoggedIn = true;
 	try {
+		let canId: string | undefined = undefined;
+		const principal = $authHelper.client?.getIdentity()?.getPrincipal();
+		if (principal) {
+			canId = await getCanisterId(principal.toString());
+		}
 		await initializeAuthClient();
-		registerEvent('login', {
+		registerEvent(canId ? 'login' : 'sign_up', {
 			screen_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
 			principal_id: $userProfile.principal_id
