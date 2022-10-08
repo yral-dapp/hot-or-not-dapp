@@ -12,7 +12,7 @@ export function isPrincipal(p?: any) {
 	}
 }
 
-export async function getCanisterId(id: string): Promise<string | false> {
+export async function getCanisterId(id: string): Promise<string | undefined> {
 	const canId = await get(id);
 	if (canId) return canId;
 	else {
@@ -24,18 +24,18 @@ export async function getCanisterId(id: string): Promise<string | false> {
 				);
 				if (res[0]) {
 					set(id, res[0].toString());
+					return res[0].toString();
 				}
-				return res.toString();
 			} else {
 				const res = await userIndex().get_user_canister_id_from_unique_user_name(id);
 				if (res[0]) {
 					set(id, res[0].toString());
+					return res[0].toString();
 				}
-				return res.toString();
 			}
 		} catch (e) {
 			Log({ error: e, from: '1 getCanisterId' }, 'error');
-			return false;
+			return;
 		}
 	}
 }
