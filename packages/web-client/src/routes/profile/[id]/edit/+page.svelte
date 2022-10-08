@@ -10,7 +10,6 @@ import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 import userProfile from '$stores/userProfile';
 import type { Principal } from '@dfinity/principal';
-import { canisterIdb } from '$lib/utils/idb';
 import { getCanisterId } from '$lib/helpers/canisterId';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { authState } from '$stores/auth';
@@ -106,7 +105,10 @@ async function saveChanges() {
 			$userProfile.username_set = true;
 			$userProfile.unique_user_name = newUsername;
 			const canId = await getCanisterId(userPrincipal.toString());
-			if (canId) canisterIdb.set(newUsername, canId);
+			if (canId) {
+				const { canisterIdb } = await import('$lib/utils/idb');
+				canisterIdb.set(newUsername, canId);
+			}
 		} catch (e) {
 			loading = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');

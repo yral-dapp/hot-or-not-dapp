@@ -9,7 +9,6 @@ import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
 import userProfile, { type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
-import { canisterIdb } from '$lib/utils/idb';
 import { get } from 'svelte/store';
 import { getCanisterId } from './canisterId';
 
@@ -56,6 +55,7 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
 			...sanitizeProfile(updateProfile, authStateData.idString || 'random')
 		});
 		if (updateProfile.unique_user_name[0]) {
+			const { canisterIdb } = await import('$lib/utils/idb');
 			canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
 		}
 		Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
