@@ -3,7 +3,11 @@ import type { PostScoreIndexItem, TopPostsFetchError } from '$canisters/post_cac
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 
-export interface PostPopulated extends PostScoreIndexItem, PostDetailsForFrontend {}
+export interface PostPopulated
+	extends PostScoreIndexItem,
+		Omit<PostDetailsForFrontend, 'created_by_user_principal_id'> {
+	created_by_user_principal_id: string;
+}
 
 export type FeedResponse =
 	| {
@@ -59,7 +63,7 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 				const r = await individualUser(
 					Principal.from(post.publisher_canister_id)
 				).get_individual_post_details_by_id(post.post_id);
-				return { ...r, ...post };
+				return { ...r, ...post, created_by_user_principal_id: post.publisher_canister_id.toText() };
 			})
 		);
 
