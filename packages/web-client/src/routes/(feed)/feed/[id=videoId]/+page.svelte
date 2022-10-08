@@ -9,19 +9,26 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import { getTopPosts, type PostPopulated, type PostPopulatedHistory } from '$lib/helpers/feed';
+import {
+	getTopPosts,
+	getWatchedVideosFromCache,
+	type PostPopulated,
+	type PostPopulatedHistory
+} from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { Principal } from '@dfinity/principal';
 
 const fetchCount = 5;
+const keepVideosLoadedCount: number = 4;
+
 let videos: PostPopulated[] = [];
-let keepVideosLoadedCount: number = 4;
 let currentVideoIndex = 0;
-let moreVideos = true;
+let noMoreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
 let individualUser: (principal?: Principal) => IndividualUserActor;
+let fetchedVideosCount = 0;
 
 type VideoViewReport = {
 	progress: number;
@@ -33,29 +40,35 @@ let videoStats: Record<number, VideoViewReport> = {};
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
-	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
+	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
 			Log({ res: 'fetching from ' + videos.length, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const res = await getTopPosts(videos.length);
+			const res = await getTopPosts(fetchedVideosCount);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
 				return;
 			}
 
-			moreVideos = !res.noMorePosts;
-
+			noMoreVideos = res.noMorePosts;
+			fetchedVideosCount = res.from;
 			videos.push(...res.posts);
 			videos = videos;
 
 			await tick();
 			loading = false;
 
-			Log({ res: 'fetched', moreVideos, source: '0 fetchNextVideos' }, 'info');
+			if (noMoreVideos) {
+				const watchedVideos = await getWatchedVideosFromCache();
+				videos.push(...watchedVideos);
+				videos = videos;
+			}
+
+			Log({ res: 'fetched', noMoreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
-			Log({ error: e, moreVideos, source: '1 fetchNextVideos' }, 'error');
+			Log({ error: e, noMoreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
 	}
@@ -194,7 +207,7 @@ onMount(async () => {
 			</div>
 		</SwiperSlide>
 	{/if}
-	{#if !moreVideos}
+	{#if noMoreVideos}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 				<NoVideosIcon class="w-56" />
