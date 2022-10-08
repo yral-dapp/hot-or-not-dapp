@@ -1,11 +1,10 @@
-name: Run test suite on pull request
+name: Run test suite on any push
 on:
   push:
     branches-ignore:
       - main
-    paths:
-      - 'packages/canisters/post_cache/**'
-      - '.github/workflows/canisters/post_cache/pull_request_tests.yml'
+    # paths:
+    #   - 'packages/canisters/**'
 
 jobs:
   cargo-test:
