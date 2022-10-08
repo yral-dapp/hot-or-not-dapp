@@ -15,7 +15,6 @@ import { authState } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
-import { prefetch } from '$app/navigation';
 import userProfile from '$stores/userProfile';
 import { loadingAuthStatus } from '$stores/loading';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -63,17 +62,6 @@ let showLogoutPopup = false;
 $: userId = $userProfile.username_set
 	? $userProfile.unique_user_name || $authState.idString
 	: $authState.idString;
-
-function prefetchLinks() {
-	links.forEach((link) => {
-		link.href && prefetch(link.href);
-	});
-	if ($authState.isLoggedIn) {
-		prefetch(`/profile/${userId}`);
-	}
-}
-
-onMount(() => prefetchLinks());
 </script>
 
 <LogoutPopup bind:show="{showLogoutPopup}" />
