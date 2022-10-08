@@ -1,15 +1,7 @@
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 import { canisterIdb } from '$lib/utils/idb';
-export function isPrincipal(p?: any) {
-	try {
-		if (!p) return false;
-		const r = Principal.from(p);
-		return r._isPrincipal ? true : false;
-	} catch (_) {
-		return false;
-	}
-}
+import { isPrincipal } from '$lib/utils/isPrincipal';
 
 export async function getCanisterId(id: string): Promise<string | undefined> {
 	const canId = await canisterIdb.get(id);

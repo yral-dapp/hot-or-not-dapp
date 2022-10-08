@@ -1,4 +1,4 @@
-import { isPrincipal } from '$lib/helpers/idb';
+import { isPrincipal } from '$lib/utils/isPrincipal';
 import type { ParamMatcher } from '@sveltejs/kit';
 export const match: ParamMatcher = (param: string) => {
 	if (!param.includes('@')) {
