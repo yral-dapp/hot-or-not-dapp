@@ -11,17 +11,10 @@ test('Menu page loads', async ({ page }) => {
 		return new Promise((resolve) => setTimeout(resolve, 5000));
 	});
 
-	// create a locator
-	const loginBtn = page.locator('text=Login');
+	await expect(page.getByText('Join Hot or Not')).toBeHidden();
 
-	// Click the get started link.
+	const loginBtn = page.locator('text=Login');
 	await loginBtn.click();
 
-	await page.evaluate(() => {
-		// wait for modal animation to finish
-		return new Promise((resolve) => setTimeout(resolve, 1500));
-	});
-
-	// Expects the URL to contain intro.
 	await expect(page.getByText('Join Hot or Not')).toBeVisible();
 });
