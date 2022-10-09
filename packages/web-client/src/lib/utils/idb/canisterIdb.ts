@@ -1,10 +1,4 @@
-import { openDB } from 'idb';
-
-const dbPromise = openDB('keyval-store', 1, {
-	upgrade(db) {
-		db.createObjectStore('keyval');
-	}
-});
+import { dbPromise } from './db';
 
 export async function get(key) {
 	return (await dbPromise).get('keyval', key);
