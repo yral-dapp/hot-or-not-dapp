@@ -1,0 +1,37 @@
+name: Deploy post_cache canister to IC mainnet on push to main
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/canisters/post_cache/**'
+      - '.github/workflows/post_cache_main_deploy.yml'
+
+jobs:
+  deploy:
+    name: Run tests and deploy post_cache canister
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Add Rust wasm target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Install DFX
+        run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      - name: Initialize DFX identities
+        run: dfx identity list
+      - name: Import DFX identity
+        run: |
+          touch actions_identity.pem
+          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+      - name: Build individual_user_template canister as it is a dependency for running `cargo test`
+        run: dfx build --network ic individual_user_template
+      - name: Run canister test suite
+        run: cargo test
+      - name: Build post_cache canister
+        run: dfx build --network ic post_cache
+      - name: Deploy post_cache canister
+        run: dfx canister --network ic install post_cache --mode upgrade
