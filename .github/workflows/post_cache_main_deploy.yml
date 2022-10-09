@@ -1,11 +1,11 @@
 name: Run test suite on any push
 on:
   push:
-    branches-ignore:
+    branches:
       - main
     paths:
-      - 'packages/canisters/**'
-      - '.github/workflows/all_canisters_test_suite_on_any_push.yml'
+      - 'packages/canisters/post_cache/**'
+      - '.github/workflows/post_cache_main_deploy.yml'
 
 jobs:
   cargo-test:
@@ -23,3 +23,5 @@ jobs:
           dfx identity use actions
       - run: dfx build --network ic individual_user_template
       - run: cargo test
+      - run: dfx build --network ic post_cache
+      - run: dfx canister --network ic install post_cache --mode upgrade
