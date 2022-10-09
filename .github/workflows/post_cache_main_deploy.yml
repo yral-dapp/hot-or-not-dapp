@@ -8,7 +8,8 @@ on:
       - '.github/workflows/post_cache_main_deploy.yml'
 
 jobs:
-  cargo-test:
+  deploy:
+    name: Run tests and deploy post_cache canister
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
