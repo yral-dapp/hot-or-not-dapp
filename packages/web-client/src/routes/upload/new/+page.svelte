@@ -17,6 +17,7 @@ import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
 import userProfile from '$stores/userProfile';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -160,6 +161,10 @@ function getVideoLink() {
 onMount(async () => {
 	if ($fileToUpload) {
 		videoSrc = URL.createObjectURL($fileToUpload);
+		registerEvent('video_to_upload', {
+			method: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+			userId: $userProfile.principal_id
+		});
 	} else {
 		goto('/upload');
 	}
