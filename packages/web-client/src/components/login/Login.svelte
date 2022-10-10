@@ -67,7 +67,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 			method: type,
 			screen_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
-			principal_id: $userProfile.principal_id
+			userId: $userProfile.principal_id
 		});
 		loading = false;
 		$authState.showLogin = false;

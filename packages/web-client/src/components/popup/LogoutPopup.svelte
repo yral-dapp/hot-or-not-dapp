@@ -13,7 +13,7 @@ async function handleLogout() {
 	registerEvent('logout', {
 		screen_name: $userProfile.display_name,
 		username: $userProfile.unique_user_name,
-		principal_id: $userProfile.principal_id
+		userId: $userProfile.principal_id
 	});
 	loading = true;
 	$authState.isLoggedIn = false;
