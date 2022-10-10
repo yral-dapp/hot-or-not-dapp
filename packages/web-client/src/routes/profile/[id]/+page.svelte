@@ -24,6 +24,7 @@ import type { PostDetailsForFrontend } from '$canisters/individual_user_template
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
 //@ts-ignore
@@ -57,6 +58,10 @@ async function showShareDialog() {
 			title: 'Hot or Not',
 			text: 'Video title',
 			url: `https://hotornot.wtf/profile/${userId}`
+		});
+		registerEvent('share_profile', {
+			userId: $userProfile.principal_id,
+			profileId: $page.params.id
 		});
 	} catch (err) {
 		console.error('Cannot open share dialog', err);
@@ -113,6 +118,10 @@ onMount(() => {
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
 	}
+	registerEvent('view_profile', {
+		userId: $userProfile.principal_id,
+		profileId: $page.params.id
+	});
 	load.page = false;
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });

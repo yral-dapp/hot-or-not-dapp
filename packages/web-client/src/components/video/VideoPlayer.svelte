@@ -18,6 +18,8 @@ import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
 import { createEventDispatcher } from 'svelte';
+import userProfile from '$stores/userProfile';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let swiperJs: boolean;
 export let src;
@@ -33,6 +35,7 @@ export let userProfileSrc = '';
 export let liked = false;
 export let createdById = '';
 export let individualUser: (user: Principal) => IndividualUserActor;
+export let likeCount: number = 0;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -97,6 +100,12 @@ async function handleClick() {
 async function handleLike() {
 	if ($authState.isLoggedIn) {
 		liked = !liked;
+		registerEvent('like_video', {
+			userId: $userProfile.principal_id,
+			videoPublisher: profileLink,
+			videoId: id,
+			likes: likeCount
+		});
 		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
 	} else $authState.showLogin = true;
 }
@@ -106,6 +115,11 @@ async function handleShare() {
 		title: 'Hot or Not',
 		text: 'Video title',
 		url: `https://hotornot.wtf/profile/${profileLink}/post/${id}`
+	});
+	registerEvent('share_video', {
+		userId: $userProfile.principal_id,
+		videoPublisher: profileLink,
+		videoId: id
 	});
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
