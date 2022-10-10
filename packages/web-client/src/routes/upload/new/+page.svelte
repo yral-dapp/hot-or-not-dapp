@@ -121,6 +121,11 @@ async function handleSuccessfulUpload(videoUid: string) {
 			creator_consent_for_inclusion_in_hot_or_not: false
 		});
 		uploadedVideoId = Number(postId);
+		registerEvent('video_uploaded', {
+			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+			userId: $userProfile.principal_id,
+			videoId: uploadedVideoId
+		});
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
@@ -162,7 +167,7 @@ onMount(async () => {
 	if ($fileToUpload) {
 		videoSrc = URL.createObjectURL($fileToUpload);
 		registerEvent('video_to_upload', {
-			method: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
 			userId: $userProfile.principal_id
 		});
 	} else {
