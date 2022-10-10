@@ -41,6 +41,9 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
+	registerEvent('login_cta', {
+		type
+	});
 	loading = true;
 	await $authHelper.client?.login({
 		maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
@@ -64,7 +67,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 			method: type,
 			screen_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
-			principal_id: $userProfile.principal_id
+			userId: $userProfile.principal_id
 		});
 		loading = false;
 		$authState.showLogin = false;

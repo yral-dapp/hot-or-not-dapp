@@ -24,7 +24,7 @@ export type PostCacheActor = ActorSubclass<_POST_CACHE_SERVICE>;
 
 export function userIndex(): UserIndexActor {
 	const authHelperData = get(authHelper);
-	return createUserIndexActor(userIndexCanisterId, {
+	return createUserIndexActor(userIndexCanisterId as string, {
 		agentOptions: { identity: authHelperData?.identity, host }
 	}) as UserIndexActor;
 }
@@ -32,14 +32,17 @@ export function userIndex(): UserIndexActor {
 export function individualUser(principal?: Principal): IndividualUserActor {
 	const authHelperData = get(authHelper);
 	const authStateData = get(authState);
-	return createIndividualUserActor(principal ? principal.toText() : authStateData.userCanisterId, {
-		agentOptions: { identity: authHelperData?.identity, host }
-	}) as IndividualUserActor;
+	return createIndividualUserActor(
+		principal ? principal.toText() : (authStateData.userCanisterId as string),
+		{
+			agentOptions: { identity: authHelperData?.identity, host }
+		}
+	) as IndividualUserActor;
 }
 
 export function postCache(): PostCacheActor {
 	const authHelperData = get(authHelper);
-	return createPostCacheActor(postCacheCanisterId, {
+	return createPostCacheActor(postCacheCanisterId as string, {
 		agentOptions: { identity: authHelperData?.identity, host }
 	}) as PostCacheActor;
 }

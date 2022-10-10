@@ -201,6 +201,8 @@ pub enum AnotherUserFollowedMeError {
 async fn update_principals_that_follow_me_toggle_list_with_specified_principal(
     user_principal_id_whos_trying_to_follow_me: Principal,
 ) -> Result<bool, AnotherUserFollowedMeError> {
+    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
+    // TODO: Basically have a single call to get well known canister ids
     let (user_trying_to_follow_me_canister_id,): (Option<Principal>,) = call::call(
         get_user_index_canister_principal_id(),
         "get_user_canister_id_from_user_principal_id",

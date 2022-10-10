@@ -1,0 +1,38 @@
+name: Deploy user_index canister to IC mainnet on push to main
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/canisters/user_index/**'
+      - 'packages/canisters/individual_user_template/**'
+      - '.github/workflows/user_index_canister_main_deploy.yml'
+
+jobs:
+  deploy:
+    name: Run tests and deploy user_index canister
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Add Rust wasm target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Install DFX
+        run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      - name: Initialize DFX identities
+        run: dfx identity list
+      - name: Import DFX identity
+        run: |
+          touch actions_identity.pem
+          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+      - name: Build individual_user_template canister as it is a dependency for running `cargo test`
+        run: dfx build --network ic individual_user_template
+      - name: Run canister test suite
+        run: cargo test
+      - name: Build user_index canister
+        run: dfx build --network ic user_index
+      - name: Deploy user_index canister
+        run: dfx canister --network ic install user_index --mode upgrade

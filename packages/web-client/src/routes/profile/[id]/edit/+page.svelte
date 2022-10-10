@@ -14,6 +14,7 @@ import { getCanisterId } from '$lib/helpers/canisterId';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { authState } from '$stores/auth';
 import { goto } from '$app/navigation';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
 //@ts-ignore
@@ -132,6 +133,13 @@ async function saveChanges() {
 		}
 		loading = false;
 		goto(`/profile/${username_set ? $userProfile.unique_user_name : $userProfile.principal_id}`);
+
+		registerEvent('edit_profile', {
+			userId: $userProfile.principal_id,
+			screen_name: displayName,
+			profileImg: imgSrc,
+			username: $userProfile.unique_user_name
+		});
 	} catch (e) {
 		loading = false;
 		Log({ error: e, from: '2 saveChanges' }, 'error');
