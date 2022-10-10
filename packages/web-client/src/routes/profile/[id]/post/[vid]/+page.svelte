@@ -14,6 +14,7 @@ import { page } from '$app/stores';
 
 export let data: PageData;
 
+//@ts-ignore
 const { video, publisherId, me } = data;
 
 let individualUser: () => IndividualUserActor;
