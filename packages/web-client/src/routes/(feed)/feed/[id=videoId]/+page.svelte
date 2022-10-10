@@ -12,6 +12,8 @@ import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { getTopPosts, type PostPopulated } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { Principal } from '@dfinity/principal';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import userProfile from '$stores/userProfile';
 
 const fetchCount = 5;
 let videos: PostPopulated[] = [];
@@ -27,6 +29,7 @@ type VideoViewReport = {
 	progress: number;
 	videoId: bigint;
 	canisterId: Principal;
+	profileId: string;
 	count: number;
 };
 let videoStats: Record<number, VideoViewReport> = {};
@@ -66,6 +69,7 @@ async function updateStats(oldIndex) {
 	if (!stats || (stats?.count === 0 && stats?.progress === 0)) {
 		return;
 	}
+
 	delete videoStats[oldIndex];
 	const payload =
 		stats.count == 0
@@ -79,6 +83,12 @@ async function updateStats(oldIndex) {
 					}
 			  };
 	Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
+	registerEvent('view_video', {
+		userId: $userProfile.principal_id,
+		videoPublisher: stats.profileId,
+		videoId: stats.videoId,
+		watchCount: stats.count
+	});
 	await individualUser(stats.canisterId).update_post_add_view_details(stats.videoId, payload);
 }
 
@@ -118,7 +128,7 @@ function updateURL(video?: PostPopulated) {
 	window.history.replaceState('', '', url);
 }
 
-function recordStats(progress: number, canisterId: Principal, videoId: bigint) {
+function recordStats(progress: number, canisterId: Principal, videoId: bigint, profileId: string) {
 	if (videoStats[currentPlayingIndex]) {
 		videoStats[currentPlayingIndex].progress = progress;
 		if (progress == 0) videoStats[currentPlayingIndex].count++;
@@ -127,6 +137,7 @@ function recordStats(progress: number, canisterId: Principal, videoId: bigint) {
 			progress,
 			videoId,
 			canisterId,
+			profileId,
 			count: 0
 		};
 	}
@@ -157,7 +168,12 @@ onMount(async () => {
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
 					on:watchedPercentage="{({ detail }) =>
-						recordStats(detail, video.publisher_canister_id, video.id)}"
+						recordStats(
+							detail,
+							video.publisher_canister_id,
+							video.id,
+							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id.toText()
+						)}"
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
 					id="{video.id}"
