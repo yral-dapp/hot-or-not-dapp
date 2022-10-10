@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('Menu page loads', async ({ page }) => {
-	await page.goto('http://localhost:5173/menu');
+	await page.goto('https://hotornot.wtf/menu');
 
 	// Expect a title "to contain" a substring.
 	await expect(page).toHaveTitle(/Hot or Not/);
