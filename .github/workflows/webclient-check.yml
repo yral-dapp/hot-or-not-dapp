@@ -1,4 +1,4 @@
-name: Run svelte-check
+name: Web-client tests
 on:
   push:
     branches: [main, master]
