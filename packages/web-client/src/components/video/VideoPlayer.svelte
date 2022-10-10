@@ -35,6 +35,7 @@ export let userProfileSrc = '';
 export let liked = false;
 export let createdById = '';
 export let individualUser: (user: Principal) => IndividualUserActor;
+export let likeCount: number = 0;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -102,7 +103,8 @@ async function handleLike() {
 		registerEvent('like_video', {
 			userId: $userProfile.principal_id,
 			videoPublisher: profileLink,
-			videoId: id
+			videoId: id,
+			likes: likeCount
 		});
 		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
 	} else $authState.showLogin = true;
