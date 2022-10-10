@@ -41,6 +41,9 @@ function getIdentityProviderURL(type: LoginType) {
 }
 
 async function handleLogin(type: LoginType) {
+	registerEvent('login_cta', {
+		type
+	});
 	loading = true;
 	await $authHelper.client?.login({
 		maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
