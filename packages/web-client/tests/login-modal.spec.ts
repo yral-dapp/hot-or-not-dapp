@@ -6,10 +6,7 @@ test('Menu page loads', async ({ page }) => {
 	// Expect a title "to contain" a substring.
 	await expect(page).toHaveTitle(/Hot or Not/);
 
-	await page.evaluate(() => {
-		// wait for 5 seconds for AgentJs to initialize
-		return new Promise((resolve) => setTimeout(resolve, 5000));
-	});
+	await page.waitForResponse((res) => res.url().includes('https://ic0.app/api/v2/canister'));
 
 	await expect(page.getByText('Join Hot or Not')).toBeHidden();
 
