@@ -1,0 +1,30 @@
+name: Run svelte-check
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "packages/web-client/**"
+      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/webclient-setup/action.yml"
+  pull_request:
+    branches: [main, master]
+    paths:
+      - "packages/web-client/**"
+      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/webclient-setup/action.yml"
+
+jobs:
+  svelte-check:
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Run sync
+        run: npm run web-client:sync
+      - name: Run svelte-check
+        run: npm run web-client:check
