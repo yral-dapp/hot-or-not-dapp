@@ -117,11 +117,11 @@ onMount(() => {
 		profile = $userProfile;
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
-		registerEvent('view_profile', {
-			userId: $userProfile.principal_id,
-			profileId: $page.params.id
-		});
 	}
+	registerEvent('view_profile', {
+		userId: $userProfile.principal_id,
+		profileId: $page.params.id
+	});
 	load.page = false;
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
