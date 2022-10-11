@@ -12,6 +12,7 @@ import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
 $: showBg = !(path.includes('feed') || path.includes('post'));
+$: feedUrl = $playerState.currentVideoUrl == 'no-videos' ? '' : $playerState.currentVideoUrl;
 
 function prefetchLinks() {
 	!path.includes('menu') && prefetch('/menu');
@@ -25,9 +26,7 @@ onMount(() => prefetchLinks());
 
 <bottom-nav
 	class="flex w-full items-center justify-between px-4 {showBg ? 'bg-black shadow-up' : ''}">
-	<IconButton
-		href="{`/feed/${$playerState.currentVideoUrl}`}"
-		class="relative flex items-center px-2 py-5">
+	<IconButton href="{`/feed/${feedUrl}`}" class="relative flex items-center px-2 py-5">
 		<HomeIcon filled="{path.includes('feed')}" class="h-6 w-6 text-white" />
 		<div
 			class:hidden="{!path.includes('feed')}"
