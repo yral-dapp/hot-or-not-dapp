@@ -2,7 +2,11 @@ import { openDB } from 'idb';
 
 export const dbPromise = openDB('keyval-store', 2, {
 	upgrade(db) {
-		db.createObjectStore('keyval');
-		db.createObjectStore('watch');
+		if (!db.objectStoreNames.contains('keyval')) {
+			db.createObjectStore('keyval');
+		}
+		if (!db.objectStoreNames.contains('watch')) {
+			db.createObjectStore('watch');
+		}
 	}
 });
