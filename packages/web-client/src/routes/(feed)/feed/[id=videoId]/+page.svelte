@@ -39,18 +39,17 @@ type VideoViewReport = {
 	profileId: string;
 	count: number;
 };
+
 let videoStats: Record<number, VideoViewReport> = {};
 
 async function fetchNextVideos() {
-	// console.log(
-	// 	`to fetch: ${!noMoreVideos} && ${fetchedVideosCount}-${currentVideoIndex}<${fetchCount}`
-	// );
-	if (!noMoreVideos && fetchedVideosCount - currentVideoIndex < fetchCount) {
+	console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
+	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount);
+			const res = await getTopPosts(fetchedVideosCount, 10, true);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;

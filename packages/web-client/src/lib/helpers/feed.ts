@@ -43,7 +43,11 @@ export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[
 	return sorted;
 }
 
-export async function getTopPosts(from: number, numberOfPosts: number = 10): Promise<FeedResponse> {
+export async function getTopPosts(
+	from: number,
+	numberOfPosts: number = 10,
+	filterViewed = false
+): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
 		const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
@@ -53,7 +57,7 @@ export async function getTopPosts(from: number, numberOfPosts: number = 10): Pro
 		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
 			const filteredPosts = await filterPosts(res.Ok);
-			const populatedRes = await populatePosts(filteredPosts);
+			const populatedRes = await populatePosts(filterViewed ? filteredPosts : res.Ok);
 			if (populatedRes.error) {
 				throw new Error(`Error while populating, ${JSON.stringify(populatedRes)}`);
 			}
