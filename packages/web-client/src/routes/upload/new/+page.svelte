@@ -218,7 +218,8 @@ onDestroy(() => {
 			{#if previewPaused}
 				<div
 					on:click="{() => (previewPaused = false)}"
-					class="absolute inset-0 flex items-center justify-center">
+					class="absolute inset-0 flex items-center justify-center"
+					on:keyup>
 					<IconButton class="rounded-full bg-black/50 p-4">
 						<PlayIcon class="h-4 w-4" />
 					</IconButton>

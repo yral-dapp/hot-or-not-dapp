@@ -398,7 +398,7 @@ onDestroy(async () => {
 		{#if initState == 'allowed'}
 			<!-- Snap Point -->
 			<div transition:fade|local class="flex items-end justify-start pt-3">
-				<div
+				<button
 					bind:this="{cameraEl}"
 					on:click="{() => !loading && startRecording()}"
 					class="{c(
@@ -409,10 +409,10 @@ onDestroy(async () => {
 					{#if loading}
 						<LoadingIcon class="absolute mx-auto h-8 w-8 animate-spin-slow text-primary" />
 					{/if}
-				</div>
+				</button>
 			</div>
 			{#if !recording && useCanvas}
-				<div
+				<button
 					on:click="{(e) => !loading && checkClickAndStartRecording(e)}"
 					transition:fade|local
 					bind:this="{filtersEl}"
@@ -448,7 +448,7 @@ onDestroy(async () => {
 					<div data-filter="clear" class="shrink-0 snap-center">
 						<div class="w-dumb-end shrink-0"></div>
 					</div>
-				</div>
+				</button>
 			{/if}
 		{/if}
 	</svelte:fragment>
