@@ -42,7 +42,7 @@
 		"@types/throttle-debounce": "5.0.0",
 		"autoprefixer": "10.4.12",
 		"postcss": "8.4.17",
-		"start-server-and-test": "^1.14.0",
+		"start-server-and-test": "1.14.0",
 		"svelte": "3.51.0",
 		"svelte-check": "2.9.2",
 		"svelte-easy-crop": "1.0.7",
