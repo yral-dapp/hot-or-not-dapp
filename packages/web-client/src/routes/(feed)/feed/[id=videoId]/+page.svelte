@@ -25,7 +25,7 @@ const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
 let currentVideoIndex = 0;
-let noMoreVideos = true;
+let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
@@ -42,10 +42,12 @@ type VideoViewReport = {
 let videoStats: Record<number, VideoViewReport> = {};
 
 async function fetchNextVideos() {
-	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
-	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
+	// console.log(
+	// 	`to fetch: ${!noMoreVideos} && ${fetchedVideosCount}-${currentVideoIndex}<${fetchCount}`
+	// );
+	if (!noMoreVideos && fetchedVideosCount - currentVideoIndex < fetchCount) {
 		try {
-			Log({ res: 'fetching from ' + videos.length, source: '0 fetchNextVideos' }, 'info');
+			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
 			const res = await getTopPosts(fetchedVideosCount);
@@ -55,19 +57,21 @@ async function fetchNextVideos() {
 				return;
 			}
 
-			noMoreVideos = res.noMorePosts;
 			fetchedVideosCount = res.from;
 			videos.push(...res.posts);
 			videos = videos;
 
-			await tick();
-			loading = false;
-
-			if (noMoreVideos) {
+			if (!res.noMorePosts && res.posts.length == 0) {
+				fetchNextVideos();
+			} else if (res.noMorePosts) {
 				const watchedVideos = await getWatchedVideosFromCache();
 				videos.push(...watchedVideos);
 				videos = videos;
 			}
+
+			noMoreVideos = res.noMorePosts;
+			await tick();
+			loading = false;
 
 			Log({ res: 'fetched', noMoreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
@@ -110,9 +114,10 @@ async function recordView(post?: PostPopulated) {
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const postHistory: PostPopulatedHistory = {
 		...post,
+		publisher_canister_id: post.publisher_canister_id.toText() as any,
 		watched_at: Date.now()
 	};
-	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
+	await watchHistoryIdb.set(post.publisher_canister_id.toText() + '@' + post.post_id, postHistory);
 }
 
 async function handleChange(e: CustomEvent) {
@@ -147,7 +152,7 @@ const playVideo = debounce(50, async (index: number) => {
 
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
-	const url = post.publisher_canister_id + '@' + post.post_id;
+	const url = post.publisher_canister_id.toText() + '@' + post.post_id;
 	$playerState.currentVideoUrl = url;
 	window.history.replaceState('', '', url);
 }

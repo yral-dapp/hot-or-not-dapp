@@ -28,20 +28,18 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const keys = (await watchHistoryIdb.keys()) as string[];
 	if (!keys.length) return posts;
-	const keyMap = keys.reduce((acc, o) => {
-		const idSplit = o.split('@');
-		return {
-			...acc,
-			[idSplit[0]]: [idSplit[1]]
-		};
-	}, {});
-	const filtered = posts.filter((o) => keyMap[o.publisher_canister_id.toText()] != o.post_id);
+	const filtered = posts.filter(
+		(o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id)
+	);
 	return filtered;
 }
 
 export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
+	const valuesSerialized = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
+	const values = valuesSerialized.map((o) => {
+		return { ...o, publisher_canister_id: Principal.from(o.publisher_canister_id) };
+	});
 	if (!values.length) return [];
 	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
 	return sorted;
