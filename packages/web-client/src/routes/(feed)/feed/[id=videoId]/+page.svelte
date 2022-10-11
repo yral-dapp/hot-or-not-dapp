@@ -63,7 +63,9 @@ async function fetchNextVideos() {
 			await tick();
 			loading = false;
 
-			if (noMoreVideos) {
+			if (!noMoreVideos && res.posts.length == 0) {
+				fetchNextVideos();
+			} else if (noMoreVideos) {
 				const watchedVideos = await getWatchedVideosFromCache();
 				videos.push(...watchedVideos);
 				videos = videos;
