@@ -4,9 +4,10 @@ import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 
 export interface PostPopulated
-	extends PostScoreIndexItem,
+	extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
 		Omit<PostDetailsForFrontend, 'created_by_user_principal_id'> {
 	created_by_user_principal_id: string;
+	publisher_canister_id: string;
 }
 
 export interface PostPopulatedHistory extends PostPopulated {
@@ -36,10 +37,7 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 
 export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	const valuesSerialized = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
-	const values = valuesSerialized.map((o) => {
-		return { ...o, publisher_canister_id: Principal.from(o.publisher_canister_id) };
-	});
+	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
 	if (!values.length) return [];
 	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
 	return sorted;
@@ -87,12 +85,21 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 	try {
 		const { individualUser } = await import('./backend');
 
+		if (!posts.length) {
+			return { posts: [], error: false };
+		}
+
 		const res = await Promise.all(
 			posts.map(async (post) => {
 				const r = await individualUser(
 					Principal.from(post.publisher_canister_id)
 				).get_individual_post_details_by_id(post.post_id);
-				return { ...r, ...post, created_by_user_principal_id: post.publisher_canister_id.toText() };
+				return {
+					...r,
+					...post,
+					created_by_user_principal_id: post.publisher_canister_id.toText(),
+					publisher_canister_id: post.publisher_canister_id.toText()
+				};
 			})
 		);
 

@@ -16,7 +16,7 @@ import {
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
-import type { Principal } from '@dfinity/principal';
+import { Principal } from '@dfinity/principal';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import userProfile from '$stores/userProfile';
 
@@ -29,13 +29,13 @@ let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
-let individualUser: (principal?: Principal) => IndividualUserActor;
+let individualUser: (principal?: Principal | string) => IndividualUserActor;
 let fetchedVideosCount = 0;
 
 type VideoViewReport = {
 	progress: number;
 	videoId: bigint;
-	canisterId: Principal;
+	canisterId: string;
 	profileId: string;
 	count: number;
 };
@@ -106,7 +106,10 @@ async function updateStats(oldIndex) {
 		videoId: stats.videoId,
 		watchCount: stats.count
 	});
-	await individualUser(stats.canisterId).update_post_add_view_details(stats.videoId, payload);
+	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
+		stats.videoId,
+		payload
+	);
 }
 
 async function recordView(post?: PostPopulated) {
@@ -114,10 +117,9 @@ async function recordView(post?: PostPopulated) {
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const postHistory: PostPopulatedHistory = {
 		...post,
-		publisher_canister_id: post.publisher_canister_id.toText() as any,
 		watched_at: Date.now()
 	};
-	await watchHistoryIdb.set(post.publisher_canister_id.toText() + '@' + post.post_id, postHistory);
+	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
 }
 
 async function handleChange(e: CustomEvent) {
@@ -152,12 +154,12 @@ const playVideo = debounce(50, async (index: number) => {
 
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
-	const url = post.publisher_canister_id.toText() + '@' + post.post_id;
+	const url = post.publisher_canister_id + '@' + post.post_id;
 	$playerState.currentVideoUrl = url;
 	window.history.replaceState('', '', url);
 }
 
-function recordStats(progress: number, canisterId: Principal, videoId: bigint, profileId: string) {
+function recordStats(progress: number, canisterId: string, videoId: bigint, profileId: string) {
 	if (videoStats[currentPlayingIndex]) {
 		videoStats[currentPlayingIndex].progress = progress;
 		if (progress == 0) videoStats[currentPlayingIndex].count++;

@@ -2,10 +2,14 @@ export const ssr = false;
 import { redirect } from '@sveltejs/kit';
 
 export async function load() {
-	const { getTopPosts } = await import('$lib/helpers/feed');
-	const res = await getTopPosts(0, 1);
-	if (res.error || !res.posts[0]) {
+	const { postCache } = await import('$lib/helpers/backend');
+	const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
+		BigInt(0),
+		BigInt(1)
+	);
+	if ('Ok' in res && res.Ok[0]) {
+		throw redirect(307, `/feed/${res.Ok[0].publisher_canister_id.toText()}@${res.Ok[0].post_id}`);
+	} else {
 		throw redirect(307, '/feed/no-videos');
 	}
-	throw redirect(307, `/feed/${res.posts[0].publisher_canister_id}@${res.posts[0].post_id}`);
 }
