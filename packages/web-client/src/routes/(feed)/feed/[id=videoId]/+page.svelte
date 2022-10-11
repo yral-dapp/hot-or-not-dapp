@@ -9,12 +9,7 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import {
-	getTopPosts,
-	getWatchedVideosFromCache,
-	type PostPopulated,
-	type PostPopulatedHistory
-} from '$lib/helpers/feed';
+import { getTopPosts, type PostPopulated, type PostPopulatedHistory } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import { Principal } from '@dfinity/principal';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
@@ -50,7 +45,7 @@ async function fetchNextVideos() {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount);
+			const res = await getTopPosts(fetchedVideosCount, 10, false);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
@@ -61,13 +56,13 @@ async function fetchNextVideos() {
 			videos.push(...res.posts);
 			videos = videos;
 
-			if (!res.noMorePosts && res.posts.length == 0) {
-				fetchNextVideos();
-			} else if (res.noMorePosts) {
-				const watchedVideos = await getWatchedVideosFromCache();
-				videos.push(...watchedVideos);
-				videos = videos;
-			}
+			// if (!res.noMorePosts && res.posts.length == 0) {
+			// 	fetchNextVideos();
+			// } else if (res.noMorePosts) {
+			// 	const watchedVideos = await getWatchedVideosFromCache();
+			// 	videos.push(...watchedVideos);
+			// 	videos = videos;
+			// }
 
 			noMoreVideos = res.noMorePosts;
 			await tick();
