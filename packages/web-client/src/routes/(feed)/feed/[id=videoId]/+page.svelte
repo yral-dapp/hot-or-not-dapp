@@ -9,21 +9,28 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import { getTopPosts, type PostPopulated } from '$lib/helpers/feed';
+import {
+	getTopPosts,
+	getWatchedVideosFromCache,
+	type PostPopulated,
+	type PostPopulatedHistory
+} from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { Principal } from '@dfinity/principal';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import userProfile from '$stores/userProfile';
 
 const fetchCount = 5;
+const keepVideosLoadedCount: number = 4;
+
 let videos: PostPopulated[] = [];
-let keepVideosLoadedCount: number = 4;
 let currentVideoIndex = 0;
-let moreVideos = true;
+let noMoreVideos = true;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
 let individualUser: (principal?: Principal) => IndividualUserActor;
+let fetchedVideosCount = 0;
 
 type VideoViewReport = {
 	progress: number;
@@ -36,29 +43,35 @@ let videoStats: Record<number, VideoViewReport> = {};
 
 async function fetchNextVideos() {
 	// console.log('to fetch', videos.length, '-', currentVideoIndex, '<', fetchCount);
-	if (moreVideos && videos.length - currentVideoIndex < fetchCount) {
+	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
 		try {
 			Log({ res: 'fetching from ' + videos.length, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const res = await getTopPosts(videos.length);
+			const res = await getTopPosts(fetchedVideosCount);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
 				return;
 			}
 
-			moreVideos = !res.noMorePosts;
-
+			noMoreVideos = res.noMorePosts;
+			fetchedVideosCount = res.from;
 			videos.push(...res.posts);
 			videos = videos;
 
 			await tick();
 			loading = false;
 
-			Log({ res: 'fetched', moreVideos, source: '0 fetchNextVideos' }, 'info');
+			if (noMoreVideos) {
+				const watchedVideos = await getWatchedVideosFromCache();
+				videos.push(...watchedVideos);
+				videos = videos;
+			}
+
+			Log({ res: 'fetched', noMoreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
-			Log({ error: e, moreVideos, source: '1 fetchNextVideos' }, 'error');
+			Log({ error: e, noMoreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
 	}
@@ -92,12 +105,23 @@ async function updateStats(oldIndex) {
 	await individualUser(stats.canisterId).update_post_add_view_details(stats.videoId, payload);
 }
 
+async function recordView(post?: PostPopulated) {
+	if (!post) return;
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
+	const postHistory: PostPopulatedHistory = {
+		...post,
+		watched_at: Date.now()
+	};
+	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
+}
+
 async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
 	playVideo(index);
+	recordView(videos[currentVideoIndex]);
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
@@ -121,9 +145,9 @@ const playVideo = debounce(50, async (index: number) => {
 	currentPlayingIndex = index;
 });
 
-function updateURL(video?: PostPopulated) {
-	if (!video) return;
-	const url = video.publisher_canister_id + '@' + video.post_id;
+function updateURL(post?: PostPopulated) {
+	if (!post) return;
+	const url = post.publisher_canister_id + '@' + post.post_id;
 	$playerState.currentVideoUrl = url;
 	window.history.replaceState('', '', url);
 }
@@ -179,10 +203,9 @@ onMount(async () => {
 					id="{video.id}"
 					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
-					profileLink="{video.created_by_unique_user_name[0] ??
-						video.created_by_user_principal_id.toText()}"
+					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
 					liked="{video.liked_by_me}"
-					createdById="{video.created_by_user_principal_id.toText()}"
+					createdById="{video.created_by_user_principal_id}"
 					videoViews="{Number(video.total_view_count)}"
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
@@ -201,7 +224,7 @@ onMount(async () => {
 			</div>
 		</SwiperSlide>
 	{/if}
-	{#if !moreVideos}
+	{#if noMoreVideos}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
 				<NoVideosIcon class="w-56" />

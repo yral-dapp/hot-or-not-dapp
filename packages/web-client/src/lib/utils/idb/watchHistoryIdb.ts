@@ -15,3 +15,7 @@ export async function clear() {
 export async function keys() {
 	return (await dbPromise).getAllKeys('watch');
 }
+
+export async function values() {
+	return (await dbPromise).getAll('watch');
+}

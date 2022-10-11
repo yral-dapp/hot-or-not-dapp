@@ -3,17 +3,50 @@ import type { PostScoreIndexItem, TopPostsFetchError } from '$canisters/post_cac
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 
-export interface PostPopulated extends PostScoreIndexItem, PostDetailsForFrontend {}
+export interface PostPopulated
+	extends PostScoreIndexItem,
+		Omit<PostDetailsForFrontend, 'created_by_user_principal_id'> {
+	created_by_user_principal_id: string;
+}
+
+export interface PostPopulatedHistory extends PostPopulated {
+	watched_at: number;
+}
 
 export type FeedResponse =
 	| {
 			posts: PostPopulated[];
 			error: false;
+			from: number;
 			noMorePosts: boolean;
 	  }
 	| {
 			error: true;
 	  };
+
+async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexItem[]> {
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
+	const keys = (await watchHistoryIdb.keys()) as string[];
+	if (!keys.length) return posts;
+	const keyMap = keys.reduce((acc, o) => {
+		const idSplit = o.split('@');
+		return {
+			...acc,
+			[idSplit[0]]: [idSplit[1]]
+		};
+	}, {});
+	const filtered = posts.filter((o) => keyMap[o.publisher_canister_id.toText()] != o.post_id);
+	return filtered;
+}
+
+export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
+	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
+	if (!values.length) return [];
+	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
+	return sorted;
+}
+
 export async function getTopPosts(from: number, numberOfPosts: number = 10): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
@@ -23,12 +56,14 @@ export async function getTopPosts(from: number, numberOfPosts: number = 10): Pro
 		);
 		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
-			const populatedRes = await populatePosts(res.Ok);
+			const filteredPosts = await filterPosts(res.Ok);
+			const populatedRes = await populatePosts(filteredPosts);
 			if (populatedRes.error) {
 				throw new Error(`Error while populating, ${JSON.stringify(populatedRes)}`);
 			}
 			return {
 				error: false,
+				from: from + res.Ok.length,
 				posts: populatedRes.posts,
 				noMorePosts: res.Ok.length < numberOfPosts
 			};
@@ -41,7 +76,7 @@ export async function getTopPosts(from: number, numberOfPosts: number = 10): Pro
 				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
 					return { error: true };
 				case 'ReachedEndOfItemsList':
-					return { error: false, noMorePosts: true, posts: [] };
+					return { error: false, noMorePosts: true, from, posts: [] };
 			}
 		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
 	} catch (e) {
@@ -59,7 +94,7 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 				const r = await individualUser(
 					Principal.from(post.publisher_canister_id)
 				).get_individual_post_details_by_id(post.post_id);
-				return { ...r, ...post };
+				return { ...r, ...post, created_by_user_principal_id: post.publisher_canister_id.toText() };
 			})
 		);
 
