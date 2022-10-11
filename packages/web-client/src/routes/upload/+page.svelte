@@ -50,6 +50,7 @@ let invalidFileSelected = {
 	show: false,
 	error: 'size'
 };
+let audioTrack: MediaStreamTrack | undefined = undefined;
 
 const MAX_RECORDING_SECONDS = 60;
 const filterPreviewImage =
@@ -163,6 +164,7 @@ async function requestMediaAccess() {
 		const res = await getMediaStream(cameraControls.flip.facingMode);
 		if (res.error == 'none' && res.stream) {
 			mediaStream = res.stream;
+			audioTrack = res.stream.getAudioTracks()[0];
 
 			await tick();
 
@@ -205,6 +207,7 @@ async function startRecording(ignoreTimer = false) {
 		} else {
 			if (useCanvas) {
 				recordStream = canvasEl.captureStream(30);
+				audioTrack && recordStream.addTrack(audioTrack);
 			} else recordStream = mediaStream;
 			const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
 				? 'video/webm; codecs=vp9'
