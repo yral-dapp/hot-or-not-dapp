@@ -30,11 +30,11 @@ export let thumbnail = '';
 export let displayName = '';
 export let profileLink = '';
 export let videoViews = 254000;
-export let publisherCanisterId: Principal;
+export let publisherCanisterId: string;
 export let userProfileSrc = '';
 export let liked = false;
 export let createdById = '';
-export let individualUser: (user: Principal) => IndividualUserActor;
+export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
 
 const dispatch = createEventDispatcher<{
