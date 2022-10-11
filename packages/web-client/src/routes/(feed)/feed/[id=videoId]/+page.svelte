@@ -196,7 +196,7 @@ onMount(async () => {
 							detail,
 							video.publisher_canister_id,
 							video.id,
-							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id.toText()
+							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id
 						)}"
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
