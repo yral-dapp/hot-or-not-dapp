@@ -112,7 +112,8 @@ async function handleShare() {
 		'inline-flex h-full items-center justify-center transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
-	)}">
+	)}"
+	on:keyup>
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
 		bind:this="{videoEl}"
@@ -165,7 +166,8 @@ async function handleShare() {
 			<div class="flex grow flex-col space-y-4">
 				<div
 					on:click="{(e) => e.stopImmediatePropagation()}"
-					class="pointer-events-auto flex space-x-3">
+					class="pointer-events-auto flex space-x-3"
+					on:keyup>
 					<a href="/profile/{i}" data-sveltekit-prefetch class="h-12 w-12">
 						<Avatar class="h-12 w-12 shrink-0" src="{getDefaultImageUrl(i.toString())}" />
 					</a>

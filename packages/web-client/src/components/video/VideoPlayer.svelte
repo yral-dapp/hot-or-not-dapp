@@ -133,6 +133,7 @@ console.log({ displayName, publisherCanisterId, createdById });
 
 <player
 	i="{i}"
+	on:keyup
 	on:click="{handleClick}"
 	class="{c(
 		'block h-full items-center justify-center overflow-auto transition-all duration-500',
@@ -217,6 +218,7 @@ console.log({ displayName, publisherCanisterId, createdById });
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 left-4 z-[9] pr-20">
 			<div
+				on:keyup
 				on:click="{(e) => e.stopImmediatePropagation()}"
 				class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">

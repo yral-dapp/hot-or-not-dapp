@@ -97,6 +97,7 @@ $: userId = $userProfile.username_set
 			{#if !link.hide}
 				<svelte:element
 					this="{link.href ? 'a' : 'button'}"
+					on:keyup
 					on:click="{link.onClick}"
 					href="{link.href}"
 					data-sveltekit-prefetch="{link.href ? true : null}"
