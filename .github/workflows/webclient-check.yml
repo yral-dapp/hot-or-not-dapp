@@ -45,8 +45,12 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Setup build environment
+        uses: ./.github/workflows/webclient-setup
+      - name: Build web-client in SSR Mode
+        run: npm run web-client:build
       - name: Run Playwright tests
-        run: npm run web-client:test
+        run: npm run web-client:test:ci
       - uses: actions/upload-artifact@v3
         if: always()
         with:
