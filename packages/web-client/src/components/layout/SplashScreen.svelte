@@ -2,12 +2,6 @@
 import { fade } from 'svelte/transition';
 import { showSplashScreen } from '$stores/splashScreen';
 import HotorNotIcon from '$components/icons/HotorNotIcon.svelte';
-
-$: if ($showSplashScreen) {
-	setTimeout(() => {
-		$showSplashScreen = false;
-	}, 2000);
-}
 </script>
 
 {#if $showSplashScreen}
