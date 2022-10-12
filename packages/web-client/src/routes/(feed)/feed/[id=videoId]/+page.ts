@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ params }) => {
 				publisher_canister_id: id[0],
 				created_by_user_principal_id: r.created_by_user_principal_id.toText(),
 				post_id: postId,
-				score: 0n
+				score: BigInt(0)
 			} as PostPopulated
 		};
 	} else {
