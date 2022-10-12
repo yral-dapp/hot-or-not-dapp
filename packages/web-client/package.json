@@ -7,7 +7,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
-		"test:ci": "start-server-and-test preview http://localhost:4173 test",
+		"test:ci": "start-server-and-test preview 4173 test",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build --threshold warning --diagnostic-sources \"js,ts,svelte\"",
