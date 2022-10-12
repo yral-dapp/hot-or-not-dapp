@@ -1,17 +1,12 @@
 name: Web-client tests
 on:
-  push:
-    branches: [main]
-    paths:
-      - "packages/web-client/**"
-      - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
   pull_request:
     branches: [main]
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
+      - ".github/workflows/webclient-check.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
