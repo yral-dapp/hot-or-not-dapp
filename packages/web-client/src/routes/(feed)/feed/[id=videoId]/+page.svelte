@@ -9,11 +9,19 @@ import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
 import Log from '$lib/utils/Log';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import { getTopPosts, type PostPopulated, type PostPopulatedHistory } from '$lib/helpers/feed';
+import {
+	getTopPosts,
+	getWatchedVideosFromCache,
+	type PostPopulated,
+	type PostPopulatedHistory
+} from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import { Principal } from '@dfinity/principal';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import userProfile from '$stores/userProfile';
+import type { PageData } from './$types';
+
+export let data: PageData;
 
 const fetchCount = 5;
 const keepVideosLoadedCount: number = 4;
@@ -44,7 +52,7 @@ async function fetchNextVideos() {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount, 10, false);
+			const res = await getTopPosts(fetchedVideosCount, 10, true);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
@@ -55,13 +63,13 @@ async function fetchNextVideos() {
 			videos.push(...res.posts);
 			videos = videos;
 
-			// if (!res.noMorePosts && res.posts.length == 0) {
-			// 	fetchNextVideos();
-			// } else if (res.noMorePosts) {
-			// 	const watchedVideos = await getWatchedVideosFromCache();
-			// 	videos.push(...watchedVideos);
-			// 	videos = videos;
-			// }
+			if (!res.noMorePosts && res.posts.length == 0) {
+				fetchNextVideos();
+			} else if (res.noMorePosts) {
+				const watchedVideos = await getWatchedVideosFromCache();
+				videos.push(...watchedVideos);
+				videos = videos;
+			}
 
 			noMoreVideos = res.noMorePosts;
 			await tick();
@@ -173,6 +181,11 @@ onMount(async () => {
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
+	if ((data as any).post) {
+		videos = [(data as any).post, ...videos];
+		await recordView((data as any).post);
+	}
+	await tick();
 	await fetchNextVideos();
 });
 </script>
