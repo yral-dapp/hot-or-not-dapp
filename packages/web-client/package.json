@@ -6,7 +6,7 @@
 		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "playwright test",
+		"test": "npx playwright test",
 		"test:ci": "start-server-and-test preview 4173 test",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
