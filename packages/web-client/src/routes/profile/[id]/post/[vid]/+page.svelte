@@ -4,7 +4,6 @@ import { onMount } from 'svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { PageData } from './$types';
-import { Principal } from '@dfinity/principal';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
@@ -54,7 +53,7 @@ onMount(async () => {
 					liked="{video.liked_by_me}"
 					videoViews="{Number(video.total_view_count)}"
 					createdById="{video.created_by_user_principal_id.toText()}"
-					publisherCanisterId="{Principal.from(publisherId)}"
+					publisherCanisterId="{publisherId}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
 					inView
