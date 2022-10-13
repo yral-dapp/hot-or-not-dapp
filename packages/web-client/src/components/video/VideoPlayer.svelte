@@ -102,8 +102,8 @@ async function handleLike() {
 		liked = !liked;
 		registerEvent('like_video', {
 			userId: $userProfile.principal_id,
-			videoPublisher: profileLink,
-			videoId: id,
+			'Video Publisher Id': profileLink,
+			'Video Id': id,
 			likes: likeCount
 		});
 		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
@@ -118,8 +118,8 @@ async function handleShare() {
 	});
 	registerEvent('share_video', {
 		userId: $userProfile.principal_id,
-		videoPublisher: profileLink,
-		videoId: id
+		'Video Publisher Id': profileLink,
+		'Video Id': id
 	});
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
