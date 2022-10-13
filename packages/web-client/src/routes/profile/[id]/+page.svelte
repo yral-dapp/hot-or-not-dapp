@@ -61,7 +61,7 @@ async function showShareDialog() {
 		});
 		registerEvent('share_profile', {
 			userId: $userProfile.principal_id,
-			profileId: $page.params.id
+			'Profile Id': $page.params.id
 		});
 	} catch (err) {
 		console.error('Cannot open share dialog', err);
@@ -120,7 +120,7 @@ onMount(() => {
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
-		profileId: $page.params.id
+		'profile Id': $page.params.id
 	});
 	load.page = false;
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
