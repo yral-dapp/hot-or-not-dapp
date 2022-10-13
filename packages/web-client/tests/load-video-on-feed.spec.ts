@@ -1,21 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test('Menu page loads', async ({ page }) => {
-	await page.goto('http://localhost:4173/feed');
+	await page.goto('http://localhost:4173');
 
-	await page.evaluate(() => {
-		// if this doesn't work, you can try to increase 0 to a higher number (i.e. 100)
-		return new Promise((resolve) => setTimeout(resolve, 5000));
-	});
+	await page.waitForLoadState('networkidle');
 
-	const videoEls = await page.locator('video').count();
+	const videoEls = await page.locator('div > player > video');
+	const videoSrc = await videoEls.nth(0).getAttribute('src');
 
-	await expect(videoEls.valueOf() > 0);
-
-	console.log(videoEls);
-
-	const videoSrc = page.locator('video');
-	console.log(videoSrc);
-
-	await expect(videoSrc).toContain('default.mp4');
+	expect(videoSrc?.includes('default.mp4'));
 });
