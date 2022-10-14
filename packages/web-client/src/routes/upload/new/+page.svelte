@@ -124,7 +124,7 @@ async function handleSuccessfulUpload(videoUid: string) {
 		registerEvent('video_uploaded', {
 			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
 			userId: $userProfile.principal_id,
-			videoId: uploadedVideoId
+			'Video UID': uploadedVideoId
 		});
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
