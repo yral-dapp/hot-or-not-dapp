@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Menu page loads', async ({ page }) => {
+test('Open login modal from menu after auth client initializes', async ({ page }) => {
 	await page.goto('http://localhost:4173/menu');
 
 	await page.waitForResponse((res) => res.url().includes('https://ic0.app/api/v2/canister'));
