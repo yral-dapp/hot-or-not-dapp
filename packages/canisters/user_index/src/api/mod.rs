@@ -1,0 +1,11 @@
+pub mod delete_user_index_reset_user_canisters;
+pub mod get_index_details_is_user_name_taken;
+pub mod get_index_details_last_upgrade_status;
+pub mod get_user_canister_id_from_unique_user_name;
+pub mod get_user_canister_id_from_user_principal_id;
+pub mod get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id;
+pub mod get_user_roles;
+pub mod update_index_with_unique_user_name_corresponding_to_user_principal_id;
+pub mod update_user_add_role;
+pub mod update_user_index_upgrade_user_canisters_with_latest_wasm;
+pub mod update_user_remove_role;

@@ -9,9 +9,28 @@ import { onMount } from 'svelte';
 import Log from '$lib/utils/Log';
 import type { PageData } from './$types';
 import userProfile from '$stores/userProfile';
+import type { Principal } from '@dfinity/principal';
+import { getCanisterId } from '$lib/helpers/canisterId';
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
+import { authState } from '$stores/auth';
+import { goto } from '$app/navigation';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
-let { username, username_set, displayName, imgSrc, userPrincipal } = data;
+//@ts-ignore
+let {
+	username,
+	username_set,
+	displayName,
+	imgSrc,
+	userPrincipal
+}: {
+	username_set: boolean;
+	username?: string;
+	displayName?: string;
+	imgSrc?: string;
+	userPrincipal: Principal;
+} = data;
 
 let pageLoaded = false;
 let loading = true;
@@ -23,14 +42,15 @@ let values: {
 };
 
 async function isUsernameTaken() {
+	const newUsername = values.username.toLowerCase().trim();
 	if (!username_set) {
 		return false;
-	} else if (values.username === username) {
+	} else if (newUsername === username) {
 		return false;
 	} else {
 		try {
 			const { userIndex } = await import('$lib/helpers/backend');
-			return await userIndex().get_index_details_is_user_name_taken(values.username);
+			return await userIndex().get_index_details_is_user_name_taken(newUsername);
 		} catch (e) {
 			return true;
 		}
@@ -39,6 +59,12 @@ async function isUsernameTaken() {
 
 function resetAllFields() {
 	values.name = values.imageSrc = '';
+}
+
+function filterUsernameKeystrokes(e: KeyboardEvent) {
+	if (!/^\w+$/.test(e.key)) {
+		e.preventDefault();
+	}
 }
 
 async function saveChanges() {
@@ -64,20 +90,26 @@ async function saveChanges() {
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
 	const { individualUser, userIndex } = await import('$lib/helpers/backend');
-	if (username !== values.username) {
+	const newUsername = values.username.toLowerCase().trim();
+	if (username !== newUsername) {
 		try {
 			Promise.all([
 				userIndex().update_index_with_unique_user_name_corresponding_to_user_principal_id(
-					values.username,
+					newUsername,
 					userPrincipal
 				),
-				individualUser().update_profile_set_unique_username_once(values.username)
+				individualUser().update_profile_set_unique_username_once(newUsername)
 			]);
 			username_set = true;
-			username = values.username;
+			username = newUsername;
 
 			$userProfile.username_set = true;
-			$userProfile.unique_user_name = values.username;
+			$userProfile.unique_user_name = newUsername;
+			const canId = await getCanisterId(userPrincipal.toString());
+			if (canId) {
+				const { canisterIdb } = await import('$lib/utils/idb');
+				canisterIdb.set(newUsername, canId);
+			}
 		} catch (e) {
 			loading = false;
 			Log({ error: e, from: '1 saveChanges' }, 'error');
@@ -93,12 +125,21 @@ async function saveChanges() {
 		imgSrc = values.imageSrc;
 		console.log('res', res);
 		if ('Ok' in res) {
-			$userProfile.display_name = res.Ok.display_name[0] ?? '';
-			$userProfile.profile_picture_url = res.Ok.profile_picture_url[0] ?? '';
+			$userProfile.display_name = res.Ok.display_name[0] || '';
+			$userProfile.profile_picture_url =
+				res.Ok.profile_picture_url[0] || getDefaultImageUrl($authState.idString);
 		} else {
 			error = 'Could not save your profile. Please login again to try again.';
 		}
 		loading = false;
+		goto(`/profile/${username_set ? $userProfile.unique_user_name : $userProfile.principal_id}`);
+
+		registerEvent('edit_profile', {
+			userId: $userProfile.principal_id,
+			'Display Name': displayName,
+			'Profile Image': imgSrc,
+			username: $userProfile.unique_user_name
+		});
 	} catch (e) {
 		loading = false;
 		Log({ error: e, from: '2 saveChanges' }, 'error');
@@ -149,9 +190,10 @@ onMount(async () => {
 					<Input
 						disabled="{loading || username_set}"
 						bind:value="{values.username}"
+						on:keydown="{filterUsernameKeystrokes}"
 						type="text"
 						placeholder="Enter your username here"
-						class="w-full rounded-md bg-white/10 py-4" />
+						class="w-full rounded-md bg-white/10 py-4 lowercase" />
 					{#if username_set}
 						<span class="text-xs opacity-50">
 							You have already set your username, it cannot be changed now. You can change your

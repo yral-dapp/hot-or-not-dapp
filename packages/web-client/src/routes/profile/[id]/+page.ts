@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { getCanisterId } from '$lib/helpers/idb';
+import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
@@ -15,8 +15,9 @@ export const load: PageLoad = async ({ params }) => {
 	const id = params.id;
 	if (!id) {
 		Log({ from: '1 noId' }, 'warn');
-		throw redirect(307, '/404');
+		throw redirect(307, '/menu');
 	}
+
 	const userProfileData = get(userProfile);
 
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
@@ -25,7 +26,7 @@ export const load: PageLoad = async ({ params }) => {
 		const canId = await getCanisterId(id);
 		if (!canId) {
 			Log({ from: '1 noCanId' }, 'warn');
-			throw redirect(307, '/404');
+			throw new Error("Couldn't find canister Id");
 		}
 		Log({ canId, from: '0 canId' }, 'info');
 		const individualUser = (await import('$lib/helpers/backend')).individualUser;

@@ -61,7 +61,7 @@ async function enableMp4Download() {
 				method: 'POST',
 				headers: {
 					// eslint-disable-next-line no-undef
-					Authorization: CLOUDFLARE_API_TOKEN
+					Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`
 				}
 			}
 		);
@@ -69,9 +69,9 @@ async function enableMp4Download() {
 		console.log('enableMp4Download res', res);
 		if (res && res.result && res.result.default) {
 			return res.result.default;
-		}
+		} else throw new Error('No default received');
 	} catch (e) {
-		console.error(e);
+		console.error('mp4 error', e);
 		return { error: true };
 	}
 }

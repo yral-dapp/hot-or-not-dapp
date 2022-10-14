@@ -6,6 +6,16 @@ export type Result = { 'Ok' : null } |
 export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
   { 'UserCanisterEntryDoesNotExist' : null };
+export interface SystemTime {
+  'nanos_since_epoch' : number,
+  'secs_since_epoch' : bigint,
+}
+export interface UpgradeStatus {
+  'version_number' : bigint,
+  'last_run_on' : SystemTime,
+  'failed_canister_ids' : Array<[Principal, Principal]>,
+  'successful_upgrade_count' : number,
+}
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |
@@ -31,6 +41,10 @@ export interface _SERVICE {
     Result,
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
+  'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<
+    [],
+    UpgradeStatus,
+  >,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
     undefined,

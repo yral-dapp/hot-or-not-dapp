@@ -1,3 +1,5 @@
+import { adjectives, verbs } from './verbs-adjectives';
+
 export function generateRandomNumber(length: number, seed: number): string {
 	let r = Math.sin(seed) * 10;
 	r = r - Math.floor(r);
@@ -12,11 +14,8 @@ export function generateRandomName(type: 'name' | 'username', seed?: string) {
 	}
 	const sum = seed.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0);
 
-	const n1 = ['Blue', 'Green', 'Red', 'Orange', 'Violet', 'Indigo', 'Yellow'];
-	const n2 = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Zero'];
-
-	const r1 = n1[sum % 7];
-	const r2 = n2[sum % 10];
+	const r1 = verbs[sum % verbs.length];
+	const r2 = adjectives[sum % adjectives.length];
 
 	if (type === 'name') {
 		return `${r1} ${r2}`;

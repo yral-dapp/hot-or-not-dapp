@@ -26,6 +26,7 @@ onMount(() => {
 	bind:this="{inputEl}"
 	maxlength="{maxlength}"
 	on:input
+	on:keydown
 	on:change
 	on:focus
 	on:blur

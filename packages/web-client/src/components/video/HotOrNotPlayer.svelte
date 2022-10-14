@@ -10,7 +10,7 @@ import SoundIcon from '$components/icons/SoundIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import UsersIcon from '$components/icons/UsersIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
-import type { IndividualUserCanister } from '$lib/helpers/backend';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
@@ -31,7 +31,7 @@ export let swiperJs;
 export let liked = false;
 export let shareCount = 0;
 export let shared = false;
-export let individualUser: () => IndividualUserCanister;
+export let individualUser: () => IndividualUserActor;
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
@@ -112,7 +112,8 @@ async function handleShare() {
 		'inline-flex h-full items-center justify-center transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
-	)}">
+	)}"
+	on:keyup>
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
 		bind:this="{videoEl}"
@@ -165,7 +166,8 @@ async function handleShare() {
 			<div class="flex grow flex-col space-y-4">
 				<div
 					on:click="{(e) => e.stopImmediatePropagation()}"
-					class="pointer-events-auto flex space-x-3">
+					class="pointer-events-auto flex space-x-3"
+					on:keyup>
 					<a href="/profile/{i}" data-sveltekit-prefetch class="h-12 w-12">
 						<Avatar class="h-12 w-12 shrink-0" src="{getDefaultImageUrl(i.toString())}" />
 					</a>

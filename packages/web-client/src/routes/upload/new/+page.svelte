@@ -16,8 +16,8 @@ import type { UploadStatus } from '$components/upload/UploadTypes';
 import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
-import { individualUser } from '$lib/helpers/backend';
 import userProfile from '$stores/userProfile';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -39,7 +39,7 @@ let isInputLimitReached = false;
 const MAX_HASHTAG_LENGTH = 60;
 let videoSrc = '';
 let previewMuted = true;
-let uploadedVideoId;
+let uploadedVideoId = 0;
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
@@ -113,6 +113,7 @@ async function checkVideoProcessingStatus(uid: string) {
 async function handleSuccessfulUpload(videoUid: string) {
 	try {
 		Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
+		const individualUser = (await import('$lib/helpers/backend')).individualUser;
 		const postId = await individualUser().add_post({
 			description: videoDescription,
 			hashtags,
@@ -120,6 +121,11 @@ async function handleSuccessfulUpload(videoUid: string) {
 			creator_consent_for_inclusion_in_hot_or_not: false
 		});
 		uploadedVideoId = Number(postId);
+		registerEvent('video_uploaded', {
+			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+			userId: $userProfile.principal_id,
+			'Video UID': uploadedVideoId
+		});
 		uploadStep = 'verified';
 		uploadStatus = 'uploaded';
 		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
@@ -141,10 +147,11 @@ async function showShareDialog() {
 			Log({ error: 'Browser does not support share dialog', source: '1 showShareDialog' }, 'error');
 			return;
 		}
+		const videoLink = getVideoLink();
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
-			url: 'https://v2.gobazzinga.io/feed/1'
+			url: 'https://hotornot.wtf/' + videoLink
 		});
 	} catch (err) {
 		Log({ error: 'Could not open share dialog', source: '1 showShareDialog' }, 'error');
@@ -159,7 +166,13 @@ function getVideoLink() {
 onMount(async () => {
 	if ($fileToUpload) {
 		videoSrc = URL.createObjectURL($fileToUpload);
-	} else goto('/upload');
+		registerEvent('video_to_upload', {
+			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+			userId: $userProfile.principal_id
+		});
+	} else {
+		goto('/upload');
+	}
 });
 
 onDestroy(() => {
@@ -205,7 +218,8 @@ onDestroy(() => {
 			{#if previewPaused}
 				<div
 					on:click="{() => (previewPaused = false)}"
-					class="absolute inset-0 flex items-center justify-center">
+					class="absolute inset-0 flex items-center justify-center"
+					on:keyup>
 					<IconButton class="rounded-full bg-black/50 p-4">
 						<PlayIcon class="h-4 w-4" />
 					</IconButton>
@@ -228,6 +242,7 @@ onDestroy(() => {
 					bind:value="{videoHashtags}"
 					bind:tags="{hashtags}" />
 			</div>
+
 			{#if isInputLimitReached}
 				<div class="text-xs text-red-500">Maximum hastags limit reached</div>
 			{/if}
@@ -275,7 +290,7 @@ onDestroy(() => {
 				</div>
 			</div>
 		{/if}
-		<div class="pt-16 pb-24 shadow-up shadow-black/50">
+		<div class="pt-16 pb-24">
 			<div class="pb-4">
 				<span class="text-primary"> Note: </span> Once the video is uploaded on the server it can't be
 				deleted.

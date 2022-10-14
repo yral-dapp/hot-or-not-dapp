@@ -12,29 +12,41 @@ import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
 import { authState } from '$stores/auth';
-import type { IndividualUserCanister } from '$lib/helpers/backend';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
+import type { Principal } from '@dfinity/principal';
+import { createEventDispatcher } from 'svelte';
+import userProfile from '$stores/userProfile';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
-export let src = '';
-export let id: bigint = BigInt('');
+export let swiperJs: boolean;
+export let src;
 export let i: number;
-export let thumbnail = '';
+export let id: bigint;
 export let inView = false;
-export let userName = '';
+export let thumbnail = '';
+export let displayName = '';
+export let profileLink = '';
 export let videoViews = 254000;
-export let swiperJs;
+export let publisherCanisterId: string;
+export let userProfileSrc = '';
 export let liked = false;
-export let shareCount = 0;
-export let shared = false;
-export let individualUser: () => IndividualUserCanister;
+export let createdById = '';
+export let individualUser: (principal?: Principal | string) => IndividualUserActor;
+export let likeCount: number = 0;
+
+const dispatch = createEventDispatcher<{
+	watchedPercentage: number;
+}>();
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
+let currentTime = 0;
+let duration = 0;
 let loaded = false;
 let paused = true;
-
 let playPromise: Promise<void> | undefined = undefined;
 
 export async function play() {
@@ -88,26 +100,40 @@ async function handleClick() {
 async function handleLike() {
 	if ($authState.isLoggedIn) {
 		liked = !liked;
-		individualUser().update_post_toggle_like_status_by_caller(id);
+		registerEvent('like_video', {
+			userId: $userProfile.principal_id,
+			'Video Publisher Id': profileLink,
+			'Video Id': id,
+			likes: likeCount
+		});
+		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
 	} else $authState.showLogin = true;
 }
 
 async function handleShare() {
-	if (!shared) {
-		shareCount++;
-		shared = true;
-		await navigator.share({
-			title: 'Hot or Not',
-			text: 'Video title',
-			url: `https://hotornot.wtf/feed/${i}`
-		});
-		individualUser().update_post_increment_share_count(id);
-	}
+	await navigator.share({
+		title: 'Hot or Not',
+		text: 'Video title',
+		url: `https://hotornot.wtf/profile/${profileLink}/post/${id}`
+	});
+	registerEvent('share_video', {
+		userId: $userProfile.principal_id,
+		'Video Publisher Id': profileLink,
+		'Video Id': id
+	});
+	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
+
+$: if (inView && !paused) {
+	dispatch('watchedPercentage', (currentTime / duration) * 100);
+}
+
+console.log({ displayName, publisherCanisterId, createdById });
 </script>
 
 <player
 	i="{i}"
+	on:keyup
 	on:click="{handleClick}"
 	class="{c(
 		'block h-full items-center justify-center overflow-auto transition-all duration-500',
@@ -123,6 +149,8 @@ async function handleShare() {
 		autoplay
 		muted
 		bind:paused
+		bind:currentTime
+		bind:duration
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
@@ -138,6 +166,7 @@ async function handleShare() {
 		muted
 		bind:paused
 		autoplay
+		poster="{thumbnail}"
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
@@ -176,6 +205,9 @@ async function handleShare() {
 					<ShareMessageIcon class="h-6 w-6" />
 				</IconButton>
 				<IconButton
+					on:click="{(e) => {
+						e.stopImmediatePropagation();
+					}}"
 					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
 					<FireIcon class="h-5 w-5" />
 				</IconButton>
@@ -186,14 +218,15 @@ async function handleShare() {
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 left-4 z-[9] pr-20">
 			<div
+				on:keyup
 				on:click="{(e) => e.stopImmediatePropagation()}"
 				class="pointer-events-auto flex space-x-3">
-				<a href="/profile/{i}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
-					<Avatar class="h-12 w-12" src="{getDefaultImageUrl(i.toString())}" />
+				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
+					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
-				<div class="flex flex-col space-y-1">
-					<a href="/profile/{i}" data-sveltekit-prefetch>
-						@{userName != '' ? userName : generateRandomName('username', i.toString())}
+				<div class="flex flex-col space-y-1 capitalize">
+					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
+						{displayName || generateRandomName('name', createdById)}
 					</a>
 					<div class="flex items-center space-x-1">
 						<EyeIcon class="h-4 w-4 text-white" />

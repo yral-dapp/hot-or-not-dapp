@@ -2,7 +2,6 @@ import { browser } from '$app/environment';
 import { updateProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { redirect } from '@sveltejs/kit';
-
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {

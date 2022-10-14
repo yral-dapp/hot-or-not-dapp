@@ -1,9 +1,7 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
-
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
-
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 </script>
 
@@ -24,13 +22,13 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 			<div class="flex flex-col space-y-2">
 				<div class="font-bold">Think TikTok on Blockchain</div>
 				<div class="font-light">
-					GoBazzinga is a short-video social media platform on blockchain, which not only provides
+					Hot or Not is a short-video social media platform on blockchain, which not only provides
 					the fun and excitement of social media but also enables the users to earn rewards for
 					creating content, engaging with it or sharing it with their friends and family!
 				</div>
 			</div>
 
-			<Button href="https://gobazzinga.io" class="w-full">Visit the website</Button>
+			<Button href="https://hotornot.wtf" class="w-full">Visit the website</Button>
 		</div>
 	</svelte:fragment>
 </HomeLayout>

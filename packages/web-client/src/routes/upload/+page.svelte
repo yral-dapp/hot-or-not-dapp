@@ -50,6 +50,7 @@ let invalidFileSelected = {
 	show: false,
 	error: 'size'
 };
+let audioTrack: MediaStreamTrack | undefined = undefined;
 
 const MAX_RECORDING_SECONDS = 60;
 const filterPreviewImage =
@@ -163,6 +164,7 @@ async function requestMediaAccess() {
 		const res = await getMediaStream(cameraControls.flip.facingMode);
 		if (res.error == 'none' && res.stream) {
 			mediaStream = res.stream;
+			audioTrack = res.stream.getAudioTracks()[0];
 
 			await tick();
 
@@ -205,6 +207,7 @@ async function startRecording(ignoreTimer = false) {
 		} else {
 			if (useCanvas) {
 				recordStream = canvasEl.captureStream(30);
+				audioTrack && recordStream.addTrack(audioTrack);
 			} else recordStream = mediaStream;
 			const mimeType = MediaRecorder.isTypeSupported('video/webm; codecs=vp9')
 				? 'video/webm; codecs=vp9'
@@ -398,7 +401,7 @@ onDestroy(async () => {
 		{#if initState == 'allowed'}
 			<!-- Snap Point -->
 			<div transition:fade|local class="flex items-end justify-start pt-3">
-				<div
+				<button
 					bind:this="{cameraEl}"
 					on:click="{() => !loading && startRecording()}"
 					class="{c(
@@ -409,10 +412,10 @@ onDestroy(async () => {
 					{#if loading}
 						<LoadingIcon class="absolute mx-auto h-8 w-8 animate-spin-slow text-primary" />
 					{/if}
-				</div>
+				</button>
 			</div>
 			{#if !recording && useCanvas}
-				<div
+				<button
 					on:click="{(e) => !loading && checkClickAndStartRecording(e)}"
 					transition:fade|local
 					bind:this="{filtersEl}"
@@ -448,7 +451,7 @@ onDestroy(async () => {
 					<div data-filter="clear" class="shrink-0 snap-center">
 						<div class="w-dumb-end shrink-0"></div>
 					</div>
-				</div>
+				</button>
 			{/if}
 		{/if}
 	</svelte:fragment>

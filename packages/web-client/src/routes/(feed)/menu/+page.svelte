@@ -15,17 +15,17 @@ import { authState } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
-import { prefetch } from '$app/navigation';
 import userProfile from '$stores/userProfile';
 import { loadingAuthStatus } from '$stores/loading';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
 
 $: links = [
 	{
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
 		class: 'w-5 h-5',
-		href: '/refer-earn'
+		href: '/refer'
 	},
 	{
 		icon: CenterTextIcon,
@@ -62,17 +62,6 @@ let showLogoutPopup = false;
 $: userId = $userProfile.username_set
 	? $userProfile.unique_user_name || $authState.idString
 	: $authState.idString;
-
-function prefetchLinks() {
-	links.forEach((link) => {
-		link.href && prefetch(link.href);
-	});
-	if ($authState.isLoggedIn) {
-		prefetch(`/profile/${userId}`);
-	}
-}
-
-onMount(() => prefetchLinks());
 </script>
 
 <LogoutPopup bind:show="{showLogoutPopup}" />
@@ -108,6 +97,7 @@ onMount(() => prefetchLinks());
 			{#if !link.hide}
 				<svelte:element
 					this="{link.href ? 'a' : 'button'}"
+					on:keyup
 					on:click="{link.onClick}"
 					href="{link.href}"
 					data-sveltekit-prefetch="{link.href ? true : null}"
@@ -143,6 +133,9 @@ onMount(() => prefetchLinks());
 					<Ic0Icon class="h-5 w-5" />
 				</a>
 			{/if}
+		</div>
+		<div class="pb-2">
+			<OnChainDfinityIcon class="w-full" />
 		</div>
 	</div>
 </div>

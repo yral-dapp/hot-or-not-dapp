@@ -10,15 +10,27 @@ export let tags: string[] = [];
 
 let _tags = new Set<string>();
 
+function createTag() {
+	const val = value.replace('#', '').replace(',', '').replaceAll(' ', '').toLowerCase();
+	value = '';
+	_tags.add(val);
+	tags = Array.from(_tags);
+}
+
 function handleInput(e: KeyboardEvent) {
-	if (value.trim() && (e.key === ',' || e.key === ' ')) {
-		const val = value.replace('#', '').replace(',', '').replace(' ', '').toLowerCase();
-		value = '';
-		_tags.add(val);
-		tags = Array.from(_tags);
-	} else if (value == '' && e.key == 'Backspace' && tags.length > 0) {
-		tags.pop();
-		tags = tags;
+	if (
+		e.key === 'Unidentified' &&
+		value.trim() &&
+		(value.indexOf(' ') > -1 || value.indexOf(',') > -1)
+	) {
+		createTag();
+	} else {
+		if (value.trim() && (e.key === ',' || e.key === ' ')) {
+			createTag();
+		} else if (value == '' && e.key == 'Backspace' && tags.length > 0) {
+			tags.pop();
+			tags = tags;
+		}
 	}
 }
 
@@ -26,6 +38,7 @@ function removeTag(tag: string) {
 	const index = tags.indexOf(tag);
 	if (index > -1) {
 		tags.splice(index, 1);
+		_tags.delete(tag);
 		tags = tags;
 	}
 }

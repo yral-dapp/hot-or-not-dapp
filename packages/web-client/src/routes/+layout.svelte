@@ -9,6 +9,9 @@ import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
+import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
+import GoogleAnalytics from '$components/seo/GoogleAnalytics.svelte';
+import { hideSplashScreen } from '$stores/splashScreen';
 
 beforeNavigate(({ from }) => {
 	$navigateBack = from?.url.pathname ?? null;
@@ -17,6 +20,7 @@ beforeNavigate(({ from }) => {
 onMount(async () => {
 	if (browser) {
 		try {
+			hideSplashScreen();
 			$navigateBack = null;
 			window.Buffer = Buffer;
 			if (process.env.NODE_ENV != 'development') {
@@ -35,4 +39,9 @@ onMount(async () => {
 	<Login />
 {/if}
 
-<slot />
+<GoogleAnalytics />
+
+<div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
+	<CornerRibbon>Alpha</CornerRibbon>
+	<slot />
+</div>
