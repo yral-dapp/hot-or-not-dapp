@@ -7,6 +7,7 @@ use ic_stable_memory::{
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
     utils::ic_types::SPrincipal,
 };
+use internal::model::version_details::VersionDetails;
 use post::{
     internal::{
         Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
@@ -22,6 +23,7 @@ use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::Post
 use std::collections::BTreeSet;
 
 mod access_control;
+mod internal;
 mod periodic_update;
 mod post;
 mod profile;
@@ -30,14 +32,15 @@ mod score_ranking;
 mod test;
 
 // * Stable Variables
-pub type Profile = UserProfile;
+type Profile = UserProfile;
+type SVersionDetails = VersionDetails;
 
 // * Stable Collections
-pub type AllCreatedPosts = SVec<Post>;
-pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
-pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
-pub type PrincipalsIFollow = BTreeSet<SPrincipal>;
-pub type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
+type AllCreatedPosts = SVec<Post>;
+type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
+type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
+type PrincipalsIFollow = BTreeSet<SPrincipal>;
+type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
 
 #[init]
 fn init() {
@@ -45,10 +48,11 @@ fn init() {
     stable_memory_init(true, 0);
 
     // * initialize stable variables
-    s! {Profile = Profile::new(call::arg_data::<(Principal, Principal)>().1)};
+    s! { Profile = Profile::new(call::arg_data::<(Principal, Principal)>().1) };
+    s! { SVersionDetails = VersionDetails::new() };
 
     // * initialize stable collections
-    s! {AllCreatedPosts = AllCreatedPosts::new()};
+    s! { AllCreatedPosts = AllCreatedPosts::new() };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
@@ -77,6 +81,11 @@ fn pre_upgrade() {
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
+
+    // TODO: remove this after the first run
+    s! { SVersionDetails = VersionDetails::new() };
+    // * set schema version number received from user_index canister
+    s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
 }
 
 #[query(name = "__get_candid_interface_tmp_hack")]

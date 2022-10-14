@@ -4,6 +4,16 @@ type SetUniqueUsernameError = variant {
   SendingCanisterDoesNotMatchUserCanisterId;
   UserCanisterEntryDoesNotExist;
 };
+type SystemTime = record {
+  nanos_since_epoch : nat32;
+  secs_since_epoch : nat64;
+};
+type UpgradeStatus = record {
+  version_number : nat64;
+  last_run_on : SystemTime;
+  failed_canister_ids : vec record { principal; principal };
+  successful_upgrade_count : nat32;
+};
 type UserAccessRole = variant {
   CanisterController;
   ProfileOwner;
@@ -26,5 +36,8 @@ service : {
       principal,
     ) -> (Result);
   update_user_add_role : (UserAccessRole, principal) -> ();
+  update_user_index_upgrade_user_canisters_with_latest_wasm : () -> (
+      UpgradeStatus,
+    );
   update_user_remove_role : (UserAccessRole, principal) -> ();
 }
