@@ -18,8 +18,8 @@ dfx build post_cache
 
 cargo test
 
-dfx canister install user_index --mode upgrade
-dfx canister install post_cache --mode upgrade
+dfx canister install user_index
+dfx canister install post_cache
 
 dfx generate individual_user_template
 dfx generate user_index

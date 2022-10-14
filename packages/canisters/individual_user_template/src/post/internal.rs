@@ -3,13 +3,13 @@ use crate::{
     score_ranking::internal::update_post_score_index_on_post_score_recalculation,
 };
 use candid::{CandidType, Deserialize, Principal};
-use ic_cdk::api;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
+use shared_utils::date_time::get_current_system_time::get_current_system_time_from_ic;
 use speedy::{Readable, Writable};
 use std::{
     collections::HashSet,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::{Duration, SystemTime},
 };
 
 #[derive(Readable, Writable, Serialize, CandidType, Clone)]
@@ -94,12 +94,7 @@ impl Post {
             hashtags,
             video_uid,
             status: PostStatus::Uploaded,
-            created_at: UNIX_EPOCH
-                .checked_add(Duration::new(
-                    api::time() / 1000,
-                    (api::time() % 1000) as u32,
-                ))
-                .unwrap(),
+            created_at: get_current_system_time_from_ic(),
             likes: HashSet::new(),
             share_count: 0,
             view_stats: PostViewStatistics {
@@ -155,12 +150,7 @@ impl Post {
             1000 * self.view_stats.average_watch_percentage as u64;
         let post_share_component = 1000 * self.share_count * 100 / self.view_stats.total_view_count;
 
-        let current_time = UNIX_EPOCH
-            .checked_add(Duration::new(
-                api::time() / 1000,
-                (api::time() % 1000) as u32,
-            ))
-            .unwrap();
+        let current_time = get_current_system_time_from_ic();
         let subtracting_factor = (current_time
             .duration_since(self.created_at)
             .unwrap_or(Duration::ZERO)
