@@ -82,8 +82,6 @@ fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
 
-    // TODO: remove this after the first run
-    s! { SVersionDetails = VersionDetails::new() };
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
 }

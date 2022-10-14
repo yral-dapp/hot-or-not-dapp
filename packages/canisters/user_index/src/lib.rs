@@ -52,9 +52,6 @@ fn pre_upgrade() {
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
-
-    // TODO: Remove after one run
-    s! { LastRunUpgradeStatus = LastRunUpgradeStatus::new() }
 }
 
 #[query(name = "__get_candid_interface_tmp_hack")]

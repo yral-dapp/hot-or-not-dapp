@@ -36,3 +36,5 @@ jobs:
         run: dfx build --network ic user_index
       - name: Deploy user_index canister
         run: dfx canister --network ic install user_index --mode upgrade
+      - name: Loop through and deploy all individual user canisters
+        run: dfx canister --network ic call user_index update_user_index_upgrade_user_canisters_with_latest_wasm --async
