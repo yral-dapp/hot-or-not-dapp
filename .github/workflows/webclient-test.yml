@@ -29,7 +29,7 @@ jobs:
       - name: Run svelte-check
         run: npm run web-client:check
 
-  playwright:
+  playwright-linux:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +47,7 @@ jobs:
       - name: Build web-client in SSR Mode
         run: npm run web-client:build
       - name: Run Playwright tests
-        run: npm run web-client:test:ci
+        run: npm run web-client:test
         env:
           runner: "linux"
       - uses: actions/upload-artifact@v3
@@ -75,7 +75,7 @@ jobs:
       - name: Build web-client in SSR Mode
         run: npm run web-client:build
       - name: Run Playwright tests
-        run: npm run web-client:test:ci
+        run: npm run web-client:test
         env:
           runner: "macos"
       - uses: actions/upload-artifact@v3
