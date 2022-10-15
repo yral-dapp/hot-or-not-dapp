@@ -24,6 +24,7 @@ test('Menu page loads', async ({ page }) => {
 		const converter = v8toIstanbul('', 0, { source: entry.source ?? '' });
 		await converter.load();
 		converter.applyCoverage(entry.functions);
+		console.table(converter.toIstanbul());
 		console.log(JSON.stringify(converter.toIstanbul()));
 	}
 });
