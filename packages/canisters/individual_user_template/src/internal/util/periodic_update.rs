@@ -1,7 +1,8 @@
-use crate::score_ranking::send_top_post_scores_to_post_cache_canister;
 use candid::{CandidType, Deserialize};
 use ic_cron::types::{Iterations, SchedulingOptions};
 use shared_utils::constant::TOP_POSTS_SYNC_INTERVAL;
+
+use crate::internal::util::score_ranking;
 
 ic_cron::implement_cron!();
 
@@ -13,13 +14,14 @@ enum TaskKind {
 
 #[ic_cdk_macros::heartbeat]
 fn heartbeat() {
+    ic_cdk::print("heartbeat run");
     // cron_ready_tasks will only return tasks which should be executed right now
     for task in cron_ready_tasks() {
         let kind = task.get_payload::<TaskKind>().expect("Serialization error");
 
         match kind {
             TaskKind::ShareTopPostScoresWithPostCacheCanister => {
-                send_top_post_scores_to_post_cache_canister();
+                score_ranking::send_top_post_scores_to_post_cache_canister();
             }
             TaskKind::UpdatePostScoresEvery30Minutes => {}
         };

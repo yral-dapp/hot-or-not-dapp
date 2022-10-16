@@ -1,7 +1,3 @@
-use crate::{
-    profile::internal::UserProfileDetailsForFrontend,
-    score_ranking::internal::update_post_score_index_on_post_score_recalculation,
-};
 use candid::{CandidType, Deserialize, Principal};
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
@@ -11,6 +7,10 @@ use std::{
     collections::HashSet,
     time::{Duration, SystemTime},
 };
+
+use crate::internal::util::score_ranking;
+
+use super::profile::UserProfileDetailsForFrontend;
 
 #[derive(Readable, Writable, Serialize, CandidType, Clone)]
 pub enum PostStatus {
@@ -165,7 +165,10 @@ impl Post {
             + age_of_video_component;
 
         // * update score index for top posts of this user
-        update_post_score_index_on_post_score_recalculation(self.id, self.ranking_score);
+        score_ranking::update_post_score_index_on_post_score_recalculation(
+            self.id,
+            self.ranking_score,
+        );
     }
 
     pub fn add_view_details(&mut self, details: PostViewDetailsFromFrontend) {
