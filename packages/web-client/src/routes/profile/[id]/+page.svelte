@@ -197,6 +197,14 @@ onMount(() => {
 						<span class="text-sm">Nots</span>
 					</div>
 				</div>
+				{#if !me}
+					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
+						<Button disabled="{load.follow}" on:click="{loveUser}" class="mx-auto w-[10rem]">
+							Love
+						</Button>
+						<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
+					</div>
+				{/if}
 				<div class="px-6 pt-2">
 					<ProfileTabs bind:selected="{selectedTab}" />
 				</div>
