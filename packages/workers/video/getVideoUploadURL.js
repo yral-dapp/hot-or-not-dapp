@@ -21,6 +21,9 @@ const handler = async (request) => {
 					},
 					body: JSON.stringify({
 						maxDurationSeconds: 60,
+						watermark: {
+							uid: 'abbe92301a12e8964dba43cae85fe24c'
+						},
 						meta: {
 							creator: requestBody.principalId,
 							uploadType: 'challenge',
