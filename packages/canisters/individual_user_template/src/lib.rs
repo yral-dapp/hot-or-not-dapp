@@ -1,4 +1,11 @@
-use access_control::util::setup_initial_access_control;
+use api::{
+    get_posts_of_this_user_profile_with_pagination::GetPostsOfUserProfileError,
+    get_principals_i_follow_paginated::GetFollowerOrFollowingError,
+    update_principals_i_follow_toggle_list_with_principal_specified::FollowAnotherUserProfileError,
+    update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError,
+    update_profile_display_details::UpdateProfileDetailsError,
+    update_profile_set_unique_username_once::UpdateProfileSetUniqueUsernameError,
+};
 use candid::{export_service, Principal};
 use ic_cdk::api::call;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query};
@@ -7,27 +14,23 @@ use ic_stable_memory::{
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
     utils::ic_types::SPrincipal,
 };
-use internal::model::version_details::VersionDetails;
-use post::{
-    internal::{
-        Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
+use internal::{
+    model::{
+        post::{
+            Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
+        },
+        profile::{
+            UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend,
+        },
+        version_details::VersionDetails,
     },
-    GetFollowerOrFollowingError, GetPostsOfUserProfileError,
-};
-use profile::{
-    internal::{UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
-    AnotherUserFollowedMeError, FollowAnotherUserProfileError, UpdateProfileDetailsError,
-    UpdateProfileSetUniqueUsernameError,
+    util::{access_control, periodic_update},
 };
 use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::PostScoreIndexItem};
 use std::collections::BTreeSet;
 
-mod access_control;
+mod api;
 mod internal;
-mod periodic_update;
-mod post;
-mod profile;
-mod score_ranking;
 #[cfg(test)]
 mod test;
 
@@ -60,7 +63,7 @@ fn init() {
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
-    setup_initial_access_control(
+    access_control::setup_initial_access_control(
         &mut user_id_access_control_map,
         call::arg_data::<(Principal, Principal)>().0,
         call::arg_data::<(Principal, Principal)>().1,

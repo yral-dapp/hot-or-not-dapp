@@ -37,9 +37,14 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Vec(PostDetailsForFrontend),
     'Err' : GetPostsOfUserProfileError,
   });
+  const GetFollowerOrFollowingError = IDL.Variant({
+    'ReachedEndOfItemsList' : IDL.Null,
+    'InvalidBoundsPassed' : IDL.Null,
+    'ExceededMaxNumberOfItemsAllowedInOneRequest' : IDL.Null,
+  });
   const Result_1 = IDL.Variant({
     'Ok' : IDL.Vec(IDL.Principal),
-    'Err' : GetPostsOfUserProfileError,
+    'Err' : GetFollowerOrFollowingError,
   });
   const UserProfileGlobalStats = IDL.Record({
     'lifetime_earnings' : IDL.Nat64,
