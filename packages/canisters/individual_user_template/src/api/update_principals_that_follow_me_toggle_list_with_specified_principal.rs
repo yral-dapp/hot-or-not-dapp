@@ -13,13 +13,16 @@ pub enum AnotherUserFollowedMeError {
     FollowersListFull,
 }
 
+// TODO: implement a separate index canister to hold all canisters data
+/// # Access Control
+/// Only allow calls from canisters of this project
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 async fn update_principals_that_follow_me_toggle_list_with_specified_principal(
     user_principal_id_whos_trying_to_follow_me: Principal,
 ) -> Result<bool, AnotherUserFollowedMeError> {
-    // TODO: add fallback to constant value if env variable is not set and put this in shared_utils
-    // TODO: Basically have a single call to get well known canister ids
+    let calling_canister_principal = ic_cdk::caller();
+
     let (user_trying_to_follow_me_canister_id,): (Option<Principal>,) = call::call(
         constant::get_user_index_canister_principal_id(),
         "get_user_canister_id_from_user_principal_id",
@@ -30,7 +33,7 @@ async fn update_principals_that_follow_me_toggle_list_with_specified_principal(
     let user_trying_to_follow_me_canister_id = user_trying_to_follow_me_canister_id
         .ok_or(AnotherUserFollowedMeError::UserTryingToFollowMeDoesNotExist)?;
 
-    if !(user_trying_to_follow_me_canister_id != ic_cdk::caller()) {
+    if user_trying_to_follow_me_canister_id != calling_canister_principal {
         return Err(AnotherUserFollowedMeError::NotAuthorized);
     }
 

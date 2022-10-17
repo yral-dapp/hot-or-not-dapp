@@ -14,7 +14,6 @@ enum TaskKind {
 
 #[ic_cdk_macros::heartbeat]
 fn heartbeat() {
-    ic_cdk::print("heartbeat run");
     // cron_ready_tasks will only return tasks which should be executed right now
     for task in cron_ready_tasks() {
         let kind = task.get_payload::<TaskKind>().expect("Serialization error");

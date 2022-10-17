@@ -23,18 +23,20 @@ pub enum FollowAnotherUserProfileError {
 }
 
 /// # Access Control
-/// Only the user whose profile details are stored in this canister follow another user's profile.
+/// Only the user whose profile details are stored in this canister can follow another user's profile.
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 async fn update_principals_i_follow_toggle_list_with_principal_specified(
     user_to_follow: Principal,
 ) -> Result<bool, FollowAnotherUserProfileError> {
+    let current_caller = ic_cdk::caller();
+
     // * access control
     let user_id_access_control_map: AccessControlMap = s!(AccessControlMap);
     if !access_control::does_principal_have_role(
         &user_id_access_control_map,
         UserAccessRole::ProfileOwner,
-        SPrincipal(ic_cdk::caller()),
+        SPrincipal(current_caller),
     ) {
         return Err(FollowAnotherUserProfileError::NotAuthorized);
     }
@@ -56,11 +58,11 @@ async fn update_principals_i_follow_toggle_list_with_principal_specified(
     let followee_canister_id =
         followee_canister_id.ok_or(FollowAnotherUserProfileError::UserToFollowDoesNotExist)?;
 
-    // inter canister call to update the followee's list of followers
+    // * inter canister call to update the followee's list of followers
     let (response,): (Result<bool, AnotherUserFollowedMeError>,) = call::call(
         followee_canister_id,
         "update_principals_that_follow_me_toggle_list_with_specified_principal",
-        (ic_cdk::caller(),),
+        (current_caller,),
     )
     .await
     .map_err(|_| FollowAnotherUserProfileError::UserITriedToFollowCrossCanisterCallFailed)?;

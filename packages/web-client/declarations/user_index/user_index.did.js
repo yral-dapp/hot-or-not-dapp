@@ -1,4 +1,14 @@
 export const idlFactory = ({ IDL }) => {
+  const SystemTime = IDL.Record({
+    'nanos_since_epoch' : IDL.Nat32,
+    'secs_since_epoch' : IDL.Nat64,
+  });
+  const UpgradeStatus = IDL.Record({
+    'version_number' : IDL.Nat64,
+    'last_run_on' : SystemTime,
+    'failed_canister_ids' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal)),
+    'successful_upgrade_count' : IDL.Nat32,
+  });
   const UserAccessRole = IDL.Variant({
     'CanisterController' : IDL.Null,
     'ProfileOwner' : IDL.Null,
@@ -14,21 +24,16 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
-  const SystemTime = IDL.Record({
-    'nanos_since_epoch' : IDL.Nat32,
-    'secs_since_epoch' : IDL.Nat64,
-  });
-  const UpgradeStatus = IDL.Record({
-    'version_number' : IDL.Nat64,
-    'last_run_on' : SystemTime,
-    'failed_canister_ids' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal)),
-    'successful_upgrade_count' : IDL.Nat32,
-  });
   return IDL.Service({
     'delete_user_index_reset_user_canisters' : IDL.Func([], [], []),
     'get_index_details_is_user_name_taken' : IDL.Func(
         [IDL.Text],
         [IDL.Bool],
+        ['query'],
+      ),
+    'get_index_details_last_upgrade_status' : IDL.Func(
+        [],
+        [UpgradeStatus],
         ['query'],
       ),
     'get_user_canister_id_from_unique_user_name' : IDL.Func(

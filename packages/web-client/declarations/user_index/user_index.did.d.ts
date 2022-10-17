@@ -23,6 +23,7 @@ export type UserAccessRole = { 'CanisterController' : null } |
 export interface _SERVICE {
   'delete_user_index_reset_user_canisters' : ActorMethod<[], undefined>,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
+  'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
   'get_user_canister_id_from_unique_user_name' : ActorMethod<
     [string],
     [] | [Principal],
