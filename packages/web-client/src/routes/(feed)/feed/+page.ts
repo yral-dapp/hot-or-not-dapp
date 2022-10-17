@@ -1,7 +1,15 @@
 export const ssr = false;
+import { getWatchedVideosFromCache } from '$lib/helpers/feed';
 import { redirect } from '@sveltejs/kit';
 
 export async function load() {
+	const cachedVideos = await getWatchedVideosFromCache();
+	if (cachedVideos.length) {
+		throw redirect(
+			307,
+			`/feed/${cachedVideos[0].publisher_canister_id}@${cachedVideos[0].post_id}`
+		);
+	}
 	const { postCache } = await import('$lib/helpers/backend');
 	const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
 		BigInt(0),
