@@ -30,7 +30,7 @@ jobs:
         run: npm run web-client:check
 
   playwright-linux:
-    timeout-minutes: 60
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -58,7 +58,7 @@ jobs:
           retention-days: 30
 
   playwright-macos:
-    timeout-minutes: 60
+    timeout-minutes: 5
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -86,7 +86,7 @@ jobs:
           retention-days: 30
 
   playwright-web3:
-    timeout-minutes: 60
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
