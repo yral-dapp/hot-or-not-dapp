@@ -6,6 +6,10 @@ on:
     paths:
       - "packages/workers/**"
       - ".github/workflows/workers-deploy.yml"
+  pull_request:
+    paths:
+      - "packages/workers/**"
+      - ".github/workflows/workers-deploy.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
