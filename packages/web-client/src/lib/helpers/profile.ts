@@ -114,9 +114,13 @@ export async function fetchLovers(id: string, from: number) {
 			BigInt(from + 10)
 		);
 		if ('Ok' in res) {
+			const populatedUsers = await populateProfiles(res.Ok);
+			if (populatedUsers.error) {
+				throw new Error(`Error while populating, ${JSON.stringify(populatedUsers)}`);
+			}
 			return {
 				error: false,
-				lovers: res.Ok,
+				lovers: populatedUsers.posts,
 				noMoreLovers: res.Ok.length < 10
 			};
 		} else if ('Err' in res) {
@@ -134,5 +138,34 @@ export async function fetchLovers(id: string, from: number) {
 	} catch (e) {
 		Log({ error: e, from: '11 fetchPosts' }, 'error');
 		return { error: true };
+	}
+}
+
+async function populateProfiles(users: Principal[]) {
+	try {
+		const { individualUser } = await import('./backend');
+
+		if (!users.length) {
+			return { posts: [], error: false };
+		}
+
+		const res = await Promise.all(
+			users.map(async (userId) => {
+				const canId = await getCanisterId(userId.toText());
+				console.log('canId', canId, userId);
+				if (canId) {
+					const r = await individualUser(Principal.from(canId)).get_profile_details();
+					console.log('r', r);
+					return {
+						...sanitizeProfile(r, userId.toText())
+					};
+				}
+			})
+		);
+
+		return { posts: res as UserProfile[], error: false };
+	} catch (e) {
+		Log({ error: e, from: '11 populatePosts' }, 'error');
+		return { error: true, posts: [] };
 	}
 }
