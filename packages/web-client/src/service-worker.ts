@@ -1,25 +1,25 @@
 /// <reference lib="webworker" />
 
-import { build, files, version } from '$service-worker';
+import { version } from '$service-worker';
 
 const worker = self;
 const CACHE_NAME = `static-cache-${version}`;
 
-const to_cache = build.concat(files);
+// const to_cache = build.concat(files);
 
-worker.addEventListener('install', (event) => {
-	console.log('[ServiceWorker] Install', to_cache[0], event['test']);
+// worker.addEventListener('install', (event) => {
+// console.log('[ServiceWorker] Install', to_cache[0], event['test']);
 
-	// event.waitUntil(
-	// 	caches.open(CACHE_NAME).then((cache) => {
-	// 		console.log('[ServiceWorker] Pre-caching offline page');
-	// 		// return cache.addAll(to_cache).then(() => {
-	// 		// 	//@ts-ignore
-	// 		// 	worker.skipWaiting();
-	// 		// });
-	// 	})
-	// );
-});
+// event.waitUntil(
+// 	caches.open(CACHE_NAME).then((cache) => {
+// 		console.log('[ServiceWorker] Pre-caching offline page');
+// 		// return cache.addAll(to_cache).then(() => {
+// 		// 	//@ts-ignore
+// 		// 	worker.skipWaiting();
+// 		// });
+// 	})
+// );
+// });
 
 worker.addEventListener('activate', (event) => {
 	console.log('[ServiceWorker] Activate');
