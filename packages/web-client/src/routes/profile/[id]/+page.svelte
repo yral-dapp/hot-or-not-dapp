@@ -44,9 +44,9 @@ let errorWhileFetching = false;
 let noMorePosts = false;
 let fetchedPostsCount = 0;
 
-$: userId = $userProfile.username_set
-	? $userProfile.unique_user_name || $authState.idString
-	: $authState.idString;
+$: userId = fetchedProfile?.username_set
+	? fetchedProfile?.unique_user_name
+	: fetchedProfile?.principal_id || $page.params.id;
 
 async function showShareDialog() {
 	try {
@@ -79,9 +79,11 @@ async function loveUser() {
 			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
 				userPrincipal
 			);
-		if ($authHelper.idPrincipal && res[0]) {
+		console.log('loveUser res', res);
+		if ('Ok' in res) {
 			profile.followers_count++;
 			profile = profile;
+		} else {
 		}
 		load.follow = false;
 	} catch (e) {
@@ -172,12 +174,14 @@ onMount(() => {
 				</div>
 				<div
 					class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+					<a
+						href="{`/profile/${userId}/lovers`}"
+						class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.followers_count}
 						</span>
 						<span class="text-sm">Lovers</span>
-					</div>
+					</a>
 					<div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
 						<span class="whitespace-nowrap text-xl font-bold">
 							{profile.profile_stats.lifetime_earnings}
