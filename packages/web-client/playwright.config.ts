@@ -27,7 +27,7 @@ const projects: PlaywrightTestConfig['projects'] =
 		  ];
 
 const config: PlaywrightTestConfig = {
-	testDir: './tests',
+	testDir: process.env.testProject === 'web3' ? './tests/web3' : './tests/web2',
 	timeout: 30 * 1000,
 	expect: {
 		timeout: 5000
@@ -45,7 +45,17 @@ const config: PlaywrightTestConfig = {
 	},
 
 	/* Configure projects for major browsers */
-	projects,
+	projects:
+		process.env.testProject === 'web3'
+			? [
+					{
+						name: 'chromium',
+						use: {
+							...devices['Desktop Chrome']
+						}
+					}
+			  ]
+			: projects,
 
 	/* Folder for test artifacts such as screenshots, videos, traces, etc. */
 	// outputDir: 'test-results/',
