@@ -10,7 +10,6 @@ import NotebookIcon from '$components/icons/NotebookIcon.svelte';
 import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
 import Button from '$components/button/Button.svelte';
-import { onMount } from 'svelte';
 import { authState } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
@@ -128,7 +127,7 @@ $: userId = $userProfile.username_set
 			</div>
 			{#if !$page.url.host.includes('ic0.app')}
 				<a
-					href="{`https://${process.env.WEBCLIENT_CANISTER_ID}.raw.ic0.app`}"
+					href="{`https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app`}"
 					class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
 					<Ic0Icon class="h-5 w-5" />
 				</a>
