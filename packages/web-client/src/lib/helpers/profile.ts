@@ -12,6 +12,10 @@ import { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
 import { getCanisterId } from './canisterId';
 
+export interface UserProfileFollows extends UserProfile {
+	i_follow: boolean;
+}
+
 async function fetchProfile() {
 	const { individualUser } = await import('./backend');
 	try {
@@ -157,15 +161,39 @@ async function populateProfiles(users: Principal[]) {
 					const r = await individualUser(Principal.from(canId)).get_profile_details();
 					console.log('r', r);
 					return {
-						...sanitizeProfile(r, userId.toText())
+						...sanitizeProfile(r, userId.toText()),
+						i_follow: await doIFollowThisUser(userId.toText())
 					};
 				}
 			})
 		);
 
-		return { posts: res as UserProfile[], error: false };
+		return { posts: res as UserProfileFollows[], error: false };
 	} catch (e) {
 		Log({ error: e, from: '11 populatePosts' }, 'error');
 		return { error: true, posts: [] };
+	}
+}
+
+export async function doIFollowThisUser(userId: string) {
+	const { individualUser } = await import('./backend');
+	return await individualUser().get_following_status_do_i_follow_this_user(Principal.from(userId));
+}
+
+export async function loveUser(userId: string) {
+	const { individualUser } = await import('./backend');
+	try {
+		const res =
+			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
+				Principal.from(userId)
+			);
+		if ('Ok' in res) {
+			return true;
+		} else {
+			return false;
+		}
+	} catch (e) {
+		Log({ error: e, from: '1 loveUser' }, 'error');
+		return false;
 	}
 }
