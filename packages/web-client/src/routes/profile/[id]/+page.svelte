@@ -17,7 +17,7 @@ import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import { fetchPosts, sanitizeProfile } from '$lib/helpers/profile';
+import { fetchPosts, sanitizeProfile, updateProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
@@ -112,8 +112,9 @@ async function loadPosts() {
 	load.posts = false;
 }
 
-onMount(() => {
+onMount(async () => {
 	if (me) {
+		await updateProfile();
 		profile = $userProfile;
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
