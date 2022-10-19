@@ -7,7 +7,12 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import ProfileLayout from '$components/layout/ProfileLayout.svelte';
-import { fetchLovers, sanitizeProfile } from '$lib/helpers/profile';
+import {
+	fetchLovers,
+	loveUser,
+	sanitizeProfile,
+	type UserProfileFollows
+} from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -25,7 +30,7 @@ let loading = false;
 let errorWhileFetching = false;
 let noMoreLovers = false;
 let fetchedLoversCount = 0;
-let lovers: UserProfile[] = [];
+let lovers: UserProfileFollows[] = [];
 
 $: userId = profile?.username_set
 	? profile?.unique_user_name
@@ -63,6 +68,15 @@ async function loadLovers() {
 	}
 
 	loading = false;
+}
+
+async function handleLove(userIndex: number, userId?: string) {
+	if (!userId) return;
+	const res = await loveUser(userId);
+	if (res) {
+		lovers[userIndex].i_follow = !lovers[userIndex].i_follow;
+		lovers = lovers;
+	}
 }
 
 onMount(() => {
@@ -103,7 +117,12 @@ onMount(() => {
 					</div>
 					{#if $userProfile.principal_id !== user.principal_id}
 						<div class="w-full max-w-[5rem] shrink-0">
-							<Button class="w-full py-1 px-4 text-sm">Love</Button>
+							<Button
+								type="{user.i_follow ? 'secondary' : 'primary'}"
+								on:click="{() => handleLove(i, user.principal_id)}"
+								class="w-full py-1 px-4 text-sm">
+								{user.i_follow ? 'Loving' : 'Love'}
+							</Button>
 						</div>
 					{/if}
 				</div>
