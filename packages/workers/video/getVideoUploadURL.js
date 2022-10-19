@@ -4,7 +4,8 @@ const watermarks = {
 	upperLeft_P05_O30: '5ee9ac6a166816ea7fd162f5d11e4786',
 	upperRight_P05_O30: 'b676972b195fb3f1dc257f98b1bb58e5',
 	lowerLeft_P05_O30: '5806ef9bd540bb8910a6de5fcaf7b52c',
-	lowerRight_P05_O30: '5a271d125e6a41268daeea62c2fdabc5'
+	lowerRight_P05_O30: '5a271d125e6a41268daeea62c2fdabc5',
+	upperLeft_P05_O30_S08: 'aff5d54b36e1ed1f8cf7566675cf0a2d'
 };
 
 const handler = async (request) => {
@@ -31,7 +32,7 @@ const handler = async (request) => {
 					body: JSON.stringify({
 						maxDurationSeconds: 60,
 						watermark: {
-							uid: watermarks.lowerRight_P05_O30
+							uid: watermarks.upperLeft_P05_O30_S08
 						},
 						meta: {
 							creator: requestBody.principalId,
