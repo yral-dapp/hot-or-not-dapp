@@ -12,14 +12,12 @@ import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import SpeculationPost from '$components/profile/SpeculationPost.svelte';
 import userProfile, { type UserProfile } from '$stores/userProfile';
-import { Principal } from '@dfinity/principal';
 import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import { fetchPosts, sanitizeProfile } from '$lib/helpers/profile';
+import { doIFollowThisUser, fetchPosts, loveUser, sanitizeProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
-import { authHelper, authState } from '$stores/auth';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
@@ -43,6 +41,7 @@ let fetchedPosts: PostDetailsForFrontend[] = [];
 let errorWhileFetching = false;
 let noMorePosts = false;
 let fetchedPostsCount = 0;
+let doIFollow = true;
 
 $: userId = fetchedProfile?.username_set
 	? fetchedProfile?.unique_user_name
@@ -70,26 +69,20 @@ async function showShareDialog() {
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
 
-async function loveUser() {
+async function handleLove() {
+	if (!profile.principal_id) return;
 	load.follow = true;
-	const individualUser = (await import('$lib/helpers/backend')).individualUser;
-	const userPrincipal = Principal.from(profile.principal_id);
-	try {
-		const res =
-			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
-				userPrincipal
-			);
-		console.log('loveUser res', res);
-		if ('Ok' in res) {
-			profile.followers_count++;
-			profile = profile;
+	const res = await loveUser(profile.principal_id);
+	if (res) {
+		if (doIFollow) {
+			profile.followers_count--;
 		} else {
+			profile.followers_count++;
 		}
-		load.follow = false;
-	} catch (e) {
-		console.log('loveUser, error', e);
-		load.follow = false;
+		profile = profile;
+		doIFollow = !doIFollow;
 	}
+	load.follow = false;
 }
 
 async function loadPosts() {
@@ -114,11 +107,12 @@ async function loadPosts() {
 	load.posts = false;
 }
 
-onMount(() => {
+onMount(async () => {
 	if (me) {
 		profile = $userProfile;
 	} else if (fetchedProfile) {
 		profile = sanitizeProfile(fetchedProfile, $page.params.id);
+		doIFollow = await doIFollowThisUser($page.params.id);
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
@@ -203,8 +197,12 @@ onMount(() => {
 				</div>
 				{#if !me}
 					<div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-						<Button disabled="{load.follow}" on:click="{loveUser}" class="mx-auto w-[10rem]">
-							Love
+						<Button
+							type="{doIFollow ? 'secondary' : 'primary'}"
+							disabled="{load.follow}"
+							on:click="{handleLove}"
+							class="mx-auto w-[10rem]">
+							{doIFollow ? 'Loving' : 'Love'}
 						</Button>
 						<!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
 					</div>
