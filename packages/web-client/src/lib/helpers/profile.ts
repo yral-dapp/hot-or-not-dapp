@@ -12,6 +12,10 @@ import { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
 import { getCanisterId } from './canisterId';
 
+export interface UserProfileFollows extends UserProfile {
+	i_follow: boolean;
+}
+
 async function fetchProfile() {
 	const { individualUser } = await import('./backend');
 	try {
@@ -114,9 +118,13 @@ export async function fetchLovers(id: string, from: number) {
 			BigInt(from + 10)
 		);
 		if ('Ok' in res) {
+			const populatedUsers = await populateProfiles(res.Ok);
+			if (populatedUsers.error) {
+				throw new Error(`Error while populating, ${JSON.stringify(populatedUsers)}`);
+			}
 			return {
 				error: false,
-				lovers: res.Ok,
+				lovers: populatedUsers.posts,
 				noMoreLovers: res.Ok.length < 10
 			};
 		} else if ('Err' in res) {
@@ -134,5 +142,58 @@ export async function fetchLovers(id: string, from: number) {
 	} catch (e) {
 		Log({ error: e, from: '11 fetchPosts' }, 'error');
 		return { error: true };
+	}
+}
+
+async function populateProfiles(users: Principal[]) {
+	try {
+		const { individualUser } = await import('./backend');
+
+		if (!users.length) {
+			return { posts: [], error: false };
+		}
+
+		const res = await Promise.all(
+			users.map(async (userId) => {
+				const canId = await getCanisterId(userId.toText());
+				console.log('canId', canId, userId);
+				if (canId) {
+					const r = await individualUser(Principal.from(canId)).get_profile_details();
+					console.log('r', r);
+					return {
+						...sanitizeProfile(r, userId.toText()),
+						i_follow: await doIFollowThisUser(userId.toText())
+					};
+				}
+			})
+		);
+
+		return { posts: res as UserProfileFollows[], error: false };
+	} catch (e) {
+		Log({ error: e, from: '11 populatePosts' }, 'error');
+		return { error: true, posts: [] };
+	}
+}
+
+export async function doIFollowThisUser(userId: string) {
+	const { individualUser } = await import('./backend');
+	return await individualUser().get_following_status_do_i_follow_this_user(Principal.from(userId));
+}
+
+export async function loveUser(userId: string) {
+	const { individualUser } = await import('./backend');
+	try {
+		const res =
+			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
+				Principal.from(userId)
+			);
+		if ('Ok' in res) {
+			return true;
+		} else {
+			return false;
+		}
+	} catch (e) {
+		Log({ error: e, from: '1 loveUser' }, 'error');
+		return false;
 	}
 }
