@@ -51,10 +51,21 @@ const config: PlaywrightTestConfig = {
 	// outputDir: 'test-results/',
 
 	/* Run your local dev server before starting the tests */
-	webServer: {
-		command: 'npm run preview',
-		port: 4173
-	}
+	webServer: [
+		{
+			command: 'dfx start --clean',
+			url: 'http://localhost:8000'
+		},
+		{
+			command: 'sh ../../scripts/canisters/local_deploy/install_all_canisters.sh',
+			url: 'http://localhost:8000',
+			reuseExistingServer: true
+		},
+		{
+			command: 'npm run dev',
+			port: 4173
+		}
+	]
 };
 
 export default config;
