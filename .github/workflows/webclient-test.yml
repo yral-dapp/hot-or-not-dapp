@@ -44,8 +44,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Setup build environment
         uses: ./.github/workflows/webclient-setup
-      - name: Build web-client in SSR Mode
-        run: npm run web-client:build
+      - name: Install DFX
+      - run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - name: Run Playwright tests
         run: npm run web-client:test
         env:
