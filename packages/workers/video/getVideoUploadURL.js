@@ -1,3 +1,7 @@
+const watermarks = {
+	upperLeft_P05_O30_S08: '6ca22a576d0107db31a1af7f23e7ac7b'
+};
+
 const handler = async (request) => {
 	try {
 		const requestBody = await request.json();
@@ -22,7 +26,7 @@ const handler = async (request) => {
 					body: JSON.stringify({
 						maxDurationSeconds: 60,
 						watermark: {
-							uid: 'abbe92301a12e8964dba43cae85fe24c'
+							uid: watermarks.upperLeft_P05_O30_S08
 						},
 						meta: {
 							creator: requestBody.principalId,
