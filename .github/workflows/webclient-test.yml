@@ -64,7 +64,14 @@ jobs:
         id: dfx-cache
         with:
           path: "./.dfx"
-          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('**/package-lock.json') }}"
+          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/canisters/**') }}"
+
+      - name: Cache target folder
+        uses: actions/cache@v3
+        id: target-cache
+        with:
+          path: "./target"
+          key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/canisters/**') }}"
 
       - name: Start DFX Server
         run: dfx start --background
