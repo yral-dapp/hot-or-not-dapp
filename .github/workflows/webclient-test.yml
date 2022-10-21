@@ -76,9 +76,13 @@ jobs:
       - name: Start DFX Server
         run: dfx start --background
 
-      - name: Setup server
+      - name: Install canisters
         if: steps.dfx-cache.outputs.cache-hit != 'true'
         run: ./scripts/canisters/local_deploy/install_all_canisters.sh
+
+      - name: Upgrade canister
+        if: steps.dfx-cache.outputs.cache-hit == 'true'
+        run: ./scripts/canisters/local_deploy/upgrade_all_canisters.sh
 
       - name: Run Playwright tests
         run: npm run web-client:test
