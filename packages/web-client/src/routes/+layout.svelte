@@ -13,7 +13,14 @@ import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
 import GoogleAnalytics from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
 
-beforeNavigate(({ from }) => {
+const ignoredPaths = ['edit', 'lovers', 'post'];
+
+beforeNavigate(({ from, to }) => {
+	if (
+		ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
+		ignoredPaths.some((path) => to?.url.pathname.includes(path))
+	)
+		return;
 	$navigateBack = from?.url.pathname ?? null;
 });
 

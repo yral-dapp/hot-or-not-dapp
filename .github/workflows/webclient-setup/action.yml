@@ -32,6 +32,7 @@ runs:
         echo "VITE_FIREBASE_APP_ID=\"$FIREBASE_APP_ID\"" >> .env
         echo "VITE_FIREBASE_MEASUREMENT_ID=\"$FIREBASE_MEASUREMENT_ID\"" >> .env
         echo "VITE_CLOUDFLARE_WORKERS_API_HOST=\"$CLOUDFLARE_WORKERS_API_HOST\"" >> .env
+        echo "VITE_WEBCLIENT_CANISTER_ID=\"$WEBCLIENT_CANISTER_ID\"" >> .env
       working-directory: ${{ inputs.working-dir }}
       env:
         GA_TRACKING_ID: "G-S9P26021F9"
@@ -43,3 +44,4 @@ runs:
         FIREBASE_APP_ID: "1:442139438721:web:b7e616f50feaa67ad12780"
         FIREBASE_MEASUREMENT_ID: "G-LDBZXMYM4E"
         CLOUDFLARE_WORKERS_API_HOST: "https://hot-or-not-upload-api-main.go-bazzinga.workers.dev"
+        WEBCLIENT_CANISTER_ID: "vyatz-hqaaa-aaaam-qauea-cai"

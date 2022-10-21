@@ -133,8 +133,6 @@ console.log({ displayName, publisherCanisterId, createdById });
 
 <player
 	i="{i}"
-	on:keyup
-	on:click="{handleClick}"
 	class="{c(
 		'block h-full items-center justify-center overflow-auto transition-all duration-500',
 		loaded ? 'opacity-100' : 'opacity-0',
@@ -142,6 +140,7 @@ console.log({ displayName, publisherCanisterId, createdById });
 	)}">
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
+		on:click="{handleClick}"
 		bind:this="{videoEl}"
 		loop
 		playsinline
@@ -159,6 +158,7 @@ console.log({ displayName, publisherCanisterId, createdById });
 		class="object-fit absolute z-[3] h-full w-full"></video>
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
+		on:click="{handleClick}"
 		bind:this="{videoBgEl}"
 		loop
 		playsinline
@@ -185,7 +185,10 @@ console.log({ displayName, publisherCanisterId, createdById });
 		</div>
 	{/if}
 
-	<div transition:fade|local class="absolute z-[10] block h-full w-full">
+	<div
+		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%);"
+		transition:fade|local
+		class="absolute bottom-0 z-[10] block h-64 w-full">
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="max-w-16 absolute right-4 bottom-20 z-[10]">
@@ -217,10 +220,7 @@ console.log({ displayName, publisherCanisterId, createdById });
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 left-4 z-[9] pr-20">
-			<div
-				on:keyup
-				on:click="{(e) => e.stopImmediatePropagation()}"
-				class="pointer-events-auto flex space-x-3">
+			<div class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
@@ -234,10 +234,6 @@ console.log({ displayName, publisherCanisterId, createdById });
 					</div>
 				</div>
 			</div>
-		</div>
-		<div
-			style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
-			class="absolute inset-x-0 bottom-0 z-[4] h-full">
 		</div>
 	</div>
 </player>

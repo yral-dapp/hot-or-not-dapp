@@ -71,6 +71,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 		});
 		loading = false;
 		$authState.showLogin = false;
+		(window as any).LogRocket.identify($userProfile.principal_id);
 	} catch (_) {
 		loading = false;
 		error = 'Something went wrong. Please refresh the page and try login again.';
