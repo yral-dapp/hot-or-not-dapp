@@ -59,6 +59,7 @@ export default ({ mode }) => {
 			fs: {
 				allow: ['../']
 			},
+			port: 5173,
 			hmr: {
 				port: 443
 			},
