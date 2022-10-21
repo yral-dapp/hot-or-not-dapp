@@ -38,9 +38,12 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-      - uses: actions/cache@v3
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
         id: playwright-cache
         with:
           path: "~/.cache/ms-playwright"
