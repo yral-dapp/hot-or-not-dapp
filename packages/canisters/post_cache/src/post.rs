@@ -3,7 +3,7 @@ use candid::CandidType;
 use ic_stable_memory::s;
 use shared_utils::{
     pagination::{self, PaginationError},
-    shared_types::top_posts::PostScoreIndexItem,
+    shared_types::top_posts::v1::PostScoreIndexItem,
 };
 
 #[derive(CandidType)]

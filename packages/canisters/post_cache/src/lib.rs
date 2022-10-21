@@ -6,7 +6,9 @@ use ic_stable_memory::{
     stable_memory_pre_upgrade, utils::ic_types::SPrincipal,
 };
 use post::TopPostsFetchError;
-use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::PostScoreIndexItem};
+use shared_utils::{
+    access_control::UserAccessRole, shared_types::top_posts::v1::PostScoreIndexItem,
+};
 use std::collections::BTreeSet;
 
 mod access_control;
