@@ -62,24 +62,24 @@ jobs:
       - name: Install DFX
         run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 
-      # - name: Start DFX Server
-      #   run: dfx start --background
+      - name: Start DFX Server
+        run: dfx start --background
 
-      # - name: Setup server
-      #   run: ./scripts/canisters/local_deploy/install_all_canisters.sh
+      - name: Setup server
+        run: ./scripts/canisters/local_deploy/install_all_canisters.sh
 
-      # - name: Run Playwright tests
-      #   run: npm run web-client:test
-      #   env:
-      #     runner: "linux"
+      - name: Run Playwright tests
+        run: npm run web-client:test
+        env:
+          runner: "linux"
 
-      # - name: Stop DFX Server
-      #   run: dfx stop
-      #   if: always()
+      - name: Stop DFX Server
+        run: dfx stop
+        if: always()
 
-      # - uses: actions/upload-artifact@v3
-      #   if: always()
-      #   with:
-      #     name: playwright-report
-      #     path: packages/web-client/playwright-report/
-      #     retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: packages/web-client/playwright-report/
+          retention-days: 30
