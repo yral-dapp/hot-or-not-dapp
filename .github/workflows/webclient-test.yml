@@ -64,7 +64,7 @@ jobs:
         id: dfx-cache
         with:
           path: "./.dfx"
-          key: "${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}"
+          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('**/package-lock.json') }}"
 
       - name: Start DFX Server
         run: dfx start --background
