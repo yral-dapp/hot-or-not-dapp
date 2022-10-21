@@ -59,10 +59,18 @@ jobs:
       - name: Install DFX
         run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 
+      - name: Cache .dfx folder
+        uses: actions/cache@v3
+        id: dfx-cache
+        with:
+          path: "./.dfx"
+          key: "${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}"
+
       - name: Start DFX Server
         run: dfx start --background
 
       - name: Setup server
+        if: steps.dfx-cache.outputs.cache-hit != 'true'
         run: ./scripts/canisters/local_deploy/install_all_canisters.sh
 
       - name: Run Playwright tests
