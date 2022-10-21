@@ -1,6 +1,6 @@
 use crate::PostsIndexSortedByScore;
 use ic_stable_memory::s;
-use shared_utils::shared_types::top_posts::v1::PostScoreIndexItem;
+use shared_utils::shared_types::top_posts::v0::PostScoreIndexItem;
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

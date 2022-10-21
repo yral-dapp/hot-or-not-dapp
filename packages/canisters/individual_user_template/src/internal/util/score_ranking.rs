@@ -3,7 +3,7 @@ use ic_cdk::api::call;
 use ic_stable_memory::s;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use shared_utils::constant;
-use shared_utils::shared_types::top_posts::v1::PostScoreIndexItem;
+use shared_utils::shared_types::top_posts::v0::PostScoreIndexItem;
 
 pub fn update_post_score_index_on_post_score_recalculation(post_id: u64, new_score: u64) {
     // ic_cdk::print(format!("🤷Before\n{:?}", s!(PostsIndexSortedByScore)));

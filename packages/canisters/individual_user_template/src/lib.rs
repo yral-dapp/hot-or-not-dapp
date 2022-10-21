@@ -26,7 +26,7 @@ use internal::{
     util::{access_control, periodic_update},
 };
 use shared_utils::{
-    access_control::UserAccessRole, shared_types::top_posts::v1::PostScoreIndexItem,
+    access_control::UserAccessRole, shared_types::top_posts::v0::PostScoreIndexItem,
 };
 use std::collections::BTreeSet;
 
