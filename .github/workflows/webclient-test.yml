@@ -53,9 +53,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Setup build environment
-        uses: ./.github/workflows/webclient-setup
-
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
 
