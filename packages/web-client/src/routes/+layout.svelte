@@ -12,6 +12,7 @@ import navigateBack from '$stores/navigateBack';
 import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
 import GoogleAnalytics from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
+import LogRocket from 'logrocket';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
@@ -31,7 +32,7 @@ onMount(async () => {
 			$navigateBack = null;
 			window.Buffer = Buffer;
 			if (process.env.NODE_ENV != 'development') {
-				(window as any).LogRocket && (window as any).LogRocket.init('c77ths/hotornot');
+				LogRocket.init('c77ths/hotornot');
 				Log('LR Initialized', 'info');
 			}
 			await initializeAuthClient();
