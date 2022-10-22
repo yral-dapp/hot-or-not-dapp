@@ -67,7 +67,7 @@ jobs:
           key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/canisters/**') }}"
 
       - name: Cache target folder
-        if: steps.dfx-cache.outputs.cache-hit == 'true'
+        if: always()
         uses: actions/cache@v3
         id: target-cache
         with:
@@ -75,7 +75,7 @@ jobs:
           key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/canisters/**') }}"
 
       - name: Cache dfx identity
-        if: steps.dfx-cache.outputs.cache-hit == 'true'
+        if: always()
         uses: actions/cache@v3
         id: identity-cache
         with:
