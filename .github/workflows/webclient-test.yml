@@ -74,6 +74,14 @@ jobs:
           path: "./target"
           key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/canisters/**') }}"
 
+      - name: Cache dfx identity
+        if: steps.dfx-cache.outputs.cache-hit == 'true'
+        uses: actions/cache@v3
+        id: identity-cache
+        with:
+          path: "~/.config/dfx/identity"
+          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/canisters/**') }}"
+
       - name: Start DFX Server
         if: always()
         run: dfx start --background
