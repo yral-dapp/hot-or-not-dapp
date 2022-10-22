@@ -67,6 +67,7 @@ jobs:
           key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/canisters/**') }}"
 
       - name: Cache target folder
+        if: steps.dfx-cache.outputs.cache-hit == 'true'
         uses: actions/cache@v3
         id: target-cache
         with:
@@ -74,6 +75,7 @@ jobs:
           key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/canisters/**') }}"
 
       - name: Start DFX Server
+        if: always()
         run: dfx start --background
 
       - name: Install canisters
