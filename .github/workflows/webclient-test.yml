@@ -98,4 +98,4 @@ jobs:
         with:
           name: playwright-report
           path: packages/web-client/playwright-report/
-          retention-days: 30
+          retention-days: 10
