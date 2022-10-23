@@ -114,7 +114,7 @@ async function handleShare() {
 	await navigator.share({
 		title: 'Hot or Not',
 		text: 'Video title',
-		url: `https://hotornot.wtf/profile/${profileLink}/post/${id}`
+		url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
 	});
 	registerEvent('share_video', {
 		userId: $userProfile.principal_id,
