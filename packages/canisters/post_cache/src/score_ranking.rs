@@ -1,4 +1,4 @@
-use crate::PostsIndexSortedByScore;
+use crate::{PostsIndexSortedByScore, PostsIndexSortedByScoreV1};
 use ic_stable_memory::s;
 use shared_utils::shared_types::top_posts::v0::PostScoreIndexItem;
 
@@ -10,14 +10,23 @@ pub fn receive_top_posts_from_publishing_canister(
     // TODO: Add access control to allow only project canisters to send this message
 
     let mut posts_index_sorted_by_score = s!(PostsIndexSortedByScore);
+    let mut posts_index_sorted_by_score_v1: PostsIndexSortedByScoreV1 =
+        s!(PostsIndexSortedByScoreV1);
 
     for post_score_index_item in top_posts_from_publishing_canister {
-        posts_index_sorted_by_score.replace(post_score_index_item);
+        posts_index_sorted_by_score.replace(post_score_index_item.clone());
+        posts_index_sorted_by_score_v1.replace(&post_score_index_item);
     }
 
     if posts_index_sorted_by_score.len() > 1500 {
         posts_index_sorted_by_score = posts_index_sorted_by_score.into_iter().take(1000).collect();
+        posts_index_sorted_by_score_v1 = posts_index_sorted_by_score_v1
+            .into_iter()
+            .take(100)
+            .cloned()
+            .collect();
     }
 
     s! { PostsIndexSortedByScore = posts_index_sorted_by_score };
+    s! { PostsIndexSortedByScoreV1 = posts_index_sorted_by_score_v1 };
 }

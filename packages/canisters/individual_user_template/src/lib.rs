@@ -26,7 +26,8 @@ use internal::{
     util::{access_control, periodic_update},
 };
 use shared_utils::{
-    access_control::UserAccessRole, shared_types::top_posts::v0::PostScoreIndexItem,
+    access_control::UserAccessRole,
+    shared_types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
 };
 use std::collections::BTreeSet;
 
@@ -43,6 +44,7 @@ type SVersionDetails = VersionDetails;
 type AllCreatedPosts = SVec<Post>;
 type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
+type PostsIndexSortedByScoreV1 = PostScoreIndex;
 type PrincipalsIFollow = BTreeSet<SPrincipal>;
 type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
 
@@ -59,6 +61,7 @@ fn init() {
     s! { AllCreatedPosts = AllCreatedPosts::new() };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
+    s! { PostsIndexSortedByScoreV1 = PostsIndexSortedByScoreV1::default() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
     s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
 
