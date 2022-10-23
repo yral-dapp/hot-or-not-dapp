@@ -8,7 +8,6 @@ use api::{
 };
 use candid::{export_service, Principal};
 use ic_cdk::api::call;
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query};
 use ic_stable_memory::{
     collections::{hash_map::SHashMap, vec::SVec},
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
@@ -26,7 +25,10 @@ use internal::{
     },
     util::{access_control, periodic_update},
 };
-use shared_utils::{access_control::UserAccessRole, shared_types::top_posts::PostScoreIndexItem};
+use shared_utils::{
+    access_control::UserAccessRole,
+    shared_types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+};
 use std::collections::BTreeSet;
 
 mod api;
@@ -42,10 +44,11 @@ type SVersionDetails = VersionDetails;
 type AllCreatedPosts = SVec<Post>;
 type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
+type PostsIndexSortedByScoreV1 = PostScoreIndex;
 type PrincipalsIFollow = BTreeSet<SPrincipal>;
 type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
 
-#[init]
+#[ic_cdk_macros::init]
 fn init() {
     // * initialize stable memory
     stable_memory_init(true, 0);
@@ -58,6 +61,7 @@ fn init() {
     s! { AllCreatedPosts = AllCreatedPosts::new() };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
+    s! { PostsIndexSortedByScoreV1 = PostsIndexSortedByScoreV1::default() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
     s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
 
@@ -74,13 +78,13 @@ fn init() {
     periodic_update::share_top_post_scores_with_post_cache_canister();
 }
 
-#[pre_upgrade]
+#[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // * save stable variables meta-info
     stable_memory_pre_upgrade();
 }
 
-#[post_upgrade]
+#[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
@@ -89,7 +93,7 @@ fn post_upgrade() {
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
 }
 
-#[query(name = "__get_candid_interface_tmp_hack")]
+#[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
     export_service!();
     __export_service()

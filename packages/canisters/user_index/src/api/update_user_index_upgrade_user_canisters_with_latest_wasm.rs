@@ -50,8 +50,6 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() -> UpgradeS
 
     let mut iterator_over_map = user_principal_id_to_canister_id_map.iter();
 
-    ic_cdk::print(format!("\n\n\n"));
-
     while iterator_over_map.has_next() {
         let (key, value) = iterator_over_map.next().unwrap();
 
