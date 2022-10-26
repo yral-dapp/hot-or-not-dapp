@@ -5,9 +5,7 @@ import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) {
-		return;
-	}
+	if (!browser) return;
 	const id = params.id;
 	if (!id) {
 		throw redirect(307, '/404');

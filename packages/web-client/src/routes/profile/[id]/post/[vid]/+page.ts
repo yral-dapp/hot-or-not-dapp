@@ -8,9 +8,7 @@ import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) {
-		return;
-	}
+	if (!browser) return;
 
 	try {
 		const vid = params.vid;
