@@ -9,10 +9,10 @@ import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) {
-		return;
-	}
+	if (!browser) return;
+
 	const id = params.id;
+
 	if (!id) {
 		Log({ from: '1 noId' }, 'warn');
 		throw redirect(307, '/menu');
