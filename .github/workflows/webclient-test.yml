@@ -94,6 +94,10 @@ jobs:
         if: steps.dfx-cache.outputs.cache-hit == 'true'
         run: ./scripts/canisters/local_deploy/upgrade_all_canisters.sh
 
+      - name: Test DFX connection
+        if: always()
+        run: dfx ping http://localhost:8000
+
       - name: Run Playwright tests
         run: npm run web-client:test
         env:
