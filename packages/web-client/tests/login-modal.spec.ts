@@ -6,7 +6,7 @@ test('Menu page loads', async ({ page }) => {
 	// Expect a title "to contain" a substring.
 	await expect(page).toHaveTitle(/Hot or Not/);
 
-	await page.waitForResponse((res) => res.url().includes('http://localhost:8000/api/v2/canister'));
+	await page.waitForResponse((res) => res.url().includes('http://localhost:8000'));
 
 	await expect(page.getByText('Join Hot or Not')).toBeHidden();
 
