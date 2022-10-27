@@ -1,0 +1,28 @@
+name: Deploy Web-Client PR
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/web-client/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-client-deploy-dapp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set-up env
+        uses: ./.github/workflows/webclient-setup
+      - run: npm run web-client:build:static
+      - run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      - run: dfx identity list
+      - run: |
+          touch actions_identity.pem
+          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+      - run: dfx deploy webclient --network ic --no-wallet
