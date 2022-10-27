@@ -38,7 +38,7 @@ export const load: PageLoad = async ({ params }) => {
 			...post,
 			post_id: BigInt(pid),
 			publisher_canister_id: canId,
-			score: 0n,
+			score: BigInt(0),
 			created_by_user_principal_id: post.created_by_user_principal_id.toText()
 		};
 		if (!video) {
