@@ -1,6 +1,5 @@
 use ic_stable_memory::s;
-
-use crate::{internal::model::post::PostViewDetailsFromFrontend, AllCreatedPosts};
+use individual_user_template_lib::{model::post::PostViewDetailsFromFrontend, AllCreatedPosts};
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

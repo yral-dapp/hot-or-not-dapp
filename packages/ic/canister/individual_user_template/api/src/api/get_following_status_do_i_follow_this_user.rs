@@ -1,7 +1,7 @@
 use candid::Principal;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 
-use crate::PrincipalsIFollow;
+use individual_user_template_lib::PrincipalsIFollow;
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]

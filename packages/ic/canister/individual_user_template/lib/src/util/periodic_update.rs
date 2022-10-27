@@ -2,7 +2,7 @@ use candid::{CandidType, Deserialize};
 use ic_cron::types::{Iterations, SchedulingOptions};
 use shared_utils::constant::TOP_POSTS_SYNC_INTERVAL;
 
-use crate::internal::util::score_ranking;
+use crate::util::score_ranking;
 
 ic_cron::implement_cron!();
 

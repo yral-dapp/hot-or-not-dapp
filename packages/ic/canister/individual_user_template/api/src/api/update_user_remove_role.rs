@@ -1,6 +1,6 @@
-use crate::AccessControlMap;
 use candid::Principal;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use individual_user_template_lib::AccessControlMap;
 use shared_utils::access_control::{self, UserAccessRole};
 
 #[ic_cdk_macros::update]

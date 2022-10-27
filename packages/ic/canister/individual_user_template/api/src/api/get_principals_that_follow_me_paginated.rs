@@ -1,7 +1,7 @@
 use super::get_principals_i_follow_paginated::GetFollowerOrFollowingError;
-use crate::PrincipalsThatFollowMe;
 use candid::Principal;
 use ic_stable_memory::s;
+use individual_user_template_lib::PrincipalsThatFollowMe;
 use shared_utils::pagination::{self, PaginationError};
 
 #[ic_cdk_macros::query]

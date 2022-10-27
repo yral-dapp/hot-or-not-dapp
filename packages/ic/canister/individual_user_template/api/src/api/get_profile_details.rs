@@ -1,6 +1,5 @@
 use ic_stable_memory::s;
-
-use crate::{internal::model::profile::UserProfileDetailsForFrontend, Profile};
+use individual_user_template_lib::{model::profile::UserProfileDetailsForFrontend, Profile};
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]

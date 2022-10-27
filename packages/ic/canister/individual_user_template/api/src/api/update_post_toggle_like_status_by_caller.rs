@@ -1,5 +1,5 @@
-use crate::AllCreatedPosts;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use individual_user_template_lib::AllCreatedPosts;
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

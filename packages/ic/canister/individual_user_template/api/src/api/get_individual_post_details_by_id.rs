@@ -1,5 +1,5 @@
-use crate::{internal::model::post::PostDetailsForFrontend, AllCreatedPosts, Profile};
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use individual_user_template_lib::{model::post::PostDetailsForFrontend, AllCreatedPosts, Profile};
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]

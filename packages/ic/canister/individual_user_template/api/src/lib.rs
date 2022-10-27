@@ -9,45 +9,23 @@ use api::{
 use candid::{export_service, Principal};
 use ic_cdk::api::call;
 use ic_stable_memory::{
-    collections::{hash_map::SHashMap, vec::SVec},
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
-    utils::ic_types::SPrincipal,
 };
-use internal::{
+use individual_user_template_lib::{
     model::{
-        post::{Post, PostDetailsForFrontend, PostViewDetailsFromFrontend},
-        profile::{
-            UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend,
-        },
+        post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
+        profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
     },
     util::{access_control, periodic_update},
+    AccessControlMap, AllCreatedPosts, PostsIndexSortedByScore, PostsIndexSortedByScoreV1,
+    PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
 };
-use shared_utils::{
-    access_control::UserAccessRole,
-    shared_types::{
-        post::PostDetailsFromFrontend,
-        top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
-    },
-};
-use std::collections::BTreeSet;
+use shared_utils::{access_control::UserAccessRole, shared_types::post::PostDetailsFromFrontend};
 
 mod api;
-mod internal;
 #[cfg(test)]
 mod test;
-
-// * Stable Variables
-type Profile = UserProfile;
-type SVersionDetails = VersionDetails;
-
-// * Stable Collections
-type AllCreatedPosts = SVec<Post>;
-type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
-type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
-type PostsIndexSortedByScoreV1 = PostScoreIndex;
-type PrincipalsIFollow = BTreeSet<SPrincipal>;
-type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
 
 #[ic_cdk_macros::init]
 fn init() {

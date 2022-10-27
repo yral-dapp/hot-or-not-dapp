@@ -1,14 +1,12 @@
+use super::update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError;
 use candid::{CandidType, Principal};
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use individual_user_template_lib::{AccessControlMap, PrincipalsIFollow};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     constant,
 };
-
-use crate::{AccessControlMap, PrincipalsIFollow};
-
-use super::update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError;
 
 #[derive(CandidType)]
 pub enum FollowAnotherUserProfileError {

@@ -1,8 +1,7 @@
 use candid::{CandidType, Principal};
 use ic_stable_memory::s;
+use individual_user_template_lib::PrincipalsIFollow;
 use shared_utils::pagination::{self, PaginationError};
-
-use crate::PrincipalsIFollow;
 
 #[derive(CandidType)]
 pub enum GetFollowerOrFollowingError {

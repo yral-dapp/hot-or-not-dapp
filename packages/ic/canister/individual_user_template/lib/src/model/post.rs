@@ -8,7 +8,7 @@ use std::{
     time::{Duration, SystemTime},
 };
 
-use crate::internal::util::score_ranking;
+use crate::util::score_ranking;
 
 use super::profile::UserProfileDetailsForFrontend;
 

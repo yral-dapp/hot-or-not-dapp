@@ -1,9 +1,8 @@
 use candid::{CandidType, Deserialize, Principal};
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use individual_user_template_lib::PrincipalsThatFollowMe;
 use shared_utils::constant;
-
-use crate::PrincipalsThatFollowMe;
 
 #[derive(CandidType, Deserialize)]
 pub enum AnotherUserFollowedMeError {
