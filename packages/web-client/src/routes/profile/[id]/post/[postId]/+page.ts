@@ -1,6 +1,7 @@
 export const ssr = false;
 
 import { getCanisterId } from '$lib/helpers/canisterId';
+import type { PostPopulated } from '$lib/helpers/feed';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
@@ -10,41 +11,42 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
 	try {
-		const vid = params.vid;
+		const pid = params.postId;
 		const id = params.id;
 		let me = false;
 		console.log('here');
-		if (!vid || isNaN(Number(vid))) {
-			Log({ from: '1 noVid' }, 'warn');
+		if (!pid || isNaN(Number(pid))) {
+			Log({ from: '1 posts/[vid] load', pid, id }, 'warn');
 			throw redirect(307, '/profile');
 		}
 
 		const canId = await getCanisterId(id);
 		if (!canId) {
-			Log({ from: '1 noCanId' }, 'warn');
 			throw redirect(307, '/profile');
 		}
-
-		Log({ canId, from: '0 canId' }, 'info');
 
 		const userProfileData = get(userProfile);
 
-		if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
-			me = true;
-		}
+		if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) me = true;
 
 		const individualUser = (await import('$lib/helpers/backend')).individualUser;
-		const video = await individualUser(Principal.from(canId)).get_individual_post_details_by_id(
-			BigInt(vid)
+		const post = await individualUser(Principal.from(canId)).get_individual_post_details_by_id(
+			BigInt(pid)
 		);
-		console.log('returning', video);
+
+		const video: PostPopulated = {
+			...post,
+			post_id: BigInt(pid),
+			publisher_canister_id: canId,
+			score: BigInt(0),
+			created_by_user_principal_id: post.created_by_user_principal_id.toText()
+		};
 		if (!video) {
-			console.log('hi');
 			throw redirect(307, '/profile');
 		}
-		return { me, video, publisherId: canId };
+		return { me, video };
 	} catch (e) {
-		console.log('e', e);
+		Log({ from: '1 posts/[vid] load', error: e }, 'warn');
 		throw redirect(307, '/profile');
 	}
 };
