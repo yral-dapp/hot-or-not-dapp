@@ -2,7 +2,6 @@
 import '../css/app.css';
 import { onMount } from 'svelte';
 import { Buffer } from 'buffer'; // @dfinity/agent requires this
-import { browser } from '$app/environment';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { authState } from '$stores/auth';
 import Login from '$components/login/Login.svelte';
@@ -26,19 +25,17 @@ beforeNavigate(({ from, to }) => {
 });
 
 onMount(async () => {
-	if (browser) {
-		try {
-			hideSplashScreen();
-			$navigateBack = null;
-			window.Buffer = Buffer;
-			if (process.env.NODE_ENV != 'development') {
-				LogRocket.init('c77ths/hotornot');
-				Log('LR Initialized', 'info');
-			}
-			await initializeAuthClient();
-		} catch (e) {
-			Log({ error: e, source: '0 layout' }, 'error');
+	try {
+		hideSplashScreen(10000);
+		$navigateBack = null;
+		window.Buffer = Buffer;
+		if (process.env.NODE_ENV != 'development') {
+			LogRocket.init('c77ths/hotornot');
+			Log('LR Initialized', 'info');
 		}
+		await initializeAuthClient();
+	} catch (e) {
+		Log({ error: e, source: '0 layout' }, 'error');
 	}
 });
 </script>

@@ -39,6 +39,7 @@ export let likeCount: number = 0;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
+	loaded: void;
 }>();
 
 let videoEl: HTMLVideoElement;
@@ -128,7 +129,9 @@ $: if (inView && !paused) {
 	dispatch('watchedPercentage', (currentTime / duration) * 100);
 }
 
-console.log({ displayName, publisherCanisterId, createdById });
+$: if (inView && loaded) {
+	dispatch('loaded');
+}
 </script>
 
 <player
