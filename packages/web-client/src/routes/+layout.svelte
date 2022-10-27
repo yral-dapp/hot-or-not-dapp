@@ -28,7 +28,7 @@ beforeNavigate(({ from, to }) => {
 onMount(async () => {
 	if (browser) {
 		try {
-			hideSplashScreen();
+			hideSplashScreen(10000);
 			$navigateBack = null;
 			window.Buffer = Buffer;
 			if (process.env.NODE_ENV != 'development') {

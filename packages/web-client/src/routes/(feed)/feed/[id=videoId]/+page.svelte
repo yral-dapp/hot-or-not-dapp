@@ -20,6 +20,7 @@ import { Principal } from '@dfinity/principal';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import userProfile from '$stores/userProfile';
 import type { PageData } from './$types';
+import { hideSplashScreen } from '$stores/splashScreen';
 
 export let data: PageData;
 
@@ -216,6 +217,7 @@ onMount(async () => {
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
+					on:loaded="{() => hideSplashScreen(500)}"
 					on:watchedPercentage="{({ detail }) =>
 						recordStats(
 							detail,
