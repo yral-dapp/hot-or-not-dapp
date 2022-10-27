@@ -1,4 +1,5 @@
-import { browser } from '$app/environment';
+export const ssr = false;
+
 import { getCanisterId } from '$lib/helpers/canisterId';
 import type { PostPopulated } from '$lib/helpers/feed';
 import Log from '$lib/utils/Log';
@@ -9,8 +10,6 @@ import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) return;
-
 	try {
 		const pid = params.postId;
 		const id = params.id;

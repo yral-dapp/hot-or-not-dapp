@@ -13,7 +13,6 @@ import { page } from '$app/stores';
 
 export let data: PageData;
 
-//@ts-ignore
 const { video, me } = data;
 
 let individualUser: () => IndividualUserActor;
@@ -48,11 +47,10 @@ onMount(async () => {
 					i="{0}"
 					id="{video.id}"
 					displayName="{video.created_by_display_name[0]}"
-					profileLink="{video.created_by_unique_user_name[0] ??
-						video.created_by_user_principal_id.toText()}"
+					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
 					liked="{video.liked_by_me}"
 					videoViews="{Number(video.total_view_count)}"
-					createdById="{video.created_by_user_principal_id.toText()}"
+					createdById="{video.created_by_user_principal_id}"
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"

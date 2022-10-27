@@ -1,8 +1,7 @@
-import { browser } from '$app/environment';
+export const ssr = false;
+
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async () => {
-	if (!browser) return;
-
 	return;
 };

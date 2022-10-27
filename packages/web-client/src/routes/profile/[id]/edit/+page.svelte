@@ -17,7 +17,7 @@ import { goto } from '$app/navigation';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
-//@ts-ignore
+
 let {
 	username,
 	username_set,
