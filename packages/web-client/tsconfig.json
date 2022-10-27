@@ -21,7 +21,7 @@
 		"sourceMap": true,
 		"outDir": "./",
 		"strict": true,
-		"types": ["gtag.js"]
+		"types": ["gtag.js", "w3c-image-capture"]
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "declarations"],
 	"exclude": ["node_modules", "build"]
