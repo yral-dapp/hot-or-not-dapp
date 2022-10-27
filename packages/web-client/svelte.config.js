@@ -22,7 +22,7 @@ const config = {
 		adapter: isSSR
 			? cfAdapter()
 			: staticAdapter({
-					fallback: '200.html'
+					fallback: 'index.html'
 			  })
 	}
 };
