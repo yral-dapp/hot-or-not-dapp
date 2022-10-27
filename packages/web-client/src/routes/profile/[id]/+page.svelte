@@ -31,7 +31,6 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
-//@ts-ignore
 const { me, fetchedProfile } = data;
 
 let load = {

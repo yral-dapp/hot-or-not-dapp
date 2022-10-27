@@ -13,16 +13,13 @@ import {
 	sanitizeProfile,
 	type UserProfileFollows
 } from '$lib/helpers/profile';
-import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
-import { generateRandomName } from '$lib/utils/randomUsername';
 import type { PageData } from './$types';
 import type { UserProfile } from '$stores/userProfile';
 import { onMount } from 'svelte';
 import userProfile from '$stores/userProfile';
 
 export let data: PageData;
-//@ts-ignore
 const { me, fetchedProfile } = data;
 
 let profile: UserProfile;

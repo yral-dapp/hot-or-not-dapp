@@ -1,4 +1,5 @@
-import { browser } from '$app/environment';
+export const ssr = false;
+
 import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
@@ -7,10 +8,7 @@ import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) return;
-
 	const id = params.id;
-
 	const userProfileData = get(userProfile);
 
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
