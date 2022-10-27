@@ -1,7 +1,8 @@
 [workspace]
 members = [
-  "packages/ic/canister/post_cache/api",
   "packages/ic/canister/individual_user_template/api",
-  "packages/ic/lib/shared_utils",
+  "packages/ic/canister/individual_user_template/lib",
+  "packages/ic/canister/post_cache/api",
   "packages/ic/canister/user_index/api",
+  "packages/ic/lib/shared_utils",
 ]
