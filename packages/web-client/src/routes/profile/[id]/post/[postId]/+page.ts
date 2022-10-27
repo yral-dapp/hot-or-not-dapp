@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { getCanisterId } from '$lib/helpers/canisterId';
+import type { PostPopulated } from '$lib/helpers/feed';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
@@ -30,13 +31,21 @@ export const load: PageLoad = async ({ params }) => {
 		if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) me = true;
 
 		const individualUser = (await import('$lib/helpers/backend')).individualUser;
-		const video = await individualUser(Principal.from(canId)).get_individual_post_details_by_id(
+		const post = await individualUser(Principal.from(canId)).get_individual_post_details_by_id(
 			BigInt(pid)
 		);
+
+		const video: PostPopulated = {
+			...post,
+			post_id: BigInt(pid),
+			publisher_canister_id: canId,
+			score: 0n,
+			created_by_user_principal_id: post.created_by_user_principal_id.toText()
+		};
 		if (!video) {
 			throw redirect(307, '/profile');
 		}
-		return { me, video, publisherId: canId };
+		return { me, video };
 	} catch (e) {
 		Log({ from: '1 posts/[vid] load', error: e }, 'warn');
 		throw redirect(307, '/profile');
