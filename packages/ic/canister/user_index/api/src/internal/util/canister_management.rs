@@ -9,7 +9,7 @@ use ic_cdk::api::{
 use shared_utils::constant::get_global_owner_principal_id;
 
 const WASM: &[u8] = include_bytes!(
-    "../../../../../../target/wasm32-unknown-unknown/release/individual_user_template.wasm"
+    "../../../../../../../../target/wasm32-unknown-unknown/release/individual_user_template.wasm"
 );
 
 pub async fn create_users_canister(caller: Principal) -> Principal {

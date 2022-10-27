@@ -10,7 +10,7 @@ fn when_creating_a_new_post_then_post_score_should_be_calculated() {
     // * Arrange
     let state_machine = StateMachine::new();
     let wasm =
-        include_bytes!("../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
+        include_bytes!("../../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
     let alice_principal_id = PrincipalId::new_self_authenticating(&[1]);
 
     // * Act

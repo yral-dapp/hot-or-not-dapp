@@ -15,5 +15,5 @@ ic-cdk-macros = "0.5.7"
 ic-cron = "0.7.0"
 ic-stable-memory = "0.2.4"
 serde = "1.0.144"
-shared_utils = { path = "../shared_utils" }
+shared_utils = { path = "../../../lib/shared_utils" }
 speedy = "0.8.3"
