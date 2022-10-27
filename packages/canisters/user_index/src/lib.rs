@@ -1,7 +1,6 @@
 use crate::internal::util::access_control::{self as internal_access_control};
 use api::update_user_index_upgrade_user_canisters_with_latest_wasm::UpgradeStatus;
 use candid::{export_service, Principal};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query};
 use ic_stable_memory::{
     collections::hash_map::SHashMap, s, stable_memory_init, stable_memory_post_upgrade,
     stable_memory_pre_upgrade, utils::ic_types::SPrincipal,
@@ -23,7 +22,7 @@ type UserPrincipalIdToCanisterIdMap = SHashMap<SPrincipal, SPrincipal>;
 type UniqueUserNameToUserPrincipalIdMap = SHashMap<String, SPrincipal>;
 type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 
-#[init]
+#[ic_cdk_macros::init]
 fn init() {
     // * initialize stable memory
     stable_memory_init(true, 0);
@@ -42,19 +41,19 @@ fn init() {
     s! { AccessControlMap = user_id_access_control_map };
 }
 
-#[pre_upgrade]
+#[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // * save stable variables meta-info
     stable_memory_pre_upgrade();
 }
 
-#[post_upgrade]
+#[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
 }
 
-#[query(name = "__get_candid_interface_tmp_hack")]
+#[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
     export_service!();
     __export_service()

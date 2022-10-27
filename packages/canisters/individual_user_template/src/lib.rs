@@ -15,9 +15,7 @@ use ic_stable_memory::{
 };
 use internal::{
     model::{
-        post::{
-            Post, PostDetailsForFrontend, PostDetailsFromFrontend, PostViewDetailsFromFrontend,
-        },
+        post::{Post, PostDetailsForFrontend, PostViewDetailsFromFrontend},
         profile::{
             UserProfile, UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend,
         },
@@ -27,7 +25,10 @@ use internal::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+    shared_types::{
+        post::PostDetailsFromFrontend,
+        top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+    },
 };
 use std::collections::BTreeSet;
 

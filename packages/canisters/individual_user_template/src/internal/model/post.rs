@@ -88,7 +88,7 @@ impl Post {
         video_uid: String,
         creator_consent_for_inclusion_in_hot_or_not: bool,
     ) -> Self {
-        Post {
+        let mut post = Post {
             id,
             description,
             hashtags,
@@ -104,7 +104,9 @@ impl Post {
             },
             ranking_score: 0,
             creator_consent_for_inclusion_in_hot_or_not,
-        }
+        };
+        post.recalculate_score();
+        post
     }
 
     pub fn update_status(&mut self, status: PostStatus) {

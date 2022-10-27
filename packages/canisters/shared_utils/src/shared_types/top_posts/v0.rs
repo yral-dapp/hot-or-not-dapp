@@ -19,57 +19,6 @@ impl Ord for PostScoreIndexItem {
             },
             _ => other.score.cmp(&self.score),
         }
-
-        // if self.publisher_canister_id == other.publisher_canister_id
-        //     && self.post_id == other.post_id
-        // {
-        //     return Ordering::Equal;
-        // } else {
-        //     if other.score < self.score {
-        //         return Ordering::Less;
-        //     } else if other.score > self.score {
-        //         return Ordering::Greater;
-        //     } else {
-        //         if other.publisher_canister_id != self.publisher_canister_id
-        //             || other.post_id != self.post_id
-        //         {
-        //             return Ordering::Greater;
-        //         } else {
-        //             return Ordering::Equal;
-        //         }
-        //     }
-        // }
-
-        // match other.publisher_canister_id.cmp(&self.publisher_canister_id) {
-        //     Ordering::Equal => match other.post_id.cmp(&self.post_id) {
-        //         // * It's the same post
-        //         Ordering::Equal => Ordering::Equal,
-        //         _ => match other.score.cmp(&self.score) {
-        //             Ordering::Greater => Ordering::Greater,
-        //             Ordering::Less => Ordering::Less,
-        //             Ordering::Equal => match other.post_id.cmp(&self.post_id) {
-        //                 Ordering::Greater => Ordering::Greater,
-        //                 Ordering::Less => Ordering::Less,
-        //                 Ordering::Equal => Ordering::Equal,
-        //             },
-        //         },
-        //     },
-        //     _ => match other.score.cmp(&self.score) {
-        //         Ordering::Greater => Ordering::Greater,
-        //         Ordering::Less => Ordering::Less,
-        //         Ordering::Equal => match other.post_id.cmp(&self.post_id) {
-        //             Ordering::Greater => Ordering::Greater,
-        //             Ordering::Less => Ordering::Less,
-        //             Ordering::Equal => {
-        //                 match other.publisher_canister_id.cmp(&self.publisher_canister_id) {
-        //                     Ordering::Greater => Ordering::Greater,
-        //                     Ordering::Less => Ordering::Less,
-        //                     Ordering::Equal => Ordering::Equal,
-        //                 }
-        //             }
-        //         },
-        //     },
-        // }
     }
 }
 
@@ -82,35 +31,6 @@ impl PartialOrd for PostScoreIndexItem {
             },
             _ => Some(other.score.cmp(&self.score)),
         }
-        // match other.publisher_canister_id.cmp(&self.publisher_canister_id) {
-        //     Ordering::Equal => match other.post_id.cmp(&self.post_id) {
-        //         Ordering::Equal => Some(Ordering::Equal),
-        //         _ => match other.score.cmp(&self.score) {
-        //             Ordering::Greater => Some(Ordering::Greater),
-        //             Ordering::Less => Some(Ordering::Less),
-        //             Ordering::Equal => match other.post_id.cmp(&self.post_id) {
-        //                 Ordering::Greater => Some(Ordering::Greater),
-        //                 Ordering::Less => Some(Ordering::Less),
-        //                 Ordering::Equal => Some(Ordering::Equal),
-        //             },
-        //         },
-        //     },
-        //     _ => match other.score.cmp(&self.score) {
-        //         Ordering::Greater => Some(Ordering::Greater),
-        //         Ordering::Less => Some(Ordering::Less),
-        //         Ordering::Equal => match other.post_id.cmp(&self.post_id) {
-        //             Ordering::Greater => Some(Ordering::Greater),
-        //             Ordering::Less => Some(Ordering::Less),
-        //             Ordering::Equal => {
-        //                 match other.publisher_canister_id.cmp(&self.publisher_canister_id) {
-        //                     Ordering::Greater => Some(Ordering::Greater),
-        //                     Ordering::Less => Some(Ordering::Less),
-        //                     Ordering::Equal => Some(Ordering::Equal),
-        //                 }
-        //             }
-        //         },
-        //     },
-        // }
     }
 }
 

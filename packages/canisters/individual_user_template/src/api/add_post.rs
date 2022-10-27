@@ -1,9 +1,9 @@
-use crate::{
-    internal::model::post::{Post, PostDetailsFromFrontend},
-    AccessControlMap, AllCreatedPosts,
-};
+use crate::{internal::model::post::Post, AccessControlMap, AllCreatedPosts};
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use shared_utils::access_control::{self, UserAccessRole};
+use shared_utils::{
+    access_control::{self, UserAccessRole},
+    shared_types::post::PostDetailsFromFrontend,
+};
 
 /// # Access Control
 /// Only the user whose profile details are stored in this canister can create a post.
