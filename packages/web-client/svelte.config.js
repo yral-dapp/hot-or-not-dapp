@@ -19,6 +19,9 @@ const config = {
 		// 			mode: 'hash',
 		// 			directives: { 'script-src': ['self'] }
 		// 	  },
+		serviceWorker: {
+			register: false
+		},
 		adapter: isSSR
 			? cfAdapter()
 			: staticAdapter({
