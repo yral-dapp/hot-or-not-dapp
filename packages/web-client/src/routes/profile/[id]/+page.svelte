@@ -11,18 +11,12 @@ import NoPostsIcon from '$components/icons/NoPostsIcon.svelte';
 import Button from '$components/button/Button.svelte';
 import ReportIcon from '$components/icons/ReportIcon.svelte';
 import SpeculationPost from '$components/profile/SpeculationPost.svelte';
-import userProfile, { type UserProfile } from '$stores/userProfile';
+import userProfile from '$stores/userProfile';
 import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import {
-	doIFollowThisUser,
-	fetchPosts,
-	loveUser,
-	updateProfile,
-	sanitizeProfile
-} from '$lib/helpers/profile';
+import { doIFollowThisUser, fetchPosts, loveUser, updateProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -31,8 +25,7 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
-//@ts-ignore
-const { me, fetchedProfile } = data;
+let { me, profile } = data;
 
 let load = {
 	page: true,
@@ -42,16 +35,15 @@ let load = {
 
 const speculations: any = [];
 
-let profile: UserProfile;
 let fetchedPosts: PostDetailsForFrontend[] = [];
 let errorWhileFetching = false;
 let noMorePosts = false;
 let fetchedPostsCount = 0;
 let doIFollow = true;
 
-$: userId = fetchedProfile?.username_set
-	? fetchedProfile?.unique_user_name
-	: fetchedProfile?.principal_id || $page.params.id;
+$: userId = profile?.username_set
+	? profile?.unique_user_name
+	: profile?.principal_id || $page.params.id;
 
 async function showShareDialog() {
 	try {
@@ -117,8 +109,7 @@ onMount(async () => {
 	if (me) {
 		await updateProfile();
 		profile = $userProfile;
-	} else if (fetchedProfile) {
-		profile = sanitizeProfile(fetchedProfile, $page.params.id);
+	} else {
 		doIFollow = await doIFollowThisUser($page.params.id);
 	}
 	registerEvent('view_profile', {

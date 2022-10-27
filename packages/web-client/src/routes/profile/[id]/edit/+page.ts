@@ -1,11 +1,11 @@
-import { browser } from '$app/environment';
+export const ssr = false;
+
 import { updateProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) return;
 	const id = params.id;
 	if (!id) {
 		throw redirect(307, '/404');

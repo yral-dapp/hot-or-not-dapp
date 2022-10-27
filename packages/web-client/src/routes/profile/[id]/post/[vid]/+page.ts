@@ -1,4 +1,5 @@
-import { browser } from '$app/environment';
+export const ssr = false;
+
 import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
@@ -8,8 +9,6 @@ import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-	if (!browser) return;
-
 	try {
 		const vid = params.vid;
 		const id = params.id;
