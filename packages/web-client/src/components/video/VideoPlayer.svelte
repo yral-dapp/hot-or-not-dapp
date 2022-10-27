@@ -132,8 +132,6 @@ $: if (inView && !paused) {
 $: if (inView && loaded) {
 	dispatch('loaded');
 }
-
-console.log({ displayName, publisherCanisterId, createdById });
 </script>
 
 <player
