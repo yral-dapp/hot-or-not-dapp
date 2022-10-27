@@ -111,6 +111,7 @@ export interface _SERVICE {
     [bigint],
     PostDetailsForFrontend,
   >,
+  'get_individual_post_score_by_id' : ActorMethod<[bigint], bigint>,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result,

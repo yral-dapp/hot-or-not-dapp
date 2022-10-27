@@ -129,6 +129,11 @@ export const idlFactory = ({ IDL }) => {
         [PostDetailsForFrontend],
         ['query'],
       ),
+    'get_individual_post_score_by_id' : IDL.Func(
+        [IDL.Nat64],
+        [IDL.Nat64],
+        ['query'],
+      ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [Result],
