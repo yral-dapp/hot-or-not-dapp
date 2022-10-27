@@ -1,6 +1,7 @@
 pub mod add_post;
 pub mod get_following_status_do_i_follow_this_user;
 pub mod get_individual_post_details_by_id;
+pub mod get_individual_post_score_by_id;
 pub mod get_posts_of_this_user_profile_with_pagination;
 pub mod get_principals_i_follow_paginated;
 pub mod get_principals_that_follow_me_paginated;

@@ -70,21 +70,23 @@ fn when_creating_a_new_post_then_post_score_should_be_calculated() {
 
     println!("\n🎉 Post Id: {:?} \n", newly_created_post_id);
 
-    // let post_score = state_machine
-    //     .query_as(
-    //         PrincipalId::new_anonymous(),
-    //         CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
-    //         "get_individual_post_details_by_id",
-    //         candid::encode_args((newly_created_post_id,)).unwrap(),
-    //     )
-    //     .map(|reply_payload| {
-    //         let (post_score,): (PostDetailsForFrontend,) = match reply_payload {
-    //             WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-    //             _ => panic!("\n🛑 get_individual_post_details_by_id failed\n"),
-    //         };
-    //         post_score
-    //     })
-    //     .unwrap();
+    let post_score = state_machine
+        .query_as(
+            alice_principal_id,
+            CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
+            "get_individual_post_score_by_id",
+            candid::encode_args((newly_created_post_id,)).unwrap(),
+        )
+        .map(|reply_payload| {
+            let (post_score,): (u64,) = match reply_payload {
+                WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+                _ => panic!("\n🛑 get_individual_post_score_by_id failed\n"),
+            };
+            post_score
+        })
+        .unwrap();
 
+    println!("\n🎉 Post Score: {:?} \n", post_score);
     // * Assert
+    assert!(post_score > 0);
 }

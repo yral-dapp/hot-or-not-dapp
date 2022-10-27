@@ -12,7 +12,7 @@ use crate::util::score_ranking;
 
 use super::profile::UserProfileDetailsForFrontend;
 
-#[derive(Readable, Writable, Serialize, CandidType, Clone)]
+#[derive(Readable, Writable, Serialize, Deserialize, CandidType, Clone)]
 pub enum PostStatus {
     Uploaded,
     Transcoding,
@@ -34,7 +34,7 @@ pub enum PostViewDetailsFromFrontend {
     },
 }
 
-#[derive(Serialize, CandidType, Deserialize)]
+#[derive(Serialize, Deserialize, CandidType)]
 pub struct PostDetailsFromFrontend {
     pub description: String,
     pub hashtags: Vec<String>,
@@ -64,7 +64,7 @@ pub struct Post {
     creator_consent_for_inclusion_in_hot_or_not: bool,
 }
 
-#[derive(Serialize, CandidType)]
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct PostDetailsForFrontend {
     pub id: u64,
     pub created_by_display_name: Option<String>,
@@ -223,5 +223,9 @@ impl Post {
             like_count: self.likes.len() as u64,
             liked_by_me: self.likes.contains(&caller),
         }
+    }
+
+    pub fn get_post_score(&self) -> u64 {
+        self.ranking_score
     }
 }

@@ -111,6 +111,7 @@ service : {
   add_post : (PostDetailsFromFrontend) -> (nat64);
   get_following_status_do_i_follow_this_user : (principal) -> (bool) query;
   get_individual_post_details_by_id : (nat64) -> (PostDetailsForFrontend) query;
+  get_individual_post_score_by_id : (nat64) -> (nat64) query;
   get_posts_of_this_user_profile_with_pagination : (nat64, nat64) -> (
       Result,
     ) query;
