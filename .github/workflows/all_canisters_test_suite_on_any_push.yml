@@ -39,10 +39,10 @@ jobs:
             .dfx/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Build individual_user_template canister
-        run: dfx build individual_user_template
+        run: dfx build --network ic individual_user_template
       - name: Build user_index canister
-        run: dfx build user_index
+        run: dfx build --network ic user_index
       - name: Build post_cache canister
-        run: dfx build post_cache
+        run: dfx build --network ic post_cache
       - name: Run canister test suite
         run: cargo test
