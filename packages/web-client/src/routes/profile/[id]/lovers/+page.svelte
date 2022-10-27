@@ -7,22 +7,14 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import ProfileLayout from '$components/layout/ProfileLayout.svelte';
-import {
-	fetchLovers,
-	loveUser,
-	sanitizeProfile,
-	type UserProfileFollows
-} from '$lib/helpers/profile';
+import { fetchLovers, loveUser, type UserProfileFollows } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
-import type { PageData } from './$types';
-import type { UserProfile } from '$stores/userProfile';
-import { onMount } from 'svelte';
 import userProfile from '$stores/userProfile';
+import type { PageData } from './$types';
 
 export let data: PageData;
-const { me, fetchedProfile } = data;
+let { me, profile } = data;
 
-let profile: UserProfile;
 let loading = false;
 let errorWhileFetching = false;
 let noMoreLovers = false;
@@ -75,15 +67,6 @@ async function handleLove(userIndex: number, userId?: string) {
 		lovers = lovers;
 	}
 }
-
-onMount(() => {
-	if (me) {
-		profile = $userProfile;
-	} else if (fetchedProfile) {
-		profile = sanitizeProfile(fetchedProfile, $page.params.id);
-	}
-	Log({ from: '0 loversMount', id: $page.params.id, me, profile }, 'info');
-});
 </script>
 
 <ProfileLayout>

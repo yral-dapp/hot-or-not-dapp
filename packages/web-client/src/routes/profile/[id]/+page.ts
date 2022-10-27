@@ -14,12 +14,11 @@ export const load: PageLoad = async ({ params }) => {
 	const id = params.id;
 
 	if (!id) {
-		Log({ from: '1 noId' }, 'warn');
+		Log({ from: '1 load profile', id: params.id }, 'warn');
 		throw redirect(307, '/menu');
 	}
 
 	const userProfileData = get(userProfile);
-
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
 		return { me: true, profile: userProfileData };
 	} else {
@@ -30,8 +29,8 @@ export const load: PageLoad = async ({ params }) => {
 		}
 		Log({ canId, from: '0 canId' }, 'info');
 		const individualUser = (await import('$lib/helpers/backend')).individualUser;
-		const profileFromServer = await individualUser(Principal.from(canId)).get_profile_details();
-		const profile = sanitizeProfile(profileFromServer, id);
-		return { me: false, fetchedProfile: profile };
+		const fetchedProfile = await individualUser(Principal.from(canId)).get_profile_details();
+		const profile = sanitizeProfile(fetchedProfile, id);
+		return { me: false, profile };
 	}
 };
