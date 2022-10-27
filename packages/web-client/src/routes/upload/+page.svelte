@@ -130,7 +130,6 @@ async function switchCamera() {
 
 async function toggleTorch() {
 	const success = await applyConstraintsOnVideoStream(mediaStream, {
-		//@ts-ignore
 		advanced: [{ torch: cameraControls.flash === 'on' ? false : true }]
 	});
 	if (success) {
@@ -140,7 +139,6 @@ async function toggleTorch() {
 
 async function checkIfFlashAvailable() {
 	try {
-		//@ts-ignore
 		const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0]);
 		const capablities = await imageCapture.getPhotoCapabilities();
 		cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available';
