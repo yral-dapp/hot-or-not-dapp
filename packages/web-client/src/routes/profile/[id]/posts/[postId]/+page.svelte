@@ -16,6 +16,7 @@ import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 
 export let data: PageData;
 
+//@ts-ignore
 const { video, me } = data;
 
 let videos = [video];
@@ -75,14 +76,15 @@ onMount(async () => {
 							thumbnail="{getThumbnailUrl(video.video_uid)}"
 							src="{src}" />
 					</SwiperSlide>
-
-					<SwiperSlide class="flex h-full w-full items-center justify-center">
-						<div
-							class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-							<NoVideosIcon class="w-56" />
-							<div class="text-center text-lg font-bold">Reached the end</div>
-						</div>
-					</SwiperSlide>
+					{#if noMoreVideos}
+						<SwiperSlide class="flex h-full w-full items-center justify-center">
+							<div
+								class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+								<NoVideosIcon class="w-56" />
+								<div class="text-center text-lg font-bold">Reached the end</div>
+							</div>
+						</SwiperSlide>
+					{/if}
 				{/each}
 			</Swiper>
 		{/if}
