@@ -55,6 +55,7 @@ fn init() {
 
     // * initialize periodic update
     periodic_update::share_top_post_scores_with_post_cache_canister();
+    periodic_update::update_post_scores_every_hour();
 }
 
 #[ic_cdk_macros::pre_upgrade]
@@ -70,6 +71,9 @@ fn post_upgrade() {
 
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
+
+    // TODO: remove after this run
+    periodic_update::update_post_scores_every_hour();
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

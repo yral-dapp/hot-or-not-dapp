@@ -4,14 +4,15 @@ use shared_utils::{
     constant::DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE,
     shared_types::post::PostDetailsFromFrontend,
 };
+use std::time::Duration;
 
 #[test]
-fn when_creating_a_new_post_then_post_score_should_be_calculated() {
+fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_four_hours_score_reduces_owing_to_freshness_component(
+) {
     // * Arrange
     let state_machine = StateMachine::new();
-    let wasm = include_bytes!(
-        "../../../../../../../target/wasm32-unknown-unknown/release/user_index.wasm"
-    );
+    let wasm =
+        include_bytes!("../../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
     let alice_principal_id = PrincipalId::new_self_authenticating(&[1]);
 
     // * Act
@@ -86,7 +87,28 @@ fn when_creating_a_new_post_then_post_score_should_be_calculated() {
         })
         .unwrap();
 
+    // * Every four hours, score reduces owing to the freshness component
+    state_machine.advance_time(Duration::from_secs(4 * 60 * 60));
+    state_machine.tick();
+
+    let updated_post_score = state_machine
+        .query_as(
+            alice_principal_id,
+            CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
+            "get_individual_post_score_by_id",
+            candid::encode_args((newly_created_post_id,)).unwrap(),
+        )
+        .map(|reply_payload| {
+            let (post_score,): (u64,) = match reply_payload {
+                WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+                _ => panic!("\n🛑 get_individual_post_score_by_id failed\n"),
+            };
+            post_score
+        })
+        .unwrap();
+
     println!("\n🎉 Post Score: {:?} \n", post_score);
+    println!("\n🎉 Updated Post Score: {:?} \n", updated_post_score);
     // * Assert
-    assert!(post_score > 0);
+    assert!(post_score > updated_post_score);
 }
