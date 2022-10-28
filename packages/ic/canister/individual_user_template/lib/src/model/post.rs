@@ -143,7 +143,7 @@ impl Post {
             / (self.view_stats.total_view_count + additional_views as u64)) as u8
     }
 
-    fn recalculate_score(&mut self) {
+    pub fn recalculate_score(&mut self) {
         let likes_component =
             1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count;
         let threshold_views_component =

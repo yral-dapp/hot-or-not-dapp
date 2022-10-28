@@ -1,4 +1,4 @@
-use crate::{PostsIndexSortedByScore, PostsIndexSortedByScoreV1};
+use crate::{AllCreatedPosts, PostsIndexSortedByScore, PostsIndexSortedByScoreV1};
 use ic_cdk::api::call;
 use ic_stable_memory::s;
 use ic_stable_memory::utils::ic_types::SPrincipal;
@@ -43,4 +43,21 @@ pub fn send_top_post_scores_to_post_cache_canister() {
         "receive_top_posts_from_publishing_canister",
         (top_post_scores,),
     );
+}
+
+pub fn update_post_scores_for_every_post_in_posts_index_sorted_by_score() {
+    let post_score_index_sorted_by_score_v1 = s!(PostsIndexSortedByScoreV1);
+    let mut all_created_posts = s!(AllCreatedPosts);
+
+    for post_score_index_item in post_score_index_sorted_by_score_v1.iter() {
+        let mut post = all_created_posts
+            .get_cloned(post_score_index_item.post_id)
+            .unwrap();
+
+        post.recalculate_score();
+
+        all_created_posts.replace(post_score_index_item.post_id, &post);
+    }
+
+    s! { AllCreatedPosts = all_created_posts };
 }
