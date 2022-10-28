@@ -16,8 +16,6 @@ dfx build individual_user_template
 dfx build user_index
 dfx build post_cache
 
-cargo test
-
 dfx canister install user_index
 dfx canister install post_cache
 
