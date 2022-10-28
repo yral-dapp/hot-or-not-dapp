@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('Menu page loads', async ({ page }) => {
-	await page.goto('http://localhost:4173/menu');
+	await page.goto('http://localhost:5173/menu');
 
 	await page.waitForResponse((res) => res.url().includes('https://ic0.app'));
 
