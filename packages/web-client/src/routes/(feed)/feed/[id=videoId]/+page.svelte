@@ -74,13 +74,13 @@ async function fetchNextVideos() {
 
 			fetchedVideosCount = res.from;
 
-			videos = joinArrayUniquely(res.posts, videos);
+			videos = [...videos, ...res.posts];
 
 			if (!res.noMorePosts && res.posts.length == 0) {
 				fetchNextVideos();
 			} else if (res.noMorePosts) {
 				const watchedVideos = await getWatchedVideosFromCache();
-				videos = joinArrayUniquely(watchedVideos, videos);
+				videos = [...videos, ...watchedVideos];
 			}
 
 			noMoreVideos = res.noMorePosts;
