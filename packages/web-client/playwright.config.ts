@@ -7,12 +7,6 @@ const projects: PlaywrightTestConfig['projects'] = [
 		use: {
 			...devices['Desktop Chrome']
 		}
-	},
-	{
-		name: 'firefox',
-		use: {
-			...devices['Desktop Firefox']
-		}
 	}
 ];
 
