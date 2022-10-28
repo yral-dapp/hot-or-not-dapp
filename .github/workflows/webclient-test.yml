@@ -64,7 +64,7 @@ jobs:
         id: dfx-cache
         with:
           path: "./.dfx"
-          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/canisters/**') }}"
+          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/ic/**') }}"
 
       - name: Cache target folder
         if: always()
@@ -72,7 +72,7 @@ jobs:
         id: target-cache
         with:
           path: "./target"
-          key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/canisters/**') }}"
+          key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/ic/**') }}"
 
       - name: Cache dfx identity
         if: always()
@@ -80,7 +80,7 @@ jobs:
         id: identity-cache
         with:
           path: "~/.config/dfx/identity"
-          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/canisters/**') }}"
+          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/ic/**') }}"
 
       - name: Start DFX Server
         if: always()
