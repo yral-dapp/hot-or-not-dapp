@@ -11,7 +11,8 @@ import navigateBack from '$stores/navigateBack';
 import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
 import GoogleAnalytics from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
-import LogRocket from 'logrocket';
+import * as Sentry from '@sentry/svelte';
+import { BrowserTracing } from '@sentry/tracing';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
@@ -30,8 +31,12 @@ onMount(async () => {
 		$navigateBack = null;
 		window.Buffer = Buffer;
 		if (process.env.NODE_ENV != 'development') {
-			LogRocket.init('c77ths/hotornot');
-			Log('LR Initialized', 'info');
+			Sentry.init({
+				dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
+				integrations: [new BrowserTracing()],
+				tracesSampleRate: 1.0
+			});
+			Log('Sentry Initialized', 'info');
 		}
 		await initializeAuthClient();
 	} catch (e) {
