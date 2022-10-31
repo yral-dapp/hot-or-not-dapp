@@ -5,7 +5,7 @@ test('Menu page loads', async ({ page }) => {
 
 	const loginBtn = page.locator('text=Login');
 
-	await expect(loginBtn).toBeVisible({ timeout: 15_000 });
+	await expect(loginBtn).toBeVisible({ timeout: 20_000 });
 
 	await expect(page.getByText('Join Hot or Not')).toBeHidden();
 
