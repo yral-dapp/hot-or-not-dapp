@@ -7,12 +7,6 @@ const projects: PlaywrightTestConfig['projects'] = [
 		use: {
 			...devices['Desktop Chrome']
 		}
-	},
-	{
-		name: 'firefox',
-		use: {
-			...devices['Desktop Firefox']
-		}
 	}
 ];
 
@@ -42,8 +36,8 @@ const config: PlaywrightTestConfig = {
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'npm run preview',
-		port: 4173
+		command: 'npm run dev',
+		port: 5173
 	}
 };
 
