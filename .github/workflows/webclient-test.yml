@@ -30,7 +30,7 @@ jobs:
         run: npm run web-client:check
 
   playwright-linux:
-    timeout-minutes: 60
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
