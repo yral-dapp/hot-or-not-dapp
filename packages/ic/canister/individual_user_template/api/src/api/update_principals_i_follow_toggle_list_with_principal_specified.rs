@@ -2,7 +2,7 @@ use super::update_principals_that_follow_me_toggle_list_with_specified_principal
 use candid::{CandidType, Principal};
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{AccessControlMap, PrincipalsIFollow};
+use individual_user_template_lib::{AccessControlMap, MyKnownPrincipalIdsMap, PrincipalsIFollow};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     constant,
@@ -45,9 +45,10 @@ async fn update_principals_i_follow_toggle_list_with_principal_specified(
         return Err(FollowAnotherUserProfileError::UsersICanFollowListIsFull);
     }
 
+    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
     // * inter canister call to user index to get the user canister id of the user to follow
     let (followee_canister_id,): (Option<Principal>,) = call::call(
-        constant::get_user_index_canister_principal_id(),
+        constant::get_user_index_canister_principal_id(known_principal_ids),
         "get_user_canister_id_from_user_principal_id",
         (user_to_follow,),
     )

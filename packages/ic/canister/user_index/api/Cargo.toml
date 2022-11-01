@@ -16,3 +16,4 @@ ic-stable-memory = "0.2.4"
 shared_utils = { path = "../../../lib/shared_utils" }
 serde = "1.0.144"
 speedy = "0.8.3"
+user_index_lib = { path = "../lib" }

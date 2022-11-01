@@ -13,14 +13,14 @@ pub struct UserProfile {
     profile_stats: UserProfileGlobalStats,
 }
 
-#[derive(Readable, Writable, CandidType, Clone, Copy)]
+#[derive(Readable, Writable, CandidType, Deserialize, Clone, Copy, Debug)]
 pub struct UserProfileGlobalStats {
     lifetime_earnings: u64,
     hots_earned_count: u64,
     nots_earned_count: u64,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize, Debug)]
 pub struct UserProfileDetailsForFrontend {
     pub principal_id: Principal,
     pub display_name: Option<String>,

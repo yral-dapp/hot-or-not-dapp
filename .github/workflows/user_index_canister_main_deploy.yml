@@ -4,8 +4,8 @@ on:
     branches:
       - main
     paths:
-      - 'packages/canisters/user_index/**'
-      - 'packages/canisters/individual_user_template/**'
+      - 'packages/ic/canister/user_index/**'
+      - 'packages/ic/canister/individual_user_template/**'
       - '.github/workflows/user_index_canister_main_deploy.yml'
 
 jobs:

@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - 'packages/canisters/post_cache/**'
+      - 'packages/ic/canister/post_cache/**'
       - '.github/workflows/post_cache_canister_main_deploy.yml'
 
 jobs:

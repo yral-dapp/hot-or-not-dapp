@@ -2,7 +2,7 @@
 set -euo pipefail
 
 dfx deploy --no-wallet internet_identity
-export GLOBAL_OWNER_PRINCIPAL_ID=$(dfx identity get-principal)
+export USER_ID_global_super_admin=$(dfx identity get-principal)
 
 dfx canister create --no-wallet individual_user_template
 dfx canister create --no-wallet user_index

@@ -1,21 +1,14 @@
-use candid::CandidType;
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{AccessControlMap, Profile};
+use individual_user_template_lib::{
+    model::api_error::UpdateProfileSetUniqueUsernameError, AccessControlMap,
+    MyKnownPrincipalIdsMap, Profile,
+};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     constant,
     shared_types::user_index::error_types::SetUniqueUsernameError,
 };
-
-#[derive(CandidType)]
-pub enum UpdateProfileSetUniqueUsernameError {
-    NotAuthorized,
-    UsernameAlreadyTaken,
-    SendingCanisterDoesNotMatchUserCanisterId,
-    UserCanisterEntryDoesNotExist,
-    UserIndexCrossCanisterCallFailed,
-}
 
 /// # Access Control
 /// Only the user whose profile details are stored in this canister can update their details.
@@ -24,22 +17,25 @@ pub enum UpdateProfileSetUniqueUsernameError {
 async fn update_profile_set_unique_username_once(
     new_unique_username: String,
 ) -> Result<(), UpdateProfileSetUniqueUsernameError> {
+    let request_maker = ic_cdk::caller();
+    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
+
     // * access control
     let user_id_access_control_map: AccessControlMap = s!(AccessControlMap);
 
     if !(access_control::does_principal_have_role(
         &user_id_access_control_map,
         UserAccessRole::ProfileOwner,
-        SPrincipal(ic_cdk::caller()),
+        SPrincipal(request_maker),
     )) {
         return Err(UpdateProfileSetUniqueUsernameError::NotAuthorized);
     }
 
     // * cross canister call
     let (response,): (Result<(), SetUniqueUsernameError>,) = call::call(
-        constant::get_user_index_canister_principal_id(),
+        constant::get_user_index_canister_principal_id(known_principal_ids),
         "update_index_with_unique_user_name_corresponding_to_user_principal_id",
-        (new_unique_username.clone(), ic_cdk::caller()),
+        (new_unique_username.clone(), request_maker),
     )
     .await
     .map_err(|_| UpdateProfileSetUniqueUsernameError::UserIndexCrossCanisterCallFailed)?;

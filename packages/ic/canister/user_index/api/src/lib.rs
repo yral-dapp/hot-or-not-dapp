@@ -1,34 +1,33 @@
-use crate::internal::util::access_control::{self as internal_access_control};
-use api::update_user_index_upgrade_user_canisters_with_latest_wasm::UpgradeStatus;
+use std::collections::HashMap;
+
 use candid::{export_service, Principal};
 use ic_stable_memory::{
-    collections::hash_map::SHashMap, s, stable_memory_init, stable_memory_post_upgrade,
-    stable_memory_pre_upgrade, utils::ic_types::SPrincipal,
+    s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
 };
 use shared_utils::{
-    access_control::UserAccessRole, shared_types::user_index::error_types::SetUniqueUsernameError,
+    access_control::UserAccessRole,
+    shared_types::{init_args::UserIndexInitArgs, user_index::error_types::SetUniqueUsernameError},
+};
+use user_index_lib::{
+    model::upgrade_status::UpgradeStatus,
+    util::{access_control, known_principal_ids},
+    AccessControlMap, LastRunUpgradeStatus, MyKnownPrincipalIdsMap,
+    UniqueUserNameToUserPrincipalIdMap, UserPrincipalIdToCanisterIdMap,
 };
 
 mod api;
-mod internal;
 #[cfg(test)]
 mod test;
 
-// * Stable Variables
-type LastRunUpgradeStatus = UpgradeStatus;
-
-// * Stable collections
-type UserPrincipalIdToCanisterIdMap = SHashMap<SPrincipal, SPrincipal>;
-type UniqueUserNameToUserPrincipalIdMap = SHashMap<String, SPrincipal>;
-type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
-
 #[ic_cdk_macros::init]
-fn init() {
+fn init(init_args: UserIndexInitArgs) {
     // * initialize stable memory
     stable_memory_init(true, 0);
 
     // * initialize stable variables
     s! { LastRunUpgradeStatus = LastRunUpgradeStatus::new() }
+    s! { MyKnownPrincipalIdsMap = HashMap::new() }
+    known_principal_ids::save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(init_args);
 
     // * initialize stable collections
     s! { UserPrincipalIdToCanisterIdMap = UserPrincipalIdToCanisterIdMap::new_with_capacity(200_000) };
@@ -37,7 +36,7 @@ fn init() {
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
-    internal_access_control::setup_initial_access_control(&mut user_id_access_control_map);
+    access_control::setup_initial_access_control(&mut user_id_access_control_map);
     s! { AccessControlMap = user_id_access_control_map };
 }
 
@@ -51,6 +50,9 @@ fn pre_upgrade() {
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
+
+    // TODO: remove after first run
+    s! { MyKnownPrincipalIdsMap = HashMap::new() }
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
