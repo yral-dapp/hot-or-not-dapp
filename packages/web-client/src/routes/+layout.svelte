@@ -9,10 +9,11 @@ import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
 import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
-import GoogleAnalytics from '$components/seo/GoogleAnalytics.svelte';
+import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
 import * as Sentry from '@sentry/svelte';
 import { BrowserTracing } from '@sentry/tracing';
+import userProfile from '$stores/userProfile';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
@@ -50,6 +51,15 @@ onMount(async () => {
 {/if}
 
 <GoogleAnalytics />
+
+<svelte:window
+	on:appinstalled="{() => {
+		registerEvent('pwa_installed', {
+			'Display Name': $userProfile.display_name,
+			username: $userProfile.unique_user_name,
+			userId: $userProfile.principal_id
+		});
+	}}" />
 
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
 	<CornerRibbon>Alpha</CornerRibbon>
