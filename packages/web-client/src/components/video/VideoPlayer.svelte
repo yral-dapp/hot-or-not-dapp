@@ -179,7 +179,7 @@ $: if (inView && loaded) {
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
-		src="{src}"
+		src="{inView ? src : ''}"
 		poster="{thumbnail}"
 		class="object-fit absolute z-[3] h-full w-full"></video>
 	<!-- svelte-ignore a11y-media-has-caption -->
@@ -196,7 +196,7 @@ $: if (inView && loaded) {
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{src}">
+		src="{inView ? src : ''}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div
