@@ -37,12 +37,16 @@ jobs:
             ~/.cargo/git/db/
             target/
             .dfx/
-          key: ${{ runner.os }}-testing-environment-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
+      - name: Start local replica
+        run: dfx start --background
       - name: Provision local canister IDs for the canisters
         run: |
           dfx canister create --no-wallet individual_user_template
           dfx canister create --no-wallet user_index
           dfx canister create --no-wallet post_cache
+      - name: Stop local replica
+        run: dfx stop
       - name: Build individual_user_template canister
         run: dfx build individual_user_template
       - name: Build user_index canister

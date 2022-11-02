@@ -37,7 +37,7 @@ jobs:
             ~/.cargo/git/db/
             target/
             .dfx/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-deploy-${{ hashFiles('**/Cargo.lock') }}
       - name: Build individual_user_template canister
         run: dfx build --network ic individual_user_template
       - name: Build user_index canister
