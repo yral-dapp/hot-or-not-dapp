@@ -59,7 +59,8 @@ export async function play() {
 			playPromise = videoEl.play();
 			await playPromise;
 			await videoBgEl.play();
-			if (!isiPhone() && $playerState.initialized && !$playerState.muted) {
+			if (isiPhone()) return;
+			if ($playerState.initialized && !$playerState.muted) {
 				videoEl.muted = $playerState.muted = false;
 			}
 		}
@@ -102,8 +103,10 @@ async function handleClick() {
 			if (paused) {
 				play();
 			} else {
+				console.log('$playerState.muted', $playerState.muted);
 				videoEl.muted = !videoEl.muted;
 				$playerState.muted = videoEl.muted;
+				console.log('$playerState.muted 2', $playerState.muted);
 			}
 		}
 	} catch (e) {
