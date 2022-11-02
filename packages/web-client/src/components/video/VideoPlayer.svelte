@@ -49,6 +49,7 @@ let duration = 0;
 let loaded = false;
 let paused = true;
 let playPromise: Promise<void> | undefined = undefined;
+let tryToStop = true;
 
 export async function play() {
 	try {
@@ -62,8 +63,10 @@ export async function play() {
 				videoEl.muted = $playerState.muted = false;
 			}
 		}
-	} catch (e) {
-		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+	} catch (e: any) {
+		if (!e.toString().includes('The play() request')) {
+			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+		}
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -72,14 +75,24 @@ export async function play() {
 }
 
 export async function stop() {
-	if (videoEl && videoBgEl) {
-		videoEl.currentTime = 0.1;
-		videoBgEl.currentTime = 0.1;
-		if (playPromise) {
-			await playPromise;
+	try {
+		if (videoEl && videoBgEl) {
+			videoEl.currentTime = 0.1;
+			videoBgEl.currentTime = 0.1;
+			if (playPromise) {
+				await playPromise;
+			}
+			videoEl.pause();
+			videoBgEl.pause();
 		}
-		videoEl.pause();
-		videoBgEl.pause();
+	} catch (e: any) {
+		if (tryToStop) {
+			setTimeout(stop, 100);
+			tryToStop = false;
+		}
+		if (!e.toString().includes('The play() request')) {
+			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+		}
 	}
 }
 
