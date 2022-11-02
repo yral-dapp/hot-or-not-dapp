@@ -105,10 +105,8 @@ async function handleClick() {
 			if (paused) {
 				play();
 			} else {
-				console.log('$playerState.muted', $playerState.muted);
 				videoEl.muted = !videoEl.muted;
 				$playerState.muted = videoEl.muted;
-				console.log('$playerState.muted 2', $playerState.muted);
 			}
 		}
 	} catch (e) {
