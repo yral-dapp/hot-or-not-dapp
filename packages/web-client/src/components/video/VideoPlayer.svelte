@@ -112,11 +112,13 @@ async function handleLike() {
 }
 
 async function handleShare() {
-	await navigator.share({
-		title: 'Hot or Not',
-		text: 'Video title',
-		url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
-	});
+	try {
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
+		});
+	} catch (_) {}
 	registerEvent('share_video', {
 		userId: $userProfile.principal_id,
 		'Video Publisher Id': profileLink,

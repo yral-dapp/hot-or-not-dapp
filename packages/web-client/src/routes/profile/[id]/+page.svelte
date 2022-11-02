@@ -47,22 +47,16 @@ $: userId = profile?.username_set
 
 async function showShareDialog() {
 	try {
-		if (!navigator.canShare) {
-			console.error('Browser does not support share dialog');
-			return;
-		}
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
 			url: `https://hotornot.wtf/profile/${userId}`
 		});
-		registerEvent('share_profile', {
-			userId: $userProfile.principal_id,
-			'Profile Id': $page.params.id
-		});
-	} catch (err) {
-		console.error('Cannot open share dialog', err);
-	}
+	} catch (_) {}
+	registerEvent('share_profile', {
+		userId: $userProfile.principal_id,
+		'Profile Id': $page.params.id
+	});
 }
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
