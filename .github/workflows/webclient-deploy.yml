@@ -8,6 +8,10 @@ on:
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
 
+  pull_request:
+    paths:
+      - "packages/web-client/**"
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
