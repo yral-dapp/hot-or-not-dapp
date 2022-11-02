@@ -85,6 +85,7 @@ export async function stop() {
 			videoBgEl.currentTime = 0.1;
 			if (playPromise) {
 				await playPromise;
+				playPromise = undefined;
 			}
 			videoEl.pause();
 			videoBgEl.pause();
