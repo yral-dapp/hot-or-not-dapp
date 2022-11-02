@@ -65,7 +65,8 @@ export async function play() {
 			}
 		}
 	} catch (e: any) {
-		if (!e.toString().includes('The play() request')) {
+		const err = e.toString();
+		if (!err.includes('The play() request') || !err.includes('The request is not allowed')) {
 			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
 		}
 		if (videoEl) {
@@ -91,7 +92,8 @@ export async function stop() {
 			setTimeout(stop, 100);
 			tryToStop = false;
 		}
-		if (!e.toString().includes('The play() request')) {
+		const err = e.toString();
+		if (!err.includes('The play() request') || !err.includes('The request is not allowed')) {
 			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
 		}
 	}
