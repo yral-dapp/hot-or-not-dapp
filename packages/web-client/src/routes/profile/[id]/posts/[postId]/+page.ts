@@ -14,7 +14,6 @@ export const load: PageLoad = async ({ params }) => {
 		const pid = params.postId;
 		const id = params.id;
 		let me = false;
-		console.log('here');
 		if (!pid || isNaN(Number(pid))) {
 			Log({ from: '1 posts/[vid] load', pid, id }, 'warn');
 			throw redirect(307, '/profile');

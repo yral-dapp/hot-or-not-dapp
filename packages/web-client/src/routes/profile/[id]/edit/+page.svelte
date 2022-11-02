@@ -123,7 +123,6 @@ async function saveChanges() {
 
 		displayName = values.name;
 		imgSrc = values.imageSrc;
-		console.log('res', res);
 		if ('Ok' in res) {
 			$userProfile.display_name = res.Ok.display_name[0] || '';
 			$userProfile.profile_picture_url =
