@@ -22,12 +22,32 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
-      - name: Install dependencies
+      - name: Install dependencies & build
         run: npm ci
       - name: Run sync
         run: npm run web-client:sync
       - name: Run svelte-check
         run: npm run web-client:check
+
+  lighthouse-ci:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Install dependencies & build
+        run: |
+          npm install
+          npm run web-client:build:static
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.8.x
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
   playwright-linux:
     timeout-minutes: 60
