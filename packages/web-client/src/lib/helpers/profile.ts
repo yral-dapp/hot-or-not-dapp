@@ -156,10 +156,9 @@ async function populateProfiles(users: Principal[]) {
 		const res = await Promise.all(
 			users.map(async (userId) => {
 				const canId = await getCanisterId(userId.toText());
-				console.log('canId', canId, userId);
 				if (canId) {
 					const r = await individualUser(Principal.from(canId)).get_profile_details();
-					console.log('r', r);
+
 					return {
 						...sanitizeProfile(r, userId.toText()),
 						i_follow: await doIFollowThisUser(userId.toText())

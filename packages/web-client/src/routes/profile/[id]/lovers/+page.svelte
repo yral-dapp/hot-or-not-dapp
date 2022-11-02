@@ -45,8 +45,6 @@ async function loadLovers() {
 			return;
 		}
 
-		console.log('res.livers', res.lovers);
-
 		lovers.push(...res.lovers);
 		lovers = lovers;
 		noMoreLovers = res.noMoreLovers;

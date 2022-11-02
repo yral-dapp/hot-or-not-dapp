@@ -23,8 +23,6 @@ const handler = async (request) => {
 			)
 		).json();
 
-		console.log('mp4 enabled', res);
-
 		if (res && res.result && res.result.default) {
 			return new Response(
 				JSON.stringify({
