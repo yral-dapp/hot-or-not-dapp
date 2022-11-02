@@ -9,6 +9,7 @@
 		"web-client:build": "npm run --prefix ./packages/web-client build",
 		"web-client:build:static": "npm run --prefix ./packages/web-client build:static",
 		"web-client:preview": "npm run --prefix ./packages/web-client preview",
+		"web-client:preview:static": "npm run --prefix ./packages/web-client preview:static",
 		"web-client:dev": "npm run --prefix ./packages/web-client dev",
 		"web-client:test": "npm run --prefix ./packages/web-client test",
 		"web-client:sync": "npm run --prefix ./packages/web-client sync",
