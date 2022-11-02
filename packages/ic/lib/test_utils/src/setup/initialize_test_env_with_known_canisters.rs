@@ -1,14 +1,14 @@
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use ic_state_machine_tests::{CanisterId, CanisterInstallMode, CanisterSettingsArgs, StateMachine};
-use shared_utils::{
-    constant::{POST_CACHE_CANISTER_WASM, USER_INDEX_CANISTER_WASM},
-    shared_types::{
-        init_args::{PostCacheInitArgs, UserIndexInitArgs},
-        known_principal::{KnownPrincipalMap, KnownPrincipalType},
-    },
+use shared_utils::shared_types::{
+    init_args::{PostCacheInitArgs, UserIndexInitArgs},
+    known_principal::{KnownPrincipalMap, KnownPrincipalType},
 };
 
-use super::test_constants::{get_global_super_admin_principal_id, CANISTER_INITIAL_CYCLES};
+use super::test_constants::{
+    get_global_super_admin_principal_id, get_post_cache_canister_wasm,
+    get_user_index_canister_wasm, CANISTER_INITIAL_CYCLES,
+};
 
 pub struct KnownCanisters {
     pub user_index_canister_id: CanisterId,
@@ -61,7 +61,7 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
         .install_wasm_in_mode(
             user_index_canister_id,
             CanisterInstallMode::Install,
-            USER_INDEX_CANISTER_WASM.into(),
+            get_user_index_canister_wasm(),
             candid::encode_one(UserIndexInitArgs {
                 known_principal_ids: known_principal_ids.clone(),
             })
@@ -72,7 +72,7 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
         .install_wasm_in_mode(
             post_cache_canister_id,
             CanisterInstallMode::Install,
-            POST_CACHE_CANISTER_WASM.into(),
+            get_post_cache_canister_wasm(),
             candid::encode_one(PostCacheInitArgs {
                 known_principal_ids,
             })

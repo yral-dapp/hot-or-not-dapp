@@ -54,12 +54,12 @@ pub fn get_user_index_canister_principal_id(well_known_canisters: KnownPrincipal
 }
 
 // * Canister WASMs
-pub const INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM: &[u8] = include_bytes!(
-    "../../../../../target/wasm32-unknown-unknown/release/individual_user_template.wasm"
-);
+// pub const INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM: &[u8] = include_bytes!(
+//     "../../../../../target/wasm32-unknown-unknown/release/individual_user_template.wasm"
+// );
 
-pub const USER_INDEX_CANISTER_WASM: &[u8] =
-    include_bytes!("../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
+// pub const USER_INDEX_CANISTER_WASM: &[u8] =
+//     include_bytes!("../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
 
-pub const POST_CACHE_CANISTER_WASM: &[u8] =
-    include_bytes!("../../../../../target/wasm32-unknown-unknown/release/post_cache.wasm");
+// pub const POST_CACHE_CANISTER_WASM: &[u8] =
+//     include_bytes!("../../../../../target/wasm32-unknown-unknown/release/post_cache.wasm");

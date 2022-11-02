@@ -20,6 +20,8 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
     } = get_initialized_env_with_provisioned_known_canisters(&state_machine);
     let alice_principal_id = get_alice_principal_id();
 
+    println!("🧪 user_index_canister_id: {:?}", user_index_canister_id);
+
     // * Act
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,

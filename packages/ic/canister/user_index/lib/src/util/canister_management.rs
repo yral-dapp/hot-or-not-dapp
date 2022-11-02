@@ -7,13 +7,15 @@ use ic_cdk::api::{
     },
 };
 use ic_stable_memory::s;
-use shared_utils::constant::{
-    get_global_super_admin_principal_id, INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM,
-};
+use shared_utils::constant::get_global_super_admin_principal_id;
 
 use crate::MyKnownPrincipalIdsMap;
 
 use super::known_principal_ids;
+
+const INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM: &[u8] = include_bytes!(
+    "../../../../../../../target/wasm32-unknown-unknown/release/individual_user_template.wasm"
+);
 
 pub async fn create_users_canister(profile_owner: Principal) -> Principal {
     let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
@@ -56,7 +58,7 @@ pub async fn create_users_canister(profile_owner: Principal) -> Principal {
     main::install_code(InstallCodeArgument {
         mode: CanisterInstallMode::Install,
         canister_id,
-        wasm_module: INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM.to_vec(),
+        wasm_module: INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM.into(),
         arg,
     })
     .await
@@ -76,7 +78,7 @@ pub async fn upgrade_individual_user_canister(
     main::install_code(InstallCodeArgument {
         mode: install_mode,
         canister_id,
-        wasm_module: INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM.to_vec(),
+        wasm_module: INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM.into(),
         arg,
     })
     .await
