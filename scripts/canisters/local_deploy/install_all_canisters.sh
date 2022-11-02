@@ -18,8 +18,39 @@ dfx build post_cache
 
 cargo test
 
-dfx canister install user_index
-dfx canister install post_cache
+dfx canister install user_index --argument "(record {
+  known_principal_ids = vec {
+    record {
+      variant { UserIdGlobalSuperAdmin };
+      principal \"$(dfx identity get-principal)\"
+    };
+    record {
+      variant { CanisterIdUserIndex };
+      principal \"$(dfx canister id user_index)\"
+    };
+    record {
+      variant { CanisterIdPostCache };
+      principal \"$(dfx canister id post_cache)\"
+    };
+  }
+})"
+
+dfx canister install post_cache --argument "(record {
+  known_principal_ids = vec {
+    record {
+      variant { UserIdGlobalSuperAdmin };
+      principal \"$(dfx identity get-principal)\"
+    };
+    record {
+      variant { CanisterIdUserIndex };
+      principal \"$(dfx canister id user_index)\"
+    };
+    record {
+      variant { CanisterIdPostCache };
+      principal \"$(dfx canister id post_cache)\"
+    };
+  }
+})"
 
 dfx generate individual_user_template
 dfx generate user_index

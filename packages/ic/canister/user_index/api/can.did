@@ -1,3 +1,11 @@
+type KnownPrincipalType = variant {
+  CanisterIdUserIndex;
+  CanisterIdTopicCacheIndex;
+  CanisterIdRootCanister;
+  CanisterIdPostCache;
+  CanisterIdSNSController;
+  UserIdGlobalSuperAdmin;
+};
 type Result = variant { Ok; Err : UpdateProfileSetUniqueUsernameError };
 type Result_1 = variant { Ok; Err : SetUniqueUsernameError };
 type SetUniqueUsernameError = variant {
@@ -28,7 +36,10 @@ type UserAccessRole = variant {
   CanisterAdmin;
   ProjectCanister;
 };
-service : {
+type UserIndexInitArgs = record {
+  known_principal_ids : vec record { KnownPrincipalType; principal };
+};
+service : (UserIndexInitArgs) -> {
   ask_individual_canisters_to_send_me_their_unique_username_if_set : () -> (
       Result,
     );

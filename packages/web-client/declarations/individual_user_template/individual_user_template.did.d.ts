@@ -25,6 +25,16 @@ export type GetFollowerOrFollowingError = { 'ReachedEndOfItemsList' : null } |
 export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
+export interface IndividualUserTemplateInitArgs {
+  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
+  'profile_owner' : Principal,
+}
+export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdTopicCacheIndex' : null } |
+  { 'CanisterIdRootCanister' : null } |
+  { 'CanisterIdPostCache' : null } |
+  { 'CanisterIdSNSController' : null } |
+  { 'UserIdGlobalSuperAdmin' : null };
 export interface PostDetailsForFrontend {
   'id' : bigint,
   'status' : PostStatus,

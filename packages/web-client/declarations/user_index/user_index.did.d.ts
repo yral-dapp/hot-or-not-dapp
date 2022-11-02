@@ -1,6 +1,12 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdTopicCacheIndex' : null } |
+  { 'CanisterIdRootCanister' : null } |
+  { 'CanisterIdPostCache' : null } |
+  { 'CanisterIdSNSController' : null } |
+  { 'UserIdGlobalSuperAdmin' : null };
 export type Result = { 'Ok' : null } |
   { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type Result_1 = { 'Ok' : null } |
@@ -29,6 +35,9 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |
   { 'ProjectCanister' : null };
+export interface UserIndexInitArgs {
+  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
+}
 export interface _SERVICE {
   'ask_individual_canisters_to_send_me_their_unique_username_if_set' : ActorMethod<
     [],

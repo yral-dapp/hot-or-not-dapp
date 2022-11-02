@@ -24,6 +24,7 @@ mod api;
 mod test;
 
 #[ic_cdk_macros::init]
+#[candid::candid_method(init)]
 fn init(init_args: UserIndexInitArgs) {
     // * initialize stable memory
     stable_memory_init(true, 0);

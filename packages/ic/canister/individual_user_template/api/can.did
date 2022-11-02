@@ -24,6 +24,18 @@ type GetPostsOfUserProfileError = variant {
   InvalidBoundsPassed;
   ExceededMaxNumberOfItemsAllowedInOneRequest;
 };
+type IndividualUserTemplateInitArgs = record {
+  known_principal_ids : vec record { KnownPrincipalType; principal };
+  profile_owner : principal;
+};
+type KnownPrincipalType = variant {
+  CanisterIdUserIndex;
+  CanisterIdTopicCacheIndex;
+  CanisterIdRootCanister;
+  CanisterIdPostCache;
+  CanisterIdSNSController;
+  UserIdGlobalSuperAdmin;
+};
 type PostDetailsForFrontend = record {
   id : nat64;
   status : PostStatus;
@@ -107,7 +119,7 @@ type UserProfileUpdateDetailsFromFrontend = record {
   profile_picture_url : opt text;
   display_name : opt text;
 };
-service : {
+service : (IndividualUserTemplateInitArgs) -> {
   add_post : (PostDetailsFromFrontend) -> (nat64);
   get_following_status_do_i_follow_this_user : (principal) -> (bool) query;
   get_individual_post_details_by_id : (nat64) -> (PostDetailsForFrontend) query;
