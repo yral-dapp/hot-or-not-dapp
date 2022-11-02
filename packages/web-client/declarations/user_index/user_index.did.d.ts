@@ -2,6 +2,8 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export type Result = { 'Ok' : null } |
+  { 'Err' : UpdateProfileSetUniqueUsernameError };
+export type Result_1 = { 'Ok' : null } |
   { 'Err' : SetUniqueUsernameError };
 export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
@@ -10,6 +12,13 @@ export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
+export type UpdateProfileSetUniqueUsernameError = {
+    'UsernameAlreadyTaken' : null
+  } |
+  { 'UserIndexCrossCanisterCallFailed' : null } |
+  { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
+  { 'NotAuthorized' : null } |
+  { 'UserCanisterEntryDoesNotExist' : null };
 export interface UpgradeStatus {
   'version_number' : bigint,
   'last_run_on' : SystemTime,
@@ -21,6 +30,10 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'CanisterAdmin' : null } |
   { 'ProjectCanister' : null };
 export interface _SERVICE {
+  'ask_individual_canisters_to_send_me_their_unique_username_if_set' : ActorMethod<
+    [],
+    Result,
+  >,
   'delete_user_index_reset_user_canisters' : ActorMethod<[], undefined>,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
@@ -39,7 +52,11 @@ export interface _SERVICE {
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
-    Result,
+    Result_1,
+  >,
+  'update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal' : ActorMethod<
+    [string, Principal],
+    Result_1,
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<

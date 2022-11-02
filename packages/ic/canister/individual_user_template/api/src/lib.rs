@@ -14,7 +14,6 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        api_error::UpdateProfileSetUniqueUsernameError,
         post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
@@ -25,7 +24,10 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{init_args::IndividualUserTemplateInitArgs, post::PostDetailsFromFrontend},
+    shared_types::{
+        individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
+        init_args::IndividualUserTemplateInitArgs, post::PostDetailsFromFrontend,
+    },
 };
 
 mod api;

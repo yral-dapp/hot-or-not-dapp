@@ -142,6 +142,10 @@ export interface _SERVICE {
     [UserProfileUpdateDetailsFromFrontend],
     Result_4,
   >,
+  'update_profile_resend_username_to_user_index_canister' : ActorMethod<
+    [],
+    Result_5,
+  >,
   'update_profile_set_unique_username_once' : ActorMethod<[string], Result_5>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<

@@ -190,6 +190,11 @@ export const idlFactory = ({ IDL }) => {
         [Result_4],
         [],
       ),
+    'update_profile_resend_username_to_user_index_canister' : IDL.Func(
+        [],
+        [Result_5],
+        [],
+      ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
         [Result_5],

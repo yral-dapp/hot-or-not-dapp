@@ -14,6 +14,7 @@ pub mod update_post_toggle_like_status_by_caller;
 pub mod update_principals_i_follow_toggle_list_with_principal_specified;
 pub mod update_principals_that_follow_me_toggle_list_with_specified_principal;
 pub mod update_profile_display_details;
+pub mod update_profile_resend_username_to_user_index_canister;
 pub mod update_profile_set_unique_username_once;
 pub mod update_user_add_role;
 pub mod update_user_remove_role;

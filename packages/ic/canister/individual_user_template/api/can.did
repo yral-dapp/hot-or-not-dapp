@@ -132,6 +132,7 @@ service : {
   update_profile_display_details : (UserProfileUpdateDetailsFromFrontend) -> (
       Result_4,
     );
+  update_profile_resend_username_to_user_index_canister : () -> (Result_5);
   update_profile_set_unique_username_once : (text) -> (Result_5);
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();

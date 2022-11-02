@@ -1,13 +1,13 @@
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{
-    model::api_error::UpdateProfileSetUniqueUsernameError, AccessControlMap,
-    MyKnownPrincipalIdsMap, Profile,
-};
+use individual_user_template_lib::{AccessControlMap, MyKnownPrincipalIdsMap, Profile};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     constant,
-    shared_types::user_index::error_types::SetUniqueUsernameError,
+    shared_types::{
+        individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
+        user_index::error_types::SetUniqueUsernameError,
+    },
 };
 
 /// # Access Control
