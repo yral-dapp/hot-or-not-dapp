@@ -36,6 +36,7 @@ export let liked = false;
 export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
+export let nextVideo = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -179,7 +180,7 @@ $: if (inView && loaded) {
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
-		src="{inView ? src : ''}"
+		src="{inView || nextVideo ? src : ''}"
 		poster="{thumbnail}"
 		class="object-fit absolute z-[3] h-full w-full"></video>
 	<!-- svelte-ignore a11y-media-has-caption -->
@@ -196,7 +197,7 @@ $: if (inView && loaded) {
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{inView ? src : ''}">
+		src="{inView || nextVideo ? src : ''}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div

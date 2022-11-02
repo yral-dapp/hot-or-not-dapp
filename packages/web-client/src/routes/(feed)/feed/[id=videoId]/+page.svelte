@@ -241,6 +241,7 @@ onMount(async () => {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
+					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
