@@ -5,7 +5,7 @@ module.exports = {
 			startServerCommand: 'npm run web-client:preview:static'
 		},
 		upload: {
-			target: 'hotornot-lhci-report'
+			target: 'temporary-public-storage'
 		}
 	}
 };
