@@ -24,7 +24,8 @@ import { hideSplashScreen } from '$stores/splashScreen';
 
 export let data: PageData;
 
-const fetchCount = 5;
+const fetchCount = 50;
+const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
@@ -60,11 +61,11 @@ function joinArrayUniquely<T>(a: T[], b: T[]): T[] {
 
 async function fetchNextVideos() {
 	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
-	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
+	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount, 10, true);
+			const res = await getTopPosts(fetchedVideosCount, 50, true);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
