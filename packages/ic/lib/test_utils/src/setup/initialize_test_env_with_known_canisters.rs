@@ -7,7 +7,8 @@ use shared_utils::shared_types::{
 
 use super::test_constants::{
     get_global_super_admin_principal_id, get_post_cache_canister_wasm,
-    get_user_index_canister_wasm, CANISTER_INITIAL_CYCLES,
+    get_user_index_canister_wasm, CANISTER_INITIAL_CYCLES_FOR_INDEX_CANISTERS,
+    CANISTER_INITIAL_CYCLES_FOR_REGULAR_CANISTERS,
 };
 
 pub struct KnownCanisters {
@@ -40,14 +41,14 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
     state_machine: &StateMachine,
 ) -> KnownCanisters {
     let user_index_canister_id = state_machine.create_canister_with_cycles(
-        CANISTER_INITIAL_CYCLES,
+        CANISTER_INITIAL_CYCLES_FOR_INDEX_CANISTERS,
         Some(CanisterSettingsArgs {
             controllers: Some(vec![get_global_super_admin_principal_id()]),
             ..Default::default()
         }),
     );
     let post_cache_canister_id = state_machine.create_canister_with_cycles(
-        CANISTER_INITIAL_CYCLES,
+        CANISTER_INITIAL_CYCLES_FOR_REGULAR_CANISTERS,
         Some(CanisterSettingsArgs {
             controllers: Some(vec![get_global_super_admin_principal_id()]),
             ..Default::default()

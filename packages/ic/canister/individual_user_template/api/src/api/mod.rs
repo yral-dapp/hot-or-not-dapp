@@ -7,6 +7,7 @@ pub mod get_principals_i_follow_paginated;
 pub mod get_principals_that_follow_me_paginated;
 pub mod get_profile_details;
 pub mod get_user_roles;
+pub mod return_cycles_to_user_index_canister;
 pub mod update_post_add_view_details;
 pub mod update_post_as_ready_to_view;
 pub mod update_post_increment_share_count;

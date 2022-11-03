@@ -3,6 +3,7 @@ use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::shared_types::user_index::error_types::SetUniqueUsernameError;
 use user_index_lib::{UniqueUserNameToUserPrincipalIdMap, UserPrincipalIdToCanisterIdMap};
 
+// TODO: remove after done using
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 fn update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal(

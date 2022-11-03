@@ -1,3 +1,18 @@
+type CanisterStatusResponse = record {
+  status : CanisterStatusType;
+  memory_size : nat;
+  cycles : nat;
+  settings : DefiniteCanisterSettings;
+  idle_cycles_burned_per_day : nat;
+  module_hash : opt vec nat8;
+};
+type CanisterStatusType = variant { stopped; stopping; running };
+type DefiniteCanisterSettings = record {
+  freezing_threshold : nat;
+  controllers : vec principal;
+  memory_allocation : nat;
+  compute_allocation : nat;
+};
 type KnownPrincipalType = variant {
   CanisterIdUserIndex;
   CanisterIdTopicCacheIndex;
@@ -44,6 +59,9 @@ service : (UserIndexInitArgs) -> {
       Result,
     );
   delete_user_index_reset_user_canisters : () -> ();
+  get_canister_status_from_management_canister : (principal) -> (
+      CanisterStatusResponse,
+    );
   get_index_details_is_user_name_taken : (text) -> (bool) query;
   get_index_details_last_upgrade_status : () -> (UpgradeStatus) query;
   get_user_canister_id_from_unique_user_name : (text) -> (opt principal) query;
@@ -54,6 +72,7 @@ service : (UserIndexInitArgs) -> {
       principal,
     );
   get_user_roles : (principal) -> (vec UserAccessRole) query;
+  topup_canisters_that_need_it : () -> ();
   update_index_with_unique_user_name_corresponding_to_user_principal_id : (
       text,
       principal,

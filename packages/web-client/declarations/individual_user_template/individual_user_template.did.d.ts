@@ -133,6 +133,7 @@ export interface _SERVICE {
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
     undefined,

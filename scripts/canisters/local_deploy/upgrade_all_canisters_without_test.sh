@@ -10,9 +10,13 @@ dfx build individual_user_template
 dfx build user_index
 dfx build post_cache
 
-dfx canister install user_index --mode upgrade
+dfx canister install user_index --mode upgrade --argument "(record {
+  known_principal_ids = vec {}
+})"
 dfx canister call user_index update_user_index_upgrade_user_canisters_with_latest_wasm
-dfx canister install post_cache --mode upgrade
+dfx canister install post_cache --mode upgrade --argument "(record {
+  known_principal_ids = vec {}
+})"
 
 dfx generate individual_user_template
 dfx generate user_index

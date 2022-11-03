@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use candid::{export_service, Principal};
-use ic_cdk::api::call;
+use ic_cdk::api::management_canister::main::CanisterStatusResponse;
 use ic_stable_memory::{
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
 };
@@ -60,32 +60,9 @@ fn post_upgrade() {
     s! { MyKnownPrincipalIdsMap = HashMap::new() }
 }
 
-#[ic_cdk_macros::update]
-#[candid::candid_method(update)]
-async fn ask_individual_canisters_to_send_me_their_unique_username_if_set(
-) -> Result<(), UpdateProfileSetUniqueUsernameError> {
-    let user_principal_id_to_canister_id_map: UserPrincipalIdToCanisterIdMap =
-        s!(UserPrincipalIdToCanisterIdMap);
-
-    let mut iterator_over_map = user_principal_id_to_canister_id_map.iter();
-
-    while iterator_over_map.has_next() {
-        let (_user_principal_id, user_canister_id) = iterator_over_map.next().unwrap();
-
-        let (_response,): (Result<(), UpdateProfileSetUniqueUsernameError>,) = call::call(
-            user_canister_id.0,
-            "update_profile_resend_username_to_user_index_canister",
-            (),
-        )
-        .await
-        .map_err(|_| UpdateProfileSetUniqueUsernameError::UserIndexCrossCanisterCallFailed)?;
-    }
-
-    Ok(())
-}
-
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
+    // let x: CanisterStatusResponse
     export_service!();
     __export_service()
 }

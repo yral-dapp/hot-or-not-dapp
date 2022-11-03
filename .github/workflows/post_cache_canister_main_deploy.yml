@@ -45,4 +45,4 @@ jobs:
       - name: Build post_cache canister
         run: dfx build --network ic post_cache
       - name: Deploy post_cache canister
-        run: dfx canister --network ic install post_cache --mode upgrade
+        run: dfx canister --network ic install post_cache --mode upgrade --argument "(record { known_principal_ids = vec {} })"

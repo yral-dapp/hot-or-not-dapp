@@ -12,6 +12,7 @@ use shared_utils::{
     },
 };
 
+// TODO: remove after done using
 /// # Access Control
 /// Only the user whose profile details are stored in this canister can update their details.
 #[ic_cdk_macros::update]

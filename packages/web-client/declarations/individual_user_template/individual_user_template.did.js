@@ -173,6 +173,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
+    'return_cycles_to_user_index_canister' : IDL.Func([], [], []),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
         [],

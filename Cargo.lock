@@ -5448,6 +5448,7 @@ dependencies = [
  "ic-state-machine-tests",
  "shared_utils",
  "speedy",
+ "test_utils",
 ]
 
 [[package]]

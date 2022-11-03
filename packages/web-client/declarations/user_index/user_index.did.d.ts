@@ -1,6 +1,23 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export interface CanisterStatusResponse {
+  'status' : CanisterStatusType,
+  'memory_size' : bigint,
+  'cycles' : bigint,
+  'settings' : DefiniteCanisterSettings,
+  'idle_cycles_burned_per_day' : bigint,
+  'module_hash' : [] | [Array<number>],
+}
+export type CanisterStatusType = { 'stopped' : null } |
+  { 'stopping' : null } |
+  { 'running' : null };
+export interface DefiniteCanisterSettings {
+  'freezing_threshold' : bigint,
+  'controllers' : Array<Principal>,
+  'memory_allocation' : bigint,
+  'compute_allocation' : bigint,
+}
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
@@ -44,6 +61,10 @@ export interface _SERVICE {
     Result,
   >,
   'delete_user_index_reset_user_canisters' : ActorMethod<[], undefined>,
+  'get_canister_status_from_management_canister' : ActorMethod<
+    [Principal],
+    CanisterStatusResponse,
+  >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
   'get_user_canister_id_from_unique_user_name' : ActorMethod<
@@ -59,6 +80,7 @@ export interface _SERVICE {
     Principal,
   >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
     Result_1,

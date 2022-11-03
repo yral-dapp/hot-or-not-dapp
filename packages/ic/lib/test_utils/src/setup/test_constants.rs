@@ -1,7 +1,8 @@
 use ic_state_machine_tests::{Cycles, PrincipalId};
 use std::{fs::File, io::Read, path::PathBuf};
 
-pub const CANISTER_INITIAL_CYCLES: Cycles = Cycles::new(20_000_000_000_000); // 20T
+pub const CANISTER_INITIAL_CYCLES_FOR_INDEX_CANISTERS: Cycles = Cycles::new(20_000_000_000_000); // 20T
+pub const CANISTER_INITIAL_CYCLES_FOR_REGULAR_CANISTERS: Cycles = Cycles::new(2_000_000_000_000); // 2T
 
 pub fn get_global_super_admin_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[0])

@@ -51,7 +51,7 @@ pub async fn create_users_canister(profile_owner: Principal) -> Principal {
         .expect("Failed to serialize the install argument.");
 
     ic_cdk::print(format!(
-        "Provisioned canister ID: {:?}",
+        "🥫 Provisioned canister ID: {:?}",
         canister_id.to_text()
     ));
     // * install wasm to provisioned canister

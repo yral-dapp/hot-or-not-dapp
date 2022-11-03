@@ -40,7 +40,7 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() -> UpgradeS
         {
             Ok(_) => {
                 ic_cdk::print(format!(
-                    "Upgrade canister {:?} successfully belonging to user {:?}",
+                    "🥫 Upgrade canister {:?} successfully belonging to user {:?}",
                     value.0.to_text(),
                     key.0.to_text()
                 ));
@@ -49,7 +49,7 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() -> UpgradeS
             }
             Err(_) => {
                 ic_cdk::print(format!(
-                    "Failed to upgrade canister {:?} belonging to user {:?}",
+                    "🥫 Failed to upgrade canister {:?} belonging to user {:?}",
                     value.0.to_text(),
                     key.0.to_text()
                 ));
