@@ -23,6 +23,7 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { initializeAuthClient } from '$lib/helpers/auth';
 
 export let data: PageData;
 let { me, profile } = data;
@@ -104,6 +105,7 @@ onMount(async () => {
 		await updateProfile();
 		profile = $userProfile;
 	} else {
+		await initializeAuthClient();
 		doIFollow = await doIFollowThisUser(profile.principal_id);
 	}
 	registerEvent('view_profile', {
