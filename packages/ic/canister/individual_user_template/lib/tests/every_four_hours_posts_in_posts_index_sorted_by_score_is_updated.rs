@@ -1,34 +1,28 @@
 use candid::Principal;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
-use shared_utils::{
-    constant::DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE,
-    shared_types::post::PostDetailsFromFrontend,
-};
+use shared_utils::shared_types::post::PostDetailsFromFrontend;
 use std::time::Duration;
+use test_utils::setup::{
+    initialize_test_env_with_known_canisters::{
+        get_initialized_env_with_provisioned_known_canisters, KnownCanisters,
+    },
+    test_constants::get_alice_principal_id,
+};
 
 #[test]
 fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_four_hours_score_reduces_owing_to_freshness_component(
 ) {
     // * Arrange
     let state_machine = StateMachine::new();
-    let wasm =
-        include_bytes!("../../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
-    let alice_principal_id = PrincipalId::new_self_authenticating(&[1]);
+    let KnownCanisters {
+        user_index_canister_id,
+        ..
+    } = get_initialized_env_with_provisioned_known_canisters(&state_machine);
+    let alice_principal_id = get_alice_principal_id();
+
+    println!("🧪 user_index_canister_id: {:?}", user_index_canister_id);
 
     // * Act
-    let user_index_canister_id = state_machine
-        .install_canister(wasm.to_vec(), vec![], None)
-        .unwrap();
-    state_machine.add_cycles(
-        user_index_canister_id,
-        DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE as u128,
-    );
-
-    println!(
-        "\n🎉 user_index_canister_id: {:?}\n",
-        user_index_canister_id
-    );
-
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,
@@ -41,11 +35,6 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
         };
         alice_canister_id
     }).unwrap();
-
-    println!(
-        "\n🎉 alice_canister_id: {:?} \n",
-        alice_canister_id.to_text()
-    );
 
     let newly_created_post_id = state_machine
         .execute_ingress_as(
@@ -68,8 +57,6 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
             newly_created_post_id
         })
         .unwrap();
-
-    println!("\n🎉 Post Id: {:?} \n", newly_created_post_id);
 
     let post_score = state_machine
         .query_as(
@@ -107,8 +94,6 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
         })
         .unwrap();
 
-    println!("\n🎉 Post Score: {:?} \n", post_score);
-    println!("\n🎉 Updated Post Score: {:?} \n", updated_post_score);
     // * Assert
     assert!(post_score > updated_post_score);
 }

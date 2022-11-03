@@ -1,36 +1,32 @@
-use access_control::util::setup_initial_access_control;
+use std::collections::HashMap;
+
 use candid::{export_service, Principal};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query};
 use ic_stable_memory::{
-    collections::hash_map::SHashMap, s, stable_memory_init, stable_memory_post_upgrade,
-    stable_memory_pre_upgrade, utils::ic_types::SPrincipal,
+    s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
 };
-use post::TopPostsFetchError;
+use post_cache_lib::{
+    access_control::setup_initial_access_control, model::api_error::TopPostsFetchError,
+    util::known_principal_ids, AccessControlMap, MyKnownPrincipalIdsMap, PostsIndexSortedByScore,
+    PostsIndexSortedByScoreV1,
+};
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+    shared_types::{init_args::PostCacheInitArgs, top_posts::v0::PostScoreIndexItem},
 };
-use std::collections::BTreeSet;
 
-mod access_control;
-mod post;
-mod score_ranking;
+mod api;
 #[cfg(test)]
 mod test;
 
-// * Stable Variables
-
-// * Stable collections
-type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
-type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
-type PostsIndexSortedByScoreV1 = PostScoreIndex;
-
-#[init]
-fn init() {
+#[ic_cdk_macros::init]
+#[candid::candid_method(init)]
+fn init(init_args: PostCacheInitArgs) {
     // * initialize stable memory
     stable_memory_init(true, 0);
 
     // * initialize stable variables
+    s! { MyKnownPrincipalIdsMap = HashMap::new() }
+    known_principal_ids::save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(init_args);
 
     // * initialize stable collections
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
@@ -43,19 +39,22 @@ fn init() {
     s! { AccessControlMap = user_id_access_control_map };
 }
 
-#[pre_upgrade]
+#[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // * save stable variables meta-info
     stable_memory_pre_upgrade();
 }
 
-#[post_upgrade]
+#[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
+
+    // TODO: remove after first run
+    s! { MyKnownPrincipalIdsMap = HashMap::new() }
 }
 
-#[query(name = "__get_candid_interface_tmp_hack")]
+#[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
     export_service!();
     __export_service()

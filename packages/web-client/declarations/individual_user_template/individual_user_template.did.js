@@ -1,4 +1,18 @@
 export const idlFactory = ({ IDL }) => {
+  const KnownPrincipalType = IDL.Variant({
+    'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdTopicCacheIndex' : IDL.Null,
+    'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdPostCache' : IDL.Null,
+    'CanisterIdSNSController' : IDL.Null,
+    'UserIdGlobalSuperAdmin' : IDL.Null,
+  });
+  const IndividualUserTemplateInitArgs = IDL.Record({
+    'known_principal_ids' : IDL.Vec(
+      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    ),
+    'profile_owner' : IDL.Principal,
+  });
   const PostDetailsFromFrontend = IDL.Record({
     'hashtags' : IDL.Vec(IDL.Text),
     'description' : IDL.Text,
@@ -159,6 +173,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
+    'return_cycles_to_user_index_canister' : IDL.Func([], [], []),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
         [],
@@ -190,6 +205,11 @@ export const idlFactory = ({ IDL }) => {
         [Result_4],
         [],
       ),
+    'update_profile_resend_username_to_user_index_canister' : IDL.Func(
+        [],
+        [Result_5],
+        [],
+      ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
         [Result_5],
@@ -203,4 +223,20 @@ export const idlFactory = ({ IDL }) => {
       ),
   });
 };
-export const init = ({ IDL }) => { return []; };
+export const init = ({ IDL }) => {
+  const KnownPrincipalType = IDL.Variant({
+    'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdTopicCacheIndex' : IDL.Null,
+    'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdPostCache' : IDL.Null,
+    'CanisterIdSNSController' : IDL.Null,
+    'UserIdGlobalSuperAdmin' : IDL.Null,
+  });
+  const IndividualUserTemplateInitArgs = IDL.Record({
+    'known_principal_ids' : IDL.Vec(
+      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    ),
+    'profile_owner' : IDL.Principal,
+  });
+  return [IndividualUserTemplateInitArgs];
+};

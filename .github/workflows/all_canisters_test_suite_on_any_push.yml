@@ -4,7 +4,7 @@ on:
     branches-ignore:
       - main
     paths:
-      - 'packages/canisters/**'
+      - 'packages/ic/**'
       - '.github/workflows/all_canisters_test_suite_on_any_push.yml'
 
 jobs:
@@ -37,12 +37,21 @@ jobs:
             ~/.cargo/git/db/
             target/
             .dfx/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
+      - name: Start local replica
+        run: dfx start --background
+      - name: Provision local canister IDs for the canisters
+        run: |
+          dfx canister create --no-wallet individual_user_template
+          dfx canister create --no-wallet user_index
+          dfx canister create --no-wallet post_cache
+      - name: Stop local replica
+        run: dfx stop
       - name: Build individual_user_template canister
-        run: dfx build --network ic individual_user_template
+        run: dfx build individual_user_template
       - name: Build user_index canister
-        run: dfx build --network ic user_index
+        run: dfx build user_index
       - name: Build post_cache canister
-        run: dfx build --network ic post_cache
+        run: dfx build post_cache
       - name: Run canister test suite
         run: cargo test

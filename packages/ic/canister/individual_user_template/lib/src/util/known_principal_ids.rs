@@ -1,0 +1,16 @@
+use ic_stable_memory::s;
+use shared_utils::shared_types::init_args::IndividualUserTemplateInitArgs;
+
+use crate::MyKnownPrincipalIdsMap;
+
+pub fn save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(
+    init_args: &IndividualUserTemplateInitArgs,
+) {
+    let mut my_known_principal_ids_map: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
+
+    for (known_principal_type, principal) in init_args.known_principal_ids.iter() {
+        my_known_principal_ids_map.insert(known_principal_type.clone(), principal.clone());
+    }
+
+    s! { MyKnownPrincipalIdsMap = my_known_principal_ids_map };
+}

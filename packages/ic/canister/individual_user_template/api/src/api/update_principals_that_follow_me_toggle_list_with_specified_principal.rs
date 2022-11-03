@@ -1,7 +1,7 @@
 use candid::{CandidType, Deserialize, Principal};
 use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::PrincipalsThatFollowMe;
+use individual_user_template_lib::{MyKnownPrincipalIdsMap, PrincipalsThatFollowMe};
 use shared_utils::constant;
 
 #[derive(CandidType, Deserialize)]
@@ -21,9 +21,10 @@ async fn update_principals_that_follow_me_toggle_list_with_specified_principal(
     user_principal_id_whos_trying_to_follow_me: Principal,
 ) -> Result<bool, AnotherUserFollowedMeError> {
     let calling_canister_principal = ic_cdk::caller();
+    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
 
     let (user_trying_to_follow_me_canister_id,): (Option<Principal>,) = call::call(
-        constant::get_user_index_canister_principal_id(),
+        constant::get_user_index_canister_principal_id(known_principal_ids),
         "get_user_canister_id_from_user_principal_id",
         (user_principal_id_whos_trying_to_follow_me,),
     )

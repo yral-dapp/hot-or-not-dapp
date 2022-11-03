@@ -3,6 +3,9 @@ members = [
   "packages/ic/canister/individual_user_template/api",
   "packages/ic/canister/individual_user_template/lib",
   "packages/ic/canister/post_cache/api",
+  "packages/ic/canister/post_cache/lib",
   "packages/ic/canister/user_index/api",
+  "packages/ic/canister/user_index/lib",
   "packages/ic/lib/shared_utils",
+  "packages/ic/lib/test_utils",
 ]

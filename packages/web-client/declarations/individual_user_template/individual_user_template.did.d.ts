@@ -25,6 +25,16 @@ export type GetFollowerOrFollowingError = { 'ReachedEndOfItemsList' : null } |
 export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
+export interface IndividualUserTemplateInitArgs {
+  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
+  'profile_owner' : Principal,
+}
+export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdTopicCacheIndex' : null } |
+  { 'CanisterIdRootCanister' : null } |
+  { 'CanisterIdPostCache' : null } |
+  { 'CanisterIdSNSController' : null } |
+  { 'UserIdGlobalSuperAdmin' : null };
 export interface PostDetailsForFrontend {
   'id' : bigint,
   'status' : PostStatus,
@@ -123,6 +133,7 @@ export interface _SERVICE {
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
     undefined,
@@ -141,6 +152,10 @@ export interface _SERVICE {
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
     Result_4,
+  >,
+  'update_profile_resend_username_to_user_index_canister' : ActorMethod<
+    [],
+    Result_5,
   >,
   'update_profile_set_unique_username_once' : ActorMethod<[string], Result_5>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,

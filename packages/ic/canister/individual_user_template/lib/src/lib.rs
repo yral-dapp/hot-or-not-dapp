@@ -5,7 +5,10 @@ use ic_stable_memory::{
 use model::{post::Post, profile::UserProfile, version_details::VersionDetails};
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+    shared_types::{
+        known_principal::KnownPrincipalMap,
+        top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+    },
 };
 use std::collections::BTreeSet;
 
@@ -15,6 +18,7 @@ pub mod util;
 // * Stable Variables
 pub type Profile = UserProfile;
 pub type SVersionDetails = VersionDetails;
+pub type MyKnownPrincipalIdsMap = KnownPrincipalMap;
 
 // * Stable Collections
 pub type AllCreatedPosts = SVec<Post>;

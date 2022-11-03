@@ -1,3 +1,14 @@
+type KnownPrincipalType = variant {
+  CanisterIdUserIndex;
+  CanisterIdTopicCacheIndex;
+  CanisterIdRootCanister;
+  CanisterIdPostCache;
+  CanisterIdSNSController;
+  UserIdGlobalSuperAdmin;
+};
+type PostCacheInitArgs = record {
+  known_principal_ids : vec record { KnownPrincipalType; principal };
+};
 type PostScoreIndexItem = record {
   post_id : nat64;
   score : nat64;
@@ -15,7 +26,7 @@ type UserAccessRole = variant {
   CanisterAdmin;
   ProjectCanister;
 };
-service : {
+service : (PostCacheInitArgs) -> {
   get_top_posts_aggregated_from_canisters_on_this_network : (nat64, nat64) -> (
       Result,
     ) query;

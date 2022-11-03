@@ -1,18 +1,24 @@
-use candid::Principal;
-use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
+use ic_stable_memory::{collections::hash_map::SHashMap, s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::UserAccessRole,
-    constant::{get_global_owner_principal_id, get_post_cache_canister_principal_id},
+    constant::{get_global_super_admin_principal_id, get_post_cache_canister_principal_id},
+    shared_types::{
+        init_args::IndividualUserTemplateInitArgs, known_principal::KnownPrincipalType,
+    },
 };
+
+use crate::MyKnownPrincipalIdsMap;
 
 pub fn setup_initial_access_control(
     user_id_access_control_map: &mut SHashMap<SPrincipal, Vec<UserAccessRole>>,
-    parent_canister_principal_id: Principal,
-    parent_canister_owner_principal_id: Principal,
+    init_args: IndividualUserTemplateInitArgs,
 ) {
+    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
     // * add global owner
     user_id_access_control_map.insert(
-        SPrincipal(get_global_owner_principal_id()),
+        SPrincipal(get_global_super_admin_principal_id(
+            known_principal_ids.clone(),
+        )),
         &vec![
             UserAccessRole::CanisterController,
             UserAccessRole::CanisterAdmin,
@@ -21,7 +27,11 @@ pub fn setup_initial_access_control(
 
     // * add user index parent canister
     user_id_access_control_map.insert(
-        SPrincipal(parent_canister_principal_id),
+        init_args
+            .known_principal_ids
+            .get(&KnownPrincipalType::CanisterIdUserIndex)
+            .expect("Did not find canister ID for user_index canister in init args")
+            .clone(),
         &vec![
             UserAccessRole::CanisterController,
             UserAccessRole::CanisterAdmin,
@@ -31,13 +41,13 @@ pub fn setup_initial_access_control(
 
     // * add user whose profile details are stored in this canister
     user_id_access_control_map.insert(
-        SPrincipal(parent_canister_owner_principal_id),
+        SPrincipal(init_args.profile_owner),
         &vec![UserAccessRole::ProfileOwner],
     );
 
     // * add post_cache canister as a project sibling canister
     user_id_access_control_map.insert(
-        SPrincipal(get_post_cache_canister_principal_id()),
+        SPrincipal(get_post_cache_canister_principal_id(known_principal_ids)),
         &vec![UserAccessRole::ProjectCanister],
     );
 }
