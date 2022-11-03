@@ -1,30 +1,14 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
 
-const projects: PlaywrightTestConfig['projects'] =
-	process.env.runner === 'macos'
-		? [
-				{
-					name: 'webkit',
-					use: {
-						...devices['Desktop Safari']
-					}
-				}
-		  ]
-		: [
-				{
-					name: 'chromium',
-					use: {
-						...devices['Desktop Chrome']
-					}
-				},
-				{
-					name: 'firefox',
-					use: {
-						...devices['Desktop Firefox']
-					}
-				}
-		  ];
+const projects: PlaywrightTestConfig['projects'] = [
+	{
+		name: 'chromium',
+		use: {
+			...devices['Desktop Chrome']
+		}
+	}
+];
 
 const config: PlaywrightTestConfig = {
 	testDir: './tests',
@@ -52,8 +36,8 @@ const config: PlaywrightTestConfig = {
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'npm run preview',
-		port: 4173
+		command: 'npm run dev',
+		port: 5173
 	}
 };
 

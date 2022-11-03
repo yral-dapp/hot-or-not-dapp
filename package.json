@@ -9,6 +9,7 @@
 		"web-client:build": "npm run --prefix ./packages/web-client build",
 		"web-client:build:static": "npm run --prefix ./packages/web-client build:static",
 		"web-client:preview": "npm run --prefix ./packages/web-client preview",
+		"web-client:preview:static": "npm run --prefix ./packages/web-client preview:static",
 		"web-client:dev": "npm run --prefix ./packages/web-client dev",
 		"web-client:test": "npm run --prefix ./packages/web-client test",
 		"web-client:sync": "npm run --prefix ./packages/web-client sync",
@@ -18,16 +19,16 @@
 	},
 	"devDependencies": {
 		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
-		"@types/node": "^18.11.7",
-		"@typescript-eslint/eslint-plugin": "5.41.0",
-		"@typescript-eslint/parser": "5.41.0",
+		"@types/node": "^18.11.9",
+		"@typescript-eslint/eslint-plugin": "5.42.0",
+		"@typescript-eslint/parser": "5.42.0",
 		"eslint": "8.26.0",
 		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-svelte3": "4.0.0",
 		"prettier": "2.7.1",
 		"prettier-plugin-tailwindcss": "0.1.13",
 		"svelte": "3.52.0",
-		"tslib": "2.4.0",
+		"tslib": "2.4.1",
 		"typescript": "4.8.4"
 	}
 }

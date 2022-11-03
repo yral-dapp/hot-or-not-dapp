@@ -142,20 +142,14 @@ async function handleSuccessfulUpload(videoUid: string) {
 }
 
 async function showShareDialog() {
+	const videoLink = getVideoLink();
 	try {
-		if (!navigator.canShare) {
-			Log({ error: 'Browser does not support share dialog', source: '1 showShareDialog' }, 'error');
-			return;
-		}
-		const videoLink = getVideoLink();
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
 			url: 'https://hotornot.wtf/' + videoLink
 		});
-	} catch (err) {
-		Log({ error: 'Could not open share dialog', source: '1 showShareDialog' }, 'error');
-	}
+	} catch (_) {}
 }
 
 function getVideoLink() {

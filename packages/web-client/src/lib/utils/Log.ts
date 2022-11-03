@@ -1,3 +1,5 @@
 export default (data: any, type: 'log' | 'info' | 'warn' | 'error') => {
-	console.log(type, data);
+	if (process.env.NODE_ENV == 'development' || type == 'error') {
+		console[type](type, data);
+	}
 };

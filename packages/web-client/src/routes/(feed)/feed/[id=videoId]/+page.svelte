@@ -24,7 +24,8 @@ import { hideSplashScreen } from '$stores/splashScreen';
 
 export let data: PageData;
 
-const fetchCount = 5;
+const fetchCount = 50;
+const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
@@ -59,13 +60,12 @@ function joinArrayUniquely<T>(a: T[], b: T[]): T[] {
 }
 
 async function fetchNextVideos() {
-	console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
-	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
+	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
+	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
-
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount, 10, true);
+			const res = await getTopPosts(fetchedVideosCount, 50, true);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
@@ -74,13 +74,13 @@ async function fetchNextVideos() {
 
 			fetchedVideosCount = res.from;
 
-			videos = joinArrayUniquely(res.posts, videos);
+			videos = [...videos, ...res.posts];
 
 			if (!res.noMorePosts && res.posts.length == 0) {
 				fetchNextVideos();
 			} else if (res.noMorePosts) {
 				const watchedVideos = await getWatchedVideosFromCache();
-				videos = joinArrayUniquely(watchedVideos, videos);
+				videos = [...videos, ...watchedVideos];
 			}
 
 			noMoreVideos = res.noMorePosts;
