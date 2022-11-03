@@ -23,11 +23,9 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import { initializeAuthClient } from '$lib/helpers/auth';
-import { authState } from '$stores/auth';
 
 export let data: PageData;
-let { me, profile } = data;
+let { me, profile, canId } = data;
 
 let load = {
 	page: true,
@@ -106,10 +104,7 @@ onMount(async () => {
 		await updateProfile();
 		profile = $userProfile;
 	} else {
-		if (!$authState.userCanisterId) {
-			await initializeAuthClient();
-		}
-		doIFollow = await doIFollowThisUser(profile.principal_id);
+		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,

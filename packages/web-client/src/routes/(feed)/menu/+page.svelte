@@ -99,7 +99,7 @@ $: userId = $userProfile.username_set
 					on:keyup
 					on:click="{link.onClick}"
 					href="{link.href}"
-					data-sveltekit-prefetch="{link.href ? true : null}"
+					data-sveltekit-prefetch
 					class="flex items-center justify-between">
 					<div class="flex items-center space-x-4 text-white">
 						<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />
