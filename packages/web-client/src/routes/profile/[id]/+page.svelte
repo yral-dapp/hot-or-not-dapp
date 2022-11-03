@@ -104,7 +104,7 @@ onMount(async () => {
 		await updateProfile();
 		profile = $userProfile;
 	} else {
-		doIFollow = await doIFollowThisUser($page.params.id);
+		doIFollow = await doIFollowThisUser(profile.principal_id);
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
