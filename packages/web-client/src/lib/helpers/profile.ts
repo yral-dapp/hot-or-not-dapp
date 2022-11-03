@@ -174,10 +174,12 @@ async function populateProfiles(users: Principal[]) {
 	}
 }
 
-export async function doIFollowThisUser(userId?: string) {
+export async function doIFollowThisUser(userId?: string, canId?: string | Principal) {
 	if (!userId) return false;
 	const { individualUser } = await import('./backend');
-	return await individualUser().get_following_status_do_i_follow_this_user(Principal.from(userId));
+	return await individualUser(canId).get_following_status_do_i_follow_this_user(
+		Principal.from(userId)
+	);
 }
 
 export async function loveUser(userId: string) {
