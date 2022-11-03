@@ -174,9 +174,9 @@ async function populateProfiles(users: Principal[]) {
 	}
 }
 
-export async function doIFollowThisUser(userId: string) {
-	const { individualUser } = await import('./backend');
+export async function doIFollowThisUser(userId?: string) {
 	if (!userId) return;
+	const { individualUser } = await import('./backend');
 	return await individualUser().get_following_status_do_i_follow_this_user(Principal.from(userId));
 }
 
