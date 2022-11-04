@@ -4,6 +4,7 @@ import { get } from 'svelte/store';
 import { authState, authHelper } from '$stores/auth';
 import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
+import * as Sentry from '@sentry/browser';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
@@ -70,12 +71,15 @@ export async function initializeAuthClient(): Promise<void> {
 
 		await updateUserIndexCanister();
 		await updateProfile();
+		Sentry.setUser({ id: principal?.toText() });
 	} else {
 		authState.set({
 			isLoggedIn: false,
 			idString: principal?.toText(),
 			showLogin: authStateData.showLogin
 		});
+
+		Sentry.setUser(null);
 
 		authHelper.set({
 			client,
