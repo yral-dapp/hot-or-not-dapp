@@ -57,9 +57,13 @@ export async function play() {
 		if (videoEl) {
 			videoEl.currentTime = 0.1;
 			videoBgEl.currentTime = 0.1;
-			playPromise = videoEl.play();
+			playPromise = videoEl.play().catch((e) => {
+				console.log('play1e', e);
+			});
 			await playPromise;
-			await videoBgEl.play();
+			await videoBgEl.play().catch((e) => {
+				console.log('play1bg', e);
+			});
 			if (isiPhone()) return;
 			if ($playerState.initialized && !$playerState.muted) {
 				videoEl.muted = $playerState.muted = false;
