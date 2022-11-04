@@ -23,7 +23,6 @@ import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
-import LogRocket from 'logrocket';
 import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
@@ -72,12 +71,6 @@ async function handleSuccessfulLogin(type: LoginType) {
 		});
 		loading = false;
 		$authState.showLogin = false;
-		if ($userProfile.principal_id) {
-			LogRocket.identify($userProfile.principal_id, {
-				display_name: $userProfile.display_name,
-				username: $userProfile.unique_user_name
-			});
-		}
 	} catch (_) {
 		loading = false;
 		error = 'Something went wrong. Please refresh the page and try login again.';
