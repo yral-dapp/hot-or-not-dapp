@@ -26,7 +26,7 @@ beforeNavigate(({ from, to }) => {
 	$navigateBack = from?.url.pathname ?? null;
 });
 
-onMount(async () => {
+onMount(() => {
 	try {
 		hideSplashScreen(10000);
 		$navigateBack = null;
@@ -39,7 +39,7 @@ onMount(async () => {
 			});
 			Log('Sentry Initialized', 'info');
 		}
-		await initializeAuthClient();
+		initializeAuthClient();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
