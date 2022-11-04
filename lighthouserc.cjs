@@ -2,9 +2,9 @@ module.exports = {
 	ci: {
 		collect: {
 			url: [
-				'http://localhost:4173',
-				'http://localhost:4173/menu',
-				'http://localhost:4173/profile/iancu'
+				'https://harsh-fix-fix-performance-ac.hot-or-not-dapp.pages.dev',
+				'https://harsh-fix-fix-performance-ac.hot-or-not-dapp.pages.dev/menu',
+				'https://harsh-fix-fix-performance-ac.hot-or-not-dapp.pages.dev/profile/iancu'
 			],
 			startServerCommand: 'npm run web-client:preview'
 		},
