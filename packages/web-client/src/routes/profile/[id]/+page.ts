@@ -7,7 +7,6 @@ import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { error, redirect } from '@sveltejs/kit';
 import { get } from 'svelte/store';
-
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
