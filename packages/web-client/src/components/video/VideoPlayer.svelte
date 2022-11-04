@@ -36,6 +36,7 @@ export let liked = false;
 export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
+export let nextVideo = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -56,9 +57,11 @@ export async function play() {
 		if (videoEl) {
 			videoEl.currentTime = 0.1;
 			videoBgEl.currentTime = 0.1;
-			playPromise = videoEl.play();
+			playPromise = videoEl.play().catch((_) => {
+				paused = true;
+			});
 			await playPromise;
-			await videoBgEl.play();
+			await videoBgEl.play().catch((_) => {});
 			if (isiPhone()) return;
 			if ($playerState.initialized && !$playerState.muted) {
 				videoEl.muted = $playerState.muted = false;
@@ -85,6 +88,7 @@ export async function stop() {
 			videoBgEl.currentTime = 0.1;
 			if (playPromise) {
 				await playPromise;
+				playPromise = undefined;
 			}
 			videoEl.pause();
 			videoBgEl.pause();
@@ -178,7 +182,7 @@ $: if (inView && loaded) {
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
-		src="{src}"
+		src="{inView || nextVideo ? src : ''}"
 		poster="{thumbnail}"
 		class="object-fit absolute z-[3] h-full w-full"></video>
 	<!-- svelte-ignore a11y-media-has-caption -->
@@ -195,7 +199,7 @@ $: if (inView && loaded) {
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{src}">
+		src="{inView || nextVideo ? src : ''}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div

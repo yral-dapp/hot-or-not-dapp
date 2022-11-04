@@ -160,10 +160,14 @@ function updateMetadata(video?: PostPopulated) {
 }
 
 const playVideo = debounce(50, async (index: number) => {
-	videoPlayers[currentPlayingIndex]?.stop();
-	videoPlayers[index]?.play();
-	videoPlayers[index + 1]?.stop();
-	currentPlayingIndex = index;
+	try {
+		videoPlayers[currentPlayingIndex]?.stop();
+		videoPlayers[index]?.play();
+		videoPlayers[index + 1]?.stop();
+		currentPlayingIndex = index;
+	} catch (e) {
+		Log({ error: e, index, source: '1 playVideo' }, 'error');
+	}
 });
 
 function updateURL(post?: PostPopulated) {
@@ -237,6 +241,7 @@ onMount(async () => {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
+					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
