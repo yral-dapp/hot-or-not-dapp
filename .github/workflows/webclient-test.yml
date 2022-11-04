@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies & build
         run: |
           npm install
-          npm run web-client:build:static
+          npm run web-client:build
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli
