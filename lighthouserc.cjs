@@ -5,7 +5,8 @@ module.exports = {
 			startServerCommand: 'npm run web-client:preview:static'
 		},
 		upload: {
-			target: 'temporary-public-storage'
+			target: 'filesystem',
+			outputDir: './lhci_report'
 		}
 	}
 };
