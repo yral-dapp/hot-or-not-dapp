@@ -207,7 +207,7 @@ $: if (inView && loaded) {
 			out:fade|local="{{ duration: 100 }}"
 			class="max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
-				<IconButton>
+				<IconButton ariaLabel="Unmute this video">
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
 				</IconButton>
 			</div>
@@ -223,6 +223,7 @@ $: if (inView && loaded) {
 			class="max-w-16 absolute right-4 bottom-20 z-[10]">
 			<div class="flex flex-col space-y-6">
 				<IconButton
+					ariaLabel="Toggle like on this post"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
 						handleLike();
@@ -230,6 +231,7 @@ $: if (inView && loaded) {
 					<HeartIcon filled="{liked}" class="h-8 w-8" />
 				</IconButton>
 				<IconButton
+					ariaLabel="Share this post"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
 						handleShare();
@@ -237,6 +239,7 @@ $: if (inView && loaded) {
 					<ShareMessageIcon class="h-6 w-6" />
 				</IconButton>
 				<IconButton
+					ariaLabel="Check out this post in Hot or Not"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
 					}}"
