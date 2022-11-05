@@ -45,7 +45,7 @@ async function initSentry() {
 
 onMount(() => {
 	try {
-		hideSplashScreen(10000);
+		hideSplashScreen(1000);
 		$navigateBack = null;
 
 		initSentry();
