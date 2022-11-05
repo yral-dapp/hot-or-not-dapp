@@ -35,6 +35,7 @@ async fn topup_canisters_that_need_it() {
         .await
         .unwrap();
 
+        // TODO: Remove this
         ic_cdk::print(format!(
             "🥫 Before recharge, canister {} has {} cycles",
             user_canister_id, response.cycles
@@ -50,6 +51,7 @@ async fn topup_canisters_that_need_it() {
             .await
             .unwrap();
 
+            // TODO: Remove this
             let (response,): (CanisterStatusResponse,) = main::canister_status(CanisterIdRecord {
                 canister_id: user_canister_id.0,
             })
