@@ -1,5 +1,53 @@
 /* Import Kumbh Sans */
-@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;500;600;700&display=swap');
+/* kumbh-sans-regular - latin */
+@font-face {
+	font-family: 'Kumbh Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: url('./fonts/kumbh-sans-v12-latin-regular.eot'); /* IE9 Compat Modes */
+	src: local(''), url('./fonts/kumbh-sans-v12-latin-regular.eot?#iefix') format('embedded-opentype'),
+		/* IE6-IE8 */ url('./fonts/kumbh-sans-v12-latin-regular.woff2') format('woff2'),
+		/* Super Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-regular.woff') format('woff'),
+		/* Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-regular.ttf') format('truetype'),
+		/* Safari, Android, iOS */ url('./fonts/kumbh-sans-v12-latin-regular.svg#KumbhSans')
+			format('svg'); /* Legacy iOS */
+}
+/* kumbh-sans-500 - latin */
+@font-face {
+	font-family: 'Kumbh Sans';
+	font-style: normal;
+	font-weight: 500;
+	src: url('./fonts/kumbh-sans-v12-latin-500.eot'); /* IE9 Compat Modes */
+	src: local(''), url('./fonts/kumbh-sans-v12-latin-500.eot?#iefix') format('embedded-opentype'),
+		/* IE6-IE8 */ url('./fonts/kumbh-sans-v12-latin-500.woff2') format('woff2'),
+		/* Super Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-500.woff') format('woff'),
+		/* Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-500.ttf') format('truetype'),
+		/* Safari, Android, iOS */ url('./fonts/kumbh-sans-v12-latin-500.svg#KumbhSans') format('svg'); /* Legacy iOS */
+}
+/* kumbh-sans-600 - latin */
+@font-face {
+	font-family: 'Kumbh Sans';
+	font-style: normal;
+	font-weight: 600;
+	src: url('./fonts/kumbh-sans-v12-latin-600.eot'); /* IE9 Compat Modes */
+	src: local(''), url('./fonts/kumbh-sans-v12-latin-600.eot?#iefix') format('embedded-opentype'),
+		/* IE6-IE8 */ url('./fonts/kumbh-sans-v12-latin-600.woff2') format('woff2'),
+		/* Super Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-600.woff') format('woff'),
+		/* Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-600.ttf') format('truetype'),
+		/* Safari, Android, iOS */ url('./fonts/kumbh-sans-v12-latin-600.svg#KumbhSans') format('svg'); /* Legacy iOS */
+}
+/* kumbh-sans-700 - latin */
+@font-face {
+	font-family: 'Kumbh Sans';
+	font-style: normal;
+	font-weight: 700;
+	src: url('./fonts/kumbh-sans-v12-latin-700.eot'); /* IE9 Compat Modes */
+	src: local(''), url('./fonts/kumbh-sans-v12-latin-700.eot?#iefix') format('embedded-opentype'),
+		/* IE6-IE8 */ url('./fonts/kumbh-sans-v12-latin-700.woff2') format('woff2'),
+		/* Super Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-700.woff') format('woff'),
+		/* Modern Browsers */ url('./fonts/kumbh-sans-v12-latin-700.ttf') format('truetype'),
+		/* Safari, Android, iOS */ url('./fonts/kumbh-sans-v12-latin-700.svg#KumbhSans') format('svg'); /* Legacy iOS */
+}
 
 @tailwind base;
 @tailwind components;
