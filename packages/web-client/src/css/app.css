@@ -2,7 +2,7 @@
 /* kumbh-sans-regular - latin */
 @font-face {
 	font-family: 'Kumbh Sans';
-	font-style: swap;
+	font-style: normal;
 	font-weight: 400;
 	src: url('./fonts/kumbh-sans-v12-latin-regular.eot'); /* IE9 Compat Modes */
 	src: local(''), url('./fonts/kumbh-sans-v12-latin-regular.eot?#iefix') format('embedded-opentype'),
@@ -15,7 +15,7 @@
 /* kumbh-sans-500 - latin */
 @font-face {
 	font-family: 'Kumbh Sans';
-	font-style: swap;
+	font-style: normal;
 	font-weight: 500;
 	src: url('./fonts/kumbh-sans-v12-latin-500.eot'); /* IE9 Compat Modes */
 	src: local(''), url('./fonts/kumbh-sans-v12-latin-500.eot?#iefix') format('embedded-opentype'),
@@ -27,7 +27,7 @@
 /* kumbh-sans-600 - latin */
 @font-face {
 	font-family: 'Kumbh Sans';
-	font-style: swap;
+	font-style: normal;
 	font-weight: 600;
 	src: url('./fonts/kumbh-sans-v12-latin-600.eot'); /* IE9 Compat Modes */
 	src: local(''), url('./fonts/kumbh-sans-v12-latin-600.eot?#iefix') format('embedded-opentype'),
@@ -39,7 +39,7 @@
 /* kumbh-sans-700 - latin */
 @font-face {
 	font-family: 'Kumbh Sans';
-	font-style: swap;
+	font-style: normal;
 	font-weight: 700;
 	src: url('./fonts/kumbh-sans-v12-latin-700.eot'); /* IE9 Compat Modes */
 	src: local(''), url('./fonts/kumbh-sans-v12-latin-700.eot?#iefix') format('embedded-opentype'),
