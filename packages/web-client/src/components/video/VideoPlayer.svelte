@@ -5,7 +5,6 @@ import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
-import { fade } from 'svelte/transition';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
@@ -20,7 +19,6 @@ import type { Principal } from '@dfinity/principal';
 import { createEventDispatcher } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import { load } from '$routes/(feed)/feed/+page';
 
 export let swiperJs: boolean;
 export let src;
@@ -203,10 +201,7 @@ $: if (inView && loaded) {
 		src="{inView || nextVideo ? src : ''}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
-		<div
-			in:fade|local="{{ duration: 100, delay: 200 }}"
-			out:fade|local="{{ duration: 100 }}"
-			class="max-w-16 pointer-events-none absolute inset-0 z-[5]">
+		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
 				<IconButton ariaLabel="Unmute this video">
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
@@ -217,8 +212,7 @@ $: if (inView && loaded) {
 
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%);"
-		transition:fade|local
-		class="absolute bottom-0 z-[10] block h-64 w-full">
+		class="fade-in absolute bottom-0 z-[10] block h-64 w-full">
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="max-w-16 absolute right-4 bottom-20 z-[10]">
