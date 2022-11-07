@@ -198,8 +198,8 @@ onMount(async () => {
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
-		videos = [(data as any).post, ...videos];
-		await recordView((data as any).post);
+		videos = [data.post, ...videos];
+		await recordView(data.post);
 	}
 	await tick();
 	await fetchNextVideos();
