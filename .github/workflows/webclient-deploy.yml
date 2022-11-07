@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   web-client-deploy-dapp:
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -45,7 +46,9 @@ jobs:
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run web-client:build
-      - uses: cloudflare/wrangler-action@2.0.0
+      - name: Deploy production build
+        id: cf_pages_deploy
+        uses: cloudflare/wrangler-action@2.0.0
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
@@ -53,7 +56,9 @@ jobs:
           command: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-      - uses: cloudflare/wrangler-action@2.0.0
+      - name: Deploy preview build
+        id: cf_pages_deploy
+        uses: cloudflare/wrangler-action@2.0.0
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
@@ -61,3 +66,5 @@ jobs:
           command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+      - name: Echo output
+        run: echo '${{join(steps.cf_pages_deploy.outputs.*, '\n')}}'
