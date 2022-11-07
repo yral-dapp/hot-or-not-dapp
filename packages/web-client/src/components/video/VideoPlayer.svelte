@@ -253,11 +253,11 @@ $: if (inView && loaded) {
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 left-4 z-[9] pr-20">
 			<div class="pointer-events-auto flex space-x-3">
-				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
+				<a href="/profile/{profileLink}" class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
 				<div class="flex flex-col space-y-1 capitalize">
-					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
+					<a href="/profile/{profileLink}">
 						{displayName || generateRandomName('name', createdById)}
 					</a>
 					<div class="flex items-center space-x-1">
