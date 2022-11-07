@@ -7,6 +7,14 @@ on:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/web-client/**"
+      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/webclient-setup/action.yml"
+      - ".github/workflows/webclient-test.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,12 +45,19 @@ jobs:
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run web-client:build
-      - name: Echo
-        run: echo '${{ toJSON(github) }}'
       - uses: cloudflare/wrangler-action@2.0.0
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/web-client/"
           command: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
+        env:
+          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+      - uses: cloudflare/wrangler-action@2.0.0
+        if: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+          workingDirectory: "packages/web-client/"
+          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
