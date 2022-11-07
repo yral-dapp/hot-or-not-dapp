@@ -45,23 +45,17 @@ async function initSentry() {
 
 onMount(() => {
 	try {
-		hideSplashScreen(1000);
+		hideSplashScreen(5000);
+
 		$navigateBack = null;
 
 		initSentry();
-
 		initClient();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
 });
 </script>
-
-{#if $authState.showLogin}
-	<Login />
-{/if}
-
-<GoogleAnalytics />
 
 <svelte:window
 	on:appinstalled="{() => {
@@ -72,7 +66,13 @@ onMount(() => {
 		});
 	}}" />
 
+<GoogleAnalytics />
+<CornerRibbon />
+
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
-	<CornerRibbon>Alpha</CornerRibbon>
 	<slot />
 </div>
+
+{#if $authState.showLogin}
+	<Login />
+{/if}
