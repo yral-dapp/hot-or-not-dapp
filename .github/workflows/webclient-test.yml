@@ -38,6 +38,8 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+      - name: "Echo"
+        run: echo '${{ toJSON(github) }}'
       - name: Install dependencies & build
         run: |
           npm install
