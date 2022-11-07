@@ -20,6 +20,7 @@ import type { Principal } from '@dfinity/principal';
 import { createEventDispatcher } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { load } from '$routes/(feed)/feed/+page';
 
 export let swiperJs: boolean;
 export let src;
@@ -226,7 +227,7 @@ $: if (inView && loaded) {
 					ariaLabel="Toggle like on this post"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
-						handleLike();
+						loaded = !loaded;
 					}}">
 					<HeartIcon filled="{liked}" class="h-8 w-8" />
 				</IconButton>
@@ -272,8 +273,7 @@ $: if (inView && loaded) {
 
 {#if !loaded}
 	<loader
-		transition:fade|local="{{ duration: 300 }}"
-		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
+		class="max-w-16 fade-in pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
 	</loader>
 {/if}
