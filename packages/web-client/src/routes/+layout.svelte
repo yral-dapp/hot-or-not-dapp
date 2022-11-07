@@ -6,7 +6,6 @@ import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
-import CornerRibbon from '$components/corner-ribbon/CornerRibbon.svelte';
 import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
@@ -67,7 +66,11 @@ onMount(() => {
 	}}" />
 
 <GoogleAnalytics />
-<CornerRibbon />
+
+<alpha-ribbon
+	class="pointer-events-none absolute -right-9 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-1 px-2 text-xs font-bold uppercase text-white opacity-60">
+	Alpha
+</alpha-ribbon>
 
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
 	<slot />
