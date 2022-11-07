@@ -47,7 +47,7 @@ jobs:
         uses: ./.github/workflows/webclient-setup
       - run: npm run web-client:build
       - name: Deploy production build
-        id: cf_pages_deploy
+        id: cf_pages_deploy_prod
         uses: cloudflare/wrangler-action@2.0.0
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
@@ -57,7 +57,7 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
       - name: Deploy preview build
-        id: cf_pages_deploy
+        id: cf_pages_deploy_dev
         uses: cloudflare/wrangler-action@2.0.0
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
@@ -66,5 +66,7 @@ jobs:
           command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-      - name: Echo output
-        run: echo '${{join(steps.cf_pages_deploy.outputs.*, '\n')}}'
+      - name: Echo dev output
+        run: echo '${{join(steps.cf_pages_deploy_dev.outputs.*, '\n')}}'
+      - name: Echo prod output
+        run: echo '${{join(steps.cf_pages_deploy_prod.outputs.*, '\n')}}'
