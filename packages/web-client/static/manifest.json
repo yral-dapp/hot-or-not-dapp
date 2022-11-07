@@ -50,18 +50,18 @@
 	"description": "The First App to Host Creative Short Video Challenges - Participate , Speculate, Gain Fame, Earn In Cryptocurrency",
 	"screenshots": [
 		{
-			"src": "/assets/screenshots/0.png",
-			"type": "image/png",
+			"src": "/assets/screenshots/0.jpg",
+			"type": "image/jpeg",
 			"sizes": "780x1688"
 		},
 		{
-			"src": "/assets/screenshots/1.png",
-			"type": "image/png",
+			"src": "/assets/screenshots/1.jpg",
+			"type": "image/jpeg",
 			"sizes": "780x1688"
 		},
 		{
-			"src": "/assets/screenshots/2.png",
-			"type": "image/png",
+			"src": "/assets/screenshots/2.jpg",
+			"type": "image/jpeg",
 			"sizes": "780x1688"
 		}
 	]
