@@ -43,7 +43,7 @@ async function initSentry() {
 }
 
 function registerServiceWorker() {
-	if ('serviceWorker' in navigator) {
+	if ('serviceWorker' in navigator && process.env.NODE_ENV != 'development') {
 		navigator.serviceWorker.register('/service-worker.js');
 	}
 }
