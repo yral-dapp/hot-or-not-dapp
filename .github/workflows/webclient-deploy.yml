@@ -67,8 +67,8 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
       - name: Get preview deployment URL
-        id: cf_preview_deploy
         working-directory: "packages/web-client/"
-        run: grep -o 'http[s]*://[^\\]*' hi.txt
+        run: |
+          echo "PREVIEW_URL=$(grep -o 'http[s]*://[^\\]*' hi.txt)" >> $GITHUB_ENV
       - name: Echo preview URL
-        run: echo ${{steps.cf_preview_deploy.outputs.stdout}}
+        run: echo ${{env.PREVIEW_URL}}
