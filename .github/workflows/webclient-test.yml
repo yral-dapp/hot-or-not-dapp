@@ -59,7 +59,7 @@ jobs:
 
   lighthouse-ci:
     name: Lighthouse
-    needs: ["web-client-deploy-pages"]
+    needs: ["deploy-preview"]
     runs-on: ubuntu-latest
     steps:
       - name: Echo preview URL
