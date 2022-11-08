@@ -30,9 +30,11 @@ jobs:
       - name: Run svelte-check
         run: npm run web-client:check
 
-  web-client-deploy-pages:
+  deploy-preview:
     runs-on: ubuntu-latest
     needs: ["svelte-check"]
+    outputs:
+      previewUrl: ${{ steps.preview-url.outputs.url }}
     steps:
       - uses: actions/checkout@v2
       - name: Set-up env
@@ -48,9 +50,10 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
       - name: Get preview deployment URL
+        id: preview-url
         working-directory: "packages/web-client/"
         run: |
-          echo "PREVIEW_URL=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_ENV
+          echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
       - name: Echo preview URL
         run: echo ${{env.PREVIEW_URL}}
 
@@ -60,12 +63,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo preview URL
-        run: echo ${{env.PREVIEW_URL}}
+        run: echo ${{ needs.deploy-preview.outputs.previewUrl }}
       - uses: actions/checkout@v3
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci_host=${{ env.PREVIEW_URL }} lhci autorun
+          lhci_host=${{ needs.deploy-preview.outputs.previewUrl }} lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - uses: actions/upload-artifact@v3
