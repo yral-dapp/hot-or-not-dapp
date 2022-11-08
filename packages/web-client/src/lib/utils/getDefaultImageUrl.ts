@@ -1,6 +1,7 @@
 import { Principal } from '@dfinity/principal';
 
-const host = 'https://imagedelivery.net/abXI9nS4DYYtyR1yFFtziA';
+export const imageHost = 'https://hotornot.wtf/cdn-cgi/imagedelivery/abXI9nS4DYYtyR1yFFtziA';
+
 const cfAvatarImageIds = [
 	'01452301-3861-4b96-c9ee-b3e443a22300',
 	'3317a9a5-df08-44cd-fc9d-9b5c7066fd00',
@@ -32,5 +33,5 @@ export default (principal?: Principal | string) => {
 		string = Principal.from(principal).toText();
 	}
 	const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0);
-	return `${host}/${cfAvatarImageIds[sum % 20]}/public`;
+	return `${imageHost}/${cfAvatarImageIds[sum % 20]}/public`;
 };
