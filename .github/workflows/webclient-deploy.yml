@@ -58,7 +58,6 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
 
       - name: Deploy preview build
-        id: cf_pages_deploy_dev
         uses: cloudflare/wrangler-action@2.0.0
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
@@ -67,6 +66,9 @@ jobs:
           command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true | tee hi.txt
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-      - name: Echo preview URL
+      - name: Get preview deployment URL
+        id: cf_preview_deploy
         working-directory: "packages/web-client/"
-        run: grep -o 'http[s]*://[^\\]*' hi.txt
+        run: grep -o 'http[s]*://[^\\]*' hi.txt >> $GITHUB_OUTPUT
+      - name: Echo preview URL
+        run: echo ${{steps.cf_preview_deploy.outputs.stdout}}
