@@ -12,7 +12,7 @@ pub enum AnotherUserFollowedMeError {
     FollowersListFull,
 }
 
-// TODO: implement a separate index canister to hold all canisters data
+// TODO: implement a separate membership canister that holds entries for all canisters of this project and perform access control
 /// # Access Control
 /// Only allow calls from canisters of this project
 #[ic_cdk_macros::update]

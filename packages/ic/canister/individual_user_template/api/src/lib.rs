@@ -77,9 +77,6 @@ fn post_upgrade() {
 
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
-
-    // TODO: remove after first run
-    s! { MyKnownPrincipalIdsMap = HashMap::new() }
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

@@ -15,6 +15,7 @@ type DefiniteCanisterSettings = record {
 };
 type KnownPrincipalType = variant {
   CanisterIdUserIndex;
+  CanisterIdProjectMemberIndex;
   CanisterIdTopicCacheIndex;
   CanisterIdRootCanister;
   CanisterIdPostCache;

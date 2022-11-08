@@ -1,22 +1,15 @@
 use std::collections::HashMap;
 
 use candid::{export_service, Principal};
-use ic_cdk::api::management_canister::main::CanisterStatusResponse;
 use ic_stable_memory::{
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
 };
-use shared_utils::{
-    access_control::UserAccessRole,
-    shared_types::{
-        individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
-        init_args::UserIndexInitArgs, user_index::error_types::SetUniqueUsernameError,
-    },
-};
-use user_index_lib::{
-    model::upgrade_status::UpgradeStatus,
+use project_member_index_lib::{
     util::{access_control, known_principal_ids},
-    AccessControlMap, LastRunUpgradeStatus, MyKnownPrincipalIdsMap,
-    UniqueUserNameToUserPrincipalIdMap, UserPrincipalIdToCanisterIdMap,
+    AccessControlMap, MyKnownPrincipalIdsMap,
+};
+use shared_utils::{
+    access_control::UserAccessRole, shared_types::init_args::ProjectMemberIndexInitArgs,
 };
 
 mod api;
@@ -25,18 +18,15 @@ mod test;
 
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]
-fn init(init_args: UserIndexInitArgs) {
+fn init(init_args: ProjectMemberIndexInitArgs) {
     // * initialize stable memory
     stable_memory_init(true, 0);
 
     // * initialize stable variables
-    s! { LastRunUpgradeStatus = LastRunUpgradeStatus::new() }
     s! { MyKnownPrincipalIdsMap = HashMap::new() }
-    known_principal_ids::save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(init_args);
+    known_principal_ids::save_known_principal_ids_from_project_member_index_init_args_to_my_known_principal_ids_map(init_args);
 
     // * initialize stable collections
-    s! { UserPrincipalIdToCanisterIdMap = UserPrincipalIdToCanisterIdMap::new_with_capacity(200_000) };
-    s! { UniqueUserNameToUserPrincipalIdMap = UniqueUserNameToUserPrincipalIdMap::new_with_capacity(100_000) };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
 
     // * initialize access control

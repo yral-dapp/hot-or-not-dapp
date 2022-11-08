@@ -23,6 +23,11 @@ pub struct UserIndexInitArgs {
 }
 
 #[derive(Deserialize, CandidType, Default)]
+pub struct ProjectMemberIndexInitArgs {
+    pub known_principal_ids: KnownPrincipalMap,
+}
+
+#[derive(Deserialize, CandidType, Default)]
 pub struct PostCacheInitArgs {
     pub known_principal_ids: KnownPrincipalMap,
 }

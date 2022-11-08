@@ -30,6 +30,7 @@ export interface IndividualUserTemplateInitArgs {
   'profile_owner' : Principal,
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
   { 'CanisterIdPostCache' : null } |
