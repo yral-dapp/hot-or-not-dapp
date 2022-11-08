@@ -54,16 +54,12 @@ jobs:
         working-directory: "packages/web-client/"
         run: |
           echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
-      - name: Echo preview URL
-        run: echo ${{env.PREVIEW_URL}}
 
   lighthouse-ci:
     name: Lighthouse
     needs: ["deploy-preview"]
     runs-on: ubuntu-latest
     steps:
-      - name: Echo preview URL
-        run: echo ${{ needs.deploy-preview.outputs.previewUrl }}
       - uses: actions/checkout@v3
       - name: run Lighthouse CI
         run: |
