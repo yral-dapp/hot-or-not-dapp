@@ -42,6 +42,12 @@ async function initSentry() {
 	}
 }
 
+function registerServiceWorker() {
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/service-worker.js');
+	}
+}
+
 onMount(() => {
 	try {
 		hideSplashScreen(5000);
@@ -50,6 +56,7 @@ onMount(() => {
 
 		initSentry();
 		initClient();
+		registerServiceWorker();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
