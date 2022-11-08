@@ -69,6 +69,6 @@ jobs:
       - name: Get preview deployment URL
         id: cf_preview_deploy
         working-directory: "packages/web-client/"
-        run: grep -o 'http[s]*://[^\\]*' hi.txt >> $GITHUB_OUTPUT
+        run: grep -o 'http[s]*://[^\\]*' hi.txt
       - name: Echo preview URL
         run: echo ${{steps.cf_preview_deploy.outputs.stdout}}
