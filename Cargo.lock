@@ -2732,9 +2732,9 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-memory"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f975657082f9912a56c52d6c27f2b355d2c3ad376d3fe21332f5898c6f3876a7"
+checksum = "283b1b1a29da267c04c52858fcee5a22de9366dd84b17a3affaf53e5e6d456d2"
 dependencies = [
  "candid",
  "ic-cdk 0.5.7",
@@ -4083,6 +4083,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "project_member_index"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "ic-cdk 0.5.7",
+ "ic-cdk-macros 0.5.7",
+ "ic-stable-memory",
+ "project_member_index_lib",
+ "serde",
+ "shared_utils",
+ "speedy",
+]
+
+[[package]]
+name = "project_member_index_lib"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "ic-cdk 0.5.7",
+ "ic-cdk-macros 0.5.7",
+ "ic-stable-memory",
+ "ic-state-machine-tests",
+ "shared_utils",
+ "speedy",
+ "test_utils",
+]
+
+[[package]]
 name = "prometheus"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4526,18 +4554,18 @@ checksum = "e25dfac463d778e353db5be2449d1cce89bd6fd23c9f1ea21310ce6e5a1b29c4"
 
 [[package]]
 name = "serde"
-version = "1.0.144"
+version = "1.0.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f747710de3dcd43b88c9168773254e809d8ddbdf9653b84e2554ab219f17860"
+checksum = "d193d69bae983fc11a79df82342761dfbf28a99fc8d203dca4c3c1b590948965"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_bytes"
-version = "0.11.6"
+version = "0.11.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "212e73464ebcde48d723aa02eb270ba62eff38a9b732df31f33f1b4e145f3a54"
+checksum = "cfc50e8183eeeb6178dcb167ae34a8051d63535023ae38b5d8d12beae193d37b"
 dependencies = [
  "serde",
 ]
@@ -4554,9 +4582,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.144"
+version = "1.0.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94ed3a816fb1d101812f83e789f888322c34e291f894f19590dc310963e87a00"
+checksum = "4f1d362ca8fc9c3e3a7484440752472d68a6caa98f1ab81d99b5dfe517cec852"
 dependencies = [
  "proc-macro2",
  "quote 1.0.20",

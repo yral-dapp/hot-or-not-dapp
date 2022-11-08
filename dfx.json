@@ -24,6 +24,14 @@
 				"output": "./packages/web-client/declarations/post_cache"
 			}
 		},
+		"project_member_index": {
+			"type": "rust",
+			"package": "project_member_index",
+			"candid": "./packages/ic/canister/project_member_index/api/can.did",
+			"declarations": {
+				"output": "./packages/web-client/declarations/project_member_index"
+			}
+		},
 		"user_index": {
 			"type": "rust",
 			"package": "user_index",

@@ -1,10 +1,11 @@
 use ic_stable_memory::{collections::hash_map::SHashMap, s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::UserAccessRole,
-    constant::{get_global_super_admin_principal_id, get_post_cache_canister_principal_id},
-    shared_types::{
-        init_args::IndividualUserTemplateInitArgs, known_principal::KnownPrincipalType,
+    constant::{
+        get_global_super_admin_principal_id, get_post_cache_canister_principal_id,
+        get_user_index_canister_principal_id,
     },
+    shared_types::init_args::IndividualUserTemplateInitArgs,
 };
 
 use crate::MyKnownPrincipalIdsMap;
@@ -27,11 +28,9 @@ pub fn setup_initial_access_control(
 
     // * add user index parent canister
     user_id_access_control_map.insert(
-        init_args
-            .known_principal_ids
-            .get(&KnownPrincipalType::CanisterIdUserIndex)
-            .expect("Did not find canister ID for user_index canister in init args")
-            .clone(),
+        SPrincipal(get_user_index_canister_principal_id(
+            known_principal_ids.clone(),
+        )),
         &vec![
             UserAccessRole::CanisterController,
             UserAccessRole::CanisterAdmin,
