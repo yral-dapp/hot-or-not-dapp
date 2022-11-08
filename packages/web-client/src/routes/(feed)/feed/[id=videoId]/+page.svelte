@@ -65,7 +65,7 @@ async function fetchNextVideos() {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount, 50, true);
+			const res = await getTopPosts(fetchedVideosCount, fetchCount, true);
 			if (res.error) {
 				//TODO: Handle error
 				loading = false;
@@ -197,9 +197,9 @@ onMount(async () => {
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
-	if ((data as any).post) {
-		videos = [(data as any).post, ...videos];
-		await recordView((data as any).post);
+	if (data.post) {
+		videos = [data.post, ...videos];
+		await recordView(data.post);
 	}
 	await tick();
 	await fetchNextVideos();

@@ -11,6 +11,7 @@ export const load: PageLoad = async ({ params }) => {
 	const { individualUser } = await import('$lib/helpers/backend');
 
 	const r = await individualUser(principal).get_individual_post_details_by_id(postId);
+
 	if (r.video_uid) {
 		return {
 			post: {

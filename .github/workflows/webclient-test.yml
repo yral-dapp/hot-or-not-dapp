@@ -39,10 +39,12 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+      - name: "Echo"
+        run: echo '${{ toJSON(github) }}'
       - name: Install dependencies & build
         run: |
           npm install
-          npm run web-client:build:static
+          npm run web-client:build
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli
@@ -57,7 +59,7 @@ jobs:
           retention-days: 15
 
   playwright-linux:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

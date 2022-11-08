@@ -23,8 +23,6 @@ import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
-import LogRocket from 'logrocket';
-import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
 
@@ -72,12 +70,6 @@ async function handleSuccessfulLogin(type: LoginType) {
 		});
 		loading = false;
 		$authState.showLogin = false;
-		if ($userProfile.principal_id) {
-			LogRocket.identify($userProfile.principal_id, {
-				display_name: $userProfile.display_name,
-				username: $userProfile.unique_user_name
-			});
-		}
 	} catch (_) {
 		loading = false;
 		error = 'Something went wrong. Please refresh the page and try login again.';
@@ -91,7 +83,7 @@ function handleError(type: LoginType, e?: string) {
 }
 </script>
 
-<login transition:fade|local class="absolute z-[100] block h-full w-full bg-black/90 text-white">
+<login class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
 		<span class="text-3xl font-bold">Join Hot or Not</span>
 		<div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
