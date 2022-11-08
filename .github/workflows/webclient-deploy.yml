@@ -48,7 +48,6 @@ jobs:
       - run: npm run web-client:build
 
       - name: Deploy production build
-        id: cf_pages_deploy_prod
         uses: cloudflare/wrangler-action@2.0.0
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
@@ -68,10 +67,6 @@ jobs:
           command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true | tee hi.txt
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-      - name: Echo hi.txt
+      - name: Echo preview URL
         working-directory: "packages/web-client/"
-        run: cat hi.txt
-      - name: Echo dev output
-        run: echo '${{join(steps.cf_pages_deploy_dev.outputs.*, '\n')}}'
-      - name: Echo prod output
-        run: echo '${{join(steps.cf_pages_deploy_prod.outputs.*, '\n')}}'
+        run: grep -o 'http[s]*://[^\\]*' hi.txt
