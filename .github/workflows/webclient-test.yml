@@ -1,7 +1,8 @@
 name: Web-client tests
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
@@ -38,19 +39,27 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+      - name: "Echo"
+        run: echo '${{ toJSON(github) }}'
       - name: Install dependencies & build
         run: |
           npm install
-          npm run web-client:build:static
+          npm run web-client:build
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli
           lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lhci-report
+          path: lhci_report/
+          retention-days: 15
 
   playwright-linux:
-    timeout-minutes: 60
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -112,7 +121,7 @@ jobs:
 
       - name: Upgrade canister
         if: steps.dfx-cache.outputs.cache-hit == 'true'
-        run: ./scripts/canisters/local_deploy/upgrade_all_canisters.sh
+        run: ./scripts/canisters/local_deploy/upgrade_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()

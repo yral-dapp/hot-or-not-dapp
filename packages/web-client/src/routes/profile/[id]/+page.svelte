@@ -25,7 +25,7 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
-let { me, profile } = data;
+let { me, profile, canId } = data;
 
 let load = {
 	page: true,
@@ -104,13 +104,14 @@ onMount(async () => {
 		await updateProfile();
 		profile = $userProfile;
 	} else {
-		doIFollow = await doIFollowThisUser($page.params.id);
+		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
 		'profile Id': $page.params.id
 	});
 	load.page = false;
+	loadPosts();
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>

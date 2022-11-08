@@ -5,9 +5,8 @@ import { sanitizeProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { get } from 'svelte/store';
-
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
@@ -25,12 +24,12 @@ export const load: PageLoad = async ({ params }) => {
 		const canId = await getCanisterId(id);
 		if (!canId) {
 			Log({ from: '1 noCanId' }, 'warn');
-			throw new Error("Couldn't find canister Id");
+			throw error(404, "Couldn't find canister Id");
 		}
 		Log({ canId, from: '0 canId' }, 'info');
 		const individualUser = (await import('$lib/helpers/backend')).individualUser;
 		const fetchedProfile = await individualUser(Principal.from(canId)).get_profile_details();
 		const profile = sanitizeProfile(fetchedProfile, id);
-		return { me: false, profile };
+		return { me: false, profile, canId };
 	}
 };

@@ -1,9 +1,9 @@
 <script lang="ts" context="module">
+import { imageHost } from '$lib/utils/getDefaultImageUrl';
+
 type LoginType = 'nfid' | 'ii';
 const APPLICATION_NAME = encodeURI('Hot or Not');
-const APPLICATION_LOGO_URL = encodeURI(
-	'https://imagedelivery.net/abXI9nS4DYYtyR1yFFtziA/5c66dd44-4bee-47e9-9348-9a20a3358200/public'
-);
+const APPLICATION_LOGO_URL = encodeURI(`${imageHost}/5c66dd44-4bee-47e9-9348-9a20a3358200/public`);
 const NFID_AUTH_URL =
 	'https://nfid.one/authenticate/?applicationName=' +
 	APPLICATION_NAME +
@@ -23,8 +23,6 @@ import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
-import LogRocket from 'logrocket';
-import { fade } from 'svelte/transition';
 
 export let hideNfid = false;
 
@@ -72,12 +70,6 @@ async function handleSuccessfulLogin(type: LoginType) {
 		});
 		loading = false;
 		$authState.showLogin = false;
-		if ($userProfile.principal_id) {
-			LogRocket.identify($userProfile.principal_id, {
-				display_name: $userProfile.display_name,
-				username: $userProfile.unique_user_name
-			});
-		}
 	} catch (_) {
 		loading = false;
 		error = 'Something went wrong. Please refresh the page and try login again.';
@@ -91,7 +83,7 @@ function handleError(type: LoginType, e?: string) {
 }
 </script>
 
-<login transition:fade|local class="absolute z-[100] block h-full w-full bg-black/90 text-white">
+<login class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
 		<span class="text-3xl font-bold">Join Hot or Not</span>
 		<div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
