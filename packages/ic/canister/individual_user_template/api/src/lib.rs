@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 
 use api::{
-    get_posts_of_this_user_profile_with_pagination::GetPostsOfUserProfileError,
-    get_principals_i_follow_paginated::GetFollowerOrFollowingError,
-    update_principals_i_follow_toggle_list_with_principal_specified::FollowAnotherUserProfileError,
-    update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError,
-    update_profile_display_details::UpdateProfileDetailsError,
+    follow::{
+        get_principals_i_follow_paginated::GetFollowerOrFollowingError,
+        update_principals_i_follow_toggle_list_with_principal_specified::FollowAnotherUserProfileError,
+        update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError,
+    },
+    post::get_posts_of_this_user_profile_with_pagination::GetPostsOfUserProfileError,
+    profile::update_profile_display_details::UpdateProfileDetailsError,
 };
 use candid::{export_service, Principal};
 use ic_cdk::api::call;
@@ -81,7 +83,7 @@ fn post_upgrade() {
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
-    // let x: CanisterStatusResponse
+    // let x: UpdateProfileDetailsError
     export_service!();
     __export_service()
 }
