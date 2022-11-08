@@ -21,7 +21,7 @@
 		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
 		"@types/node": "^18.11.9",
 		"@typescript-eslint/eslint-plugin": "5.42.1",
-		"@typescript-eslint/parser": "5.42.0",
+		"@typescript-eslint/parser": "5.42.1",
 		"eslint": "8.27.0",
 		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-svelte3": "4.0.0",
