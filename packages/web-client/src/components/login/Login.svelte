@@ -1,9 +1,9 @@
 <script lang="ts" context="module">
+import { imageHost } from '$lib/utils/getDefaultImageUrl';
+
 type LoginType = 'nfid' | 'ii';
 const APPLICATION_NAME = encodeURI('Hot or Not');
-const APPLICATION_LOGO_URL = encodeURI(
-	'https://imagedelivery.net/abXI9nS4DYYtyR1yFFtziA/5c66dd44-4bee-47e9-9348-9a20a3358200/public'
-);
+const APPLICATION_LOGO_URL = encodeURI(`${imageHost}/5c66dd44-4bee-47e9-9348-9a20a3358200/public`);
 const NFID_AUTH_URL =
 	'https://nfid.one/authenticate/?applicationName=' +
 	APPLICATION_NAME +
