@@ -27,10 +27,10 @@ function initIntersectionObserver() {
 	observer = new IntersectionObserver(
 		async (entries) => {
 			if (entries[0].isIntersecting) {
-				if (intersect && !disabled) {
-					dispatch('intersected');
-				} else {
+				if (!intersect) {
 					observer.disconnect();
+				} else if (!disabled) {
+					dispatch('intersected');
 				}
 			}
 		},
