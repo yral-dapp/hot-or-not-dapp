@@ -10,6 +10,7 @@ import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.
 import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
+import { partytownSnippet } from '@builder.io/partytown/integration';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
