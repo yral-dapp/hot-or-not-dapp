@@ -102,7 +102,7 @@ jobs:
         run: rustup target add wasm32-unknown-unknown
 
       - name: Install DFX
-        run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+        run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 
       - name: Cache .dfx folder
         uses: actions/cache@v3
