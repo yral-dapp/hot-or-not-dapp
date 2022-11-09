@@ -17,3 +17,4 @@ speedy = "0.8.3"
 
 [dev-dependencies]
 ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400" }
+test_utils = { path = "../../../lib/test_utils" }

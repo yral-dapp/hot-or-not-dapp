@@ -37,7 +37,9 @@ jobs:
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run web-client:build
-      - uses: cloudflare/wrangler-action@2.0.0
+
+      - name: Deploy production build
+        uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/web-client/"

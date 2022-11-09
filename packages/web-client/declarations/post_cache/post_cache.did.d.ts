@@ -1,6 +1,16 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdProjectMemberIndex' : null } |
+  { 'CanisterIdTopicCacheIndex' : null } |
+  { 'CanisterIdRootCanister' : null } |
+  { 'CanisterIdPostCache' : null } |
+  { 'CanisterIdSNSController' : null } |
+  { 'UserIdGlobalSuperAdmin' : null };
+export interface PostCacheInitArgs {
+  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
+}
 export interface PostScoreIndexItem {
   'post_id' : bigint,
   'score' : bigint,

@@ -1,4 +1,18 @@
 export const idlFactory = ({ IDL }) => {
+  const KnownPrincipalType = IDL.Variant({
+    'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdProjectMemberIndex' : IDL.Null,
+    'CanisterIdTopicCacheIndex' : IDL.Null,
+    'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdPostCache' : IDL.Null,
+    'CanisterIdSNSController' : IDL.Null,
+    'UserIdGlobalSuperAdmin' : IDL.Null,
+  });
+  const PostCacheInitArgs = IDL.Record({
+    'known_principal_ids' : IDL.Vec(
+      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    ),
+  });
   const PostScoreIndexItem = IDL.Record({
     'post_id' : IDL.Nat64,
     'score' : IDL.Nat64,
@@ -43,4 +57,20 @@ export const idlFactory = ({ IDL }) => {
       ),
   });
 };
-export const init = ({ IDL }) => { return []; };
+export const init = ({ IDL }) => {
+  const KnownPrincipalType = IDL.Variant({
+    'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdProjectMemberIndex' : IDL.Null,
+    'CanisterIdTopicCacheIndex' : IDL.Null,
+    'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdPostCache' : IDL.Null,
+    'CanisterIdSNSController' : IDL.Null,
+    'UserIdGlobalSuperAdmin' : IDL.Null,
+  });
+  const PostCacheInitArgs = IDL.Record({
+    'known_principal_ids' : IDL.Vec(
+      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    ),
+  });
+  return [PostCacheInitArgs];
+};

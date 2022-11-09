@@ -1,4 +1,6 @@
-use crate::{AllCreatedPosts, PostsIndexSortedByScore, PostsIndexSortedByScoreV1};
+use crate::{
+    AllCreatedPosts, MyKnownPrincipalIdsMap, PostsIndexSortedByScore, PostsIndexSortedByScoreV1,
+};
 use ic_cdk::api::call;
 use ic_stable_memory::s;
 use ic_stable_memory::utils::ic_types::SPrincipal;
@@ -38,8 +40,10 @@ pub fn send_top_post_scores_to_post_cache_canister() {
         .cloned()
         .collect();
 
+    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
+
     let _ = call::notify(
-        constant::get_post_cache_canister_principal_id(),
+        constant::get_post_cache_canister_principal_id(known_principal_ids),
         "receive_top_posts_from_publishing_canister",
         (top_post_scores,),
     );

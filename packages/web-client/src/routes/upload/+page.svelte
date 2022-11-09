@@ -285,9 +285,7 @@ const checkWhichEl = debounce(500, () => {
 		const filterEl = filtersEl.children[i].getBoundingClientRect();
 		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
 			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
-
 			selectedFilter = filterElSelected ?? 'clear';
-			console.log(selectedFilter);
 			break;
 		}
 	}

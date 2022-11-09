@@ -25,7 +25,7 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 export let data: PageData;
-let { me, profile } = data;
+let { me, profile, canId } = data;
 
 let load = {
 	page: true,
@@ -47,22 +47,16 @@ $: userId = profile?.username_set
 
 async function showShareDialog() {
 	try {
-		if (!navigator.canShare) {
-			console.error('Browser does not support share dialog');
-			return;
-		}
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Video title',
 			url: `https://hotornot.wtf/profile/${userId}`
 		});
-		registerEvent('share_profile', {
-			userId: $userProfile.principal_id,
-			'Profile Id': $page.params.id
-		});
-	} catch (err) {
-		console.error('Cannot open share dialog', err);
-	}
+	} catch (_) {}
+	registerEvent('share_profile', {
+		userId: $userProfile.principal_id,
+		'Profile Id': $page.params.id
+	});
 }
 
 let selectedTab: 'posts' | 'trophy' = 'posts';
@@ -110,13 +104,14 @@ onMount(async () => {
 		await updateProfile();
 		profile = $userProfile;
 	} else {
-		doIFollow = await doIFollowThisUser($page.params.id);
+		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
 		'profile Id': $page.params.id
 	});
 	load.page = false;
+	loadPosts();
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>

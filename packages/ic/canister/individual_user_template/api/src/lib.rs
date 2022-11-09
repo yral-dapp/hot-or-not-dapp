@@ -1,10 +1,13 @@
+use std::collections::HashMap;
+
 use api::{
-    get_posts_of_this_user_profile_with_pagination::GetPostsOfUserProfileError,
-    get_principals_i_follow_paginated::GetFollowerOrFollowingError,
-    update_principals_i_follow_toggle_list_with_principal_specified::FollowAnotherUserProfileError,
-    update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError,
-    update_profile_display_details::UpdateProfileDetailsError,
-    update_profile_set_unique_username_once::UpdateProfileSetUniqueUsernameError,
+    follow::{
+        get_principals_i_follow_paginated::GetFollowerOrFollowingError,
+        update_principals_i_follow_toggle_list_with_principal_specified::FollowAnotherUserProfileError,
+        update_principals_that_follow_me_toggle_list_with_specified_principal::AnotherUserFollowedMeError,
+    },
+    post::get_posts_of_this_user_profile_with_pagination::GetPostsOfUserProfileError,
+    profile::update_profile_display_details::UpdateProfileDetailsError,
 };
 use candid::{export_service, Principal};
 use ic_cdk::api::call;
@@ -15,26 +18,38 @@ use individual_user_template_lib::{
     model::{
         post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
+        token::UserAccountTokenDetails,
         version_details::VersionDetails,
     },
-    util::{access_control, periodic_update},
-    AccessControlMap, AllCreatedPosts, PostsIndexSortedByScore, PostsIndexSortedByScoreV1,
-    PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
+    util::{access_control, known_principal_ids, periodic_update},
+    AccessControlMap, AllCreatedPosts, MyKnownPrincipalIdsMap, PostsIndexSortedByScore,
+    PostsIndexSortedByScoreV1, PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
+    TokenDetails,
 };
-use shared_utils::{access_control::UserAccessRole, shared_types::post::PostDetailsFromFrontend};
+use shared_utils::{
+    access_control::UserAccessRole,
+    shared_types::{
+        individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
+        init_args::IndividualUserTemplateInitArgs, post::PostDetailsFromFrontend,
+    },
+};
 
 mod api;
 #[cfg(test)]
 mod test;
 
 #[ic_cdk_macros::init]
-fn init() {
+#[candid::candid_method(init)]
+fn init(init_args: IndividualUserTemplateInitArgs) {
     // * initialize stable memory
     stable_memory_init(true, 0);
 
     // * initialize stable variables
-    s! { Profile = Profile::new(call::arg_data::<(Principal, Principal)>().1) };
+    s! { Profile = Profile::new(init_args.profile_owner) };
     s! { SVersionDetails = VersionDetails::new() };
+    s! { MyKnownPrincipalIdsMap = HashMap::new() }
+    known_principal_ids::save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(&init_args);
+    s! { TokenDetails = UserAccountTokenDetails::default() };
 
     // * initialize stable collections
     s! { AllCreatedPosts = AllCreatedPosts::new() };
@@ -46,11 +61,7 @@ fn init() {
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
-    access_control::setup_initial_access_control(
-        &mut user_id_access_control_map,
-        call::arg_data::<(Principal, Principal)>().0,
-        call::arg_data::<(Principal, Principal)>().1,
-    );
+    access_control::setup_initial_access_control(&mut user_id_access_control_map, init_args);
     s! { AccessControlMap = user_id_access_control_map };
 
     // * initialize periodic update
@@ -72,12 +83,13 @@ fn post_upgrade() {
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
 
-    // TODO: remove after this run
-    periodic_update::update_post_scores_every_hour();
+    // TODO: remove after this deploy
+    s! { TokenDetails = UserAccountTokenDetails::default() };
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
+    // let x: UpdateProfileDetailsError
     export_service!();
     __export_service()
 }

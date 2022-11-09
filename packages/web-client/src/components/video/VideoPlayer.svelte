@@ -5,7 +5,6 @@ import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
-import { fade } from 'svelte/transition';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
@@ -36,6 +35,7 @@ export let liked = false;
 export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
+export let nextVideo = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -49,21 +49,30 @@ let duration = 0;
 let loaded = false;
 let paused = true;
 let playPromise: Promise<void> | undefined = undefined;
+let tryToStop = true;
 
 export async function play() {
 	try {
 		if (videoEl) {
 			videoEl.currentTime = 0.1;
 			videoBgEl.currentTime = 0.1;
-			playPromise = videoEl.play();
+			playPromise = videoEl.play().catch((_) => {
+				paused = true;
+			});
 			await playPromise;
-			await videoBgEl.play();
-			if (!isiPhone() && $playerState.initialized && !$playerState.muted) {
+			await videoBgEl.play().catch((_) => {});
+			if (isiPhone()) return;
+			if ($playerState.initialized && !$playerState.muted) {
 				videoEl.muted = $playerState.muted = false;
 			}
 		}
-	} catch (e) {
-		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+	} catch (e: any) {
+		const err = e.toString();
+		const ignoreError =
+			err.includes('The play() request') || err.includes('The request is not allowed');
+		if (!ignoreError) {
+			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+		}
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -72,14 +81,28 @@ export async function play() {
 }
 
 export async function stop() {
-	if (videoEl && videoBgEl) {
-		videoEl.currentTime = 0.1;
-		videoBgEl.currentTime = 0.1;
-		if (playPromise) {
-			await playPromise;
+	try {
+		if (videoEl && videoBgEl) {
+			videoEl.currentTime = 0.1;
+			videoBgEl.currentTime = 0.1;
+			if (playPromise) {
+				await playPromise;
+				playPromise = undefined;
+			}
+			videoEl.pause();
+			videoBgEl.pause();
 		}
-		videoEl.pause();
-		videoBgEl.pause();
+	} catch (e: any) {
+		if (tryToStop) {
+			setTimeout(stop, 100);
+			tryToStop = false;
+		}
+		const err = e.toString();
+		const ignoreError =
+			err.includes('The play() request') || err.includes('The request is not allowed');
+		if (!ignoreError) {
+			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+		}
 	}
 }
 
@@ -112,11 +135,13 @@ async function handleLike() {
 }
 
 async function handleShare() {
-	await navigator.share({
-		title: 'Hot or Not',
-		text: 'Video title',
-		url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
-	});
+	try {
+		await navigator.share({
+			title: 'Hot or Not',
+			text: 'Video title',
+			url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
+		});
+	} catch (_) {}
 	registerEvent('share_video', {
 		userId: $userProfile.principal_id,
 		'Video Publisher Id': profileLink,
@@ -156,7 +181,7 @@ $: if (inView && loaded) {
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
-		src="{src}"
+		src="{inView || nextVideo ? src : ''}"
 		poster="{thumbnail}"
 		class="object-fit absolute z-[3] h-full w-full"></video>
 	<!-- svelte-ignore a11y-media-has-caption -->
@@ -173,15 +198,12 @@ $: if (inView && loaded) {
 		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{src}">
+		src="{inView || nextVideo ? src : ''}">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
-		<div
-			in:fade|local="{{ duration: 100, delay: 200 }}"
-			out:fade|local="{{ duration: 100 }}"
-			class="max-w-16 pointer-events-none absolute inset-0 z-[5]">
+		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
-				<IconButton>
+				<IconButton ariaLabel="Unmute this video">
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
 				</IconButton>
 			</div>
@@ -190,13 +212,13 @@ $: if (inView && loaded) {
 
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%);"
-		transition:fade|local
-		class="absolute bottom-0 z-[10] block h-64 w-full">
+		class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-64 w-full">
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
-			class="max-w-16 absolute right-4 bottom-20 z-[10]">
+			class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
 			<div class="flex flex-col space-y-6">
 				<IconButton
+					ariaLabel="Toggle like on this post"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
 						handleLike();
@@ -204,6 +226,7 @@ $: if (inView && loaded) {
 					<HeartIcon filled="{liked}" class="h-8 w-8" />
 				</IconButton>
 				<IconButton
+					ariaLabel="Share this post"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
 						handleShare();
@@ -211,6 +234,7 @@ $: if (inView && loaded) {
 					<ShareMessageIcon class="h-6 w-6" />
 				</IconButton>
 				<IconButton
+					ariaLabel="Check out this post in Hot or Not"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
 					}}"
@@ -224,11 +248,11 @@ $: if (inView && loaded) {
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 left-4 z-[9] pr-20">
 			<div class="pointer-events-auto flex space-x-3">
-				<a href="/profile/{profileLink}" data-sveltekit-prefetch class="h-12 w-12 shrink-0">
+				<a href="/profile/{profileLink}" class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>
 				<div class="flex flex-col space-y-1 capitalize">
-					<a href="/profile/{profileLink}" data-sveltekit-prefetch>
+					<a href="/profile/{profileLink}">
 						{displayName || generateRandomName('name', createdById)}
 					</a>
 					<div class="flex items-center space-x-1">
@@ -243,8 +267,7 @@ $: if (inView && loaded) {
 
 {#if !loaded}
 	<loader
-		transition:fade|local="{{ duration: 300 }}"
-		class="max-w-16 pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
+		class="max-w-16 fade-in pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
 	</loader>
 {/if}

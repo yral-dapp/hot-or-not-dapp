@@ -3,15 +3,16 @@ import { page } from '$app/stores';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import Selector from '$components/home/Selector.svelte';
+import type { LayoutData } from './$types';
 
-$: path = $page.url.pathname;
+export let data: LayoutData;
 </script>
 
 <HomeLayout>
 	<svelte:fragment slot="top">
-		{#if path.includes('feed') || path.includes('hotornot')}
-			<Selector selected="{path.includes('feed') ? 'videos' : 'hot-or-not'}" />
-		{:else if path.includes('menu')}
+		{#if data.path.includes('feed') || data.path.includes('hotornot')}
+			<Selector selected="{data.path.includes('feed') ? 'videos' : 'hot-or-not'}" />
+		{:else if data.path.includes('menu')}
 			<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
 				Menu
 			</div>

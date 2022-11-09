@@ -43,7 +43,7 @@ afterNavigate(({ to }) => {
 </script>
 
 <svelte:head>
-	<script async src="https://www.googletagmanager.com/gtag/js"></script>
+	<script async defer src="https://www.googletagmanager.com/gtag/js"></script>
 	<script>
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {

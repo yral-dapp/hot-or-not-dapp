@@ -24,7 +24,8 @@ import { hideSplashScreen } from '$stores/splashScreen';
 
 export let data: PageData;
 
-const fetchCount = 5;
+const fetchCount = 50;
+const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
@@ -59,15 +60,14 @@ function joinArrayUniquely<T>(a: T[], b: T[]): T[] {
 }
 
 async function fetchNextVideos() {
-	console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
-	if (!noMoreVideos && videos.length - currentVideoIndex < fetchCount) {
+	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
+	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
-
 			loading = true;
-			const res = await getTopPosts(fetchedVideosCount, 10, true);
+			const res = await getTopPosts(fetchedVideosCount, fetchCount, true);
 			if (res.error) {
-				//TODO: Handle error
+				// TODO: Handle error
 				loading = false;
 				return;
 			}
@@ -160,10 +160,14 @@ function updateMetadata(video?: PostPopulated) {
 }
 
 const playVideo = debounce(50, async (index: number) => {
-	videoPlayers[currentPlayingIndex]?.stop();
-	videoPlayers[index]?.play();
-	videoPlayers[index + 1]?.stop();
-	currentPlayingIndex = index;
+	try {
+		videoPlayers[currentPlayingIndex]?.stop();
+		videoPlayers[index]?.play();
+		videoPlayers[index + 1]?.stop();
+		currentPlayingIndex = index;
+	} catch (e) {
+		Log({ error: e, index, source: '1 playVideo' }, 'error');
+	}
 });
 
 function updateURL(post?: PostPopulated) {
@@ -193,9 +197,9 @@ onMount(async () => {
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
-	if ((data as any).post) {
-		videos = [(data as any).post, ...videos];
-		await recordView((data as any).post);
+	if (data.post) {
+		videos = [data.post, ...videos];
+		await recordView(data.post);
 	}
 	await tick();
 	await fetchNextVideos();
@@ -237,6 +241,7 @@ onMount(async () => {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
+					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
