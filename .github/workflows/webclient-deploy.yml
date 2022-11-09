@@ -7,14 +7,6 @@ on:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "packages/web-client/**"
-      - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
-      - ".github/workflows/webclient-test.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -22,7 +14,6 @@ concurrency:
 
 jobs:
   web-client-deploy-dapp:
-    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -49,26 +40,9 @@ jobs:
 
       - name: Deploy production build
         uses: cloudflare/wrangler-action@2.0.0
-        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/web-client/"
           command: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-
-      - name: Deploy preview build
-        uses: cloudflare/wrangler-action@2.0.0
-        if: ${{ github.ref != 'refs/heads/main' }}
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: "packages/web-client/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true | tee hi.txt
-        env:
-          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-      - name: Get preview deployment URL
-        working-directory: "packages/web-client/"
-        run: |
-          echo "PREVIEW_URL=$(grep -o 'http[s]*://[^\\]*' hi.txt)" >> $GITHUB_ENV
-      - name: Echo preview URL
-        run: echo ${{env.PREVIEW_URL}}
