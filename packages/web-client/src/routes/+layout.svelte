@@ -10,18 +10,10 @@ import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
-import PartyTown from '$components/partytown/PartyTown.svelte';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
-
-beforeNavigate(({ from, to }) => {
-	if (
-		ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
-		ignoredPaths.some((path) => to?.url.pathname.includes(path))
-	)
-		return;
-	$navigateBack = from?.url.pathname ?? null;
-});
+let loadPartytown = false;
+let PartyTown: any;
 
 async function initClient() {
 	const { Buffer } = await import('buffer'); // @dfinity/agent requires this
@@ -31,36 +23,53 @@ async function initClient() {
 }
 
 async function initSentry() {
+	if (process.env.NODE_ENV == 'development') return;
+
 	const Sentry = await import('@sentry/svelte');
 
-	if (process.env.NODE_ENV != 'development') {
-		Sentry.init({
-			dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-			integrations: [new BrowserTracing()],
-			tracesSampleRate: 1.0
-		});
-		Log('Sentry Initialized', 'info');
-	}
+	Sentry.init({
+		dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
+		integrations: [new BrowserTracing()],
+		tracesSampleRate: 1.0
+	});
+	Log('Sentry Initialized', 'info');
 }
 
 function registerServiceWorker() {
-	if ('serviceWorker' in navigator && process.env.NODE_ENV != 'development') {
+	if (process.env.NODE_ENV == 'development') return;
+
+	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/service-worker.js');
 	}
+}
+
+async function initPartyTown() {
+	if (process.env.NODE_ENV == 'development') return;
+
+	PartyTown = await (await import('$components/partytown/PartyTown.svelte')).default;
+	loadPartytown = true;
 }
 
 onMount(() => {
 	try {
 		hideSplashScreen(5000);
-
 		$navigateBack = null;
-
 		initSentry();
 		initClient();
 		registerServiceWorker();
+		initPartyTown();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
+});
+
+beforeNavigate(({ from, to }) => {
+	if (
+		ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
+		ignoredPaths.some((path) => to?.url.pathname.includes(path))
+	)
+		return;
+	$navigateBack = from?.url.pathname ?? null;
 });
 </script>
 
@@ -73,7 +82,9 @@ onMount(() => {
 		});
 	}}" />
 
-<PartyTown />
+{#if loadPartytown}
+	<svelte:component this="{PartyTown}" />
+{/if}
 
 <alpha-ribbon
 	class="pointer-events-none absolute -right-9 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-1 px-2 text-xs font-bold uppercase text-white opacity-60">
