@@ -212,16 +212,16 @@ $: if (inView && loaded) {
 
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%);"
-		class="fade-in absolute bottom-0 z-[10] block h-64 w-full">
+		class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-64 w-full">
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
-			class="max-w-16 absolute right-4 bottom-20 z-[10]">
+			class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
 			<div class="flex flex-col space-y-6">
 				<IconButton
 					ariaLabel="Toggle like on this post"
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
-						loaded = !loaded;
+						handleLike();
 					}}">
 					<HeartIcon filled="{liked}" class="h-8 w-8" />
 				</IconButton>
