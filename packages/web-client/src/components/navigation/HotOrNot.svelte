@@ -3,12 +3,23 @@ import IconButton from '$components/button/IconButton.svelte';
 import BetCoinIcon from '$components/icons/BetCoinIcon.svelte';
 import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte';
 import HotIcon from '$components/icons/HotIcon.svelte';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import NotIcon from '$components/icons/NotIcon.svelte';
 import c from 'clsx';
 
 export let tutorialMode = false;
 export let betPlaced: false | 'hot' | 'not' = false;
 export let coinsBet = 10;
+
+async function placeBet(bet: 'hot' | 'not') {
+	loading = true;
+	setTimeout(() => {
+		betPlaced = bet;
+		loading = false;
+	}, 2000);
+}
+
+let loading = false;
 
 function increaseBet() {
 	if (coinsBet == 10) coinsBet = 50;
@@ -66,11 +77,15 @@ function toggleBet() {
 			class="relative h-20 w-20 select-none">
 			<BetCoinIcon class="h-20" />
 			<div class="absolute inset-0 flex select-none items-center justify-center">
-				<span
-					style="text-shadow: 3px 3px 0 #EA9C00;"
-					class="select-none text-3xl font-extrabold text-[#FFCC00]">
-					{coinsBet}
-				</span>
+				{#if loading}
+					<LoadingIcon class="h-8 w-8 animate-spin" />
+				{:else}
+					<span
+						style="text-shadow: 3px 3px 0 #EA9C00;"
+						class="select-none text-3xl font-extrabold text-[#FFCC00]">
+						{coinsBet}
+					</span>
+				{/if}
 			</div>
 		</button>
 		<IconButton
@@ -91,6 +106,7 @@ function toggleBet() {
 			disabled="{tutorialMode}"
 			on:click="{(e) => {
 				e.stopImmediatePropagation();
+				placeBet('hot');
 				betPlaced = 'hot';
 			}}">
 			<HotIcon class="h-24" />
