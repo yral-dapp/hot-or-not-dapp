@@ -23,7 +23,7 @@ pub fn get_global_super_admin_principal_id(well_known_canisters: KnownPrincipalM
         _ => {
             well_known_canisters
                 .get(&KnownPrincipalType::UserIdGlobalSuperAdmin)
-                .expect("USER_ID_global_super_admin not found")
+                .expect("USER ID for global super admin not found")
                 .0
         }
     }
@@ -36,7 +36,7 @@ pub fn get_post_cache_canister_principal_id(well_known_canisters: KnownPrincipal
         _ => {
             well_known_canisters
                 .get(&KnownPrincipalType::CanisterIdPostCache)
-                .expect("USER_ID_global_super_admin not found")
+                .expect("Canister Id for post cache canister not found")
                 .0
         }
     }
@@ -49,7 +49,22 @@ pub fn get_user_index_canister_principal_id(well_known_canisters: KnownPrincipal
         _ => {
             well_known_canisters
                 .get(&KnownPrincipalType::CanisterIdUserIndex)
-                .expect("USER_ID_global_super_admin not found")
+                .expect("Canister Id for user index canister not found")
+                .0
+        }
+    }
+}
+
+// * project_member_index canister Principal ID
+pub fn get_project_member_index_canister_principal_id(
+    well_known_canisters: KnownPrincipalMap,
+) -> Principal {
+    match option_env!("DFX_NETWORK") {
+        Some("ic") => Principal::from_text("efsfj-sqaaa-aaaap-qatwa-cai").unwrap(),
+        _ => {
+            well_known_canisters
+                .get(&KnownPrincipalType::CanisterIdProjectMemberIndex)
+                .expect("Canister Id for project member index canister not found")
                 .0
         }
     }

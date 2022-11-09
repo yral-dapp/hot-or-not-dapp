@@ -43,6 +43,12 @@ async function initSentry() {
 	}
 }
 
+function registerServiceWorker() {
+	if ('serviceWorker' in navigator && process.env.NODE_ENV != 'development') {
+		navigator.serviceWorker.register('/service-worker.js');
+	}
+}
+
 onMount(() => {
 	try {
 		hideSplashScreen(5000);
@@ -51,6 +57,7 @@ onMount(() => {
 
 		initSentry();
 		initClient();
+		registerServiceWorker();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -73,10 +80,10 @@ onMount(() => {
 	Alpha
 </alpha-ribbon>
 
-<div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
-	<slot />
-</div>
-
 {#if $authState.showLogin}
 	<Login />
 {/if}
+
+<div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
+	<slot />
+</div>

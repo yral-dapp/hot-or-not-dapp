@@ -55,9 +55,6 @@ fn pre_upgrade() {
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
-
-    // TODO: remove after first run
-    s! { MyKnownPrincipalIdsMap = HashMap::new() }
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

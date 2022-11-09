@@ -1,6 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   const KnownPrincipalType = IDL.Variant({
     'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
@@ -59,6 +60,7 @@ export const idlFactory = ({ IDL }) => {
 export const init = ({ IDL }) => {
   const KnownPrincipalType = IDL.Variant({
     'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,

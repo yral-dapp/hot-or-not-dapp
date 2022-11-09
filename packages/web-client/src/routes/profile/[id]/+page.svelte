@@ -111,6 +111,7 @@ onMount(async () => {
 		'profile Id': $page.params.id
 	});
 	load.page = false;
+	loadPosts();
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>

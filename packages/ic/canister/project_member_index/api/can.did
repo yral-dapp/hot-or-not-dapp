@@ -1,0 +1,23 @@
+type KnownPrincipalType = variant {
+  CanisterIdUserIndex;
+  CanisterIdProjectMemberIndex;
+  CanisterIdTopicCacheIndex;
+  CanisterIdRootCanister;
+  CanisterIdPostCache;
+  CanisterIdSNSController;
+  UserIdGlobalSuperAdmin;
+};
+type ProjectMemberIndexInitArgs = record {
+  known_principal_ids : vec record { KnownPrincipalType; principal };
+};
+type UserAccessRole = variant {
+  CanisterController;
+  ProfileOwner;
+  CanisterAdmin;
+  ProjectCanister;
+};
+service : (ProjectMemberIndexInitArgs) -> {
+  get_user_roles : (principal) -> (vec UserAccessRole) query;
+  update_user_add_role : (UserAccessRole, principal) -> ();
+  update_user_remove_role : (UserAccessRole, principal) -> ();
+}

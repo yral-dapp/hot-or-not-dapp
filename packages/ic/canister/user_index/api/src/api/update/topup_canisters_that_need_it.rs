@@ -35,11 +35,6 @@ async fn topup_canisters_that_need_it() {
         .await
         .unwrap();
 
-        ic_cdk::print(format!(
-            "🥫 Before recharge, canister {} has {} cycles",
-            user_canister_id, response.cycles
-        ));
-
         if response.cycles < CYCLES_THRESHOLD_TO_INITIATE_RECHARGE {
             main::deposit_cycles(
                 CanisterIdRecord {
@@ -49,17 +44,6 @@ async fn topup_canisters_that_need_it() {
             )
             .await
             .unwrap();
-
-            let (response,): (CanisterStatusResponse,) = main::canister_status(CanisterIdRecord {
-                canister_id: user_canister_id.0,
-            })
-            .await
-            .unwrap();
-
-            ic_cdk::print(format!(
-                "🥫 After recharge, canister {} has {} cycles",
-                user_canister_id, response.cycles
-            ));
         }
     }
 }

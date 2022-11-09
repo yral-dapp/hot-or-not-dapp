@@ -44,6 +44,7 @@ jobs:
         run: |
           dfx canister create --no-wallet individual_user_template
           dfx canister create --no-wallet user_index
+          dfx canister create --no-wallet project_member_index
           dfx canister create --no-wallet post_cache
       - name: Stop local replica
         run: dfx stop
@@ -51,6 +52,8 @@ jobs:
         run: dfx build individual_user_template
       - name: Build user_index canister
         run: dfx build user_index
+      - name: Build project_member_index canister
+        run: dfx build project_member_index
       - name: Build post_cache canister
         run: dfx build post_cache
       - name: Run canister test suite

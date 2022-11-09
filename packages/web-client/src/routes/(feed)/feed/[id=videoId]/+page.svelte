@@ -67,7 +67,7 @@ async function fetchNextVideos() {
 			loading = true;
 			const res = await getTopPosts(fetchedVideosCount, fetchCount, true);
 			if (res.error) {
-				//TODO: Handle error
+				// TODO: Handle error
 				loading = false;
 				return;
 			}

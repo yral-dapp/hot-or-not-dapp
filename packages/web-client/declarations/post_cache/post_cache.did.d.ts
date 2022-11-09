@@ -2,6 +2,7 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
   { 'CanisterIdPostCache' : null } |
