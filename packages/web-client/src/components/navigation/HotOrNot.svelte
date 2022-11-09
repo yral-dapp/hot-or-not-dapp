@@ -8,8 +8,7 @@ import c from 'clsx';
 
 export let tutorialMode = false;
 export let betPlaced: false | 'hot' | 'not' = false;
-
-let coinsBet = 10;
+export let coinsBet = 10;
 
 function increaseBet() {
 	if (coinsBet == 10) coinsBet = 50;
@@ -25,8 +24,6 @@ function toggleBet() {
 	if (coinsBet == 100) coinsBet = 10;
 	else increaseBet();
 }
-
-$: console.log({ betPlaced });
 </script>
 
 <hot-or-not class="flex w-full items-center justify-center space-x-8 px-4 transition-all">
@@ -63,7 +60,10 @@ $: console.log({ betPlaced });
 			class="{c('z-[10] flex items-center p-4 disabled:opacity-50', { invisible: betPlaced })}">
 			<ChevronUpIcon class="h-2" />
 		</IconButton>
-		<button on:click|stopPropagation="{toggleBet}" class="relative h-20 w-20 select-none">
+		<button
+			disabled="{betPlaced !== false}"
+			on:click|stopPropagation="{toggleBet}"
+			class="relative h-20 w-20 select-none">
 			<BetCoinIcon class="h-20" />
 			<div class="absolute inset-0 flex select-none items-center justify-center">
 				<span
