@@ -24,13 +24,6 @@ runs:
       run: |
         touch .env
         echo "VITE_GA_TRACKING_ID=\"$GA_TRACKING_ID\"" >> .env
-        echo "VITE_FIREBASE_API_KEY=\"$FIREBASE_API_KEY\"" >> .env
-        echo "VITE_FIREBASE_AUTH_DOMAIN=\"$FIREBASE_AUTH_DOMAIN\"" >> .env
-        echo "VITE_FIREBASE_PROJECT_ID=\"$FIREBASE_PROJECT_ID\"" >> .env
-        echo "VITE_FIREBASE_STORAGE_BUCKET=\"$FIREBASE_STORAGE_BUCKET\"" >> .env
-        echo "VITE_FIREBASE_MESSAGING_SENDER_ID=\"$FIREBASE_MESSAGING_SENDER_ID\"" >> .env
-        echo "VITE_FIREBASE_APP_ID=\"$FIREBASE_APP_ID\"" >> .env
-        echo "VITE_FIREBASE_MEASUREMENT_ID=\"$FIREBASE_MEASUREMENT_ID\"" >> .env
         echo "VITE_CLOUDFLARE_WORKERS_API_HOST=\"$CLOUDFLARE_WORKERS_API_HOST\"" >> .env
         echo "VITE_WEBCLIENT_CANISTER_ID=\"$WEBCLIENT_CANISTER_ID\"" >> .env
       working-directory: ${{ inputs.working-dir }}
