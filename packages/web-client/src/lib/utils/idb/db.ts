@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import Log from '../Log';
 
 export const dbPromise = openDB('keyval-store', 2, {
 	upgrade(db) {
@@ -9,4 +10,6 @@ export const dbPromise = openDB('keyval-store', 2, {
 			db.createObjectStore('watch');
 		}
 	}
+}).catch((e) => {
+	Log({ error: e, from: 'idb' }, 'warn');
 });
