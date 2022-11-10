@@ -133,7 +133,9 @@ export interface _SERVICE {
     Result_1,
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
+  'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'get_utility_token_balance' : ActorMethod<[], bigint>,
   'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],

@@ -1,4 +1,4 @@
-name: Deploy post_cache canister to IC mainnet on push to main
+name: Deploy all canisters to IC mainnet on push to main
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    name: Run tests and deploy post_cache canister
+    name: Deploy all canisters
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo

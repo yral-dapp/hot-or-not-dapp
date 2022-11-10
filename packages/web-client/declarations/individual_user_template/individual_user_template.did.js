@@ -169,11 +169,13 @@ export const idlFactory = ({ IDL }) => {
         [UserProfileDetailsForFrontend],
         ['query'],
       ),
+    'get_rewarded_for_signing_up' : IDL.Func([], [], []),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
+    'get_utility_token_balance' : IDL.Func([], [IDL.Nat64], ['query']),
     'return_cycles_to_user_index_canister' : IDL.Func([], [], []),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
