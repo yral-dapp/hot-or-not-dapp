@@ -81,6 +81,32 @@ export const idlFactory = ({ IDL }) => {
     'CanisterAdmin' : IDL.Null,
     'ProjectCanister' : IDL.Null,
   });
+  const SystemTime = IDL.Record({
+    'nanos_since_epoch' : IDL.Nat32,
+    'secs_since_epoch' : IDL.Nat64,
+  });
+  const MintEvent = IDL.Variant({
+    'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
+    'Referral' : IDL.Record({
+      'referree_user_principal_id' : IDL.Principal,
+      'referrer_user_principal_id' : IDL.Principal,
+    }),
+  });
+  const TokenEvent = IDL.Variant({
+    'Stake' : IDL.Null,
+    'Burn' : IDL.Null,
+    'Mint' : MintEvent,
+    'Transfer' : IDL.Null,
+  });
+  const GetUserUtilityTokenTransactionHistoryError = IDL.Variant({
+    'ReachedEndOfItemsList' : IDL.Null,
+    'InvalidBoundsPassed' : IDL.Null,
+    'ExceededMaxNumberOfItemsAllowedInOneRequest' : IDL.Null,
+  });
+  const Result_2 = IDL.Variant({
+    'Ok' : IDL.Vec(IDL.Tuple(SystemTime, TokenEvent)),
+    'Err' : GetUserUtilityTokenTransactionHistoryError,
+  });
   const PostViewDetailsFromFrontend = IDL.Variant({
     'WatchedMultipleTimes' : IDL.Record({
       'percentage_watched' : IDL.Nat8,
@@ -98,7 +124,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserITriedToFollowHasTheirFollowersListFull' : IDL.Null,
   });
-  const Result_2 = IDL.Variant({
+  const Result_3 = IDL.Variant({
     'Ok' : IDL.Bool,
     'Err' : FollowAnotherUserProfileError,
   });
@@ -108,7 +134,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserTryingToFollowMeDoesNotExist' : IDL.Null,
   });
-  const Result_3 = IDL.Variant({
+  const Result_4 = IDL.Variant({
     'Ok' : IDL.Bool,
     'Err' : AnotherUserFollowedMeError,
   });
@@ -117,7 +143,7 @@ export const idlFactory = ({ IDL }) => {
     'display_name' : IDL.Opt(IDL.Text),
   });
   const UpdateProfileDetailsError = IDL.Variant({ 'NotAuthorized' : IDL.Null });
-  const Result_4 = IDL.Variant({
+  const Result_5 = IDL.Variant({
     'Ok' : UserProfileDetailsForFrontend,
     'Err' : UpdateProfileDetailsError,
   });
@@ -128,7 +154,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_5 = IDL.Variant({
+  const Result_6 = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : UpdateProfileSetUniqueUsernameError,
   });
@@ -175,6 +201,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
+    'get_user_utility_token_transaction_history_with_pagination' : IDL.Func(
+        [IDL.Nat64, IDL.Nat64],
+        [Result_2],
+        ['query'],
+      ),
     'get_utility_token_balance' : IDL.Func([], [IDL.Nat64], ['query']),
     'return_cycles_to_user_index_canister' : IDL.Func([], [], []),
     'update_post_add_view_details' : IDL.Func(
@@ -195,27 +226,27 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_principals_i_follow_toggle_list_with_principal_specified' : IDL.Func(
         [IDL.Principal],
-        [Result_2],
+        [Result_3],
         [],
       ),
     'update_principals_that_follow_me_toggle_list_with_specified_principal' : IDL.Func(
         [IDL.Principal],
-        [Result_3],
+        [Result_4],
         [],
       ),
     'update_profile_display_details' : IDL.Func(
         [UserProfileUpdateDetailsFromFrontend],
-        [Result_4],
+        [Result_5],
         [],
       ),
     'update_profile_resend_username_to_user_index_canister' : IDL.Func(
         [],
-        [Result_5],
+        [Result_6],
         [],
       ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
-        [Result_5],
+        [Result_6],
         [],
       ),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),

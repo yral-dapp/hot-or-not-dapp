@@ -35,4 +35,8 @@ impl TokenBalance {
 
         self
     }
+
+    pub fn get_utility_token_transaction_history(&self) -> &BTreeMap<SystemTime, TokenEvent> {
+        &self.utility_token_transaction_history
+    }
 }

@@ -1,7 +1,8 @@
+use candid::{CandidType, Deserialize};
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use speedy::{Readable, Writable};
 
-#[derive(Readable, Writable)]
+#[derive(Readable, Writable, Clone, Copy, CandidType, Deserialize, Debug, PartialEq, Eq)]
 pub enum MintEvent {
     NewUserSignup {
         new_user_principal_id: SPrincipal,
@@ -12,7 +13,7 @@ pub enum MintEvent {
     },
 }
 
-#[derive(Readable, Writable)]
+#[derive(Readable, Writable, Clone, Copy, CandidType, Deserialize, Debug, PartialEq, Eq)]
 pub enum TokenEvent {
     Mint(MintEvent),
     Burn,
