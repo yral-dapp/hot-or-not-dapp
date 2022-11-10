@@ -39,10 +39,6 @@ onMount(() => {
 		dataLayer.push(arguments);
 	}
 	gtag('js', new Date());
-
-	gtag('config', import.meta.env.VITE_GA_TRACKING_ID, {
-		page_path: window.location.pathname
-	});
 	</script>
 </svelte:head>
 
