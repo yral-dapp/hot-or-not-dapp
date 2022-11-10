@@ -2,6 +2,7 @@ use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::access_control::{self, UserAccessRole};
 use user_index_lib::{AccessControlMap, UserPrincipalIdToCanisterIdMap};
 
+// TODO: remove permanently
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 fn delete_user_index_reset_user_canisters() {
