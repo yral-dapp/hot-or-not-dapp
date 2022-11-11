@@ -25,11 +25,6 @@ export type GetFollowerOrFollowingError = { 'ReachedEndOfItemsList' : null } |
 export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
-export type GetUserUtilityTokenTransactionHistoryError = {
-    'ReachedEndOfItemsList' : null
-  } |
-  { 'InvalidBoundsPassed' : null } |
-  { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
   'profile_owner' : Principal,
@@ -46,8 +41,8 @@ export type MintEvent = {
   } |
   {
     'Referral' : {
-      'referree_user_principal_id' : Principal,
       'referrer_user_principal_id' : Principal,
+      'referee_user_principal_id' : Principal,
     }
   };
 export interface PostDetailsForFrontend {
@@ -88,8 +83,8 @@ export type Result = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
 export type Result_1 = { 'Ok' : Array<Principal> } |
   { 'Err' : GetFollowerOrFollowingError };
-export type Result_2 = { 'Ok' : Array<[SystemTime, TokenEvent]> } |
-  { 'Err' : GetUserUtilityTokenTransactionHistoryError };
+export type Result_2 = { 'Ok' : Array<[bigint, TokenEventV1]> } |
+  { 'Err' : GetFollowerOrFollowingError };
 export type Result_3 = { 'Ok' : boolean } |
   { 'Err' : FollowAnotherUserProfileError };
 export type Result_4 = { 'Ok' : boolean } |
@@ -102,9 +97,9 @@ export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
-export type TokenEvent = { 'Stake' : null } |
+export type TokenEventV1 = { 'Stake' : null } |
   { 'Burn' : null } |
-  { 'Mint' : MintEvent } |
+  { 'Mint' : { 'timestamp' : SystemTime, 'details' : MintEvent } } |
   { 'Transfer' : null };
 export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
 export type UpdateProfileSetUniqueUsernameError = {
@@ -157,6 +152,7 @@ export interface _SERVICE {
     Result_1,
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
+  'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<

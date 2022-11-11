@@ -8,3 +8,10 @@ pub enum UpdateProfileSetUniqueUsernameError {
     UserCanisterEntryDoesNotExist,
     UserIndexCrossCanisterCallFailed,
 }
+
+#[derive(CandidType, Debug, Deserialize)]
+pub enum GetUserUtilityTokenTransactionHistoryError {
+    InvalidBoundsPassed,
+    ReachedEndOfItemsList,
+    ExceededMaxNumberOfItemsAllowedInOneRequest,
+}

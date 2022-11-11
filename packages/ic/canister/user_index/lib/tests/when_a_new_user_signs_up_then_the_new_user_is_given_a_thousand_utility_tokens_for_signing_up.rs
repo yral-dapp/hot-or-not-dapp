@@ -1,10 +1,11 @@
-use std::time::SystemTime;
-
 use candid::Principal;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use ic_state_machine_tests::{CanisterId, StateMachine, WasmResult};
-use individual_user_template_lib::model::api_error::GetUserUtilityTokenTransactionHistoryError;
-use shared_utils::shared_types::utility_token::{MintEvent, TokenEvent};
+
+use shared_utils::shared_types::{
+    individual_user_template::error_types::GetUserUtilityTokenTransactionHistoryError,
+    utility_token::{v0::MintEvent, v1::TokenEventV1},
+};
 use test_utils::setup::{
     initialize_test_env_with_known_canisters::{
         get_initialized_env_with_provisioned_known_canisters, KnownCanisters,
@@ -90,7 +91,7 @@ fn when_a_new_user_signs_up_then_the_new_user_is_given_a_thousand_utility_tokens
         alice_utility_token_balance_after_calling_get_canister_id_again
     );
 
-    let alice_utility_token_transaction_history_after_signup: Vec<(SystemTime, TokenEvent)> =
+    let alice_utility_token_transaction_history_after_signup: Vec<(u64, TokenEventV1)> =
         state_machine
             .query(
                 CanisterId::new(alice_canister_id.into()).unwrap(),
@@ -99,7 +100,7 @@ fn when_a_new_user_signs_up_then_the_new_user_is_given_a_thousand_utility_tokens
             )
             .map(|reply_payload| {
                 let response: Result<
-                    Vec<(SystemTime, TokenEvent)>,
+                    Vec<(u64, TokenEventV1)>,
                     GetUserUtilityTokenTransactionHistoryError,
                 > = match reply_payload {
                     WasmResult::Reply(payload) => candid::decode_one(&payload).unwrap(),
@@ -132,9 +133,16 @@ fn when_a_new_user_signs_up_then_the_new_user_is_given_a_thousand_utility_tokens
         1
     );
     assert_eq!(
-        alice_utility_token_transaction_history_after_signup[0].1,
-        TokenEvent::Mint(MintEvent::NewUserSignup {
+        match alice_utility_token_transaction_history_after_signup[0].1 {
+            TokenEventV1::Mint { details, .. } => details,
+            _ => {
+                MintEvent::NewUserSignup {
+                    new_user_principal_id: SPrincipal(Principal::anonymous()),
+                }
+            }
+        },
+        MintEvent::NewUserSignup {
             new_user_principal_id: SPrincipal(alice_principal_id.0)
-        })
+        },
     );
 }

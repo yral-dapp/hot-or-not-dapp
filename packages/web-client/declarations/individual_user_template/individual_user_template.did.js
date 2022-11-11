@@ -88,24 +88,19 @@ export const idlFactory = ({ IDL }) => {
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
     'Referral' : IDL.Record({
-      'referree_user_principal_id' : IDL.Principal,
       'referrer_user_principal_id' : IDL.Principal,
+      'referee_user_principal_id' : IDL.Principal,
     }),
   });
-  const TokenEvent = IDL.Variant({
+  const TokenEventV1 = IDL.Variant({
     'Stake' : IDL.Null,
     'Burn' : IDL.Null,
-    'Mint' : MintEvent,
+    'Mint' : IDL.Record({ 'timestamp' : SystemTime, 'details' : MintEvent }),
     'Transfer' : IDL.Null,
   });
-  const GetUserUtilityTokenTransactionHistoryError = IDL.Variant({
-    'ReachedEndOfItemsList' : IDL.Null,
-    'InvalidBoundsPassed' : IDL.Null,
-    'ExceededMaxNumberOfItemsAllowedInOneRequest' : IDL.Null,
-  });
   const Result_2 = IDL.Variant({
-    'Ok' : IDL.Vec(IDL.Tuple(SystemTime, TokenEvent)),
-    'Err' : GetUserUtilityTokenTransactionHistoryError,
+    'Ok' : IDL.Vec(IDL.Tuple(IDL.Nat64, TokenEventV1)),
+    'Err' : GetFollowerOrFollowingError,
   });
   const PostViewDetailsFromFrontend = IDL.Variant({
     'WatchedMultipleTimes' : IDL.Record({
@@ -194,6 +189,11 @@ export const idlFactory = ({ IDL }) => {
         [],
         [UserProfileDetailsForFrontend],
         ['query'],
+      ),
+    'get_rewarded_for_referral' : IDL.Func(
+        [IDL.Principal, IDL.Principal],
+        [],
+        [],
       ),
     'get_rewarded_for_signing_up' : IDL.Func([], [], []),
     'get_user_roles' : IDL.Func(
