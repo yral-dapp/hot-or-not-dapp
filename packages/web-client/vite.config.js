@@ -1,9 +1,10 @@
-import path from 'path';
+import { join, resolve } from 'path';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const dfxJson = require('./../../dfx.json');
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import { partytownVite } from '@builder.io/partytown/utils';
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
@@ -40,12 +41,12 @@ export default ({ mode }) => {
 	return defineConfig({
 		resolve: {
 			alias: {
-				$canisters: path.resolve('./declarations'),
-				$components: path.resolve('./src/components'),
-				$routes: path.resolve('./src/routes'),
-				$icons: path.resolve('./src/icons'),
-				$stores: path.resolve('./src/stores'),
-				$assets: path.resolve('./src/assets')
+				$canisters: resolve('./declarations'),
+				$components: resolve('./src/components'),
+				$routes: resolve('./src/routes'),
+				$icons: resolve('./src/icons'),
+				$stores: resolve('./src/stores'),
+				$assets: resolve('./src/assets')
 			}
 		},
 		define: {
@@ -67,9 +68,17 @@ export default ({ mode }) => {
 				// This proxies all http requests made to /api to our running dfx instance
 				'/api': {
 					target: `http://0.0.0.0:${DFX_PORT}`
+				},
+				'/proxytown/gtm': {
+					target: 'https://www.googletagmanager.com/gtag/js'
 				}
 			}
 		},
-		plugins: [sveltekit()]
+		plugins: [
+			sveltekit(),
+			partytownVite({
+				dest: join(process.cwd(), 'static', '~partytown')
+			})
+		]
 	});
 };

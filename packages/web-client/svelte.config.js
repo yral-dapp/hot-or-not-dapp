@@ -9,7 +9,8 @@ console.log('svelte in', isSSR ? 'ssr' : 'static', 'build mode; csp enabled', is
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: preprocess({
-		postcss: true
+		postcss: true,
+		preserve: ['partytown']
 	}),
 	kit: {
 		// Todo: add CSP config
@@ -21,6 +22,9 @@ const config = {
 		// 	  },
 		serviceWorker: {
 			register: false
+		},
+		files: {
+			assets: 'static'
 		},
 		adapter: isSSR
 			? cfAdapter()
