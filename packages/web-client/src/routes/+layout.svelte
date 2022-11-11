@@ -12,8 +12,8 @@ import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
-let loadPartytown = false;
-let PartyTown: any;
+let loadGA = false;
+let GoogleAnalytics: any;
 
 async function initClient() {
 	const { Buffer } = await import('buffer'); // @dfinity/agent requires this
@@ -46,8 +46,8 @@ function registerServiceWorker() {
 async function initPartyTown() {
 	if (process.env.NODE_ENV == 'development') return;
 
-	PartyTown = await (await import('$components/partytown/PartyTown.svelte')).default;
-	loadPartytown = true;
+	GoogleAnalytics = await (await import('$components/seo/GoogleAnalytics.svelte')).default;
+	loadGA = true;
 }
 
 onMount(() => {
@@ -82,8 +82,8 @@ beforeNavigate(({ from, to }) => {
 		});
 	}}" />
 
-{#if loadPartytown}
-	<svelte:component this="{PartyTown}" />
+{#if loadGA}
+	<svelte:component this="{GoogleAnalytics}" />
 {/if}
 
 <alpha-ribbon
