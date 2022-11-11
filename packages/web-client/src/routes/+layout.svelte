@@ -6,14 +6,12 @@ import Login from '$components/login/Login.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
-let loadGA = false;
-let GoogleAnalytics: any;
 
 async function initClient() {
 	const { Buffer } = await import('buffer'); // @dfinity/agent requires this
@@ -43,13 +41,6 @@ function registerServiceWorker() {
 	}
 }
 
-async function initPartyTown() {
-	if (process.env.NODE_ENV == 'development') return;
-
-	GoogleAnalytics = await (await import('$components/seo/GoogleAnalytics.svelte')).default;
-	loadGA = true;
-}
-
 onMount(() => {
 	try {
 		hideSplashScreen(5000);
@@ -57,7 +48,6 @@ onMount(() => {
 		initSentry();
 		initClient();
 		registerServiceWorker();
-		initPartyTown();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -82,10 +72,6 @@ beforeNavigate(({ from, to }) => {
 		});
 	}}" />
 
-{#if loadGA}
-	<svelte:component this="{GoogleAnalytics}" />
-{/if}
-
 <alpha-ribbon
 	class="pointer-events-none absolute -right-9 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-1 px-2 text-xs font-bold uppercase text-white opacity-60">
 	Alpha
@@ -98,3 +84,5 @@ beforeNavigate(({ from, to }) => {
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
 	<slot />
 </div>
+
+<GoogleAnalytics />
