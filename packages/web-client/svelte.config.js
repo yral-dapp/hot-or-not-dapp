@@ -23,6 +23,9 @@ const config = {
 		serviceWorker: {
 			register: false
 		},
+		files: {
+			assets: 'static'
+		},
 		adapter: isSSR
 			? cfAdapter()
 			: staticAdapter({
