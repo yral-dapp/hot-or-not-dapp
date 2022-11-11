@@ -9,6 +9,7 @@ onMount(() => {
 		scriptEl.textContent = partytownSnippet({
 			forward: ['dataLayer.push'],
 			resolveUrl: (url) => {
+				console.log('url', url);
 				const siteUrl = 'https://hotornot.wtf';
 
 				if (url.hostname === 'www.googletagmanager.com') {
@@ -16,6 +17,7 @@ onMount(() => {
 
 					const gtmId = new URL(url).searchParams.get('id');
 					gtmId && proxyUrl.searchParams.append('id', gtmId);
+					console.log('proxyurl', proxyUrl);
 					return proxyUrl;
 				}
 
