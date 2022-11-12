@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 candid = "0.7.16"
 ic-cdk = "0.5.7"
-ic-cdk-macros = "0.5.7"
+ic-cdk-macros = "0.6.6"
 ic-stable-memory = "0.2.4"
 post_cache_lib = { path = "../lib" }
 shared_utils = { path = "../../../lib/shared_utils" }
