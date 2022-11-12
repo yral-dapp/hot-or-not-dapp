@@ -1,3 +1,2 @@
-pub mod ask_individual_canisters_to_send_me_their_unique_username_if_set;
 pub mod get_index_details_last_upgrade_status;
 pub mod update_user_index_upgrade_user_canisters_with_latest_wasm;

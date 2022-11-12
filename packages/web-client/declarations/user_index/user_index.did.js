@@ -13,17 +13,6 @@ export const idlFactory = ({ IDL }) => {
       IDL.Tuple(KnownPrincipalType, IDL.Principal)
     ),
   });
-  const UpdateProfileSetUniqueUsernameError = IDL.Variant({
-    'UsernameAlreadyTaken' : IDL.Null,
-    'UserIndexCrossCanisterCallFailed' : IDL.Null,
-    'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
-    'NotAuthorized' : IDL.Null,
-    'UserCanisterEntryDoesNotExist' : IDL.Null,
-  });
-  const Result = IDL.Variant({
-    'Ok' : IDL.Null,
-    'Err' : UpdateProfileSetUniqueUsernameError,
-  });
   const CanisterStatusType = IDL.Variant({
     'stopped' : IDL.Null,
     'stopping' : IDL.Null,
@@ -64,16 +53,11 @@ export const idlFactory = ({ IDL }) => {
     'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_1 = IDL.Variant({
+  const Result = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
   return IDL.Service({
-    'ask_individual_canisters_to_send_me_their_unique_username_if_set' : IDL.Func(
-        [],
-        [Result],
-        [],
-      ),
     'get_canister_status_from_management_canister' : IDL.Func(
         [IDL.Principal],
         [CanisterStatusResponse],
@@ -117,7 +101,7 @@ export const idlFactory = ({ IDL }) => {
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
-        [Result_1],
+        [Result],
         [],
       ),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),

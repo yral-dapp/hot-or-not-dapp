@@ -26,8 +26,6 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
 export type Result = { 'Ok' : null } |
-  { 'Err' : UpdateProfileSetUniqueUsernameError };
-export type Result_1 = { 'Ok' : null } |
   { 'Err' : SetUniqueUsernameError };
 export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
@@ -36,13 +34,6 @@ export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
-export type UpdateProfileSetUniqueUsernameError = {
-    'UsernameAlreadyTaken' : null
-  } |
-  { 'UserIndexCrossCanisterCallFailed' : null } |
-  { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
-  { 'NotAuthorized' : null } |
-  { 'UserCanisterEntryDoesNotExist' : null };
 export interface UpgradeStatus {
   'version_number' : bigint,
   'last_run_on' : SystemTime,
@@ -57,10 +48,6 @@ export interface UserIndexInitArgs {
   'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
 }
 export interface _SERVICE {
-  'ask_individual_canisters_to_send_me_their_unique_username_if_set' : ActorMethod<
-    [],
-    Result,
-  >,
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],
     CanisterStatusResponse,
@@ -87,7 +74,7 @@ export interface _SERVICE {
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
-    Result_1,
+    Result,
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<
