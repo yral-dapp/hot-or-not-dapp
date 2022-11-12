@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candid = "0.7.18"
+candid = "0.8.3"
 ic-cdk = "0.5.7"
 ic-cdk-macros = "0.5.7"
 ic-stable-memory = "0.2.4"
