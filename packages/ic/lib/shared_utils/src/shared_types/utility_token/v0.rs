@@ -8,7 +8,7 @@ pub enum MintEvent {
         new_user_principal_id: SPrincipal,
     },
     Referral {
-        referree_user_principal_id: SPrincipal,
+        referee_user_principal_id: SPrincipal,
         referrer_user_principal_id: SPrincipal,
     },
 }

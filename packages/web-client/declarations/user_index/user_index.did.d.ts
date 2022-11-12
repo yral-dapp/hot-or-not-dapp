@@ -68,6 +68,10 @@ export interface _SERVICE {
   >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
+  'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
+    [[] | [Principal]],
+    Principal,
+  >,
   'get_user_canister_id_from_unique_user_name' : ActorMethod<
     [string],
     [] | [Principal],

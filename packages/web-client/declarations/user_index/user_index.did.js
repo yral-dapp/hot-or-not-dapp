@@ -90,6 +90,11 @@ export const idlFactory = ({ IDL }) => {
         [UpgradeStatus],
         ['query'],
       ),
+    'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : IDL.Func(
+        [IDL.Opt(IDL.Principal)],
+        [IDL.Principal],
+        [],
+      ),
     'get_user_canister_id_from_unique_user_name' : IDL.Func(
         [IDL.Text],
         [IDL.Opt(IDL.Principal)],

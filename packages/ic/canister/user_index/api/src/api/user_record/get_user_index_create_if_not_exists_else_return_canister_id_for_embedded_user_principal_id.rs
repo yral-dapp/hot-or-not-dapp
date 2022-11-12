@@ -4,6 +4,7 @@ use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use user_index_lib::util::canister_management::create_users_canister;
 
+#[deprecated = "Use get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer instead. This function does not support referrals"]
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 async fn get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id(

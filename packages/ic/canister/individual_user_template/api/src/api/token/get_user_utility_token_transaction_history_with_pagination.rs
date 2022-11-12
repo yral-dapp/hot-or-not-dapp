@@ -1,12 +1,11 @@
-use std::time::SystemTime;
-
 use ic_stable_memory::s;
-use individual_user_template_lib::{
-    model::api_error::GetUserUtilityTokenTransactionHistoryError, MyTokenBalance,
-};
+use individual_user_template_lib::MyTokenBalance;
 use shared_utils::{
     pagination::{self, PaginationError},
-    shared_types::utility_token::TokenEvent,
+    shared_types::{
+        individual_user_template::error_types::GetUserUtilityTokenTransactionHistoryError,
+        utility_token::v1::TokenEventV1,
+    },
 };
 
 #[ic_cdk_macros::query]
@@ -14,7 +13,7 @@ use shared_utils::{
 fn get_user_utility_token_transaction_history_with_pagination(
     from_inclusive_id: u64,
     to_exclusive_id: u64,
-) -> Result<Vec<(SystemTime, TokenEvent)>, GetUserUtilityTokenTransactionHistoryError> {
+) -> Result<Vec<(u64, TokenEventV1)>, GetUserUtilityTokenTransactionHistoryError> {
     let my_token_balance: MyTokenBalance = s!(MyTokenBalance);
 
     let (from_inclusive_id, to_exclusive_id) = pagination::get_pagination_bounds(
