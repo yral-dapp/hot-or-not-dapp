@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 candid = "0.7.16"
 ic-cdk = "0.5.7"
 ic-cdk-macros = "0.5.7"
-ic-cron = "0.7.0"
+ic-cron = "0.7.1"
 ic-stable-memory = "0.2.4"
 individual_user_template_lib = { path = "../lib" }
 serde = "1.0.144"
