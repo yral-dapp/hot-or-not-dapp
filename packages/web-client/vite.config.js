@@ -1,10 +1,11 @@
-import { join, resolve } from 'path';
+import { resolve } from 'path';
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const dfxJson = require('./../../dfx.json');
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import { partytownVite } from '@builder.io/partytown/utils';
+// import { partytownVite } from '@builder.io/partytown/utils';
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
@@ -75,10 +76,23 @@ export default ({ mode }) => {
 			}
 		},
 		plugins: [
-			sveltekit(),
-			partytownVite({
-				dest: join(process.cwd(), 'static', '~partytown')
-			})
-		]
+			sveltekit()
+			// partytownVite({
+			// 	dest: join(process.cwd(), 'static', '~partytown')
+			// })
+		],
+		optimizeDeps: {
+			esbuildOptions: {
+				// Node.js global to browser globalThis
+				define: {
+					global: 'globalThis'
+				},
+				plugins: [
+					NodeGlobalsPolyfillPlugin({
+						buffer: true
+					})
+				]
+			}
+		}
 	});
 };

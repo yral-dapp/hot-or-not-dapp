@@ -14,8 +14,6 @@ import userProfile from '$stores/userProfile';
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
 async function initClient() {
-	const { Buffer } = await import('buffer'); // @dfinity/agent requires this
-	window.Buffer = Buffer;
 	const { initializeAuthClient } = await import('$lib/helpers/auth');
 	initializeAuthClient();
 }
