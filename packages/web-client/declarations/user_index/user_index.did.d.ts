@@ -61,7 +61,6 @@ export interface _SERVICE {
     [],
     Result,
   >,
-  'delete_user_index_reset_user_canisters' : ActorMethod<[], undefined>,
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],
     CanisterStatusResponse,
@@ -87,10 +86,6 @@ export interface _SERVICE {
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
-    [string, Principal],
-    Result_1,
-  >,
-  'update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal' : ActorMethod<
     [string, Principal],
     Result_1,
   >,

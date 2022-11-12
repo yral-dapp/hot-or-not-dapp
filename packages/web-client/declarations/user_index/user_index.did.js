@@ -74,7 +74,6 @@ export const idlFactory = ({ IDL }) => {
         [Result],
         [],
       ),
-    'delete_user_index_reset_user_canisters' : IDL.Func([], [], []),
     'get_canister_status_from_management_canister' : IDL.Func(
         [IDL.Principal],
         [CanisterStatusResponse],
@@ -117,11 +116,6 @@ export const idlFactory = ({ IDL }) => {
       ),
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
-        [IDL.Text, IDL.Principal],
-        [Result_1],
-        [],
-      ),
-    'update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal' : IDL.Func(
         [IDL.Text, IDL.Principal],
         [Result_1],
         [],

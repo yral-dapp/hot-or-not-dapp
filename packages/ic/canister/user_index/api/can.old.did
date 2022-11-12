@@ -65,9 +65,6 @@ service : (UserIndexInitArgs) -> {
     );
   get_index_details_is_user_name_taken : (text) -> (bool) query;
   get_index_details_last_upgrade_status : () -> (UpgradeStatus) query;
-  get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer : (
-      opt principal,
-    ) -> (principal);
   get_user_canister_id_from_unique_user_name : (text) -> (opt principal) query;
   get_user_canister_id_from_user_principal_id : (principal) -> (
       opt principal,
