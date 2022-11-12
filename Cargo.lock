@@ -336,7 +336,7 @@ dependencies = [
  "anyhow",
  "binread",
  "byteorder",
- "candid_derive",
+ "candid_derive 0.4.5",
  "codespan-reporting",
  "hex",
  "ic-types 0.5.0",
@@ -355,10 +355,51 @@ dependencies = [
 ]
 
 [[package]]
+name = "candid"
+version = "0.8.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0571f3777880555f86d8aaa63080162560a8bf183d7853e0cc561d9a75458bbd"
+dependencies = [
+ "anyhow",
+ "binread",
+ "byteorder",
+ "candid_derive 0.5.0",
+ "codespan-reporting",
+ "crc32fast",
+ "data-encoding",
+ "hex",
+ "lalrpop",
+ "lalrpop-util",
+ "leb128",
+ "logos",
+ "num-bigint 0.4.3",
+ "num-traits",
+ "num_enum",
+ "paste",
+ "pretty",
+ "serde",
+ "serde_bytes",
+ "sha2 0.10.2",
+ "thiserror",
+]
+
+[[package]]
 name = "candid_derive"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2e02c03c4d547674a3f3f3109538fb49871fbe636216daa019f06a62faca9061"
+dependencies = [
+ "lazy_static",
+ "proc-macro2",
+ "quote 1.0.20",
+ "syn 1.0.98",
+]
+
+[[package]]
+name = "candid_derive"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58f1f4db7c7d04b87b70b3a35c5dc5c2c9dd73cef8bdf6760e2f18a0d45350dd"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -1501,7 +1542,7 @@ dependencies = [
  "base32",
  "byte-unit",
  "bytes",
- "candid",
+ "candid 0.7.18",
  "comparable",
  "crc32fast",
  "ic-crypto-sha",
@@ -1520,7 +1561,7 @@ source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3
 dependencies = [
  "bitcoin",
  "byteorder",
- "candid",
+ "candid 0.7.18",
  "ic-btc-types",
  "ic-btc-types-internal",
  "ic-logger",
@@ -1544,7 +1585,7 @@ name = "ic-btc-types"
 version = "0.1.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "serde",
  "serde_bytes",
 ]
@@ -1662,7 +1703,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e511d1a019e620d5a3dc43bead7d3c46912bf4f4bfb1d602059046c7a22bb1e"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "cfg-if 1.0.0",
  "serde",
 ]
@@ -1673,9 +1714,22 @@ version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0554d77b453140eefcb8c8192a342927f8c48cfda911dfa3cd4561a919dbd32f"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "cfg-if 1.0.0",
  "serde",
+]
+
+[[package]]
+name = "ic-cdk"
+version = "0.6.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc234b5fbb3e41ff88c7f287b490104e33ec5690d3f441dfefc686c37266c8b3"
+dependencies = [
+ "candid 0.8.3",
+ "cfg-if 1.0.0",
+ "ic0",
+ "serde",
+ "serde_bytes",
 ]
 
 [[package]]
@@ -1684,7 +1738,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a59a186745fd7d96ba2e057f3b3e3038578ae1e82dcb548bd96f48e9e4a39129"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-cdk 0.4.0",
  "proc-macro2",
  "quote 1.0.20",
@@ -1699,7 +1753,7 @@ version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "954a421ace8b8c8e52d2847c4aa68c80101396134c800ecb12f63457937c4ab4"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-cdk 0.5.7",
  "proc-macro2",
  "quote 1.0.20",
@@ -1767,7 +1821,7 @@ version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf528e633e986b5c8bb89d447bbaf777da8882ead8620fff6cffd0ea3bc1397e"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-cdk 0.4.0",
  "ic-cdk-macros 0.4.0",
  "serde",
@@ -2388,7 +2442,7 @@ name = "ic-execution-environment"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "escargot",
  "hex",
  "ic-base-types",
@@ -2440,7 +2494,7 @@ name = "ic-ic00-types"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "float-cmp 0.9.0",
  "ic-base-types",
  "ic-btc-types",
@@ -2568,7 +2622,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
  "bincode",
- "candid",
+ "candid 0.7.18",
  "erased-serde",
  "maplit",
  "prost",
@@ -2616,7 +2670,7 @@ name = "ic-registry-keys"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-base-types",
  "ic-ic00-types",
  "ic-types 0.8.0",
@@ -2651,7 +2705,7 @@ name = "ic-registry-routing-table"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-base-types",
  "ic-protobuf",
  "serde",
@@ -2662,7 +2716,7 @@ name = "ic-registry-subnet-features"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-ic00-types",
  "ic-protobuf",
  "serde",
@@ -2673,7 +2727,7 @@ name = "ic-registry-subnet-type"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-protobuf",
  "serde",
  "strum",
@@ -2686,7 +2740,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
  "bytes",
- "candid",
+ "candid 0.7.18",
  "ic-protobuf",
  "prost",
  "serde",
@@ -2736,7 +2790,7 @@ version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "283b1b1a29da267c04c52858fcee5a22de9366dd84b17a3affaf53e5e6d456d2"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-cdk 0.5.7",
  "serde",
  "speedy",
@@ -2773,7 +2827,7 @@ name = "ic-state-machine-tests"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-config",
  "ic-crypto-internal-seed",
  "ic-crypto-internal-threshold-sig-bls12381",
@@ -2868,7 +2922,7 @@ name = "ic-system-api"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "ic-base-types",
  "ic-cycles-account-manager",
  "ic-error-types",
@@ -2937,7 +2991,7 @@ dependencies = [
  "base32",
  "base64 0.11.0",
  "bincode",
- "candid",
+ "candid 0.7.18",
  "chrono",
  "derive_more",
  "hex",
@@ -3000,6 +3054,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic0"
+version = "0.18.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c221dd0bbe04c556238774b8564bcdc071d4022a085d625964a95615240dae02"
+
+[[package]]
 name = "ident_case"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3030,8 +3090,8 @@ dependencies = [
 name = "individual_user_template"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-cron",
  "ic-stable-memory",
@@ -3045,8 +3105,8 @@ dependencies = [
 name = "individual_user_template_lib"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-cron",
  "ic-stable-memory",
@@ -3878,7 +3938,7 @@ name = "phantom_newtype"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400#02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400"
 dependencies = [
- "candid",
+ "candid 0.7.18",
  "serde",
  "slog",
 ]
@@ -3940,8 +4000,8 @@ checksum = "6ac9a59f73473f1b8d852421e59e64809f025994837ef743615c6d0c5b305160"
 name = "post_cache"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-stable-memory",
  "post_cache_lib",
@@ -3954,8 +4014,8 @@ dependencies = [
 name = "post_cache_lib"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-stable-memory",
  "ic-state-machine-tests",
@@ -4086,8 +4146,8 @@ dependencies = [
 name = "project_member_index"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-stable-memory",
  "project_member_index_lib",
@@ -4100,8 +4160,8 @@ dependencies = [
 name = "project_member_index_lib"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-stable-memory",
  "ic-state-machine-tests",
@@ -4683,8 +4743,8 @@ dependencies = [
 name = "shared_utils"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-stable-memory",
  "ic-state-machine-tests",
  "serde",
@@ -5052,8 +5112,8 @@ checksum = "507e9898683b6c43a9aa55b64259b721b52ba226e0f3779137e50ad114a4c90b"
 name = "test_utils"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-stable-memory",
  "ic-state-machine-tests",
  "shared_utils",
@@ -5455,8 +5515,8 @@ dependencies = [
 name = "user_index"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-stable-memory",
  "serde",
@@ -5469,8 +5529,8 @@ dependencies = [
 name = "user_index_lib"
 version = "0.1.0"
 dependencies = [
- "candid",
- "ic-cdk 0.5.7",
+ "candid 0.7.18",
+ "ic-cdk 0.6.6",
  "ic-cdk-macros 0.5.7",
  "ic-stable-memory",
  "ic-state-machine-tests",

@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 candid = "0.7.16"
-ic-cdk = "0.5.7"
+ic-cdk = "0.6.6"
 ic-stable-memory = "0.2.4"
 ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "02a4a828f2f4d3b1dcb93a84e60672a3f3fdb400" }
 shared_utils = { path = "../shared_utils" }
