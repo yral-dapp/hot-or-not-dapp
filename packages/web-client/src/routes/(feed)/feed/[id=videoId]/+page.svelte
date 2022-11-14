@@ -1,14 +1,9 @@
 <script lang="ts">
-import 'swiper/css';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import type { IndividualUserActor } from '$lib/helpers/backend';
-import { playerState } from '$stores/playerState';
-import { onMount, tick } from 'svelte';
-import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
-import Log from '$lib/utils/Log';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import {
 	getTopPosts,
 	getWatchedVideosFromCache,
@@ -16,14 +11,17 @@ import {
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
-import { Principal } from '@dfinity/principal';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import userProfile from '$stores/userProfile';
-import type { PageData } from './$types';
+import Log from '$lib/utils/Log';
+import { handleParams } from '$lib/utils/params';
+import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
-import { page } from '$app/stores';
-import { authState, referralId } from '$stores/auth';
-import { isPrincipal } from '$lib/utils/isPrincipal';
+import userProfile from '$stores/userProfile';
+import { Principal } from '@dfinity/principal';
+import { onMount, tick } from 'svelte';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/svelte';
+import { debounce } from 'throttle-debounce';
+import type { PageData } from './$types';
 
 export let data: PageData;
 
@@ -195,21 +193,6 @@ function recordStats(progress: number, canisterId: string, videoId: bigint, prof
 	}
 }
 
-function handleParams(searchParams: URLSearchParams) {
-	const showLogin = searchParams.get('login');
-	if (showLogin) {
-		$authState.showLogin = true;
-	}
-
-	const refId = searchParams.get('refId');
-	if (refId && isPrincipal(refId)) {
-		$referralId = {
-			principalId: refId,
-			time: new Date().getTime()
-		};
-	}
-}
-
 onMount(async () => {
 	individualUser = (await import('$lib/helpers/backend')).individualUser;
 	updateURL();
@@ -221,7 +204,7 @@ onMount(async () => {
 	}
 	await tick();
 	await fetchNextVideos();
-	handleParams($page.url.searchParams);
+	handleParams();
 });
 </script>
 
