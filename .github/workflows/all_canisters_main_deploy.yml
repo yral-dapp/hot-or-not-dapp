@@ -46,6 +46,12 @@ jobs:
         run: dfx build --network ic project_member_index
       - name: Build post_cache canister
         run: dfx build --network ic post_cache
+      - name: GZip canisters
+        run: |
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/individual_user_template.wasm
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/user_index.wasm
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/project_member_index.wasm
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
       - name: Deploy user_index canister
         run: dfx canister --network ic install user_index --mode upgrade --argument "(record { known_principal_ids = vec {} })"
       - name: Loop through and deploy all individual user canisters

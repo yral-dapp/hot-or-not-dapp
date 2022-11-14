@@ -12,6 +12,11 @@ dfx build user_index
 dfx build project_member_index
 dfx build post_cache
 
+gzip -f -1 ./target/wasm32-unknown-unknown/release/individual_user_template.wasm
+gzip -f -1 ./target/wasm32-unknown-unknown/release/user_index.wasm
+gzip -f -1 ./target/wasm32-unknown-unknown/release/project_member_index.wasm
+gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
+
 dfx canister install user_index --mode upgrade --argument "(record {
   known_principal_ids = vec {}
 })"

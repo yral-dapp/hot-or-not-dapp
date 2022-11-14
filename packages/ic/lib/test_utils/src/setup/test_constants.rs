@@ -25,7 +25,7 @@ pub fn get_user_index_canister_wasm() -> Vec<u8> {
         std::env::var("CARGO_MANIFEST_DIR")
             .expect("Failed to read CARGO_MANIFEST_DIR env variable"),
     );
-    file_path.push("../../../../../target/wasm32-unknown-unknown/release/user_index.wasm");
+    file_path.push("../../../../../target/wasm32-unknown-unknown/release/user_index.wasm.gz");
 
     let mut file = File::open(&file_path)
         .unwrap_or_else(|_| panic!("Failed to open file: {}", file_path.to_str().unwrap()));
@@ -40,7 +40,7 @@ pub fn get_project_member_index_canister_wasm() -> Vec<u8> {
             .expect("Failed to read CARGO_MANIFEST_DIR env variable"),
     );
     file_path
-        .push("../../../../../target/wasm32-unknown-unknown/release/project_member_index.wasm");
+        .push("../../../../../target/wasm32-unknown-unknown/release/project_member_index.wasm.gz");
 
     let mut file = File::open(&file_path)
         .unwrap_or_else(|_| panic!("Failed to open file: {}", file_path.to_str().unwrap()));
@@ -54,7 +54,7 @@ pub fn get_post_cache_canister_wasm() -> Vec<u8> {
         std::env::var("CARGO_MANIFEST_DIR")
             .expect("Failed to read CARGO_MANIFEST_DIR env variable"),
     );
-    file_path.push("../../../../../target/wasm32-unknown-unknown/release/post_cache.wasm");
+    file_path.push("../../../../../target/wasm32-unknown-unknown/release/post_cache.wasm.gz");
 
     let mut file = File::open(&file_path)
         .unwrap_or_else(|_| panic!("Failed to open file: {}", file_path.to_str().unwrap()));
