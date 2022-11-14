@@ -23,7 +23,7 @@
 		"@dfinity/authentication": "0.14.0",
 		"@dfinity/candid": "0.14.0",
 		"@dfinity/identity": "0.14.0",
-		"@dfinity/principal": "0.14.0",
+		"@dfinity/principal": "0.14.1",
 		"@esbuild-plugins/node-globals-polyfill": "^0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "^0.1.4",
 		"@sentry/svelte": "^7.17.4",
