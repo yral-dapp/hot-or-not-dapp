@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte';
@@ -11,13 +12,19 @@ import DotTabs from '$components/tabs/DotTabs.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
+import userProfile from '$stores/userProfile';
 
-const code = 'HTRNTWT';
+const link = $page.url.host.includes('ic0.app')
+	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app`
+	: `https://${$page.url.host}?refId=${$userProfile.principal_id}&login=true`;
+
 let selectedTab = 0;
+
+$: console.log({ link });
 
 function copyLink() {
 	try {
-		navigator.clipboard.writeText(`https://hotornot.wtf/invite/${code}`);
+		navigator.clipboard.writeText(link);
 	} catch (e) {
 		Log({ error: e, from: '1 copyLink' }, 'error');
 	}
@@ -48,13 +55,15 @@ function copyLink() {
 					Send a referral link to your friends via link/whatsapp and win tokens
 				</div>
 
-				<div class="pt-8 text-sm uppercase">referral code</div>
+				<div class="pt-8 text-sm uppercase">referral link</div>
 				<div
-					class="flex w-full items-center justify-between rounded-full border-2 border-dashed border-primary py-4 px-6">
-					<span class="text-xl font-bold">{code}</span>
-					<IconButton>
-						<CopyIcon on:click="{copyLink}" class="h-6" />
-					</IconButton>
+					class="relative flex w-full items-center justify-between overflow-hidden rounded-full border-2 border-dashed border-primary py-5 px-6">
+					<span class="w-full whitespace-nowrap font-thin">{link}</span>
+					<div class="absolute right-0 bg-black px-3">
+						<IconButton>
+							<CopyIcon on:click="{copyLink}" class="h-6" />
+						</IconButton>
+					</div>
 				</div>
 				<div class="pt-8 pb-4">How does it work?</div>
 				<div class="flex items-center space-x-8">
