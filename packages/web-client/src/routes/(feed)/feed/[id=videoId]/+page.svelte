@@ -21,6 +21,9 @@ import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import userProfile from '$stores/userProfile';
 import type { PageData } from './$types';
 import { hideSplashScreen } from '$stores/splashScreen';
+import { page } from '$app/stores';
+import { authState, referralId } from '$stores/auth';
+import { isPrincipal } from '$lib/utils/isPrincipal';
 
 export let data: PageData;
 
@@ -192,6 +195,21 @@ function recordStats(progress: number, canisterId: string, videoId: bigint, prof
 	}
 }
 
+function handleParams(searchParams: URLSearchParams) {
+	const showLogin = searchParams.get('login');
+	if (showLogin) {
+		$authState.showLogin = true;
+	}
+
+	const refId = searchParams.get('refId');
+	if (refId && isPrincipal(refId)) {
+		$referralId = {
+			principalId: refId,
+			time: new Date().getTime()
+		};
+	}
+}
+
 onMount(async () => {
 	individualUser = (await import('$lib/helpers/backend')).individualUser;
 	updateURL();
@@ -203,6 +221,7 @@ onMount(async () => {
 	}
 	await tick();
 	await fetchNextVideos();
+	handleParams($page.url.searchParams);
 });
 </script>
 
