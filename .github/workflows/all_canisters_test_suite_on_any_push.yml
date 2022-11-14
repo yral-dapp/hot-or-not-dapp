@@ -49,12 +49,21 @@ jobs:
       - name: Stop local replica
         run: dfx stop
       - name: Build individual_user_template canister
-        run: dfx build individual_user_template
+        run: |
+          dfx build individual_user_template
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/individual_user_template.wasm
       - name: Build user_index canister
-        run: dfx build user_index
-      - name: Build project_member_index canister
-        run: dfx build project_member_index
+        run: |
+          dfx build user_index
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/user_index.wasm
       - name: Build post_cache canister
-        run: dfx build post_cache
+        run: |
+          dfx build post_cache
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
+      - name: Build project_member_index canister
+        run: |
+          dfx build project_member_index
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/project_member_index.wasm
+
       - name: Run canister test suite
         run: cargo test

@@ -101,7 +101,7 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 				return {
 					...r,
 					...post,
-					created_by_user_principal_id: post.publisher_canister_id.toText(),
+					created_by_user_principal_id: r.created_by_user_principal_id.toText(),
 					publisher_canister_id: post.publisher_canister_id.toText()
 				};
 			})

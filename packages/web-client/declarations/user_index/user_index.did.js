@@ -13,17 +13,6 @@ export const idlFactory = ({ IDL }) => {
       IDL.Tuple(KnownPrincipalType, IDL.Principal)
     ),
   });
-  const UpdateProfileSetUniqueUsernameError = IDL.Variant({
-    'UsernameAlreadyTaken' : IDL.Null,
-    'UserIndexCrossCanisterCallFailed' : IDL.Null,
-    'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
-    'NotAuthorized' : IDL.Null,
-    'UserCanisterEntryDoesNotExist' : IDL.Null,
-  });
-  const Result = IDL.Variant({
-    'Ok' : IDL.Null,
-    'Err' : UpdateProfileSetUniqueUsernameError,
-  });
   const CanisterStatusType = IDL.Variant({
     'stopped' : IDL.Null,
     'stopping' : IDL.Null,
@@ -64,17 +53,11 @@ export const idlFactory = ({ IDL }) => {
     'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_1 = IDL.Variant({
+  const Result = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
   return IDL.Service({
-    'ask_individual_canisters_to_send_me_their_unique_username_if_set' : IDL.Func(
-        [],
-        [Result],
-        [],
-      ),
-    'delete_user_index_reset_user_canisters' : IDL.Func([], [], []),
     'get_canister_status_from_management_canister' : IDL.Func(
         [IDL.Principal],
         [CanisterStatusResponse],
@@ -89,6 +72,11 @@ export const idlFactory = ({ IDL }) => {
         [],
         [UpgradeStatus],
         ['query'],
+      ),
+    'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : IDL.Func(
+        [IDL.Opt(IDL.Principal)],
+        [IDL.Principal],
+        [],
       ),
     'get_user_canister_id_from_unique_user_name' : IDL.Func(
         [IDL.Text],
@@ -113,12 +101,7 @@ export const idlFactory = ({ IDL }) => {
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
-        [Result_1],
-        [],
-      ),
-    'update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal' : IDL.Func(
-        [IDL.Text, IDL.Principal],
-        [Result_1],
+        [Result],
         [],
       ),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),

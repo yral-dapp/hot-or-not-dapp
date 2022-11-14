@@ -75,7 +75,7 @@ jobs:
           retention-days: 15
 
   playwright-linux:
-    timeout-minutes: 30
+    timeout-minutes: 40
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -104,20 +104,18 @@ jobs:
       - name: Install DFX
         run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 
-      - name: Cache .dfx folder
+      - name: Cache rust dependencies, build output and DFX build cache
         uses: actions/cache@v3
         id: dfx-cache
         with:
-          path: "./.dfx"
-          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/ic/**') }}"
-
-      - name: Cache target folder
-        if: always()
-        uses: actions/cache@v3
-        id: target-cache
-        with:
-          path: "./target"
-          key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/ic/**') }}"
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            .dfx/
+          key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Cache dfx identity
         if: always()

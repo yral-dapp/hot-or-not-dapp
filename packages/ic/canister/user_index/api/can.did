@@ -22,8 +22,7 @@ type KnownPrincipalType = variant {
   CanisterIdSNSController;
   UserIdGlobalSuperAdmin;
 };
-type Result = variant { Ok; Err : UpdateProfileSetUniqueUsernameError };
-type Result_1 = variant { Ok; Err : SetUniqueUsernameError };
+type Result = variant { Ok; Err : SetUniqueUsernameError };
 type SetUniqueUsernameError = variant {
   UsernameAlreadyTaken;
   SendingCanisterDoesNotMatchUserCanisterId;
@@ -32,13 +31,6 @@ type SetUniqueUsernameError = variant {
 type SystemTime = record {
   nanos_since_epoch : nat32;
   secs_since_epoch : nat64;
-};
-type UpdateProfileSetUniqueUsernameError = variant {
-  UsernameAlreadyTaken;
-  UserIndexCrossCanisterCallFailed;
-  SendingCanisterDoesNotMatchUserCanisterId;
-  NotAuthorized;
-  UserCanisterEntryDoesNotExist;
 };
 type UpgradeStatus = record {
   version_number : nat64;
@@ -56,15 +48,14 @@ type UserIndexInitArgs = record {
   known_principal_ids : vec record { KnownPrincipalType; principal };
 };
 service : (UserIndexInitArgs) -> {
-  ask_individual_canisters_to_send_me_their_unique_username_if_set : () -> (
-      Result,
-    );
-  delete_user_index_reset_user_canisters : () -> ();
   get_canister_status_from_management_canister : (principal) -> (
       CanisterStatusResponse,
     );
   get_index_details_is_user_name_taken : (text) -> (bool) query;
   get_index_details_last_upgrade_status : () -> (UpgradeStatus) query;
+  get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer : (
+      opt principal,
+    ) -> (principal);
   get_user_canister_id_from_unique_user_name : (text) -> (opt principal) query;
   get_user_canister_id_from_user_principal_id : (principal) -> (
       opt principal,
@@ -77,11 +68,7 @@ service : (UserIndexInitArgs) -> {
   update_index_with_unique_user_name_corresponding_to_user_principal_id : (
       text,
       principal,
-    ) -> (Result_1);
-  update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal : (
-      text,
-      principal,
-    ) -> (Result_1);
+    ) -> (Result);
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_index_upgrade_user_canisters_with_latest_wasm : () -> (
       UpgradeStatus,

@@ -3,8 +3,7 @@ use ic_stable_memory::{
     utils::ic_types::SPrincipal,
 };
 use model::{
-    post::Post, profile::UserProfile, token::UserAccountTokenDetails,
-    version_details::VersionDetails,
+    post::Post, profile::UserProfile, token::TokenBalance, version_details::VersionDetails,
 };
 use shared_utils::{
     access_control::UserAccessRole,
@@ -22,7 +21,7 @@ pub mod util;
 pub type Profile = UserProfile;
 pub type SVersionDetails = VersionDetails;
 pub type MyKnownPrincipalIdsMap = KnownPrincipalMap;
-pub type TokenDetails = UserAccountTokenDetails;
+pub type MyTokenBalance = TokenBalance;
 
 // * Stable Collections
 pub type AllCreatedPosts = SVec<Post>;

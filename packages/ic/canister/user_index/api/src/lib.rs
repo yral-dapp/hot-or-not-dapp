@@ -7,10 +7,7 @@ use ic_stable_memory::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{
-        individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
-        init_args::UserIndexInitArgs, user_index::error_types::SetUniqueUsernameError,
-    },
+    shared_types::{init_args::UserIndexInitArgs, user_index::error_types::SetUniqueUsernameError},
 };
 use user_index_lib::{
     model::upgrade_status::UpgradeStatus,

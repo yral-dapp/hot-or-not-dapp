@@ -11,7 +11,6 @@ use test_utils::setup::{
 #[test]
 fn when_setting_unique_username_then_new_username_persisted_in_personal_canister_and_updated_in_user_index(
 ) {
-    // * Arrange
     let state_machine = StateMachine::new();
     let KnownCanisters {
         user_index_canister_id,
@@ -19,7 +18,6 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
     } = get_initialized_env_with_provisioned_known_canisters(&state_machine);
     let alice_principal_id = get_alice_principal_id();
 
-    // * Act
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,
@@ -109,7 +107,6 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
         })
         .unwrap();
 
-    // * Assert
     assert_eq!(
         profile_details_from_user_canister.unique_user_name,
         Some("cool_alice_1234".to_string())
