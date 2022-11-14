@@ -20,3 +20,8 @@ export const authState = localWritable<{
 	isLoggedIn: false,
 	showLogin: false
 });
+
+export const referralId = localWritable<{
+	principalId?: string;
+	time?: number;
+}>('referral-id', {});
