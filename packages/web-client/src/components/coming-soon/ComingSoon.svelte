@@ -4,5 +4,5 @@ import ComingSoonIcon from '$components/icons/ComingSoonIcon.svelte';
 
 <div class="flex h-full w-full flex-col items-center justify-center space-y-2">
 	<ComingSoonIcon class="h-36 w-36" />
-	<span>Coming Soon</span>
+	<span class="text-white">Coming Soon</span>
 </div>
