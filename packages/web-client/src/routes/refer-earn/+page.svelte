@@ -20,8 +20,6 @@ const link = $page.url.host.includes('ic0.app')
 
 let selectedTab = 0;
 
-$: console.log({ link });
-
 function copyLink() {
 	try {
 		navigator.clipboard.writeText(link);
