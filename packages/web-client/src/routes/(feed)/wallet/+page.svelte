@@ -62,8 +62,10 @@ async function loadHistory() {
 }
 
 onMount(() => {
-	refreshTokenBalance();
-	loadHistory();
+	if ($authState.isLoggedIn) {
+		refreshTokenBalance();
+		loadHistory();
+	}
 });
 </script>
 
