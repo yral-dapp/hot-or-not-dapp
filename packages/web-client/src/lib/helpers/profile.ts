@@ -223,7 +223,10 @@ type HistoryResponse =
 			endOfList: boolean;
 	  };
 
-export async function fetchHistory(from: number): Promise<HistoryResponse> {
+export async function fetchHistory(
+	from: number,
+	filter?: UnionKeyOf<MintEvent>
+): Promise<HistoryResponse> {
 	try {
 		const { individualUser } = await import('./backend');
 		const res = await individualUser().get_user_utility_token_transaction_history_with_pagination(
@@ -235,17 +238,20 @@ export async function fetchHistory(from: number): Promise<HistoryResponse> {
 			res.Ok.forEach((o) => {
 				const obj = o[1];
 				const type = Object.keys(obj)[0] as UnionKeyOf<TokenEventV1>;
-				history.push({
-					id: o[0],
-					type,
-					timestamp: obj[type].timestamp as SystemTime,
-					details: obj[type].details
-				});
+				const subType = Object.keys(obj[type].details)[0];
+				if (!filter || filter === subType) {
+					history.push({
+						id: o[0],
+						type,
+						timestamp: obj[type].timestamp as SystemTime,
+						details: obj[type].details
+					});
+				}
 			});
 			return {
 				error: false,
 				history,
-				endOfList: res.Ok.length < 10
+				endOfList: history.length < 10
 			};
 		} else if ('Err' in res) {
 			type errors = UnionKeyOf<GetFollowerOrFollowingError>;
