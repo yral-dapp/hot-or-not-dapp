@@ -1,6 +1,10 @@
 import type {
+	GetFollowerOrFollowingError,
 	GetPostsOfUserProfileError,
+	MintEvent,
 	PostDetailsForFrontend,
+	SystemTime,
+	TokenEventV1,
 	UserProfileDetailsForFrontend
 } from '$canisters/individual_user_template/individual_user_template.did';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
@@ -24,6 +28,8 @@ async function fetchProfile() {
 		Log({ error: e, from: '1 fetchProfile' }, 'error');
 	}
 }
+
+type UnionKeyOf<U> = U extends U ? keyof U : never;
 
 export function sanitizeProfile(
 	profile: UserProfileDetailsForFrontend,
@@ -197,5 +203,63 @@ export async function loveUser(userId: string) {
 	} catch (e) {
 		Log({ error: e, from: '1 loveUser' }, 'error');
 		return false;
+	}
+}
+
+interface TransactionHistory {
+	id: BigInt;
+	type: UnionKeyOf<TokenEventV1>;
+	timestamp: SystemTime;
+	details: MintEvent;
+}
+
+type HistoryResponse =
+	| {
+			error: true;
+	  }
+	| {
+			error: false;
+			history: TransactionHistory[];
+			endOfList: boolean;
+	  };
+
+export async function fetchHistory(from: number): Promise<HistoryResponse> {
+	try {
+		const { individualUser } = await import('./backend');
+		const res = await individualUser().get_user_utility_token_transaction_history_with_pagination(
+			BigInt(from),
+			BigInt(from + 10)
+		);
+		if ('Ok' in res) {
+			const history: TransactionHistory[] = [];
+			res.Ok.forEach((o) => {
+				const obj = o[1];
+				const type = Object.keys(obj)[0] as UnionKeyOf<TokenEventV1>;
+				history.push({
+					id: o[0],
+					type,
+					timestamp: obj[type].timestamp as SystemTime,
+					details: obj[type].details
+				});
+			});
+			return {
+				error: false,
+				history,
+				endOfList: res.Ok.length < 10
+			};
+		} else if ('Err' in res) {
+			type errors = UnionKeyOf<GetFollowerOrFollowingError>;
+			const err = Object.keys(res.Err)[0] as errors;
+			switch (err) {
+				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
+				case 'InvalidBoundsPassed':
+					return { error: true };
+				case 'ReachedEndOfItemsList':
+					return { error: false, endOfList: true, history: [] };
+			}
+		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
+	} catch (e) {
+		Log({ error: e, from: '11 fetchHistory' }, 'error');
+		return { error: true };
 	}
 }
