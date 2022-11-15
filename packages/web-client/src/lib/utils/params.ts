@@ -23,5 +23,14 @@ export function handleParams() {
 			principalId: refId,
 			time: new Date().getTime()
 		});
+	} else {
+		const refStore = get(referralId);
+		if (refStore && refStore.time) {
+			const now = new Date().getTime();
+			if (now - refStore.time > 172800000) {
+				//older than two days
+				referralId.set({});
+			}
+		}
 	}
 }
