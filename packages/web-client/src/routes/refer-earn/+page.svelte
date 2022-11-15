@@ -9,25 +9,62 @@ import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
+import { fetchHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
+import { onMount } from 'svelte';
 
 const link = $page.url.host.includes('ic0.app')
 	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app`
 	: `https://${$page.url.host}?refId=${$userProfile.principal_id}&login=true`;
 
 let selectedTab = 0;
+let endOfList = false;
+let loading = true;
+let error = false;
+let history = [];
 
-function copyLink() {
+async function loadHistory() {
+	if (endOfList) {
+		return;
+	}
+
+	loading = true;
+	error = false;
+	const res = await fetchHistory(history.length);
+
+	if (res.error) {
+		error = true;
+		loading = false;
+		return;
+	}
+
+	// history.push(...res.history);
+
+	console.log(res);
+	history = history;
+	endOfList = !!res.endOfList;
+	loading = false;
+}
+
+async function shareLink() {
 	try {
-		navigator.clipboard.writeText(link);
+		await navigator.share({
+			url: link
+		});
 	} catch (e) {
 		Log({ error: e, from: '1 copyLink' }, 'error');
 	}
 }
+
+onMount(() => {
+	if ($authState.isLoggedIn) {
+		loadHistory();
+	}
+});
 </script>
 
 <HomeLayout>
@@ -61,7 +98,7 @@ function copyLink() {
 							>{link}</span>
 						<div class="absolute right-0 bg-black px-3">
 							<IconButton>
-								<ShareArrowIcon on:click="{copyLink}" class="h-6 pr-1" />
+								<ShareArrowIcon on:click="{shareLink}" class="h-5 pr-1" />
 							</IconButton>
 						</div>
 					</div>
@@ -93,7 +130,7 @@ function copyLink() {
 					</div>
 				</div>
 			{:else if $authState.isLoggedIn}
-				{#each new Array(3) as _, i}
+				{#each history as _, i}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img
@@ -108,6 +145,11 @@ function copyLink() {
 						<span>100 Coins</span>
 					</div>
 				{/each}
+				{#if loading}
+					<div class="text-center text-sm opacity-70">Loading</div>
+				{:else if error}
+					<div class="text-center text-sm text-red-500">Error fetching history.</div>
+				{/if}
 			{:else}
 				<div class="text-center text-sm opacity-70">Please login to see your referral history</div>
 			{/if}
