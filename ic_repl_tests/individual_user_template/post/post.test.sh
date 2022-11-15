@@ -1,4 +1,4 @@
-#!/home/saikat/bin/ic-repl -r http://127.0.0.1:8000/
+#!/home/saikat/bin/ic-repl
 
 import user_index_canister = "r7inp-6aaaa-aaaaa-aaabq-cai";
 identity default "~/.config/dfx/identity/default/identity.pem";
