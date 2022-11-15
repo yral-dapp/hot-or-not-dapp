@@ -19,7 +19,7 @@ async function initClient() {
 }
 
 async function initSentry() {
-	if (process.env.NODE_ENV == 'development') return;
+	if (import.meta.env.NODE_ENV == 'development') return;
 
 	const Sentry = await import('@sentry/svelte');
 
@@ -32,7 +32,7 @@ async function initSentry() {
 }
 
 function registerServiceWorker() {
-	if (process.env.NODE_ENV == 'development') return;
+	if (import.meta.env.NODE_ENV == 'development') return;
 
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/service-worker.js');
