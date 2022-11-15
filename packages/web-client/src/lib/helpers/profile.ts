@@ -269,3 +269,16 @@ export async function fetchHistory(
 		return { error: true };
 	}
 }
+
+export async function fetchTokenBalance(): Promise<
+	{ error: false; balance: number } | { error: true }
+> {
+	try {
+		const { individualUser } = await import('./backend');
+		const res = await individualUser().get_utility_token_balance();
+		return { error: false, balance: Number(res) };
+	} catch (e) {
+		Log({ error: e, from: '11 fetchHistory' }, 'error');
+		return { error: true };
+	}
+}
