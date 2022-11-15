@@ -1,5 +1,11 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
+import { handleParams } from '$lib/utils/params';
+import { onMount } from 'svelte';
+
+onMount(() => {
+	handleParams();
+});
 </script>
 
 <div class="flex h-full w-full items-center justify-center">

@@ -1,14 +1,9 @@
 <script lang="ts">
-import 'swiper/css';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import type { IndividualUserActor } from '$lib/helpers/backend';
-import { playerState } from '$stores/playerState';
-import { onMount, tick } from 'svelte';
-import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
-import Log from '$lib/utils/Log';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import {
 	getTopPosts,
 	getWatchedVideosFromCache,
@@ -16,11 +11,17 @@ import {
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
-import { Principal } from '@dfinity/principal';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import userProfile from '$stores/userProfile';
-import type { PageData } from './$types';
+import Log from '$lib/utils/Log';
+import { handleParams } from '$lib/utils/params';
+import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
+import userProfile from '$stores/userProfile';
+import { Principal } from '@dfinity/principal';
+import { onMount, tick } from 'svelte';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/svelte';
+import { debounce } from 'throttle-debounce';
+import type { PageData } from './$types';
 
 export let data: PageData;
 
@@ -203,6 +204,7 @@ onMount(async () => {
 	}
 	await tick();
 	await fetchNextVideos();
+	handleParams();
 });
 </script>
 
