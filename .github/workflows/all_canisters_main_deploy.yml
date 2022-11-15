@@ -7,7 +7,13 @@ on:
       - 'packages/ic/**'
       - '.github/workflows/all_canisters_main_deploy.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  call-workflow:
+    uses: ./.github/workflows/all_canisters_test_suite_on_any_push.yml
   deploy:
     name: Deploy all canisters
     runs-on: ubuntu-latest
