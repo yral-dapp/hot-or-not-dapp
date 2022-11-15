@@ -154,6 +154,8 @@ onMount(() => {
 					<div class="text-center text-sm opacity-70">Loading</div>
 				{:else if error}
 					<div class="text-center text-sm text-red-500">Error fetching history.</div>
+				{:else if !history.length}
+					<div class="text-center text-sm opacity-70">No referrals yet.</div>
 				{/if}
 			{:else}
 				<div class="text-center text-sm opacity-70">Please login to see your referral history</div>
