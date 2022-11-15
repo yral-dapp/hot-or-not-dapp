@@ -9,25 +9,63 @@ import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
+import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
+import { onMount } from 'svelte';
 
 const link = $page.url.host.includes('ic0.app')
 	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app`
 	: `https://${$page.url.host}?refId=${$userProfile.principal_id}&login=true`;
 
 let selectedTab = 0;
+let endOfList = false;
+let loading = true;
+let error = false;
+let history: TransactionHistory[] = [];
 
-function copyLink() {
+async function loadHistory() {
+	if (endOfList) {
+		return;
+	}
+
+	loading = true;
+	error = false;
+	const res = await fetchHistory(history.length, 'Referral');
+
+	if (res.error) {
+		error = true;
+		loading = false;
+		return;
+	}
+
+	history.push(...res.history);
+	history = history;
+
+	console.log(history);
+
+	endOfList = res.endOfList;
+	loading = false;
+}
+
+async function shareLink() {
 	try {
-		navigator.clipboard.writeText(link);
+		await navigator.share({
+			url: link
+		});
 	} catch (e) {
 		Log({ error: e, from: '1 copyLink' }, 'error');
 	}
 }
+
+onMount(() => {
+	if ($authState.isLoggedIn) {
+		loadHistory();
+	}
+});
 </script>
 
 <HomeLayout>
@@ -61,7 +99,7 @@ function copyLink() {
 							>{link}</span>
 						<div class="absolute right-0 bg-black px-3">
 							<IconButton>
-								<ShareArrowIcon on:click="{copyLink}" class="h-6 pr-1" />
+								<ShareArrowIcon on:click="{shareLink}" class="h-5 pr-1" />
 							</IconButton>
 						</div>
 					</div>
@@ -93,7 +131,11 @@ function copyLink() {
 					</div>
 				</div>
 			{:else if $authState.isLoggedIn}
-				{#each new Array(3) as _, i}
+				{#each history as item, i}
+					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
+						.toDateString()
+						.substring(4)}
+					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : 500}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img
@@ -102,12 +144,19 @@ function copyLink() {
 								class="h-12 w-12 rounded-full object-cover" />
 							<div class="flex flex-col items-start">
 								<span>{generateRandomName('name', i.toString())}</span>
-								<span class="text-sm text-white/50">10 Aug</span>
+								<span class="text-sm text-white/50">{date}</span>
 							</div>
 						</div>
-						<span>100 Coins</span>
+						<span>{tokenCount} Coins</span>
 					</div>
 				{/each}
+				{#if loading}
+					<div class="text-center text-sm opacity-70">Loading</div>
+				{:else if error}
+					<div class="text-center text-sm text-red-500">Error fetching history.</div>
+				{:else if !history.length}
+					<div class="text-center text-sm opacity-70">No referrals yet.</div>
+				{/if}
 			{:else}
 				<div class="text-center text-sm opacity-70">Please login to see your referral history</div>
 			{/if}
