@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-suite:
+  test:
     name: Run canister test suite
     runs-on: ubuntu-latest
     steps:
