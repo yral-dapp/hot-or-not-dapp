@@ -7,10 +7,6 @@ on:
       - 'packages/ic/**'
       - '.github/workflows/all_canisters_main_deploy.yml'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test:
     name: Run test suite
