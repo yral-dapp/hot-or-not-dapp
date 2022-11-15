@@ -9,8 +9,6 @@ on:
       - ".github/workflows/webclient-setup/action.yml"
       - ".github/workflows/webclient-test.yml"
   pull_request_target:
-    branches:
-      - main
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
