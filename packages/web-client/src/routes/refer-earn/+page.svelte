@@ -9,7 +9,7 @@ import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
-import { fetchHistory } from '$lib/helpers/profile';
+import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -25,7 +25,7 @@ let selectedTab = 0;
 let endOfList = false;
 let loading = true;
 let error = false;
-let history = [];
+let history: TransactionHistory[] = [];
 
 async function loadHistory() {
 	if (endOfList) {
@@ -42,11 +42,12 @@ async function loadHistory() {
 		return;
 	}
 
-	// history.push(...res.history);
-
-	console.log(res);
+	history.push(...res.history);
 	history = history;
-	endOfList = !!res.endOfList;
+
+	console.log(history);
+
+	endOfList = res.endOfList;
 	loading = false;
 }
 
