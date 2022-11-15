@@ -51,7 +51,8 @@ export default ({ mode }) => {
 		define: {
 			// Here we can define global constants
 			...canisterDefinitions,
-			'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+			'process.env.DFX_NETWORK': JSON.stringify(isDev ? 'local' : 'ic'),
+			'import.meta.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
 			'import.meta.env.ENABLE_SSR': process.env.BUILD_MODE != 'static'
 		},
 		server: {
