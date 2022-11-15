@@ -1,5 +1,4 @@
 <script lang="ts">
-import { page } from '$app/stores';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import Selector from '$components/home/Selector.svelte';
