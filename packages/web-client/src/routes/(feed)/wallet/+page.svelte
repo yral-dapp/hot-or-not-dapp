@@ -1,22 +1,68 @@
 <script lang="ts">
 import ComingSoon from '$components/coming-soon/ComingSoon.svelte';
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte';
-import { fetchTokenBalance } from '$lib/helpers/profile';
+import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 import { onMount } from 'svelte';
 
 let load = {
-	balance: true
+	balance: true,
+	list: true
 };
 
+let error = {
+	balance: false,
+	list: false
+};
+
+let endOfList = false;
 let tokenBalance = 0;
-onMount(async () => {
+let history: TransactionHistory[] = [];
+
+async function refreshTokenBalance() {
 	const res = await fetchTokenBalance();
-	if (!res.error) {
+	if (res.error) {
+		error.balance = true;
+		error = error;
+	} else {
 		tokenBalance = res.balance;
 	}
 	load.balance = false;
+	load = load;
+}
+
+async function loadHistory() {
+	if (endOfList) {
+		return;
+	}
+
+	load.list = true;
+	error.list = false;
+	const res = await fetchHistory(history.length);
+
+	if (res.error) {
+		error.list = true;
+		load.list = false;
+		load = load;
+		error = error;
+		return;
+	}
+
+	history.push(...res.history);
+	history = history;
+
+	console.log(history);
+
+	endOfList = res.endOfList;
+	load.list = false;
+	load = load;
+	error = error;
+}
+
+onMount(() => {
+	refreshTokenBalance();
+	loadHistory();
 });
 </script>
 
