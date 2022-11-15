@@ -32,7 +32,7 @@ function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
 		case 'ii':
 			return process.env.NODE_ENV === 'development'
-				? `http://${process.env.INTERNET_IDENTITY_CANISTER_ID}.localhost:8000`
+				? `http://${process.env.INTERNET_IDENTITY_CANISTER_ID}.localhost:4943`
 				: 'https://identity.ic0.app/#authorize';
 		case 'nfid':
 			return NFID_AUTH_URL;

@@ -7,7 +7,13 @@ on:
       - 'packages/ic/**'
       - '.github/workflows/all_canisters_main_deploy.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  call-workflow:
+    uses: ./.github/workflows/all_canisters_test_suite_on_any_push.yml
   deploy:
     name: Deploy all canisters
     runs-on: ubuntu-latest
@@ -17,7 +23,7 @@ jobs:
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
       - name: Install DFX
-        run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+        run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - name: Initialize DFX identities
         run: dfx identity list
       - name: Import DFX identity
