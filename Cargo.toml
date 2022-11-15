@@ -11,3 +11,6 @@ members = [
   "packages/ic/lib/shared_utils",
   "packages/ic/lib/test_utils",
 ]
+
+[workspace.dependencies]
+ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "f7e3c96a2be92186718f6a1e67eea37bf3252c00" }
