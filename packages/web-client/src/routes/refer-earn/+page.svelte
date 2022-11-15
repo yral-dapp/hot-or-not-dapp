@@ -1,9 +1,9 @@
 <script lang="ts">
 import { page } from '$app/stores';
+import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte';
-import CopyIcon from '$components/icons/CopyIcon.svelte';
 import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte';
 import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
@@ -12,6 +12,7 @@ import DotTabs from '$components/tabs/DotTabs.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
+import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 
 const link = $page.url.host.includes('ic0.app')
@@ -48,21 +49,28 @@ function copyLink() {
 				<div class="shrink-0 py-4">
 					<CoinsStashIcon class="h-36" />
 				</div>
-				<div class="text-center text-2xl font-bold">Invite & Win upto 10,000 tokens</div>
-				<div class="text-center text-sm opacity-70">
-					Send a referral link to your friends via link/whatsapp and win tokens
-				</div>
-
-				<div class="pt-8 text-sm uppercase">referral link</div>
-				<div
-					class="relative flex w-full items-center justify-between overflow-hidden rounded-full border-2 border-dashed border-primary py-5 px-6">
-					<span class="w-full whitespace-nowrap font-thin">{link}</span>
-					<div class="absolute right-0 bg-black px-3">
-						<IconButton>
-							<CopyIcon on:click="{copyLink}" class="h-6" />
-						</IconButton>
+				<div class="text-center text-2xl font-bold">Invite & Win 500 tokens</div>
+				{#if $authState.isLoggedIn}
+					<div class="text-center text-sm opacity-70">
+						Send a referral link to your friends via link/whatsapp and win tokens
 					</div>
-				</div>
+					<div class="pt-8 text-sm uppercase">referral link</div>
+					<div
+						class="relative flex w-full items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary py-5 px-6 pr-10">
+						<span class="w-full select-all truncate whitespace-nowrap  text-xs font-thin"
+							>{link}</span>
+						<div class="absolute right-0 bg-black px-3">
+							<IconButton>
+								<ShareArrowIcon on:click="{copyLink}" class="h-6 pr-1" />
+							</IconButton>
+						</div>
+					</div>
+				{:else}
+					<div class="text-center text-sm opacity-70">Please login to see your referral link</div>
+					<div class="flex h-24 w-full items-center justify-center">
+						<Button on:click="{() => ($authState.showLogin = true)}" class="w-full">Login</Button>
+					</div>
+				{/if}
 				<div class="pt-8 pb-4">How does it work?</div>
 				<div class="flex items-center space-x-8">
 					<div class="flex flex-col items-center space-y-3">
@@ -84,7 +92,7 @@ function copyLink() {
 						<span class="text-center text-xs">You both win 1,000 tokens each</span>
 					</div>
 				</div>
-			{:else}
+			{:else if $authState.isLoggedIn}
 				{#each new Array(3) as _, i}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
@@ -100,6 +108,8 @@ function copyLink() {
 						<span>100 Coins</span>
 					</div>
 				{/each}
+			{:else}
+				<div class="text-center text-sm opacity-70">Please login to see your referral history</div>
 			{/if}
 		</div>
 	</svelte:fragment>
