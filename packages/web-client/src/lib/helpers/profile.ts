@@ -206,7 +206,7 @@ export async function loveUser(userId: string) {
 	}
 }
 
-interface TransactionHistory {
+export interface TransactionHistory {
 	id: BigInt;
 	type: UnionKeyOf<TokenEventV1>;
 	timestamp: SystemTime;
