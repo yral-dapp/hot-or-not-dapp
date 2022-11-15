@@ -4,11 +4,9 @@ import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte';
-import CopyIcon from '$components/icons/CopyIcon.svelte';
 import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte';
 import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
-import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
@@ -94,7 +92,7 @@ function copyLink() {
 						<span class="text-center text-xs">You both win 1,000 tokens each</span>
 					</div>
 				</div>
-			{:else}
+			{:else if $authState.isLoggedIn}
 				{#each new Array(3) as _, i}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
@@ -110,6 +108,8 @@ function copyLink() {
 						<span>100 Coins</span>
 					</div>
 				{/each}
+			{:else}
+				<div class="text-center text-sm opacity-70">Please login to see your referral history</div>
 			{/if}
 		</div>
 	</svelte:fragment>
