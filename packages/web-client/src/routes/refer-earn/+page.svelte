@@ -34,7 +34,7 @@ async function loadHistory() {
 
 	loading = true;
 	error = false;
-	const res = await fetchHistory(history.length);
+	const res = await fetchHistory(history.length, 'Referral');
 
 	if (res.error) {
 		error = true;
@@ -135,6 +135,7 @@ onMount(() => {
 					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
 						.toDateString()
 						.substring(4)}
+					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : 500}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img
@@ -146,7 +147,7 @@ onMount(() => {
 								<span class="text-sm text-white/50">{date}</span>
 							</div>
 						</div>
-						<span>500 Coins</span>
+						<span>{tokenCount} Coins</span>
 					</div>
 				{/each}
 				{#if loading}
