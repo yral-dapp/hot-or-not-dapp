@@ -1,5 +1,13 @@
 name: Web-client tests
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/web-client/**"
+      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/webclient-setup/action.yml"
+      - ".github/workflows/webclient-test.yml"
   pull_request_target:
     branches:
       - main
