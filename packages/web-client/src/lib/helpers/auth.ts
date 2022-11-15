@@ -1,16 +1,23 @@
 import Log from '$lib/utils/Log';
 import { AuthClient } from '@dfinity/auth-client';
 import { get } from 'svelte/store';
-import { authState, authHelper } from '$stores/auth';
+import { authState, authHelper, referralId } from '$stores/auth';
 import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
 import { setUser } from './sentry';
+import { Principal } from '@dfinity/principal';
 
 async function updateUserIndexCanister() {
 	const { userIndex } = await import('./backend');
 	try {
+		const referralStore = get(referralId);
+		const referral: [] | [Principal] = referralStore.principalId
+			? [Principal.from(referralStore.principalId)]
+			: [];
 		const userCanisterPrincipal =
-			await userIndex().get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id();
+			await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
+				referral
+			);
 		Log(
 			{
 				userCanisterPrincipal: userCanisterPrincipal?.toText(),
