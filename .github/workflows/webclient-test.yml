@@ -72,7 +72,7 @@ jobs:
         with:
           name: lhci-report
           path: lhci_report/
-          retention-days: 15
+          retention-days: 7
 
   playwright-linux:
     timeout-minutes: 40
@@ -155,4 +155,4 @@ jobs:
         with:
           name: playwright-report
           path: packages/web-client/playwright-report/
-          retention-days: 15
+          retention-days: 7
