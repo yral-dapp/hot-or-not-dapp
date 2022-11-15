@@ -7,7 +7,7 @@ export interface CanisterStatusResponse {
   'cycles' : bigint,
   'settings' : DefiniteCanisterSettings,
   'idle_cycles_burned_per_day' : bigint,
-  'module_hash' : [] | [Array<number>],
+  'module_hash' : [] | [Uint8Array],
 }
 export type CanisterStatusType = { 'stopped' : null } |
   { 'stopping' : null } |

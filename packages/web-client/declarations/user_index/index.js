@@ -1,24 +1,27 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
 
 // Imports and re-exports candid interface
-import { idlFactory } from './user_index.did.js';
-export { idlFactory } from './user_index.did.js';
+import { idlFactory } from "./user_index.did.js";
+export { idlFactory } from "./user_index.did.js";
+
 // CANISTER_ID is replaced by webpack based on node environment
 export const canisterId = process.env.USER_INDEX_CANISTER_ID;
 
-/**
- * 
- * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
- * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
- * @return {import("@dfinity/agent").ActorSubclass<import("./user_index.did.js")._SERVICE>}
- */
-export const createActor = (canisterId, options) => {
-  const agent = new HttpAgent(options ? { ...options.agentOptions } : {});
-  
+export const createActor = (canisterId, options = {}) => {
+  const agent = options.agent || new HttpAgent({ ...options.agentOptions });
+
+  if (options.agent && options.agentOptions) {
+    console.warn(
+      "Detected both agent and agentOptions passed to createActor. Ignoring agentOptions and proceeding with the provided agent."
+    );
+  }
+
   // Fetch root key for certificate validation during development
-  if (process.env.NODE_ENV !== "production") {
-    agent.fetchRootKey().catch(err => {
-      console.warn("Unable to fetch root key. Check to ensure that your local replica is running");
+  if (process.env.DFX_NETWORK !== "ic") {
+    agent.fetchRootKey().catch((err) => {
+      console.warn(
+        "Unable to fetch root key. Check to ensure that your local replica is running"
+      );
       console.error(err);
     });
   }
@@ -27,12 +30,8 @@ export const createActor = (canisterId, options) => {
   return Actor.createActor(idlFactory, {
     agent,
     canisterId,
-    ...(options ? options.actorOptions : {}),
+    ...options.actorOptions,
   });
 };
-  
-/**
- * A ready-to-use agent for the user_index canister
- * @type {import("@dfinity/agent").ActorSubclass<import("./user_index.did.js")._SERVICE>}
- */
+
 export const user_index = createActor(canisterId);

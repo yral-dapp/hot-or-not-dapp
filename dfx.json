@@ -1,6 +1,5 @@
 {
 	"version": 1,
-	"dfx": "0.11.2",
 	"canisters": {
 		"individual_user_template": {
 			"type": "rust",
@@ -46,18 +45,6 @@
 			},
 			"source": ["./packages/web-client/build"],
 			"type": "assets"
-		}
-	},
-	"defaults": {
-		"build": {
-			"packtool": "",
-			"args": ""
-		}
-	},
-	"networks": {
-		"local": {
-			"bind": "127.0.0.1:8000",
-			"type": "ephemeral"
 		}
 	}
 }

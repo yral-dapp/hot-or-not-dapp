@@ -2,7 +2,6 @@ import { resolve } from 'path';
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const dfxJson = require('./../../dfx.json');
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 // import { partytownVite } from '@builder.io/partytown/utils';
@@ -13,8 +12,7 @@ export default ({ mode }) => {
 
 	console.log('starting vite in', mode, 'mode');
 
-	// Gets the port dfx is running on from dfx.json
-	const DFX_PORT = dfxJson.networks.local.bind.split(':')[1];
+	const DFX_PORT = 4943;
 
 	let canisterIds = {};
 
