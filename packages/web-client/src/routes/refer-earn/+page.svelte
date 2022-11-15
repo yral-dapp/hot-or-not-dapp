@@ -131,7 +131,10 @@ onMount(() => {
 					</div>
 				</div>
 			{:else if $authState.isLoggedIn}
-				{#each history as _, i}
+				{#each history as item, i}
+					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
+						.toDateString()
+						.substring(4)}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img
@@ -140,10 +143,10 @@ onMount(() => {
 								class="h-12 w-12 rounded-full object-cover" />
 							<div class="flex flex-col items-start">
 								<span>{generateRandomName('name', i.toString())}</span>
-								<span class="text-sm text-white/50">10 Aug</span>
+								<span class="text-sm text-white/50">{date}</span>
 							</div>
 						</div>
-						<span>100 Coins</span>
+						<span>500 Coins</span>
 					</div>
 				{/each}
 				{#if loading}
