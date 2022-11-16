@@ -63,6 +63,14 @@ async function shareLink() {
 	}
 }
 
+function copyLink() {
+	try {
+		navigator.clipboard.writeText(link);
+	} catch (e) {
+		Log({ error: e, from: '1 copyLink' }, 'error');
+	}
+}
+
 onMount(() => {
 	if ($authState.isLoggedIn) {
 		loadHistory();
@@ -97,8 +105,13 @@ onMount(() => {
 					<div class="pt-8 text-sm uppercase">referral link</div>
 					<div
 						class="relative flex w-full items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary py-5 px-6 pr-10">
-						<span class="w-full select-all truncate whitespace-nowrap  text-xs font-thin"
-							>{link}</span>
+						<span
+							role="presentation"
+							on:click="{copyLink}"
+							class="w-full select-all truncate whitespace-nowrap  text-xs font-thin">
+							{link}
+						</span>
+
 						<div class="absolute right-0 bg-black px-3">
 							<IconButton on:click="{shareLink}">
 								<ShareArrowIcon class="h-5 pr-1" />
