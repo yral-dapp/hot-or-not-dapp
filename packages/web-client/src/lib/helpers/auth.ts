@@ -53,6 +53,7 @@ export async function initializeAuthClient(): Promise<void> {
 		client = await AuthClient.create({
 			idleOptions: {
 				disableIdle: true,
+				idleTimeout: 30 * 24 * 60 * 60 * 1000 * 1000 * 1000,
 				disableDefaultIdleCallback: true
 			}
 		});
