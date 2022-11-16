@@ -125,14 +125,6 @@ jobs:
             .dfx/
           key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Cache dfx identity
-        if: always()
-        uses: actions/cache@v3
-        id: identity-cache
-        with:
-          path: "~/.config/dfx/identity"
-          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/ic/**') }}"
-
       - name: Start DFX Server
         if: always()
         run: dfx start --background
