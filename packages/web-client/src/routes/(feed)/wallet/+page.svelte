@@ -4,7 +4,6 @@ import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
-import { onMount } from 'svelte';
 
 let load = {
 	balance: true,
@@ -19,6 +18,8 @@ let error = {
 let endOfList = false;
 let tokenBalance = 0;
 let history: TransactionHistory[] = [];
+
+$: loggedIn = $authState.isLoggedIn;
 
 async function refreshTokenBalance() {
 	const res = await fetchTokenBalance();
@@ -60,12 +61,13 @@ async function loadHistory() {
 	error = error;
 }
 
-onMount(() => {
-	if ($authState.isLoggedIn) {
-		refreshTokenBalance();
-		loadHistory();
-	}
-});
+function init() {
+	console.log('called init');
+	refreshTokenBalance();
+	loadHistory();
+}
+
+$: loggedIn && init();
 </script>
 
 {#if !$authState.isLoggedIn}
