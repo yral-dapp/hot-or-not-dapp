@@ -63,8 +63,8 @@ async function handleSuccessfulLogin(type: LoginType) {
 		}
 		await initializeAuthClient();
 		registerEvent(canId ? 'login' : 'sign_up', {
-			'Login method': type,
-			'Display Name': $userProfile.display_name,
+			login_method: type,
+			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
 			userId: $userProfile.principal_id
 		});

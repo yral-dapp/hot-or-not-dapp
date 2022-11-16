@@ -11,7 +11,7 @@ let loading = false;
 
 async function handleLogout() {
 	registerEvent('logout', {
-		'Display Name': $userProfile.display_name,
+		display_name: $userProfile.display_name,
 		username: $userProfile.unique_user_name,
 		userId: $userProfile.principal_id
 	});
