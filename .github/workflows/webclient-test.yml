@@ -104,6 +104,14 @@ jobs:
       - name: Install DFX
         run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 
+      - name: Import DFX identity
+        run: |
+          touch actions_identity.pem
+          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+
       - name: Cache rust dependencies, build output and DFX build cache
         uses: actions/cache@v3
         id: dfx-cache
@@ -117,17 +125,16 @@ jobs:
             .dfx/
           key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Cache dfx identity
-        if: always()
-        uses: actions/cache@v3
-        id: identity-cache
-        with:
-          path: "~/.config/dfx/identity"
-          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/ic/**') }}"
-
       - name: Start DFX Server
         if: always()
         run: dfx start --background
+
+      - name: Provision local canister IDs for the canisters
+        run: |
+          dfx canister create --no-wallet individual_user_template
+          dfx canister create --no-wallet user_index
+          dfx canister create --no-wallet project_member_index
+          dfx canister create --no-wallet post_cache
 
       - name: Install canisters
         if: steps.dfx-cache.outputs.cache-hit != 'true'
