@@ -100,8 +100,8 @@ onMount(() => {
 						<span class="w-full select-all truncate whitespace-nowrap  text-xs font-thin"
 							>{link}</span>
 						<div class="absolute right-0 bg-black px-3">
-							<IconButton>
-								<ShareArrowIcon on:click="{shareLink}" class="h-5 pr-1" />
+							<IconButton on:click="{shareLink}">
+								<ShareArrowIcon class="h-5 pr-1" />
 							</IconButton>
 						</div>
 					</div>
