@@ -23,6 +23,7 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { handleParams } from '$lib/utils/params';
 
 export let data: PageData;
 let { me, profile, canId } = data;
@@ -112,6 +113,7 @@ onMount(async () => {
 	});
 	load.page = false;
 	loadPosts();
+	handleParams();
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>

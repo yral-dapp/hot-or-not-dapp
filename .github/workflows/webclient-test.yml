@@ -138,7 +138,7 @@ jobs:
 
       - name: Install canisters
         if: always()
-        run: ./scripts/canisters/local_deploy/install_all_canisters.sh
+        run: ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()

@@ -18,8 +18,10 @@ import userProfile from '$stores/userProfile';
 import { onMount } from 'svelte';
 
 const link = $page.url.host.includes('ic0.app')
-	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app`
-	: `https://${$page.url.host}?refId=${$userProfile.principal_id}&login=true`;
+	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app/profile/${
+			$userProfile.principal_id
+	  }?refId=${$userProfile.principal_id}&login=true`
+	: `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`;
 
 let selectedTab = 0;
 let endOfList = false;
@@ -61,6 +63,14 @@ async function shareLink() {
 	}
 }
 
+function copyLink() {
+	try {
+		navigator.clipboard.writeText(link);
+	} catch (e) {
+		Log({ error: e, from: '1 copyLink' }, 'error');
+	}
+}
+
 onMount(() => {
 	if ($authState.isLoggedIn) {
 		loadHistory();
@@ -95,11 +105,16 @@ onMount(() => {
 					<div class="pt-8 text-sm uppercase">referral link</div>
 					<div
 						class="relative flex w-full items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary py-5 px-6 pr-10">
-						<span class="w-full select-all truncate whitespace-nowrap  text-xs font-thin"
-							>{link}</span>
+						<span
+							role="presentation"
+							on:click="{copyLink}"
+							class="w-full select-all truncate whitespace-nowrap  text-xs font-thin">
+							{link}
+						</span>
+
 						<div class="absolute right-0 bg-black px-3">
-							<IconButton>
-								<ShareArrowIcon on:click="{shareLink}" class="h-5 pr-1" />
+							<IconButton on:click="{shareLink}">
+								<ShareArrowIcon class="h-5 pr-1" />
 							</IconButton>
 						</div>
 					</div>
