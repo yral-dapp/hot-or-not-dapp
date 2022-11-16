@@ -71,7 +71,7 @@ beforeNavigate(({ from, to }) => {
 	}}" />
 
 <alpha-ribbon
-	class="pointer-events-none absolute -right-9 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-1 px-2 text-xs font-bold uppercase text-white opacity-60">
+	class="pointer-events-none fixed -right-9 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-1 px-2 text-xs font-bold uppercase text-white opacity-60">
 	Alpha
 </alpha-ribbon>
 
