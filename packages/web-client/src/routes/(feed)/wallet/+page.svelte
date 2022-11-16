@@ -1,7 +1,6 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte';
-import ComingSoon from '$components/coming-soon/ComingSoon.svelte';
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte';
+import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
@@ -72,9 +71,7 @@ onMount(() => {
 {#if !$authState.isLoggedIn}
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-2">
 		<div class="text-center text-sm opacity-70">Please login to access your wallet</div>
-		<div class="flex h-24 w-full items-center justify-center">
-			<Button on:click="{() => ($authState.showLogin = true)}" class="w-full">Login</Button>
-		</div>
+		<LoginButton />
 	</div>
 {:else}
 	<div class="flex h-full w-full flex-col overflow-hidden overflow-y-auto">

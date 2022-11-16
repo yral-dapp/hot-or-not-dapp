@@ -8,6 +8,7 @@ import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte';
 import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
+import LoginButton from '$components/login/LoginButton.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
@@ -174,6 +175,7 @@ onMount(() => {
 				{/if}
 			{:else}
 				<div class="text-center text-sm opacity-70">Please login to see your referral history</div>
+				<LoginButton />
 			{/if}
 		</div>
 	</svelte:fragment>
