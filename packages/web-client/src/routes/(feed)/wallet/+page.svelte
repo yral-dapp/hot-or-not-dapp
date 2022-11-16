@@ -113,7 +113,7 @@ onMount(() => {
 		</div>
 		<div class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pt-4 pb-16">
 			{#each history as item}
-				{@const tokenCount = item.details['NewUserSignup'] ? 1000 : 500}
+				{@const name = 'NewUserSignup' in item.details ? 'Signup' : 'Referral'}
 				<div class="flex items-center justify-between py-4">
 					<div class="flex items-center space-x-4">
 						<div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
@@ -123,11 +123,11 @@ onMount(() => {
 							</div>
 						</div>
 						<div class="flex flex-col space-y-1">
-							<div>{Object.keys(item.details)[0]}</div>
-							<div class="text-sm opacity-50">{tokenCount} Coins</div>
+							<div>{name}</div>
+							<div class="text-sm opacity-50">{item.token} Coins</div>
 						</div>
 					</div>
-					<div class="text-sm text-green-600">+ {tokenCount}</div>
+					<div class="text-sm text-green-600">+ {item.token}</div>
 				</div>
 			{/each}
 		</div>
