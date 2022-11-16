@@ -122,7 +122,7 @@ onMount(async () => {
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
 			<IconButton
-				href="{$navigateBack && !$navigateBack.includes('edit') ? $navigateBack : '/menu'}"
+				href="{$navigateBack && !$navigateBack.includes('edit') ? $navigateBack : '/feed'}"
 				class="shrink-0">
 				<CaretLeftIcon class="h-7 w-7" />
 			</IconButton>

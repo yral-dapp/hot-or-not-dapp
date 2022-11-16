@@ -137,12 +137,8 @@ jobs:
           dfx canister create --no-wallet post_cache
 
       - name: Install canisters
-        if: steps.dfx-cache.outputs.cache-hit != 'true'
+        if: always()
         run: ./scripts/canisters/local_deploy/install_all_canisters.sh
-
-      - name: Upgrade canister
-        if: steps.dfx-cache.outputs.cache-hit == 'true'
-        run: ./scripts/canisters/local_deploy/upgrade_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()
