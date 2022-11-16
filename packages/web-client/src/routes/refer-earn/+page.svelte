@@ -18,8 +18,10 @@ import userProfile from '$stores/userProfile';
 import { onMount } from 'svelte';
 
 const link = $page.url.host.includes('ic0.app')
-	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app`
-	: `https://${$page.url.host}?refId=${$userProfile.principal_id}&login=true`;
+	? `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.raw.ic0.app/profile/${
+			$userProfile.principal_id
+	  }?refId=${$userProfile.principal_id}&login=true`
+	: `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`;
 
 let selectedTab = 0;
 let endOfList = false;
