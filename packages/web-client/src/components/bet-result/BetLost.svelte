@@ -1,11 +1,10 @@
 <script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte';
 import Button from '$components/button/Button.svelte';
-import BetWonBackground from '$components/icons/BetWonBackground.svelte';
 import { fade } from 'svelte/transition';
 </script>
 
-<login
+<bet-lost
 	transition:fade|local
 	class="absolute z-[100] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black px-8 text-white">
 	<Avatar
@@ -23,4 +22,4 @@ import { fade } from 'svelte/transition';
 		<Button class="w-full">Place a new bet</Button>
 		<Button type="secondary" class="w-full">Check balance</Button>
 	</div>
-</login>
+</bet-lost>

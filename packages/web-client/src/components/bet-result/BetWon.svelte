@@ -5,7 +5,7 @@ import BetWonBackground from '$components/icons/BetWonBackground.svelte';
 import { fade } from 'svelte/transition';
 </script>
 
-<login
+<bet-win
 	transition:fade|local
 	class="absolute z-[100] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black px-8 text-white">
 	<div class="absolute z-0 h-full w-full overflow-hidden">
@@ -26,4 +26,4 @@ import { fade } from 'svelte/transition';
 		<Button class="w-full">Place a new bet</Button>
 		<Button type="secondary" class="w-full">Check balance</Button>
 	</div>
-</login>
+</bet-win>
