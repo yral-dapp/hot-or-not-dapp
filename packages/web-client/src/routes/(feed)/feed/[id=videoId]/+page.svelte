@@ -117,9 +117,9 @@ async function updateStats(oldIndex) {
 	Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
 	registerEvent('view_video', {
 		userId: $userProfile.principal_id,
-		'Video Publisher Id': stats.profileId,
-		'Video Id': stats.videoId,
-		'Watch Count': Math.ceil(stats.count + stats.progress)
+		video_publisher_id: stats.profileId,
+		video_id: stats.videoId,
+		watch_count: Math.ceil(stats.count + stats.progress)
 	});
 	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
 		stats.videoId,

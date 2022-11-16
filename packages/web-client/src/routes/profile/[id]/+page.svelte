@@ -55,7 +55,7 @@ async function showShareDialog() {
 	} catch (_) {}
 	registerEvent('share_profile', {
 		userId: $userProfile.principal_id,
-		'Profile Id': $page.params.id
+		profile_id: $page.params.id
 	});
 }
 
@@ -108,7 +108,7 @@ onMount(async () => {
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
-		'profile Id': $page.params.id
+		profile_id: $page.params.id
 	});
 	load.page = false;
 	loadPosts();

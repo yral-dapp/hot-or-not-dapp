@@ -135,8 +135,8 @@ async function saveChanges() {
 
 		registerEvent('edit_profile', {
 			userId: $userProfile.principal_id,
-			'Display Name': displayName,
-			'Profile Image': imgSrc,
+			display_name: displayName,
+			profile_image: imgSrc,
 			username: $userProfile.unique_user_name
 		});
 	} catch (e) {
