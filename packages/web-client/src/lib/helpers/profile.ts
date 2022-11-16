@@ -209,6 +209,7 @@ export async function loveUser(userId: string) {
 export interface TransactionHistory {
 	id: BigInt;
 	type: UnionKeyOf<TokenEventV1>;
+	token: number;
 	timestamp: SystemTime;
 	details: MintEvent;
 }
@@ -223,6 +224,30 @@ type HistoryResponse =
 			endOfList: boolean;
 	  };
 
+async function transformHistoryRecords(
+	res: Array<[bigint, TokenEventV1]>,
+	filter?: UnionKeyOf<MintEvent>
+): Promise<TransactionHistory[]> {
+	const history: TransactionHistory[] = [];
+
+	res.forEach((o) => {
+		const obj = o[1];
+		const type = Object.keys(obj)[0] as UnionKeyOf<TokenEventV1>;
+		const subType = Object.keys(obj[type].details)[0];
+		if (!filter || filter === subType) {
+			history.push({
+				id: o[0],
+				type,
+				token: subType === 'NewUserSignup' ? 1000 : 500,
+				timestamp: obj[type].timestamp as SystemTime,
+				details: obj[type].details as MintEvent
+			});
+		}
+	});
+
+	return history;
+}
+
 export async function fetchHistory(
 	from: number,
 	filter?: UnionKeyOf<MintEvent>
@@ -234,20 +259,8 @@ export async function fetchHistory(
 			BigInt(from + 10)
 		);
 		if ('Ok' in res) {
-			const history: TransactionHistory[] = [];
-			res.Ok.forEach((o) => {
-				const obj = o[1];
-				const type = Object.keys(obj)[0] as UnionKeyOf<TokenEventV1>;
-				const subType = Object.keys(obj[type].details)[0];
-				if (!filter || filter === subType) {
-					history.push({
-						id: o[0],
-						type,
-						timestamp: obj[type].timestamp as SystemTime,
-						details: obj[type].details
-					});
-				}
-			});
+			const history = await transformHistoryRecords(res.Ok, filter);
+
 			return {
 				error: false,
 				history,
