@@ -1,5 +1,6 @@
 <script lang="ts">
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte';
+import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
@@ -51,7 +52,7 @@ async function loadHistory() {
 	}
 
 	history.push(...res.history);
-	history = history;
+	// history = history;
 
 	console.log(history);
 
@@ -128,6 +129,11 @@ $: loggedIn && init();
 					</div>
 					<div class="text-sm text-green-600">+ {item.token}</div>
 				</div>
+			{:else}
+				<div class="flex grow h-full w-full items-center justify-center">
+					<NoTransactionsIcon class="w-full max-w-sm px-10" />
+				</div>
+				<div class="opacity-70 pt-4 text-center">No transactions yet</div>
 			{/each}
 		</div>
 	</div>
