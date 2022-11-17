@@ -50,7 +50,9 @@ async function showShareDialog() {
 	try {
 		await navigator.share({
 			title: 'Hot or Not',
-			text: 'Video title',
+			text: `Check out my profile: ${profile.display_name} ${
+				profile.username_set ? '(@' + profile.unique_user_name + ')' : ''
+			}`,
 			url: `https://hotornot.wtf/profile/${userId}`
 		});
 	} catch (_) {}

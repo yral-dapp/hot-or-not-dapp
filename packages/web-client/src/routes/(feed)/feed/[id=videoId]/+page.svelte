@@ -238,6 +238,7 @@ onMount(async () => {
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
 					liked="{video.liked_by_me}"
+					description="{video.description}"
 					createdById="{video.created_by_user_principal_id}"
 					videoViews="{Number(video.total_view_count)}"
 					publisherCanisterId="{video.publisher_canister_id}"
