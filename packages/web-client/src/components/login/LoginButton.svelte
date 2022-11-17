@@ -11,7 +11,7 @@ import { loadingAuthStatus } from '$stores/loading';
 		<span class="opacity-20"> Loading </span>
 	</div>
 {:else}
-	<div class="flex h-24 w-full max-w-sm items-center justify-center">
+	<div class="flex h-24 w-full max-w-xs items-center justify-center">
 		<Button on:click="{() => ($authState.showLogin = true)}" class="w-full">Login</Button>
 	</div>
 {/if}
