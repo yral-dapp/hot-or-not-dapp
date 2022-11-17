@@ -31,7 +31,11 @@ export interface _SERVICE {
     Result,
   >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
-  'receive_top_posts_from_publishing_canister' : ActorMethod<
+  'receive_top_home_feed_posts_from_publishing_canister' : ActorMethod<
+    [Array<PostScoreIndexItem>],
+    undefined,
+  >,
+  'receive_top_hot_or_not_feed_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
     undefined,
   >,

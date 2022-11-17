@@ -44,7 +44,12 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
-    'receive_top_posts_from_publishing_canister' : IDL.Func(
+    'receive_top_home_feed_posts_from_publishing_canister' : IDL.Func(
+        [IDL.Vec(PostScoreIndexItem)],
+        [],
+        [],
+      ),
+    'receive_top_hot_or_not_feed_posts_from_publishing_canister' : IDL.Func(
         [IDL.Vec(PostScoreIndexItem)],
         [],
         [],

@@ -48,6 +48,7 @@ export type MintEvent = {
 export interface PostDetailsForFrontend {
   'id' : bigint,
   'status' : PostStatus,
+  'home_feed_ranking_score' : bigint,
   'hashtags' : Array<string>,
   'like_count' : bigint,
   'description' : string,
@@ -56,6 +57,7 @@ export interface PostDetailsForFrontend {
   'created_by_unique_user_name' : [] | [string],
   'video_uid' : string,
   'created_by_user_principal_id' : Principal,
+  'hot_or_not_feed_ranking_score' : [] | [bigint],
   'liked_by_me' : boolean,
   'created_by_profile_photo_url' : [] | [string],
 }
@@ -141,7 +143,6 @@ export interface _SERVICE {
     [bigint],
     PostDetailsForFrontend,
   >,
-  'get_individual_post_score_by_id' : ActorMethod<[bigint], bigint>,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result,

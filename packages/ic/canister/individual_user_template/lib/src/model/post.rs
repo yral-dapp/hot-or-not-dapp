@@ -50,6 +50,14 @@ pub struct PostViewStatistics {
 }
 
 #[derive(Readable, Writable)]
+pub struct HotOrNotFeedDetails {
+    pub score: u64,
+    pub upvotes: HashSet<SPrincipal>,
+    pub downvotes: HashSet<SPrincipal>,
+    // TODO: consider video age, remove after 48 hours
+}
+
+#[derive(Readable, Writable)]
 pub struct Post {
     id: u64,
     description: String,
@@ -60,8 +68,9 @@ pub struct Post {
     likes: HashSet<SPrincipal>,
     share_count: u64,
     view_stats: PostViewStatistics,
-    ranking_score: u64,
+    homefeed_ranking_score: u64,
     creator_consent_for_inclusion_in_hot_or_not: bool,
+    hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -78,6 +87,8 @@ pub struct PostDetailsForFrontend {
     pub total_view_count: u64,
     pub like_count: u64,
     pub liked_by_me: bool,
+    pub home_feed_ranking_score: u64,
+    pub hot_or_not_feed_ranking_score: Option<u64>,
 }
 
 impl Post {
@@ -102,10 +113,20 @@ impl Post {
                 threshold_view_count: 0,
                 average_watch_percentage: 0,
             },
-            ranking_score: 0,
+            homefeed_ranking_score: 0,
             creator_consent_for_inclusion_in_hot_or_not,
+            hot_or_not_feed_details: None,
         };
-        post.recalculate_score();
+        post.recalculate_home_feed_score();
+
+        if post.creator_consent_for_inclusion_in_hot_or_not {
+            post.hot_or_not_feed_details = Some(HotOrNotFeedDetails {
+                score: 0,
+                upvotes: HashSet::new(),
+                downvotes: HashSet::new(),
+            });
+        }
+
         post
     }
 
@@ -118,13 +139,13 @@ impl Post {
         if self.likes.contains(user_principal_id) {
             self.likes.remove(user_principal_id);
 
-            self.recalculate_score();
+            self.recalculate_home_feed_score();
 
             return false;
         } else {
             self.likes.insert(user_principal_id.clone());
 
-            self.recalculate_score();
+            self.recalculate_home_feed_score();
 
             return true;
         }
@@ -132,7 +153,7 @@ impl Post {
 
     pub fn increment_share_count(&mut self) -> u64 {
         self.share_count += 1;
-        self.recalculate_score();
+        self.recalculate_home_feed_score();
         self.share_count
     }
 
@@ -143,7 +164,7 @@ impl Post {
             / (self.view_stats.total_view_count + additional_views as u64)) as u8
     }
 
-    pub fn recalculate_score(&mut self) {
+    pub fn recalculate_home_feed_score(&mut self) {
         let likes_component =
             1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count;
         let threshold_views_component =
@@ -160,17 +181,76 @@ impl Post {
             / (60 * 60 * 4);
         let age_of_video_component = (1000 - 50 * subtracting_factor).max(0);
 
-        self.ranking_score = likes_component
+        self.homefeed_ranking_score = likes_component
             + threshold_views_component
             + average_percent_viewed_component
             + post_share_component
             + age_of_video_component;
 
         // * update score index for top posts of this user
-        score_ranking::update_post_score_index_on_post_score_recalculation(
+        score_ranking::update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
             self.id,
-            self.ranking_score,
+            self.homefeed_ranking_score,
         );
+    }
+
+    pub fn recalculate_hot_or_not_feed_score(&mut self) {
+        if self.hot_or_not_feed_details.is_some() {
+            let likes_component =
+                1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count;
+
+            let absolute_calc_for_hots_ratio =
+                (((((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64)
+                    / (self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64
+                        + self
+                            .hot_or_not_feed_details
+                            .as_ref()
+                            .unwrap()
+                            .downvotes
+                            .len() as u64
+                        + 1))
+                    * 1000)
+                    - 500) as i64)
+                    .abs();
+            let hots_ratio_component = 1000 * (1000 - (absolute_calc_for_hots_ratio as u64 * 2));
+            let threshold_views_component =
+                1000 * self.view_stats.threshold_view_count / self.view_stats.total_view_count;
+            let average_percent_viewed_component =
+                1000 * self.view_stats.average_watch_percentage as u64;
+            let post_share_component =
+                1000 * self.share_count * 100 / self.view_stats.total_view_count;
+            let hot_or_not_participation_component = 1000
+                * ((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64
+                    + self
+                        .hot_or_not_feed_details
+                        .as_ref()
+                        .unwrap()
+                        .downvotes
+                        .len() as u64)
+                    / self.view_stats.total_view_count);
+
+            let current_time = get_current_system_time_from_ic();
+            let subtracting_factor = (current_time
+                .duration_since(self.created_at)
+                .unwrap_or(Duration::ZERO)
+                .as_secs())
+                / (60 * 60 * 4);
+            let age_of_video_component = (1000 - 50 * subtracting_factor).max(0);
+
+            self.hot_or_not_feed_details.as_mut().unwrap().score = likes_component
+                + hots_ratio_component
+                + threshold_views_component
+                + average_percent_viewed_component
+                + post_share_component
+                + hot_or_not_participation_component
+                + age_of_video_component;
+
+            // * update score index for top posts of this user
+            score_ranking::update_post_score_index_on_hot_or_not_feed_post_score_recalculation(
+                self.id,
+                self.hot_or_not_feed_details.as_ref().unwrap().score,
+            );
+        }
     }
 
     pub fn add_view_details(&mut self, details: PostViewDetailsFromFrontend) {
@@ -201,7 +281,7 @@ impl Post {
             }
         }
 
-        self.recalculate_score();
+        self.recalculate_home_feed_score();
     }
 
     pub fn get_post_details_for_frontend_for_this_post(
@@ -222,10 +302,11 @@ impl Post {
             total_view_count: self.view_stats.total_view_count,
             like_count: self.likes.len() as u64,
             liked_by_me: self.likes.contains(&caller),
+            home_feed_ranking_score: self.homefeed_ranking_score,
+            hot_or_not_feed_ranking_score: self
+                .hot_or_not_feed_details
+                .as_ref()
+                .map(|details| details.score),
         }
-    }
-
-    pub fn get_post_score(&self) -> u64 {
-        self.ranking_score
     }
 }

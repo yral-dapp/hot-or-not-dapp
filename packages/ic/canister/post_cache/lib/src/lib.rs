@@ -20,4 +20,5 @@ pub type MyKnownPrincipalIdsMap = KnownPrincipalMap;
 // * Stable collections
 pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
-pub type PostsIndexSortedByScoreV1 = PostScoreIndex;
+pub type PostsIndexSortedByHomeFeedScore = PostScoreIndex;
+pub type PostsIndexSortedByHotOrNotFeedScore = PostScoreIndex;

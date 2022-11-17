@@ -1,5 +1,6 @@
 use candid::Principal;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
+use individual_user_template_lib::model::post::PostDetailsForFrontend;
 use shared_utils::shared_types::post::PostDetailsFromFrontend;
 use test_utils::setup::{
     initialize_test_env_with_known_canisters::{
@@ -55,18 +56,17 @@ fn when_creating_a_new_post_then_post_score_should_be_calculated() {
         .unwrap();
 
     let post_score = state_machine
-        .query_as(
-            alice_principal_id,
+        .query(
             CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
-            "get_individual_post_score_by_id",
+            "get_individual_post_details_by_id",
             candid::encode_args((newly_created_post_id,)).unwrap(),
         )
         .map(|reply_payload| {
-            let (post_score,): (u64,) = match reply_payload {
+            let (post_details,): (PostDetailsForFrontend,) = match reply_payload {
                 WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-                _ => panic!("\n🛑 get_individual_post_score_by_id failed\n"),
+                _ => panic!("\n🛑 get_individual_post_details_by_id failed\n"),
             };
-            post_score
+            post_details.home_feed_ranking_score
         })
         .unwrap();
 

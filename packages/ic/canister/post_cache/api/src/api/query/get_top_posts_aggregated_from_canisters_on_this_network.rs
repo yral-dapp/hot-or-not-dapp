@@ -1,4 +1,4 @@
-use crate::PostsIndexSortedByScoreV1;
+use crate::PostsIndexSortedByHomeFeedScore;
 use ic_stable_memory::s;
 use post_cache_lib::model::api_error::TopPostsFetchError;
 use shared_utils::{
@@ -12,7 +12,7 @@ fn get_top_posts_aggregated_from_canisters_on_this_network(
     from_inclusive_index: u64,
     to_exclusive_index: u64,
 ) -> Result<Vec<PostScoreIndexItem>, TopPostsFetchError> {
-    let all_posts_v1: PostsIndexSortedByScoreV1 = s!(PostsIndexSortedByScoreV1);
+    let all_posts_v1: PostsIndexSortedByHomeFeedScore = s!(PostsIndexSortedByHomeFeedScore);
 
     let (from_inclusive_index, to_exclusive_index) = pagination::get_pagination_bounds(
         from_inclusive_index,
