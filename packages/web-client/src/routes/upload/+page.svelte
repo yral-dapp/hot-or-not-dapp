@@ -186,6 +186,7 @@ function setTimer() {
 		timerCountdown--;
 		if (timerCountdown == 0) {
 			clearInterval(timerInterval);
+			timerInterval = undefined;
 			startRecording(true);
 		}
 	}, 1000);
@@ -196,6 +197,7 @@ async function startRecording(ignoreTimer = false) {
 		if (recording) {
 			recording = false;
 			clearInterval(recordingInterval);
+			timerInterval = undefined;
 			recordingProgress = undefined;
 			await tick();
 			mediaRecorder.stop();
