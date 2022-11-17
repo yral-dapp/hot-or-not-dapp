@@ -28,6 +28,7 @@ export let inView = false;
 export let thumbnail = '';
 export let displayName = '';
 export let profileLink = '';
+export let description = '';
 export let videoViews = 254000;
 export let publisherCanisterId: string;
 export let userProfileSrc = '';
@@ -138,7 +139,7 @@ async function handleShare() {
 	try {
 		await navigator.share({
 			title: 'Hot or Not',
-			text: 'Video title',
+			text: `Check out this hot video by ${displayName}. \n${description}`,
 			url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
 		});
 	} catch (_) {}
