@@ -97,8 +97,8 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: |
-          npm install @playwright/test
-          npx playwright install --with-deps
+          npm i @playwright/test
+          npx playwright install
 
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
