@@ -366,7 +366,7 @@ onDestroy(async () => {
 							in:fade|local="{{ duration: 500, delay: 100 }}"
 							out:fade|local="{{ duration: 100 }}"
 							class="{c(
-								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold opacity-0',
+								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
 								timerCountdown > 3 ? 'text-white' : 'text-primary'
 							)}">
 							{timerCountdown}
