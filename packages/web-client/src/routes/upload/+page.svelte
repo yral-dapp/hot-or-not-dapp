@@ -186,6 +186,7 @@ function setTimer() {
 		timerCountdown--;
 		if (timerCountdown == 0) {
 			clearInterval(timerInterval);
+			timerInterval = undefined;
 			startRecording(true);
 		}
 	}, 1000);
@@ -196,6 +197,7 @@ async function startRecording(ignoreTimer = false) {
 		if (recording) {
 			recording = false;
 			clearInterval(recordingInterval);
+			timerInterval = undefined;
 			recordingProgress = undefined;
 			await tick();
 			mediaRecorder.stop();
@@ -364,7 +366,7 @@ onDestroy(async () => {
 							in:fade|local="{{ duration: 500, delay: 100 }}"
 							out:fade|local="{{ duration: 100 }}"
 							class="{c(
-								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold opacity-0',
+								'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
 								timerCountdown > 3 ? 'text-white' : 'text-primary'
 							)}">
 							{timerCountdown}
