@@ -52,7 +52,7 @@ async function loadHistory() {
 	}
 
 	history.push(...res.history);
-	// history = history;
+	history = history;
 
 	console.log(history);
 
