@@ -33,6 +33,7 @@ let {
 } = data;
 
 let pageLoaded = false;
+const usernameSetFirstTime = username_set;
 let loading = true;
 let error = '';
 let values: {
@@ -192,8 +193,8 @@ onMount(async () => {
 						on:keydown="{filterUsernameKeystrokes}"
 						type="text"
 						placeholder="Enter your username here"
-						class="w-full rounded-md bg-white/10 py-4 lowercase" />
-					{#if username_set}
+						class="placeholder:norma w-full rounded-md bg-white/10 py-4 lowercase" />
+					{#if usernameSetFirstTime}
 						<span class="text-xs opacity-50">
 							You have already set your username, it cannot be changed now. You can change your
 							display name or profile picture
