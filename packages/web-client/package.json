@@ -49,6 +49,7 @@
 		"@types/throttle-debounce": "5.0.0",
 		"@types/w3c-image-capture": "^1.0.7",
 		"autoprefixer": "10.4.13",
+		"isomorphic-fetch": "^3.0.0",
 		"postcss": "8.4.19",
 		"svelte": "3.53.1",
 		"svelte-check": "2.9.2",
