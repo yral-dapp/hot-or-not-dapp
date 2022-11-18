@@ -27,6 +27,7 @@ onMount(() => prefetchLinks());
 <bottom-nav
 	class="flex w-full items-center justify-between px-4 {showBg ? 'bg-black shadow-up' : ''}">
 	<IconButton
+		prefetch
 		ariaLabel="Navigate to home feed"
 		href="{`/feed/${feedUrl}`}"
 		class="relative flex items-center px-2 py-5">
@@ -63,9 +64,9 @@ onMount(() => prefetchLinks());
 		</div>
 	</IconButton>
 	<IconButton
+		prefetch
 		ariaLabel="Navigate to menu for more options"
 		href="/menu"
-		prefetch
 		class="relative flex items-center px-2 py-5">
 		<MenuIcon class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
 		<div
