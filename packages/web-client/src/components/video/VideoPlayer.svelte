@@ -28,6 +28,7 @@ export let inView = false;
 export let thumbnail = '';
 export let displayName = '';
 export let profileLink = '';
+export let description = '';
 export let videoViews = 254000;
 export let publisherCanisterId: string;
 export let userProfileSrc = '';
@@ -126,8 +127,8 @@ async function handleLike() {
 		liked = !liked;
 		registerEvent('like_video', {
 			userId: $userProfile.principal_id,
-			'Video Publisher Id': profileLink,
-			'Video Id': id,
+			video_publisher_id: profileLink,
+			video_id: id,
 			likes: likeCount
 		});
 		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
@@ -138,14 +139,14 @@ async function handleShare() {
 	try {
 		await navigator.share({
 			title: 'Hot or Not',
-			text: 'Video title',
+			text: `Check out this hot video by ${displayName}. \n${description}`,
 			url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
 		});
 	} catch (_) {}
 	registerEvent('share_video', {
 		userId: $userProfile.principal_id,
-		'Video Publisher Id': profileLink,
-		'Video Id': id
+		video_publisher_id: profileLink,
+		video_id: id
 	});
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }

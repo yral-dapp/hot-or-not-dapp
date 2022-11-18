@@ -9,22 +9,20 @@ import MessageBoxIcon from '$components/icons/MessageBoxIcon.svelte';
 import NotebookIcon from '$components/icons/NotebookIcon.svelte';
 import LockIcon from '$components/icons/LockIcon.svelte';
 import LogoutIcon from '$components/icons/LogoutIcon.svelte';
-import Button from '$components/button/Button.svelte';
 import { authState } from '$stores/auth';
 import LogoutPopup from '$components/popup/LogoutPopup.svelte';
 import Ic0Icon from '$components/icons/Ic0Icon.svelte';
 import { page } from '$app/stores';
 import userProfile from '$stores/userProfile';
-import { loadingAuthStatus } from '$stores/loading';
-import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
+import LoginButton from '$components/login/LoginButton.svelte';
 
 $: links = [
 	{
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
 		class: 'w-5 h-5',
-		href: '/refer'
+		href: '/refer-earn'
 	},
 	{
 		icon: CenterTextIcon,
@@ -68,12 +66,7 @@ $: userId = $userProfile.username_set
 <div
 	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
 	<div class="flex w-full shrink-0 flex-col space-y-10">
-		{#if $loadingAuthStatus}
-			<div class="flex h-[6.5rem] items-center justify-center space-x-2">
-				<LoadingIcon class="h-4 w-4 animate-spin" />
-				<span class="opacity-20"> Loading </span>
-			</div>
-		{:else if $authState.isLoggedIn}
+		{#if $authState.isLoggedIn}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
 				<img
 					alt="profile"
@@ -87,9 +80,7 @@ $: userId = $userProfile.username_set
 				</div>
 			</div>
 		{:else}
-			<div class="flex h-24 w-full items-center justify-center">
-				<Button on:click="{() => ($authState.showLogin = true)}" class="w-full">Login</Button>
-			</div>
+			<LoginButton />
 		{/if}
 		<div class="my-8 h-[1px] w-full bg-white/10"></div>
 		{#each links as link}

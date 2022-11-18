@@ -1,9 +1,10 @@
-import path from 'path';
+import { resolve } from 'path';
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const dfxJson = require('./../../dfx.json');
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+// import { partytownVite } from '@builder.io/partytown/utils';
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
@@ -11,8 +12,7 @@ export default ({ mode }) => {
 
 	console.log('starting vite in', mode, 'mode');
 
-	// Gets the port dfx is running on from dfx.json
-	const DFX_PORT = dfxJson.networks.local.bind.split(':')[1];
+	const DFX_PORT = 4943;
 
 	let canisterIds = {};
 
@@ -40,18 +40,19 @@ export default ({ mode }) => {
 	return defineConfig({
 		resolve: {
 			alias: {
-				$canisters: path.resolve('./declarations'),
-				$components: path.resolve('./src/components'),
-				$routes: path.resolve('./src/routes'),
-				$icons: path.resolve('./src/icons'),
-				$stores: path.resolve('./src/stores'),
-				$assets: path.resolve('./src/assets')
+				$canisters: resolve('./declarations'),
+				$components: resolve('./src/components'),
+				$routes: resolve('./src/routes'),
+				$icons: resolve('./src/icons'),
+				$stores: resolve('./src/stores'),
+				$assets: resolve('./src/assets')
 			}
 		},
 		define: {
 			// Here we can define global constants
 			...canisterDefinitions,
-			'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
+			'process.env.DFX_NETWORK': JSON.stringify(isDev ? 'local' : 'ic'),
+			'import.meta.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
 			'import.meta.env.ENABLE_SSR': process.env.BUILD_MODE != 'static'
 		},
 		server: {
@@ -67,9 +68,30 @@ export default ({ mode }) => {
 				// This proxies all http requests made to /api to our running dfx instance
 				'/api': {
 					target: `http://0.0.0.0:${DFX_PORT}`
+				},
+				'/proxytown/gtm': {
+					target: 'https://www.googletagmanager.com/gtag/js'
 				}
 			}
 		},
-		plugins: [sveltekit()]
+		plugins: [
+			sveltekit()
+			// partytownVite({
+			// 	dest: join(process.cwd(), 'static', '~partytown')
+			// })
+		],
+		optimizeDeps: {
+			esbuildOptions: {
+				// Node.js global to browser globalThis
+				define: {
+					global: 'globalThis'
+				},
+				plugins: [
+					NodeGlobalsPolyfillPlugin({
+						buffer: true
+					})
+				]
+			}
+		}
 	});
 };

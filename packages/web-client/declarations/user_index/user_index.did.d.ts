@@ -7,7 +7,7 @@ export interface CanisterStatusResponse {
   'cycles' : bigint,
   'settings' : DefiniteCanisterSettings,
   'idle_cycles_burned_per_day' : bigint,
-  'module_hash' : [] | [Array<number>],
+  'module_hash' : [] | [Uint8Array],
 }
 export type CanisterStatusType = { 'stopped' : null } |
   { 'stopping' : null } |
@@ -26,8 +26,6 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
 export type Result = { 'Ok' : null } |
-  { 'Err' : UpdateProfileSetUniqueUsernameError };
-export type Result_1 = { 'Ok' : null } |
   { 'Err' : SetUniqueUsernameError };
 export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
@@ -36,13 +34,6 @@ export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
-export type UpdateProfileSetUniqueUsernameError = {
-    'UsernameAlreadyTaken' : null
-  } |
-  { 'UserIndexCrossCanisterCallFailed' : null } |
-  { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
-  { 'NotAuthorized' : null } |
-  { 'UserCanisterEntryDoesNotExist' : null };
 export interface UpgradeStatus {
   'version_number' : bigint,
   'last_run_on' : SystemTime,
@@ -57,17 +48,16 @@ export interface UserIndexInitArgs {
   'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
 }
 export interface _SERVICE {
-  'ask_individual_canisters_to_send_me_their_unique_username_if_set' : ActorMethod<
-    [],
-    Result,
-  >,
-  'delete_user_index_reset_user_canisters' : ActorMethod<[], undefined>,
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],
     CanisterStatusResponse,
   >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
+  'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
+    [[] | [Principal]],
+    Principal,
+  >,
   'get_user_canister_id_from_unique_user_name' : ActorMethod<
     [string],
     [] | [Principal],
@@ -84,11 +74,7 @@ export interface _SERVICE {
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
-    Result_1,
-  >,
-  'update_index_with_unique_user_name_corresponding_to_user_principal_id_allow_same_username_from_existing_principal' : ActorMethod<
-    [string, Principal],
-    Result_1,
+    Result,
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<

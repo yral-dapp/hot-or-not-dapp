@@ -36,6 +36,15 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdPostCache' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
+export type MintEvent = {
+    'NewUserSignup' : { 'new_user_principal_id' : Principal }
+  } |
+  {
+    'Referral' : {
+      'referrer_user_principal_id' : Principal,
+      'referee_user_principal_id' : Principal,
+    }
+  };
 export interface PostDetailsForFrontend {
   'id' : bigint,
   'status' : PostStatus,
@@ -74,14 +83,24 @@ export type Result = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
 export type Result_1 = { 'Ok' : Array<Principal> } |
   { 'Err' : GetFollowerOrFollowingError };
-export type Result_2 = { 'Ok' : boolean } |
-  { 'Err' : FollowAnotherUserProfileError };
+export type Result_2 = { 'Ok' : Array<[bigint, TokenEventV1]> } |
+  { 'Err' : GetFollowerOrFollowingError };
 export type Result_3 = { 'Ok' : boolean } |
+  { 'Err' : FollowAnotherUserProfileError };
+export type Result_4 = { 'Ok' : boolean } |
   { 'Err' : AnotherUserFollowedMeError };
-export type Result_4 = { 'Ok' : UserProfileDetailsForFrontend } |
+export type Result_5 = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
-export type Result_5 = { 'Ok' : null } |
+export type Result_6 = { 'Ok' : null } |
   { 'Err' : UpdateProfileSetUniqueUsernameError };
+export interface SystemTime {
+  'nanos_since_epoch' : number,
+  'secs_since_epoch' : bigint,
+}
+export type TokenEventV1 = { 'Stake' : null } |
+  { 'Burn' : null } |
+  { 'Mint' : { 'timestamp' : SystemTime, 'details' : MintEvent } } |
+  { 'Transfer' : null };
 export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
 export type UpdateProfileSetUniqueUsernameError = {
     'UsernameAlreadyTaken' : null
@@ -133,7 +152,14 @@ export interface _SERVICE {
     Result_1,
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
+  'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
+  'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
+    [bigint, bigint],
+    Result_2,
+  >,
+  'get_utility_token_balance' : ActorMethod<[], bigint>,
   'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
@@ -144,21 +170,21 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_principals_i_follow_toggle_list_with_principal_specified' : ActorMethod<
     [Principal],
-    Result_2,
+    Result_3,
   >,
   'update_principals_that_follow_me_toggle_list_with_specified_principal' : ActorMethod<
     [Principal],
-    Result_3,
+    Result_4,
   >,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_4,
+    Result_5,
   >,
   'update_profile_resend_username_to_user_index_canister' : ActorMethod<
     [],
-    Result_5,
+    Result_6,
   >,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_5>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_6>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],

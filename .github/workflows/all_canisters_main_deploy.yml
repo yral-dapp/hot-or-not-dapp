@@ -1,4 +1,4 @@
-name: Deploy post_cache canister to IC mainnet on push to main
+name: Deploy all canisters to IC mainnet on push to main
 on:
   push:
     branches:
@@ -8,8 +8,13 @@ on:
       - '.github/workflows/all_canisters_main_deploy.yml'
 
 jobs:
+  test:
+    name: Run test suite
+    uses: ./.github/workflows/all_canisters_test_suite_on_any_push.yml
+    secrets: inherit
   deploy:
-    name: Run tests and deploy post_cache canister
+    name: Deploy all canisters
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -17,7 +22,7 @@ jobs:
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
       - name: Install DFX
-        run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+        run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - name: Initialize DFX identities
         run: dfx identity list
       - name: Import DFX identity
@@ -39,18 +44,26 @@ jobs:
             .dfx/
           key: ${{ runner.os }}-deploy-${{ hashFiles('**/Cargo.lock') }}
       - name: Build individual_user_template canister
-        run: dfx build --network ic individual_user_template
+        run: |
+          dfx build --network ic individual_user_template
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/individual_user_template.wasm
       - name: Build user_index canister
-        run: dfx build --network ic user_index
-      - name: Build project_member_index canister
-        run: dfx build --network ic project_member_index
+        run: |
+          dfx build --network ic user_index
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/user_index.wasm
       - name: Build post_cache canister
-        run: dfx build --network ic post_cache
-      - name: Deploy post_cache canister
-        run: dfx canister --network ic install post_cache --mode upgrade --argument "(record { known_principal_ids = vec {} })"
-      - name: Deploy project_member_index canister
-        run: dfx canister --network ic install project_member_index --mode upgrade --argument "(record { known_principal_ids = vec {} })"
+        run: |
+          dfx build --network ic post_cache
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
+      - name: Build project_member_index canister
+        run: |
+          dfx build --network ic project_member_index
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/project_member_index.wasm
       - name: Deploy user_index canister
         run: dfx canister --network ic install user_index --mode upgrade --argument "(record { known_principal_ids = vec {} })"
       - name: Loop through and deploy all individual user canisters
         run: dfx canister --network ic call user_index update_user_index_upgrade_user_canisters_with_latest_wasm --async
+      - name: Deploy post_cache canister
+        run: dfx canister --network ic install post_cache --mode upgrade --argument "(record { known_principal_ids = vec {} })"
+      - name: Deploy project_member_index canister
+        run: dfx canister --network ic install project_member_index --mode upgrade --argument "(record { known_principal_ids = vec {} })"

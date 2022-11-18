@@ -1,14 +1,9 @@
 <script lang="ts">
-import 'swiper/css';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import type { IndividualUserActor } from '$lib/helpers/backend';
-import { playerState } from '$stores/playerState';
-import { onMount, tick } from 'svelte';
-import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { debounce } from 'throttle-debounce';
 import SplashScreen from '$components/layout/SplashScreen.svelte';
-import Log from '$lib/utils/Log';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
+import type { IndividualUserActor } from '$lib/helpers/backend';
 import {
 	getTopPosts,
 	getWatchedVideosFromCache,
@@ -16,11 +11,17 @@ import {
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
-import { Principal } from '@dfinity/principal';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import userProfile from '$stores/userProfile';
-import type { PageData } from './$types';
+import Log from '$lib/utils/Log';
+import { handleParams } from '$lib/utils/params';
+import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
+import userProfile from '$stores/userProfile';
+import { Principal } from '@dfinity/principal';
+import { onMount, tick } from 'svelte';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/svelte';
+import { debounce } from 'throttle-debounce';
+import type { PageData } from './$types';
 
 export let data: PageData;
 
@@ -116,9 +117,9 @@ async function updateStats(oldIndex) {
 	Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
 	registerEvent('view_video', {
 		userId: $userProfile.principal_id,
-		'Video Publisher Id': stats.profileId,
-		'Video Id': stats.videoId,
-		'Watch Count': Math.ceil(stats.count + stats.progress)
+		video_publisher_id: stats.profileId,
+		video_id: stats.videoId,
+		watch_count: Math.ceil(stats.count + stats.progress)
 	});
 	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
 		stats.videoId,
@@ -203,6 +204,7 @@ onMount(async () => {
 	}
 	await tick();
 	await fetchNextVideos();
+	handleParams();
 });
 </script>
 
@@ -236,6 +238,7 @@ onMount(async () => {
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
 					liked="{video.liked_by_me}"
+					description="{video.description}"
 					createdById="{video.created_by_user_principal_id}"
 					videoViews="{Number(video.total_view_count)}"
 					publisherCanisterId="{video.publisher_canister_id}"

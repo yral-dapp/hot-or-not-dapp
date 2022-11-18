@@ -31,8 +31,8 @@ let loading = false;
 function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
 		case 'ii':
-			return process.env.NODE_ENV === 'development'
-				? `http://${process.env.INTERNET_IDENTITY_CANISTER_ID}.localhost:8000`
+			return import.meta.env.NODE_ENV === 'development'
+				? `http://${process.env.INTERNET_IDENTITY_CANISTER_ID}.localhost:4943`
 				: 'https://identity.ic0.app/#authorize';
 		case 'nfid':
 			return NFID_AUTH_URL;
@@ -63,8 +63,8 @@ async function handleSuccessfulLogin(type: LoginType) {
 		}
 		await initializeAuthClient();
 		registerEvent(canId ? 'login' : 'sign_up', {
-			'Login method': type,
-			'Display Name': $userProfile.display_name,
+			login_method: type,
+			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
 			userId: $userProfile.principal_id
 		});

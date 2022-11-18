@@ -72,10 +72,10 @@ jobs:
         with:
           name: lhci-report
           path: lhci_report/
-          retention-days: 15
+          retention-days: 7
 
   playwright-linux:
-    timeout-minutes: 30
+    timeout-minutes: 40
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -96,52 +96,55 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+        run: |
+          npm i @playwright/test
+          npx playwright install
 
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
 
       - name: Install DFX
-        run: DFX_VERSION=0.11.2 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+        run: DFX_VERSION=0.12.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 
-      - name: Cache .dfx folder
+      - name: Import DFX identity
+        run: |
+          touch actions_identity.pem
+          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+
+      - name: Cache rust dependencies, build output and DFX build cache
         uses: actions/cache@v3
         id: dfx-cache
         with:
-          path: "./.dfx"
-          key: "${{ runner.os }}-dfx-folder-${{ hashFiles('./packages/ic/**') }}"
-
-      - name: Cache target folder
-        if: always()
-        uses: actions/cache@v3
-        id: target-cache
-        with:
-          path: "./target"
-          key: "${{ runner.os }}-target-folder-${{ hashFiles('./packages/ic/**') }}"
-
-      - name: Cache dfx identity
-        if: always()
-        uses: actions/cache@v3
-        id: identity-cache
-        with:
-          path: "~/.config/dfx/identity"
-          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/ic/**') }}"
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            .dfx/
+          key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Start DFX Server
         if: always()
         run: dfx start --background
 
-      - name: Install canisters
-        if: steps.dfx-cache.outputs.cache-hit != 'true'
-        run: ./scripts/canisters/local_deploy/install_all_canisters.sh
+      - name: Provision local canister IDs for the canisters
+        run: |
+          dfx canister create --no-wallet individual_user_template
+          dfx canister create --no-wallet user_index
+          dfx canister create --no-wallet project_member_index
+          dfx canister create --no-wallet post_cache
 
-      - name: Upgrade canister
-        if: steps.dfx-cache.outputs.cache-hit == 'true'
-        run: ./scripts/canisters/local_deploy/upgrade_all_canisters_without_test.sh
+      - name: Install canisters
+        if: always()
+        run: ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()
-        run: dfx ping http://localhost:8000
+        run: dfx ping http://localhost:4943
 
       - name: Run Playwright tests
         run: npm run web-client:test
@@ -157,4 +160,4 @@ jobs:
         with:
           name: playwright-report
           path: packages/web-client/playwright-report/
-          retention-days: 15
+          retention-days: 7

@@ -16,7 +16,7 @@ import { get } from 'svelte/store';
 import { Principal } from '@dfinity/principal';
 
 export const host =
-	process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'https://ic0.app';
+	import.meta.env.NODE_ENV === 'development' ? 'http://localhost:4943' : 'https://ic0.app';
 
 export type UserIndexActor = ActorSubclass<_USER_INDEX_SERVICE>;
 export type IndividualUserActor = ActorSubclass<_INDIVIDUAL_USER_SERVICE>;

@@ -66,14 +66,6 @@ fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
             candid::encode_one(()).unwrap(),
         )
         .unwrap();
-    state_machine
-        .execute_ingress_as(
-            get_global_super_admin_principal_id(),
-            CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
-            "return_cycles_to_user_index_canister",
-            candid::encode_one(()).unwrap(),
-        )
-        .unwrap();
 
     let alice_reduced_cycle_balance = state_machine.execute_ingress_as(
         get_global_super_admin_principal_id(),
