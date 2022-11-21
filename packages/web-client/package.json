@@ -27,7 +27,7 @@
 		"@esbuild-plugins/node-globals-polyfill": "^0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "^0.1.4",
 		"@sentry/svelte": "^7.17.4",
-		"@sentry/tracing": "^7.17.4",
+		"@sentry/tracing": "^7.20.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
 		"idb": "7.1.1",
