@@ -14,3 +14,4 @@ shared_utils = { path = "../../../lib/shared_utils" }
 
 [dev-dependencies]
 ic-state-machine-tests = { workspace = true }
+test_utils = { path = "../../../lib/test_utils" }

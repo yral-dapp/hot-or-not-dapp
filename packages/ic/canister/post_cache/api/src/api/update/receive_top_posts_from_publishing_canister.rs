@@ -1,7 +1,8 @@
 use ic_stable_memory::s;
-use post_cache_lib::{PostsIndexSortedByScore, PostsIndexSortedByScoreV1};
+use post_cache_lib::{PostsIndexSortedByHomeFeedScore, PostsIndexSortedByScore};
 use shared_utils::shared_types::top_posts::v0::PostScoreIndexItem;
 
+#[deprecated = "Use receive_top_home_feed_posts_from_publishing_canister instead"]
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 pub fn receive_top_posts_from_publishing_canister(

@@ -39,6 +39,16 @@ export const idlFactory = ({ IDL }) => {
         [Result],
         ['query'],
       ),
+    'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed' : IDL.Func(
+        [IDL.Nat64, IDL.Nat64],
+        [Result],
+        ['query'],
+      ),
+    'get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed' : IDL.Func(
+        [IDL.Nat64, IDL.Nat64],
+        [Result],
+        ['query'],
+      ),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],
@@ -50,6 +60,11 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'receive_top_hot_or_not_feed_posts_from_publishing_canister' : IDL.Func(
+        [IDL.Vec(PostScoreIndexItem)],
+        [],
+        [],
+      ),
+    'receive_top_posts_from_publishing_canister' : IDL.Func(
         [IDL.Vec(PostScoreIndexItem)],
         [],
         [],

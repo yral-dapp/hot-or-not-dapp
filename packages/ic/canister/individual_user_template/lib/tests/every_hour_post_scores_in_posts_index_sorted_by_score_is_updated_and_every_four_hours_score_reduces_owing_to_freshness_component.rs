@@ -3,6 +3,7 @@ use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
 use shared_utils::shared_types::{
     individual_user_template::post::PostDetailsForFrontend, post::PostDetailsFromFrontend,
 };
+use std::time::Duration;
 use test_utils::setup::{
     initialize_test_env_with_known_canisters::{
         get_initialized_env_with_provisioned_known_canisters, KnownCanisters,
@@ -11,7 +12,8 @@ use test_utils::setup::{
 };
 
 #[test]
-fn when_creating_a_new_post_then_post_score_should_be_calculated() {
+fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_four_hours_score_reduces_owing_to_freshness_component(
+) {
     // * Arrange
     let state_machine = StateMachine::new();
     let KnownCanisters {
@@ -19,6 +21,8 @@ fn when_creating_a_new_post_then_post_score_should_be_calculated() {
         ..
     } = get_initialized_env_with_provisioned_known_canisters(&state_machine);
     let alice_principal_id = get_alice_principal_id();
+
+    println!("🧪 user_index_canister_id: {:?}", user_index_canister_id);
 
     // * Act
     let alice_canister_id = state_machine.execute_ingress_as(
@@ -71,6 +75,25 @@ fn when_creating_a_new_post_then_post_score_should_be_calculated() {
         })
         .unwrap();
 
+    // * Every four hours, score reduces owing to the freshness component
+    state_machine.advance_time(Duration::from_secs(4 * 60 * 60));
+    state_machine.tick();
+
+    let updated_post_score = state_machine
+        .query(
+            CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
+            "get_individual_post_details_by_id",
+            candid::encode_args((newly_created_post_id,)).unwrap(),
+        )
+        .map(|reply_payload| {
+            let (post_details,): (PostDetailsForFrontend,) = match reply_payload {
+                WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+                _ => panic!("\n🛑 get_individual_post_details_by_id failed\n"),
+            };
+            post_details.home_feed_ranking_score
+        })
+        .unwrap();
+
     // * Assert
-    assert!(post_score > 0);
+    assert!(post_score > updated_post_score);
 }

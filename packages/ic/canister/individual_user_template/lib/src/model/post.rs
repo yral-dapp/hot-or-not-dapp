@@ -1,27 +1,23 @@
-use candid::{CandidType, Deserialize, Principal};
+use candid::{CandidType, Deserialize};
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
-use shared_utils::date_time::get_current_system_time::get_current_system_time_from_ic;
+use shared_utils::shared_types::individual_user_template::post::{
+    PostDetailsForFrontend, PostStatus,
+};
 use speedy::{Readable, Writable};
 use std::{
     collections::HashSet,
     time::{Duration, SystemTime},
 };
 
+#[cfg(not(test))]
+use shared_utils::date_time::system_time::for_prod::get_current_system_time;
+#[cfg(test)]
+use shared_utils::date_time::system_time::for_tests::get_current_system_time;
+
 use crate::util::score_ranking;
 
 use super::profile::UserProfileDetailsForFrontend;
-
-#[derive(Readable, Writable, Serialize, Deserialize, CandidType, Clone)]
-pub enum PostStatus {
-    Uploaded,
-    Transcoding,
-    CheckingExplicitness,
-    BannedForExplicitness,
-    ReadyToView,
-    BannedDueToUserReporting,
-    Deleted,
-}
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub enum PostViewDetailsFromFrontend {
@@ -57,6 +53,8 @@ pub struct HotOrNotFeedDetails {
     // TODO: consider video age, remove after 48 hours
 }
 
+pub trait PostTrait {}
+
 #[derive(Readable, Writable)]
 pub struct Post {
     id: u64,
@@ -73,24 +71,6 @@ pub struct Post {
     hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
 }
 
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct PostDetailsForFrontend {
-    pub id: u64,
-    pub created_by_display_name: Option<String>,
-    pub created_by_unique_user_name: Option<String>,
-    pub created_by_user_principal_id: Principal,
-    pub created_by_profile_photo_url: Option<String>,
-    pub description: String,
-    pub hashtags: Vec<String>,
-    pub video_uid: String,
-    pub status: PostStatus,
-    pub total_view_count: u64,
-    pub like_count: u64,
-    pub liked_by_me: bool,
-    pub home_feed_ranking_score: u64,
-    pub hot_or_not_feed_ranking_score: Option<u64>,
-}
-
 impl Post {
     pub fn new(
         id: u64,
@@ -105,7 +85,7 @@ impl Post {
             hashtags,
             video_uid,
             status: PostStatus::Uploaded,
-            created_at: get_current_system_time_from_ic(),
+            created_at: get_current_system_time(),
             likes: HashSet::new(),
             share_count: 0,
             view_stats: PostViewStatistics {
@@ -117,7 +97,6 @@ impl Post {
             creator_consent_for_inclusion_in_hot_or_not,
             hot_or_not_feed_details: None,
         };
-        post.recalculate_home_feed_score();
 
         if post.creator_consent_for_inclusion_in_hot_or_not {
             post.hot_or_not_feed_details = Some(HotOrNotFeedDetails {
@@ -173,7 +152,7 @@ impl Post {
             1000 * self.view_stats.average_watch_percentage as u64;
         let post_share_component = 1000 * self.share_count * 100 / self.view_stats.total_view_count;
 
-        let current_time = get_current_system_time_from_ic();
+        let current_time = get_current_system_time();
         let subtracting_factor = (current_time
             .duration_since(self.created_at)
             .unwrap_or(Duration::ZERO)
@@ -196,8 +175,10 @@ impl Post {
 
     pub fn recalculate_hot_or_not_feed_score(&mut self) {
         if self.hot_or_not_feed_details.is_some() {
-            let likes_component =
-                1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count;
+            let likes_component = match self.view_stats.total_view_count {
+                0 => 1000 * self.likes.len() as u64 * 10 / 1,
+                _ => 1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count,
+            };
 
             let absolute_calc_for_hots_ratio =
                 (((((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64)
@@ -229,7 +210,7 @@ impl Post {
                         .len() as u64)
                     / self.view_stats.total_view_count);
 
-            let current_time = get_current_system_time_from_ic();
+            let current_time = get_current_system_time();
             let subtracting_factor = (current_time
                 .duration_since(self.created_at)
                 .unwrap_or(Duration::ZERO)
@@ -308,5 +289,24 @@ impl Post {
                 .as_ref()
                 .map(|details| details.score),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+
+    use super::*;
+
+    #[test]
+    fn when_new_post_created_then_their_hot_or_not_feed_score_is_calculated() {
+        let post = Post::new(
+            0,
+            "This is fun video #0".to_string(),
+            vec!["fun".to_string(), "video".to_string()],
+            "#0000".to_string(),
+            true,
+        );
+
+        assert_eq!(post.hot_or_not_feed_details.unwrap().score, 0);
     }
 }

@@ -52,6 +52,7 @@ fn post_upgrade() {
     stable_memory_post_upgrade(0);
 
     // TODO: remove during next upgrade
+    s! { PostsIndexSortedByHomeFeedScore = PostsIndexSortedByHomeFeedScore::default() };
     s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
 }
 

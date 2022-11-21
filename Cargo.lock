@@ -4080,6 +4080,7 @@ dependencies = [
  "ic-stable-memory",
  "ic-state-machine-tests",
  "shared_utils",
+ "test_utils",
 ]
 
 [[package]]

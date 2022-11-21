@@ -16,7 +16,7 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
+        post::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
     },
@@ -28,8 +28,11 @@ use individual_user_template_lib::{
 use shared_utils::{
     access_control::UserAccessRole,
     shared_types::{
-        individual_user_template::error_types::{
-            GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+        individual_user_template::{
+            error_types::{
+                GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+            },
+            post::PostDetailsForFrontend,
         },
         init_args::IndividualUserTemplateInitArgs,
         post::PostDetailsFromFrontend,

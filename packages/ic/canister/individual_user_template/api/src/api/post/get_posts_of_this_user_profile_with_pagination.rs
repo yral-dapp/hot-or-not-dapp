@@ -1,7 +1,10 @@
 use candid::CandidType;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::PostDetailsForFrontend, AllCreatedPosts, Profile};
-use shared_utils::pagination::{self, PaginationError};
+use individual_user_template_lib::{AllCreatedPosts, Profile};
+use shared_utils::{
+    pagination::{self, PaginationError},
+    shared_types::individual_user_template::post::PostDetailsForFrontend,
+};
 
 #[derive(CandidType)]
 pub enum GetPostsOfUserProfileError {

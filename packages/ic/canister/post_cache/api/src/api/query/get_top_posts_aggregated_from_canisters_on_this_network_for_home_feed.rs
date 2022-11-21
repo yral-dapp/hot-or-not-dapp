@@ -6,12 +6,9 @@ use shared_utils::{
     shared_types::top_posts::v0::PostScoreIndexItem,
 };
 
-#[deprecated(
-    note = "Use get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed instead"
-)]
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
-fn get_top_posts_aggregated_from_canisters_on_this_network(
+fn get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
     from_inclusive_index: u64,
     to_exclusive_index: u64,
 ) -> Result<Vec<PostScoreIndexItem>, TopPostsFetchError> {

@@ -1,1 +1,1 @@
-pub mod get_current_system_time;
+pub mod system_time;

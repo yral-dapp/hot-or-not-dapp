@@ -30,12 +30,24 @@ export interface _SERVICE {
     [bigint, bigint],
     Result,
   >,
+  'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed' : ActorMethod<
+    [bigint, bigint],
+    Result,
+  >,
+  'get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed' : ActorMethod<
+    [bigint, bigint],
+    Result,
+  >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'receive_top_home_feed_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
     undefined,
   >,
   'receive_top_hot_or_not_feed_posts_from_publishing_canister' : ActorMethod<
+    [Array<PostScoreIndexItem>],
+    undefined,
+  >,
+  'receive_top_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
     undefined,
   >,
