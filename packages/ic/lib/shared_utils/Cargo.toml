@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 candid = "0.8.3"
-ic-cdk = "0.6.6"
+ic-cdk = "0.6.7"
 ic-stable-memory = "0.2.6"
 serde = "1.0.147"
 speedy = "0.8.5"
