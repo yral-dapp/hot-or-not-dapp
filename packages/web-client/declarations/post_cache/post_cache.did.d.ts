@@ -28,32 +28,32 @@ export type UserAccessRole = { 'CanisterController' : null } |
 export interface _SERVICE {
   'get_top_posts_aggregated_from_canisters_on_this_network' : ActorMethod<
     [bigint, bigint],
-    Result,
+    Result
   >,
   'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed' : ActorMethod<
     [bigint, bigint],
-    Result,
+    Result
   >,
   'get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed' : ActorMethod<
     [bigint, bigint],
-    Result,
+    Result
   >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'receive_top_home_feed_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
-    undefined,
+    undefined
   >,
   'receive_top_hot_or_not_feed_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
-    undefined,
+    undefined
   >,
   'receive_top_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
-    undefined,
+    undefined
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
-    undefined,
+    undefined
   >,
 }
