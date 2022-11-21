@@ -1837,9 +1837,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.6.6"
+version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbcec58ff3e0a6977a7a14bb47163a0d79a37f04eb92c0f69231a008c53cc375"
+checksum = "2f2c0d698c4efb47284fe469642f5c37db856889c3e8a3931d6a7561b9625247"
 dependencies = [
  "candid",
  "ic-cdk",
