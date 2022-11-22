@@ -1,5 +1,6 @@
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::PostDetailsForFrontend, AllCreatedPosts, Profile};
+use individual_user_template_lib::{AllCreatedPosts, Profile};
+use shared_utils::shared_types::individual_user_template::post::PostDetailsForFrontend;
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]

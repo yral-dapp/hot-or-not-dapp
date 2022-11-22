@@ -19,10 +19,12 @@ fn heartbeat() {
 
         match kind {
             TaskKind::ShareTopPostScoresWithPostCacheCanister => {
-                score_ranking::send_top_post_scores_to_post_cache_canister();
+                score_ranking::send_top_home_feed_post_scores_to_post_cache_canister();
+                score_ranking::send_top_hot_or_not_feed_post_scores_to_post_cache_canister();
             }
             TaskKind::UpdatePostScoresEveryHour => {
-                score_ranking::update_post_scores_for_every_post_in_posts_index_sorted_by_score();
+                score_ranking::update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score();
+                score_ranking::update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score();
             }
         };
     }

@@ -1,6 +1,9 @@
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::PostStatus, AccessControlMap, AllCreatedPosts};
-use shared_utils::access_control::{self, UserAccessRole};
+use individual_user_template_lib::{AccessControlMap, AllCreatedPosts};
+use shared_utils::{
+    access_control::{self, UserAccessRole},
+    shared_types::individual_user_template::post::PostStatus,
+};
 
 /// # Access Control
 /// Only admin principals allowed

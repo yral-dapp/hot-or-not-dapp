@@ -1,6 +1,8 @@
 use candid::Principal;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
-use shared_utils::shared_types::post::PostDetailsFromFrontend;
+use shared_utils::shared_types::{
+    individual_user_template::post::PostDetailsForFrontend, post::PostDetailsFromFrontend,
+};
 use std::time::Duration;
 use test_utils::setup::{
     initialize_test_env_with_known_canisters::{
@@ -59,18 +61,17 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
         .unwrap();
 
     let post_score = state_machine
-        .query_as(
-            alice_principal_id,
+        .query(
             CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
-            "get_individual_post_score_by_id",
+            "get_individual_post_details_by_id",
             candid::encode_args((newly_created_post_id,)).unwrap(),
         )
         .map(|reply_payload| {
-            let (post_score,): (u64,) = match reply_payload {
+            let (post_details,): (PostDetailsForFrontend,) = match reply_payload {
                 WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-                _ => panic!("\n🛑 get_individual_post_score_by_id failed\n"),
+                _ => panic!("\n🛑 get_individual_post_details_by_id failed\n"),
             };
-            post_score
+            post_details.home_feed_ranking_score
         })
         .unwrap();
 
@@ -79,18 +80,17 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
     state_machine.tick();
 
     let updated_post_score = state_machine
-        .query_as(
-            alice_principal_id,
+        .query(
             CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
-            "get_individual_post_score_by_id",
+            "get_individual_post_details_by_id",
             candid::encode_args((newly_created_post_id,)).unwrap(),
         )
         .map(|reply_payload| {
-            let (post_score,): (u64,) = match reply_payload {
+            let (post_details,): (PostDetailsForFrontend,) = match reply_payload {
                 WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-                _ => panic!("\n🛑 get_individual_post_score_by_id failed\n"),
+                _ => panic!("\n🛑 get_individual_post_details_by_id failed\n"),
             };
-            post_score
+            post_details.home_feed_ranking_score
         })
         .unwrap();
 

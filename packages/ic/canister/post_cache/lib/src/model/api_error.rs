@@ -1,6 +1,6 @@
-use candid::CandidType;
+use candid::{CandidType, Deserialize};
 
-#[derive(CandidType)]
+#[derive(CandidType, Deserialize, Debug)]
 pub enum TopPostsFetchError {
     InvalidBoundsPassed,
     ReachedEndOfItemsList,

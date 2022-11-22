@@ -16,20 +16,23 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
+        post::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
     },
     util::{access_control, known_principal_ids, periodic_update},
     AccessControlMap, AllCreatedPosts, MyKnownPrincipalIdsMap, MyTokenBalance,
-    PostsIndexSortedByScore, PostsIndexSortedByScoreV1, PrincipalsIFollow, PrincipalsThatFollowMe,
-    Profile, SVersionDetails,
+    PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
+    PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
 };
 use shared_utils::{
     access_control::UserAccessRole,
     shared_types::{
-        individual_user_template::error_types::{
-            GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+        individual_user_template::{
+            error_types::{
+                GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+            },
+            post::PostDetailsForFrontend,
         },
         init_args::IndividualUserTemplateInitArgs,
         post::PostDetailsFromFrontend,
@@ -58,7 +61,8 @@ fn init(init_args: IndividualUserTemplateInitArgs) {
     s! { AllCreatedPosts = AllCreatedPosts::new() };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
-    s! { PostsIndexSortedByScoreV1 = PostsIndexSortedByScoreV1::default() };
+    s! { PostsIndexSortedByHomeFeedScore = PostsIndexSortedByHomeFeedScore::default() };
+    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
     s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
 
@@ -85,6 +89,9 @@ fn post_upgrade() {
 
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
+
+    // TODO: Remove on next upgrade
+    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

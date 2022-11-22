@@ -9,11 +9,11 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.8.3"
-ic-cdk = "0.6.6"
-ic-cdk-macros = "0.6.6"
-ic-stable-memory = "0.2.6"
+candid = { workspace = true }
+ic-cdk = { workspace = true }
+ic-cdk-macros = { workspace = true }
+ic-stable-memory = { workspace = true }
 shared_utils = { path = "../../../lib/shared_utils" }
-serde = "1.0.147"
-speedy = "0.8.5"
+serde = { workspace = true }
+speedy = { workspace = true }
 project_member_index_lib = { path = "../lib" }
