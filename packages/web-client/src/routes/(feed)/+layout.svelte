@@ -15,15 +15,6 @@ export let data: LayoutData;
 			<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
 				Menu
 			</div>
-			<!-- {:else if path.includes('users')}
-			<div class="flex items-center rounded-full bg-black/10 py-2 px-4">User's Videos</div>
-			<div class="absolute top-4 left-4">
-				<IconButton
-					on:click="{() =>
-						back ? goto(back) : history.length > 2 ? history.back() : goto('/menu')}">
-					<CaretLeftIcon class="h-5 w-5" />
-				</IconButton>
-			</div> -->
 		{/if}
 	</svelte:fragment>
 	<svelte:fragment slot="content">

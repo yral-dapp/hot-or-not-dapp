@@ -23,6 +23,7 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { handleParams } from '$lib/utils/params';
 
 export let data: PageData;
 let { me, profile, canId } = data;
@@ -49,13 +50,15 @@ async function showShareDialog() {
 	try {
 		await navigator.share({
 			title: 'Hot or Not',
-			text: 'Video title',
+			text: `Check out my profile: ${profile.display_name} ${
+				profile.username_set ? '(@' + profile.unique_user_name + ')' : ''
+			}`,
 			url: `https://hotornot.wtf/profile/${userId}`
 		});
 	} catch (_) {}
 	registerEvent('share_profile', {
 		userId: $userProfile.principal_id,
-		'Profile Id': $page.params.id
+		profile_id: $page.params.id
 	});
 }
 
@@ -108,10 +111,11 @@ onMount(async () => {
 	}
 	registerEvent('view_profile', {
 		userId: $userProfile.principal_id,
-		'profile Id': $page.params.id
+		profile_id: $page.params.id
 	});
 	load.page = false;
 	loadPosts();
+	handleParams();
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>
@@ -120,7 +124,7 @@ onMount(async () => {
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
 			<IconButton
-				href="{$navigateBack && !$navigateBack.includes('edit') ? $navigateBack : '/menu'}"
+				href="{$navigateBack && !$navigateBack.includes('edit') ? $navigateBack : '/feed'}"
 				class="shrink-0">
 				<CaretLeftIcon class="h-7 w-7" />
 			</IconButton>

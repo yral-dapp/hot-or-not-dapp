@@ -2,7 +2,7 @@
 import '../css/app.css';
 import { onMount } from 'svelte';
 import { authState } from '$stores/auth';
-import Login from '$components/login/Login.svelte';
+import LoginPopup from '$components/login/LoginPopup.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
@@ -64,7 +64,7 @@ beforeNavigate(({ from, to }) => {
 <svelte:window
 	on:appinstalled="{() => {
 		registerEvent('pwa_installed', {
-			'Display Name': $userProfile.display_name,
+			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
 			userId: $userProfile.principal_id
 		});
@@ -76,7 +76,7 @@ beforeNavigate(({ from, to }) => {
 </alpha-ribbon>
 
 {#if $authState.showLogin}
-	<Login />
+	<LoginPopup />
 {/if}
 
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">

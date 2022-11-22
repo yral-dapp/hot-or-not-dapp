@@ -1,11 +1,10 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte';
-import ComingSoon from '$components/coming-soon/ComingSoon.svelte';
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte';
+import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte';
+import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
-import { onMount } from 'svelte';
 
 let load = {
 	balance: true,
@@ -20,6 +19,8 @@ let error = {
 let endOfList = false;
 let tokenBalance = 0;
 let history: TransactionHistory[] = [];
+
+$: loggedIn = $authState.isLoggedIn;
 
 async function refreshTokenBalance() {
 	const res = await fetchTokenBalance();
@@ -61,20 +62,19 @@ async function loadHistory() {
 	error = error;
 }
 
-onMount(() => {
-	if ($authState.isLoggedIn) {
-		refreshTokenBalance();
-		loadHistory();
-	}
-});
+function init() {
+	console.log('called init');
+	refreshTokenBalance();
+	loadHistory();
+}
+
+$: loggedIn && init();
 </script>
 
 {#if !$authState.isLoggedIn}
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-2">
 		<div class="text-center text-sm opacity-70">Please login to access your wallet</div>
-		<div class="flex h-24 w-full items-center justify-center">
-			<Button on:click="{() => ($authState.showLogin = true)}" class="w-full">Login</Button>
-		</div>
+		<LoginButton />
 	</div>
 {:else}
 	<div class="flex h-full w-full flex-col overflow-hidden overflow-y-auto">
@@ -113,7 +113,7 @@ onMount(() => {
 		</div>
 		<div class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pt-4 pb-16">
 			{#each history as item}
-				{@const tokenCount = item.details['NewUserSignup'] ? 1000 : 500}
+				{@const name = 'NewUserSignup' in item.details ? 'Signup' : 'Referral'}
 				<div class="flex items-center justify-between py-4">
 					<div class="flex items-center space-x-4">
 						<div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
@@ -123,12 +123,17 @@ onMount(() => {
 							</div>
 						</div>
 						<div class="flex flex-col space-y-1">
-							<div>{Object.keys(item.details)[0]}</div>
-							<div class="text-sm opacity-50">{tokenCount} Coins</div>
+							<div>{name}</div>
+							<div class="text-sm opacity-50">{item.token} Coins</div>
 						</div>
 					</div>
-					<div class="text-sm text-green-600">+ {tokenCount}</div>
+					<div class="text-sm text-green-600">+ {item.token}</div>
 				</div>
+			{:else}
+				<div class="flex grow h-full w-full items-center justify-center">
+					<NoTransactionsIcon class="w-full max-w-sm px-10" />
+				</div>
+				<div class="opacity-70 pt-4 text-center">No transactions yet</div>
 			{/each}
 		</div>
 	</div>

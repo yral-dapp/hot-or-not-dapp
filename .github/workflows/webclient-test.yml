@@ -96,7 +96,9 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+        run: |
+          npm i @playwright/test
+          npx playwright install
 
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
@@ -117,25 +119,20 @@ jobs:
             .dfx/
           key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Cache dfx identity
-        if: always()
-        uses: actions/cache@v3
-        id: identity-cache
-        with:
-          path: '~/.config/dfx/identity'
-          key: "${{ runner.os }}-identity-pem-${{ hashFiles('./packages/ic/**') }}"
-
       - name: Start DFX Server
         if: always()
         run: dfx start --background
 
-      - name: Install canisters
-        if: steps.dfx-cache.outputs.cache-hit != 'true'
-        run: ./scripts/canisters/local_deploy/install_all_canisters.sh
+      - name: Provision local canister IDs for the canisters
+        run: |
+          dfx canister create --no-wallet individual_user_template
+          dfx canister create --no-wallet user_index
+          dfx canister create --no-wallet project_member_index
+          dfx canister create --no-wallet post_cache
 
-      - name: Upgrade canister
-        if: steps.dfx-cache.outputs.cache-hit == 'true'
-        run: ./scripts/canisters/local_deploy/upgrade_all_canisters_without_test.sh
+      - name: Install canisters
+        if: always()
+        run: ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()
