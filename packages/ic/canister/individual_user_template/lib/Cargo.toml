@@ -18,3 +18,4 @@ speedy = { workspace = true }
 [dev-dependencies]
 ic-state-machine-tests = { workspace = true }
 test_utils = { path = "../../../lib/test_utils" }
+mockall = { workspace = true }

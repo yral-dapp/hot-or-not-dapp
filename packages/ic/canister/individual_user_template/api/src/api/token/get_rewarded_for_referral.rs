@@ -5,13 +5,9 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     constant::get_user_index_canister_principal_id,
+    date_time::system_time::SystemTimeProvider,
     shared_types::utility_token::{v0::MintEvent, v1::TokenEventV1},
 };
-
-#[cfg(not(test))]
-use shared_utils::date_time::system_time::for_prod::get_current_system_time;
-#[cfg(test)]
-use shared_utils::date_time::system_time::for_tests::get_current_system_time;
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
@@ -31,7 +27,7 @@ fn get_rewarded_for_referral(referrer: Principal, referree: Principal) {
             referrer_user_principal_id: SPrincipal(referrer),
             referee_user_principal_id: SPrincipal(referree),
         },
-        timestamp: get_current_system_time(),
+        timestamp: SystemTimeProvider::get_current_system_time(),
     });
 
     s! { MyTokenBalance = updated_token_balance };

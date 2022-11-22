@@ -21,13 +21,7 @@ fn add_post(post_details: PostDetailsFromFrontend) -> u64 {
     let mut all_posts_mut: AllCreatedPosts = s!(AllCreatedPosts);
     let id = all_posts_mut.len();
 
-    let mut post = Post::new(
-        id,
-        post_details.description,
-        post_details.hashtags,
-        post_details.video_uid,
-        post_details.creator_consent_for_inclusion_in_hot_or_not,
-    );
+    let mut post = Post::new(id, post_details);
 
     post.recalculate_home_feed_score();
     post.recalculate_hot_or_not_feed_score();

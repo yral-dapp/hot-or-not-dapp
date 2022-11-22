@@ -10,6 +10,7 @@ candid = { workspace = true }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
 ic-stable-memory = { workspace = true }
+serde = { workspace = true }
 shared_utils = { path = "../../../lib/shared_utils" }
 
 [dev-dependencies]
