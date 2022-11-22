@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@builder.io/partytown": "^0.7.2",
-		"@dfinity/agent": "0.14.0",
+		"@dfinity/agent": "0.14.1",
 		"@dfinity/auth-client": "0.14.0",
 		"@dfinity/authentication": "0.14.0",
 		"@dfinity/candid": "0.14.1",
