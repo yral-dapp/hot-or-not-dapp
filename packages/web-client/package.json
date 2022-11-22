@@ -33,7 +33,7 @@
 		"idb": "7.1.1",
 		"rollup-plugin-node-polyfills": "^0.2.1",
 		"svelte-local-storage-store": "0.3.1",
-		"swiper": "8.4.4",
+		"swiper": "8.4.5",
 		"throttle-debounce": "5.0.0",
 		"vite-plugin-compression": "^0.5.1"
 	},
