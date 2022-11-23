@@ -2,13 +2,11 @@
 export { exportClass as class };
 let exportClass: any = '';
 export let outlined = false;
-export let size = '100%';
 </script>
 
 {#if outlined}
 	<svg
 		class="{exportClass}"
-		style="width: {size}; height: {size}"
 		viewBox="0 0 39 39"
 		fill="none"
 		role="img"
