@@ -26,10 +26,6 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'CanisterAdmin' : null } |
   { 'ProjectCanister' : null };
 export interface _SERVICE {
-  'get_top_posts_aggregated_from_canisters_on_this_network' : ActorMethod<
-    [bigint, bigint],
-    Result
-  >,
   'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed' : ActorMethod<
     [bigint, bigint],
     Result
@@ -44,10 +40,6 @@ export interface _SERVICE {
     undefined
   >,
   'receive_top_hot_or_not_feed_posts_from_publishing_canister' : ActorMethod<
-    [Array<PostScoreIndexItem>],
-    undefined
-  >,
-  'receive_top_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItem>],
     undefined
   >,
