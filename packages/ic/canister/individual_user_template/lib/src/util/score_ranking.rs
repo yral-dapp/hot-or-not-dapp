@@ -1,5 +1,5 @@
 use crate::{
-    AllCreatedPosts, MyKnownPrincipalIdsMap, PostsIndexSortedByHomeFeedScore,
+    AllCreatedPostsV1, MyKnownPrincipalIdsMap, PostsIndexSortedByHomeFeedScore,
     PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
 };
 use ic_cdk::api::call;
@@ -97,7 +97,7 @@ pub fn send_top_hot_or_not_feed_post_scores_to_post_cache_canister() {
 
 pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score() {
     let posts_index_sorted_by_home_feed_score = s!(PostsIndexSortedByHomeFeedScore);
-    let mut all_created_posts = s!(AllCreatedPosts);
+    let mut all_created_posts = s!(AllCreatedPostsV1);
 
     for post_score_index_item in posts_index_sorted_by_home_feed_score.iter() {
         let mut post = all_created_posts
@@ -109,13 +109,13 @@ pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home
         all_created_posts.replace(post_score_index_item.post_id, &post);
     }
 
-    s! { AllCreatedPosts = all_created_posts };
+    s! { AllCreatedPostsV1 = all_created_posts };
 }
 
 pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score(
 ) {
     let posts_index_sorted_by_hot_or_not_feed_score = s!(PostsIndexSortedByHomeFeedScore);
-    let mut all_created_posts = s!(AllCreatedPosts);
+    let mut all_created_posts = s!(AllCreatedPostsV1);
 
     for post_score_index_item in posts_index_sorted_by_hot_or_not_feed_score.iter() {
         let mut post = all_created_posts
@@ -127,5 +127,5 @@ pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_b
         all_created_posts.replace(post_score_index_item.post_id, &post);
     }
 
-    s! { AllCreatedPosts = all_created_posts };
+    s! { AllCreatedPostsV1 = all_created_posts };
 }

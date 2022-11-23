@@ -1,6 +1,4 @@
-use candid::{CandidType, Deserialize};
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use serde::Serialize;
 use shared_utils::{
     date_time::system_time::SystemTimeProvider,
     shared_types::{
@@ -14,40 +12,9 @@ use std::{
     time::{Duration, SystemTime},
 };
 
-// #[cfg(not(test))]
-// use shared_utils::date_time::system_time::for_prod::get_current_system_time;
-// #[cfg(test)]
-// use shared_utils::date_time::system_time::for_tests::get_current_system_time;
+use crate::{model::profile::UserProfileDetailsForFrontend, util::score_ranking};
 
-use crate::util::score_ranking;
-
-use super::profile::UserProfileDetailsForFrontend;
-
-#[derive(Serialize, Deserialize, CandidType)]
-pub enum PostViewDetailsFromFrontend {
-    WatchedPartially {
-        percentage_watched: u8,
-    },
-    WatchedMultipleTimes {
-        watch_count: u8,
-        percentage_watched: u8,
-    },
-}
-
-#[derive(Readable, Writable)]
-pub struct PostViewStatistics {
-    total_view_count: u64,
-    threshold_view_count: u64,
-    average_watch_percentage: u8,
-}
-
-#[derive(Readable, Writable)]
-pub struct HotOrNotFeedDetails {
-    pub score: u64,
-    pub upvotes: HashSet<SPrincipal>,
-    pub downvotes: HashSet<SPrincipal>,
-    // TODO: consider video age, remove after 48 hours
-}
+use super::v0::{self, HotOrNotFeedDetails, PostViewDetailsFromFrontend, PostViewStatistics};
 
 #[derive(Readable, Writable)]
 pub struct Post {
@@ -63,6 +30,36 @@ pub struct Post {
     homefeed_ranking_score: u64,
     creator_consent_for_inclusion_in_hot_or_not: bool,
     hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
+}
+
+impl From<v0::Post> for Post {
+    fn from(post: v0::Post) -> Self {
+        let mut converted_value = Self {
+            id: post.id,
+            description: post.description,
+            hashtags: post.hashtags,
+            video_uid: post.video_uid,
+            status: post.status,
+            created_at: post.created_at,
+            likes: post.likes,
+            share_count: post.share_count,
+            view_stats: post.view_stats,
+            homefeed_ranking_score: post.ranking_score,
+            creator_consent_for_inclusion_in_hot_or_not: post
+                .creator_consent_for_inclusion_in_hot_or_not,
+            hot_or_not_feed_details: None,
+        };
+
+        if converted_value.creator_consent_for_inclusion_in_hot_or_not {
+            converted_value.hot_or_not_feed_details = Some(HotOrNotFeedDetails {
+                score: 0,
+                upvotes: HashSet::new(),
+                downvotes: HashSet::new(),
+            });
+        }
+
+        converted_value
+    }
 }
 
 impl Post {

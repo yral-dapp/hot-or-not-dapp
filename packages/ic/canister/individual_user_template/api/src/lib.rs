@@ -16,12 +16,12 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        post::PostViewDetailsFromFrontend,
+        post::v0::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
     },
     util::{access_control, known_principal_ids, periodic_update},
-    AccessControlMap, AllCreatedPosts, MyKnownPrincipalIdsMap, MyTokenBalance,
+    AccessControlMap, AllCreatedPosts, AllCreatedPostsV1, MyKnownPrincipalIdsMap, MyTokenBalance,
     PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
     PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
 };
@@ -65,6 +65,7 @@ fn init(init_args: IndividualUserTemplateInitArgs) {
     s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
     s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
+    s! { AllCreatedPostsV1 = AllCreatedPostsV1::new() };
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
@@ -90,8 +91,21 @@ fn post_upgrade() {
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
 
-    // TODO: Remove on next upgrade
-    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
+    // TODO: remove on next deployment
+    s! { AllCreatedPostsV1 = AllCreatedPostsV1::new() };
+    copy_posts_from_v0_to_v1();
+}
+
+fn copy_posts_from_v0_to_v1() {
+    let all_created_posts_v0 = s!(AllCreatedPosts);
+    let mut all_created_posts_v1 = s!(AllCreatedPostsV1);
+
+    for index in 0..all_created_posts_v0.len() {
+        if let Some(post) = all_created_posts_v0.get_cloned(index) {
+            all_created_posts_v1.push(&post.into());
+        }
+    }
+    s! { AllCreatedPostsV1 = all_created_posts_v1 };
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

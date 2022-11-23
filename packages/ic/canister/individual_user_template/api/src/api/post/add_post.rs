@@ -1,5 +1,5 @@
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::Post, AccessControlMap, AllCreatedPosts};
+use individual_user_template_lib::{model::post::v1::Post, AccessControlMap, AllCreatedPostsV1};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     shared_types::post::PostDetailsFromFrontend,
@@ -18,7 +18,7 @@ fn add_post(post_details: PostDetailsFromFrontend) -> u64 {
         SPrincipal(ic_cdk::caller())
     ));
 
-    let mut all_posts_mut: AllCreatedPosts = s!(AllCreatedPosts);
+    let mut all_posts_mut: AllCreatedPostsV1 = s!(AllCreatedPostsV1);
     let id = all_posts_mut.len();
 
     let mut post = Post::new(id, post_details);
@@ -28,7 +28,7 @@ fn add_post(post_details: PostDetailsFromFrontend) -> u64 {
 
     all_posts_mut.push(&post);
 
-    s! { AllCreatedPosts = all_posts_mut };
+    s! { AllCreatedPostsV1 = all_posts_mut };
 
     id
 }

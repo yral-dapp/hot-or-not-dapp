@@ -3,7 +3,10 @@ use ic_stable_memory::{
     utils::ic_types::SPrincipal,
 };
 use model::{
-    post::Post, profile::UserProfile, token::TokenBalance, version_details::VersionDetails,
+    post::{v0::Post, v1::Post as PostV1},
+    profile::UserProfile,
+    token::TokenBalance,
+    version_details::VersionDetails,
 };
 use shared_utils::{
     access_control::UserAccessRole,
@@ -31,3 +34,4 @@ pub type PostsIndexSortedByHomeFeedScore = PostScoreIndex;
 pub type PostsIndexSortedByHotOrNotFeedScore = PostScoreIndex;
 pub type PrincipalsIFollow = BTreeSet<SPrincipal>;
 pub type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
+pub type AllCreatedPostsV1 = SVec<PostV1>;
