@@ -219,7 +219,12 @@ $: if (inView && loaded) {
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
-			<HotOrNot />
+			<div class="absolute inset-0 z-[10] flex items-center justify-center font-bold">
+				Coming Soon
+			</div>
+			<div class="opacity-50">
+				<HotOrNot />
+			</div>
 		</div>
 		<div
 			style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
