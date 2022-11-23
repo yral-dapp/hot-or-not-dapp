@@ -285,6 +285,7 @@ impl Post {
     }
 }
 
+// TODO: try this https://github.com/asomers/mockall/issues/437
 // #[cfg(test)]
 // mod test {
 //     use super::*;
