@@ -227,12 +227,6 @@ $: if (inView && loaded) {
 				<IconButton
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
-					}}">
-					<GiftBoxIcon class="h-8 w-8" />
-				</IconButton>
-				<IconButton
-					on:click="{(e) => {
-						e.stopImmediatePropagation();
 						handleShare();
 					}}">
 					<ShareMessageIcon class="h-6 w-6" />
