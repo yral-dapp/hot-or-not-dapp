@@ -18,6 +18,7 @@ import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import Switch from '$components/switch/Switch.svelte';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -40,6 +41,7 @@ const MAX_HASHTAG_LENGTH = 60;
 let videoSrc = '';
 let previewMuted = true;
 let uploadedVideoId = 0;
+let enrollInHotOrNot = true;
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
@@ -118,7 +120,7 @@ async function handleSuccessfulUpload(videoUid: string) {
 			description: videoDescription,
 			hashtags,
 			video_uid: videoUid,
-			creator_consent_for_inclusion_in_hot_or_not: true
+			creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot
 		});
 		uploadedVideoId = Number(postId);
 		registerEvent('video_uploaded', {
@@ -158,14 +160,14 @@ function getVideoLink() {
 }
 
 onMount(async () => {
-	if ($fileToUpload) {
+	if (!$fileToUpload) {
+		goto('/upload');
+	} else {
 		videoSrc = URL.createObjectURL($fileToUpload);
 		registerEvent('video_to_upload', {
 			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
 			userId: $userProfile.principal_id
 		});
-	} else {
-		goto('/upload');
 	}
 });
 
@@ -243,6 +245,12 @@ onDestroy(() => {
 			{#if hashtagError}
 				<div class="text-xs text-red-500">{hashtagError}</div>
 			{/if}
+			<div class="flex w-full items-center justify-between space-x-8">
+				<span class="text-sm text-white/60">
+					Do you want to include this video in hot or not?
+				</span>
+				<Switch bind:checked="{enrollInHotOrNot}" />
+			</div>
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
 				<div class="flex w-full items-start space-x-4">
