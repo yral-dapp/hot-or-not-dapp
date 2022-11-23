@@ -28,12 +28,12 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,
-        "get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id",
+        "get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer",
         candid::encode_one(()).unwrap(),
     ).map(|reply_payload| {
         let (alice_canister_id,): (Principal,) = match reply_payload {
             WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-            _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
+            _ => panic!("\n🛑 get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer failed\n"),
         };
         alice_canister_id
     }).unwrap();

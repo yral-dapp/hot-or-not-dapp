@@ -27,12 +27,12 @@ fn when_a_new_user_signs_up_then_the_new_user_is_given_a_thousand_utility_tokens
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,
-        "get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id",
+        "get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer",
         candid::encode_one(()).unwrap(),
     ).map(|reply_payload| {
         let (alice_canister_id,): (Principal,) = match reply_payload {
             WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-            _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
+            _ => panic!("\n🛑 get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer failed\n"),
         };
         alice_canister_id
     }).unwrap();
@@ -61,12 +61,12 @@ fn when_a_new_user_signs_up_then_the_new_user_is_given_a_thousand_utility_tokens
     state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,
-        "get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id",
+        "get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer",
         candid::encode_one(()).unwrap(),
     ).map(|reply_payload| {
         let (alice_canister_id,): (Principal,) = match reply_payload {
             WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-            _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
+            _ => panic!("\n🛑 get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer failed\n"),
         };
         alice_canister_id
     }).unwrap();

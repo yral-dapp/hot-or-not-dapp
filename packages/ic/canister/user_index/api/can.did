@@ -60,9 +60,6 @@ service : (UserIndexInitArgs) -> {
   get_user_canister_id_from_user_principal_id : (principal) -> (
       opt principal,
     ) query;
-  get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id : () -> (
-      principal,
-    );
   get_user_roles : (principal) -> (vec UserAccessRole) query;
   topup_canisters_that_need_it : () -> ();
   update_index_with_unique_user_name_corresponding_to_user_principal_id : (

@@ -66,10 +66,6 @@ export interface _SERVICE {
     [Principal],
     [] | [Principal],
   >,
-  'get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id' : ActorMethod<
-    [],
-    Principal,
-  >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
