@@ -254,7 +254,7 @@ async function updateCanvas(height: number, width: number) {
 
 function computeFrame() {
 	try {
-		const ctx = canvasEl.getContext('2d');
+		const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
 		if (ctx) {
 			ctx.drawImage(
 				videoEl,
