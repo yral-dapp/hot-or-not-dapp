@@ -21,12 +21,12 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,
-        "get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id",
+        "get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer",
         candid::encode_one(()).unwrap(),
     ).map(|reply_payload| {
         let alice_canister_id: Principal = match reply_payload {
             WasmResult::Reply(payload) => candid::decode_one(&payload).unwrap(),
-            _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
+            _ => panic!("\n🛑 get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer failed\n"),
         };
         alice_canister_id
     }).unwrap();
@@ -60,6 +60,11 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
         })
         .unwrap();
 
+    assert_eq!(
+        profile_details_from_user_canister.unique_user_name,
+        Some("cool_alice_1234".to_string())
+    );
+
     let is_alice_username_taken = state_machine
         .query_as(
             PrincipalId::new_anonymous(),
@@ -76,6 +81,13 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
         })
         .unwrap();
 
+    println!(
+        "🧪 profile_details_from_user_canister: {:?}",
+        profile_details_from_user_canister
+    );
+
+    println!("🧪 is_alice_username_taken: {:?}", is_alice_username_taken);
+
     let alice_canister_id_corresponding_to_username = state_machine
         .query(
             user_index_canister_id,
@@ -91,6 +103,12 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
             alice_principal_id_corresponding_to_username
         })
         .unwrap();
+
+    println!(
+        "🧪 alice_canister_id_corresponding_to_username: {:?}",
+        alice_canister_id_corresponding_to_username
+    );
+
     let alice_canister_id_corresponding_to_principal_id = state_machine
         .query(
             user_index_canister_id,
@@ -107,10 +125,11 @@ fn when_setting_unique_username_then_new_username_persisted_in_personal_canister
         })
         .unwrap();
 
-    assert_eq!(
-        profile_details_from_user_canister.unique_user_name,
-        Some("cool_alice_1234".to_string())
+    println!(
+        "🧪 alice_canister_id_corresponding_to_principal_id: {:?}",
+        alice_canister_id_corresponding_to_principal_id
     );
+
     assert_eq!(is_alice_username_taken, true);
     assert_eq!(
         alice_canister_id_corresponding_to_username,

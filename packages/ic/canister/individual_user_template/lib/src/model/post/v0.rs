@@ -19,9 +19,7 @@ use std::{
 // #[cfg(test)]
 // use shared_utils::date_time::system_time::for_tests::get_current_system_time;
 
-use crate::util::score_ranking;
-
-use super::profile::UserProfileDetailsForFrontend;
+use crate::{model::profile::UserProfileDetailsForFrontend, util::score_ranking};
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub enum PostViewDetailsFromFrontend {
@@ -60,9 +58,10 @@ pub struct Post {
     likes: HashSet<SPrincipal>,
     share_count: u64,
     view_stats: PostViewStatistics,
-    homefeed_ranking_score: u64,
+    // homefeed_ranking_score: u64,
+    ranking_score: u64,
     creator_consent_for_inclusion_in_hot_or_not: bool,
-    hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
+    // hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
 }
 
 impl Post {
@@ -81,18 +80,19 @@ impl Post {
                 threshold_view_count: 0,
                 average_watch_percentage: 0,
             },
-            homefeed_ranking_score: 0,
+            // homefeed_ranking_score: 0,
+            ranking_score: 0,
             creator_consent_for_inclusion_in_hot_or_not: post_details_from_frontend
                 .creator_consent_for_inclusion_in_hot_or_not,
-            hot_or_not_feed_details: None,
+            // hot_or_not_feed_details: None,
         };
 
         if post.creator_consent_for_inclusion_in_hot_or_not {
-            post.hot_or_not_feed_details = Some(HotOrNotFeedDetails {
-                score: 0,
-                upvotes: HashSet::new(),
-                downvotes: HashSet::new(),
-            });
+            // post.hot_or_not_feed_details = Some(HotOrNotFeedDetails {
+            //     score: 0,
+            //     upvotes: HashSet::new(),
+            //     downvotes: HashSet::new(),
+            // });
         }
 
         post
@@ -156,7 +156,7 @@ impl Post {
             / (60 * 60 * 4);
         let age_of_video_component = (1000 - 50 * subtracting_factor).max(0);
 
-        self.homefeed_ranking_score = likes_component
+        self.ranking_score = likes_component
             + threshold_views_component
             + average_percent_viewed_component
             + post_share_component
@@ -165,69 +165,69 @@ impl Post {
         // * update score index for top posts of this user
         score_ranking::update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
             self.id,
-            self.homefeed_ranking_score,
+            self.ranking_score,
         );
     }
 
     pub fn recalculate_hot_or_not_feed_score(&mut self) {
-        if self.hot_or_not_feed_details.is_some() {
-            let likes_component = match self.view_stats.total_view_count {
-                0 => 0,
-                _ => 1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count,
-            };
+        // if self.hot_or_not_feed_details.is_some() {
+        //     let likes_component = match self.view_stats.total_view_count {
+        //         0 => 0,
+        //         _ => 1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count,
+        //     };
 
-            let absolute_calc_for_hots_ratio =
-                (((((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64)
-                    / (self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64
-                        + self
-                            .hot_or_not_feed_details
-                            .as_ref()
-                            .unwrap()
-                            .downvotes
-                            .len() as u64
-                        + 1))
-                    * 1000)
-                    - 500) as i64)
-                    .abs();
-            let hots_ratio_component = 1000 * (1000 - (absolute_calc_for_hots_ratio as u64 * 2));
-            let threshold_views_component =
-                1000 * self.view_stats.threshold_view_count / self.view_stats.total_view_count;
-            let average_percent_viewed_component =
-                1000 * self.view_stats.average_watch_percentage as u64;
-            let post_share_component =
-                1000 * self.share_count * 100 / self.view_stats.total_view_count;
-            let hot_or_not_participation_component = 1000
-                * ((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64
-                    + self
-                        .hot_or_not_feed_details
-                        .as_ref()
-                        .unwrap()
-                        .downvotes
-                        .len() as u64)
-                    / self.view_stats.total_view_count);
+        //     let absolute_calc_for_hots_ratio =
+        //         (((((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64)
+        //             / (self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64
+        //                 + self
+        //                     .hot_or_not_feed_details
+        //                     .as_ref()
+        //                     .unwrap()
+        //                     .downvotes
+        //                     .len() as u64
+        //                 + 1))
+        //             * 1000)
+        //             - 500) as i64)
+        //             .abs();
+        //     let hots_ratio_component = 1000 * (1000 - (absolute_calc_for_hots_ratio as u64 * 2));
+        //     let threshold_views_component =
+        //         1000 * self.view_stats.threshold_view_count / self.view_stats.total_view_count;
+        //     let average_percent_viewed_component =
+        //         1000 * self.view_stats.average_watch_percentage as u64;
+        //     let post_share_component =
+        //         1000 * self.share_count * 100 / self.view_stats.total_view_count;
+        //     let hot_or_not_participation_component = 1000
+        //         * ((self.hot_or_not_feed_details.as_ref().unwrap().upvotes.len() as u64
+        //             + self
+        //                 .hot_or_not_feed_details
+        //                 .as_ref()
+        //                 .unwrap()
+        //                 .downvotes
+        //                 .len() as u64)
+        //             / self.view_stats.total_view_count);
 
-            let current_time = SystemTimeProvider::get_current_system_time();
-            let subtracting_factor = (current_time
-                .duration_since(self.created_at)
-                .unwrap_or(Duration::ZERO)
-                .as_secs())
-                / (60 * 60 * 4);
-            let age_of_video_component = (1000 - 50 * subtracting_factor).max(0);
+        //     let current_time = SystemTimeProvider::get_current_system_time();
+        //     let subtracting_factor = (current_time
+        //         .duration_since(self.created_at)
+        //         .unwrap_or(Duration::ZERO)
+        //         .as_secs())
+        //         / (60 * 60 * 4);
+        //     let age_of_video_component = (1000 - 50 * subtracting_factor).max(0);
 
-            self.hot_or_not_feed_details.as_mut().unwrap().score = likes_component
-                + hots_ratio_component
-                + threshold_views_component
-                + average_percent_viewed_component
-                + post_share_component
-                + hot_or_not_participation_component
-                + age_of_video_component;
+        //     self.hot_or_not_feed_details.as_mut().unwrap().score = likes_component
+        //         + hots_ratio_component
+        //         + threshold_views_component
+        //         + average_percent_viewed_component
+        //         + post_share_component
+        //         + hot_or_not_participation_component
+        //         + age_of_video_component;
 
-            // * update score index for top posts of this user
-            score_ranking::update_post_score_index_on_hot_or_not_feed_post_score_recalculation(
-                self.id,
-                self.hot_or_not_feed_details.as_ref().unwrap().score,
-            );
-        }
+        //     // * update score index for top posts of this user
+        //     score_ranking::update_post_score_index_on_hot_or_not_feed_post_score_recalculation(
+        //         self.id,
+        //         self.hot_or_not_feed_details.as_ref().unwrap().score,
+        //     );
+        // }
     }
 
     pub fn add_view_details(&mut self, details: PostViewDetailsFromFrontend) {
@@ -279,11 +279,13 @@ impl Post {
             total_view_count: self.view_stats.total_view_count,
             like_count: self.likes.len() as u64,
             liked_by_me: self.likes.contains(&caller),
-            home_feed_ranking_score: self.homefeed_ranking_score,
-            hot_or_not_feed_ranking_score: self
-                .hot_or_not_feed_details
-                .as_ref()
-                .map(|details| details.score),
+            // home_feed_ranking_score: self.homefeed_ranking_score,
+            home_feed_ranking_score: self.ranking_score,
+            // hot_or_not_feed_ranking_score: self
+            //     .hot_or_not_feed_details
+            //     .as_ref()
+            //     .map(|details| details.score),
+            hot_or_not_feed_ranking_score: Some(0),
         }
     }
 }

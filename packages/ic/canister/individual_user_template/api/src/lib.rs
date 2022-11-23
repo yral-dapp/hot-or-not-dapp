@@ -16,7 +16,7 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        post::PostViewDetailsFromFrontend,
+        post::v0::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
     },
@@ -89,9 +89,6 @@ fn post_upgrade() {
 
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
-
-    // TODO: Remove on next upgrade
-    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

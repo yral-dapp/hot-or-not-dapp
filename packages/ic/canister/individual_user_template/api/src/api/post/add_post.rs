@@ -1,5 +1,5 @@
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::Post, AccessControlMap, AllCreatedPosts};
+use individual_user_template_lib::{model::post::v0::Post, AccessControlMap, AllCreatedPosts};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     shared_types::post::PostDetailsFromFrontend,

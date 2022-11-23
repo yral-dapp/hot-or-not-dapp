@@ -3,7 +3,7 @@ use ic_stable_memory::{
     utils::ic_types::SPrincipal,
 };
 use model::{
-    post::Post, profile::UserProfile, token::TokenBalance, version_details::VersionDetails,
+    post::v0::Post, profile::UserProfile, token::TokenBalance, version_details::VersionDetails,
 };
 use shared_utils::{
     access_control::UserAccessRole,
