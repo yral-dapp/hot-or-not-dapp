@@ -205,31 +205,8 @@ $: if (inView && loaded) {
 					class="pointer-events-auto w-80 text-left">
 					{description}
 				</button>
-				<div class="pointer-events-none flex items-start space-x-2">
-					<div
-						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
-						<TimerIcon class="h-4 w-4" />
-						<span class="shrink-0">50m 55s</span>
-					</div>
-					<div
-						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
-						<UsersIcon class="h-5 w-5" />
-						<span class="shrink-0">48/100</span>
-					</div>
-					<div
-						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
-						<PieChartIcon class="h-4 w-4" />
-						<span class="shrink-0">50m 55s</span>
-					</div>
-				</div>
 			</div>
 			<div class="max-w-16 flex shrink-0 flex-col space-y-6">
-				<IconButton
-					on:click="{(e) => {
-						e.stopImmediatePropagation();
-					}}">
-					<GiftBoxIcon class="h-8 w-8" />
-				</IconButton>
 				<IconButton
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
@@ -242,7 +219,12 @@ $: if (inView && loaded) {
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
-			<HotOrNot />
+			<div class="absolute inset-0 z-[10] flex items-center justify-center font-bold">
+				Coming Soon
+			</div>
+			<div class="opacity-50">
+				<HotOrNot />
+			</div>
 		</div>
 		<div
 			style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
