@@ -50,10 +50,11 @@ export async function getTopPosts(
 ): Promise<FeedResponse> {
 	try {
 		const { postCache } = await import('./backend');
-		const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
-			BigInt(from),
-			BigInt(from + numberOfPosts)
-		);
+		const res =
+			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
+				BigInt(from),
+				BigInt(from + numberOfPosts)
+			);
 		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
 			const filteredPosts = await filterPosts(res.Ok);
