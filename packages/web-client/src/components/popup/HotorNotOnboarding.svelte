@@ -16,8 +16,7 @@ let step: 1 | 2 | 3 = 1;
 {#if $showOnboarding}
 	<onboarding
 		class="absolute inset-0 z-[15] flex  h-full w-full items-center justify-center bg-black/90 px-8 text-white"
-		out:fade|local="{{ duration: 500 }}"
-	>
+		out:fade|local="{{ duration: 500 }}">
 		{#if step == 1}
 			<div class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-32">
 				<div class="pointer-events-none absolute top-0 flex w-full justify-between">
@@ -38,8 +37,7 @@ let step: 1 | 2 | 3 = 1;
 		{:else if step == 2}
 			<div class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
 				<div
-					class="relative flex w-full flex-col items-center justify-center space-y-6 text-center"
-				>
+					class="relative flex w-full flex-col items-center justify-center space-y-6 text-center">
 					<div class="text-3xl font-bold">Place your first bet</div>
 					<div>
 						Lorem ipsum dolor sit amet, consectetur elit. sed do eiusmod Lorem ipsum dolor sit amet
@@ -68,7 +66,7 @@ let step: 1 | 2 | 3 = 1;
 				</div>
 				<div class="flex flex-col items-center space-y-3">
 					<GiftBoxIcon outlined class="h-12 w-12" />
-					<span>You can buy coins</span>
+					<span>Win lots of prizes</span>
 				</div>
 				<Button on:click="{() => ($showOnboarding = false)}" class="w-full">
 					Let's make some money

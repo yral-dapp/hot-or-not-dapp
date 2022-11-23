@@ -21,6 +21,8 @@ export let data: LayoutData;
 		<slot />
 	</svelte:fragment>
 	<div class="w-full" slot="bottom-navigation">
-		<BottomNavigation />
+		{#if !data.path.includes('hotornot')}
+			<BottomNavigation />
+		{/if}
 	</div>
 </HomeLayout>
