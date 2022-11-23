@@ -118,7 +118,7 @@ async function handleSuccessfulUpload(videoUid: string) {
 			description: videoDescription,
 			hashtags,
 			video_uid: videoUid,
-			creator_consent_for_inclusion_in_hot_or_not: false
+			creator_consent_for_inclusion_in_hot_or_not: true
 		});
 		uploadedVideoId = Number(postId);
 		registerEvent('video_uploaded', {
