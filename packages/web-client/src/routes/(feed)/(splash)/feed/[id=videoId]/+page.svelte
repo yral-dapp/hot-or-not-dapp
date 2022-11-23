@@ -1,6 +1,5 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import SplashScreen from '$components/layout/SplashScreen.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import type { IndividualUserActor } from '$lib/helpers/backend';
@@ -207,8 +206,6 @@ onMount(async () => {
 	handleParams();
 });
 </script>
-
-<SplashScreen />
 
 <Swiper
 	direction="{'vertical'}"
