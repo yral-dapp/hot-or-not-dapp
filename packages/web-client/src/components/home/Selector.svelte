@@ -10,7 +10,7 @@ export let showDot: 'videos' | 'hot-or-not' | null = null;
 		<selector
 			class="{c(
 				'absolute inset-x-0 z-[1] h-9 rounded-full bg-primary p-4 transition-all duration-200',
-				selected === 'videos' ? 'w-20 translate-x-2' : 'w-[6.75rem] translate-x-[5.25rem]'
+				selected === 'videos' ? 'w-20 translate-x-2' : 'w-[6.25rem] translate-x-[5.25rem]'
 			)}">
 		</selector>
 		{#if showDot === 'hot-or-not'}

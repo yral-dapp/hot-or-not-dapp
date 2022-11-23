@@ -10,28 +10,38 @@ import SoundIcon from '$components/icons/SoundIcon.svelte';
 import TimerIcon from '$components/icons/TimerIcon.svelte';
 import UsersIcon from '$components/icons/UsersIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
-import { authState } from '$stores/auth';
 import { playerState } from '$stores/playerState';
+import userProfile from '$stores/userProfile';
+import type { Principal } from '@dfinity/principal';
 import c from 'clsx';
+import { createEventDispatcher } from 'svelte';
 import { fade } from 'svelte/transition';
 
-export let src = '';
-export let id: bigint = BigInt('');
+export let swiperJs: boolean;
+export let src;
 export let i: number;
-export let thumbnail = '';
+export let id: bigint;
 export let inView = false;
-export let userName = '';
+export let thumbnail = '';
+export let displayName = '';
+export let profileLink = '';
+export let description = '';
 export let videoViews = 254000;
-export let swiperJs;
-export let liked = false;
-export let shareCount = 0;
-export let shared = false;
-export let individualUser: () => IndividualUserActor;
+export let publisherCanisterId: string;
+export let userProfileSrc = '';
+export let createdById = '';
+export let individualUser: (principal?: Principal | string) => IndividualUserActor;
+export let nextVideo = false;
+
+const dispatch = createEventDispatcher<{
+	loaded: void;
+}>();
 
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
@@ -89,19 +99,24 @@ async function handleClick() {
 	}
 }
 
-async function handleLike() {
-	if ($authState.isLoggedIn) {
-		liked = !liked;
-		individualUser().update_post_toggle_like_status_by_caller(id);
-	} else $authState.showLogin = true;
+async function handleShare() {
+	try {
+		await navigator.share({
+			title: 'Hot or Not',
+			text: `Check out this hot video by ${displayName}. \n${description}`,
+			url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`
+		});
+	} catch (_) {}
+	registerEvent('share_video', {
+		userId: $userProfile.principal_id,
+		video_publisher_id: profileLink,
+		video_id: id
+	});
+	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
 
-async function handleShare() {
-	if (!shared) {
-		shareCount++;
-		shared = true;
-		individualUser().update_post_increment_share_count(id);
-	}
+$: if (inView && loaded) {
+	dispatch('loaded');
 }
 </script>
 
@@ -126,7 +141,7 @@ async function handleShare() {
 		disableremoteplayback
 		x-webkit-airplay="deny"
 		preload="metadata"
-		src="{src}"
+		src="{inView || nextVideo ? src : ''}"
 		poster="{thumbnail}"
 		class="object-fit absolute z-[3] h-full w-full"></video>
 	<!-- svelte-ignore a11y-media-has-caption -->
@@ -137,11 +152,11 @@ async function handleShare() {
 		disableremoteplayback
 		muted
 		bind:paused
+		src="{inView || nextVideo ? src : ''}"
 		autoplay
-		preload="metadata"
 		x-webkit-airplay="deny"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{src}">
+		preload="metadata">
 	</video>
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div
@@ -168,12 +183,12 @@ async function handleShare() {
 					on:click="{(e) => e.stopImmediatePropagation()}"
 					class="pointer-events-auto flex space-x-3"
 					on:keyup>
-					<a href="/profile/{i}" data-sveltekit-prefetch class="h-12 w-12">
-						<Avatar class="h-12 w-12 shrink-0" src="{getDefaultImageUrl(i.toString())}" />
+					<a href="/profile/{profileLink}" class="h-12 w-12 shrink-0">
+						<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 					</a>
 					<div class="flex flex-col space-y-1">
-						<a href="/profile/{i}" data-sveltekit-prefetch>
-							@{userName != '' ? userName : generateRandomName('username', i.toString())}
+						<a href="/profile/{profileLink}">
+							{displayName || generateRandomName('name', createdById)}
 						</a>
 						<div class="flex items-center space-x-1">
 							<EyeIcon class="h-4 w-4 text-white" />
@@ -188,35 +203,10 @@ async function handleShare() {
 						truncate = !truncate;
 					}}"
 					class="pointer-events-auto w-80 text-left">
-					A few weeks ago I was scrolling down on hot or not and I found this very fun choreography
-					by @jorgeandindira. I thought it would be a nice challenge since I've never animated a
-					character dancing before. I hope you like the results.
+					{description}
 				</button>
-				<div class="pointer-events-none flex items-start space-x-2">
-					<div
-						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
-						<TimerIcon class="h-4 w-4" />
-						<span class="shrink-0">50m 55s</span>
-					</div>
-					<div
-						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
-						<UsersIcon class="h-5 w-5" />
-						<span class="shrink-0">48/100</span>
-					</div>
-					<div
-						class="flex flex-nowrap items-center space-x-1 rounded-full bg-black/50 py-2 px-4 text-sm">
-						<PieChartIcon class="h-4 w-4" />
-						<span class="shrink-0">50m 55s</span>
-					</div>
-				</div>
 			</div>
 			<div class="max-w-16 flex shrink-0 flex-col space-y-6">
-				<IconButton
-					on:click="{(e) => {
-						e.stopImmediatePropagation();
-					}}">
-					<GiftBoxIcon class="h-8 w-8" />
-				</IconButton>
 				<IconButton
 					on:click="{(e) => {
 						e.stopImmediatePropagation();
@@ -229,7 +219,12 @@ async function handleShare() {
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
-			<HotOrNot />
+			<div class="absolute inset-0 z-[10] flex items-center justify-center font-bold">
+				Coming Soon
+			</div>
+			<div class="opacity-50">
+				<HotOrNot />
+			</div>
 		</div>
 		<div
 			style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
