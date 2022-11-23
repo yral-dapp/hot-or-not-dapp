@@ -34,9 +34,9 @@ pub enum PostViewDetailsFromFrontend {
 
 #[derive(Readable, Writable)]
 pub struct PostViewStatistics {
-    total_view_count: u64,
-    threshold_view_count: u64,
-    average_watch_percentage: u8,
+    pub total_view_count: u64,
+    pub threshold_view_count: u64,
+    pub average_watch_percentage: u8,
 }
 
 #[derive(Readable, Writable)]
@@ -47,26 +47,27 @@ pub struct HotOrNotFeedDetails {
     // TODO: consider video age, remove after 48 hours
 }
 
+// TODO: remove pub field modifiers
 #[derive(Readable, Writable)]
 pub struct Post {
-    id: u64,
-    description: String,
-    hashtags: Vec<String>,
-    video_uid: String,
-    status: PostStatus,
-    created_at: SystemTime,
-    likes: HashSet<SPrincipal>,
-    share_count: u64,
-    view_stats: PostViewStatistics,
+    pub id: u64,
+    pub description: String,
+    pub hashtags: Vec<String>,
+    pub video_uid: String,
+    pub status: PostStatus,
+    pub created_at: SystemTime,
+    pub likes: HashSet<SPrincipal>,
+    pub share_count: u64,
+    pub view_stats: PostViewStatistics,
     // homefeed_ranking_score: u64,
-    ranking_score: u64,
-    creator_consent_for_inclusion_in_hot_or_not: bool,
+    pub ranking_score: u64,
+    pub creator_consent_for_inclusion_in_hot_or_not: bool,
     // hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
 }
 
 impl Post {
     pub fn new(id: u64, post_details_from_frontend: PostDetailsFromFrontend) -> Self {
-        let mut post = Post {
+        let post = Post {
             id,
             description: post_details_from_frontend.description,
             hashtags: post_details_from_frontend.hashtags,
