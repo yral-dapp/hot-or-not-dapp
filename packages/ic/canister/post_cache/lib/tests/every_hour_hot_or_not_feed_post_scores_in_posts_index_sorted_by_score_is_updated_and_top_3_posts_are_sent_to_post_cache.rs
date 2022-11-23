@@ -108,29 +108,28 @@ fn every_hour_hot_or_not_feed_post_scores_in_posts_index_sorted_by_score_is_upda
         })
         .unwrap();
 
-    // TODO: reenable this
-    // assert!(hot_or_not_feed_post_score > 0);
+    assert!(hot_or_not_feed_post_score > 0);
 
-    // // * Advance time by 1 hours
-    // state_machine.advance_time(Duration::from_secs(30 * 60));
-    // state_machine.tick();
+    // * Advance time by 1 hours
+    state_machine.advance_time(Duration::from_secs(30 * 60));
+    state_machine.tick();
 
-    // let returned_posts: Vec<PostScoreIndexItem> = state_machine
-    // .query(
-    //     post_cache_canister_id,
-    //     "get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed",
-    //     candid::encode_args((0 as u64,10 as u64)).unwrap(),
-    // )
-    // .map(|reply_payload| {
-    //     let returned_posts: Result<Vec<PostScoreIndexItem>, TopPostsFetchError> = match reply_payload {
-    //         WasmResult::Reply(payload) => candid::decode_one(&payload).unwrap(),
-    //         _ => panic!("\n🛑 get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed failed\n"),
-    //     };
-    //     returned_posts.unwrap()
-    // })
-    // .unwrap();
+    let returned_posts: Vec<PostScoreIndexItem> = state_machine
+    .query(
+        post_cache_canister_id,
+        "get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed",
+        candid::encode_args((0 as u64,10 as u64)).unwrap(),
+    )
+    .map(|reply_payload| {
+        let returned_posts: Result<Vec<PostScoreIndexItem>, TopPostsFetchError> = match reply_payload {
+            WasmResult::Reply(payload) => candid::decode_one(&payload).unwrap(),
+            _ => panic!("\n🛑 get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed failed\n"),
+        };
+        returned_posts.unwrap()
+    })
+    .unwrap();
 
-    // println!("🧪 returned_posts: {:#?}", returned_posts);
+    println!("🧪 returned_posts: {:#?}", returned_posts);
 
-    // assert!(returned_posts.len() == 3);
+    assert!(returned_posts.len() == 3);
 }
