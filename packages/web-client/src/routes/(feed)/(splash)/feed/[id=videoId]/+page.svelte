@@ -244,7 +244,8 @@ onMount(async () => {
 					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
-					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score[0] !== undefined}"
+					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
+						video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
 					src="{src}" />
 			{/if}
