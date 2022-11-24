@@ -37,6 +37,7 @@ export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
 export let nextVideo = false;
+export let enrolledInHotOrNot = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -236,9 +237,8 @@ $: if (inView && loaded) {
 				</IconButton>
 				<IconButton
 					ariaLabel="Check out this post in Hot or Not"
-					on:click="{(e) => {
-						e.stopImmediatePropagation();
-					}}"
+					disabled="{!enrolledInHotOrNot}"
+					href="{`/hotornot/${publisherCanisterId}@${id}`}"
 					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
 					<FireIcon class="h-5 w-5" />
 				</IconButton>
