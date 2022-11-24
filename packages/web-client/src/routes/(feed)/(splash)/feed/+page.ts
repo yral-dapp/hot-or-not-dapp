@@ -18,10 +18,11 @@ export const load: PageLoad = async ({ url }) => {
 	}
 
 	const { postCache } = await import('$lib/helpers/backend');
-	const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
-		BigInt(0),
-		BigInt(1)
-	);
+	const res =
+		await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
+			BigInt(0),
+			BigInt(1)
+		);
 
 	if ('Ok' in res && res.Ok[0]) {
 		throw redirect(
