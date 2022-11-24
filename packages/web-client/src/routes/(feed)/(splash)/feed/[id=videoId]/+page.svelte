@@ -43,6 +43,7 @@ type VideoViewReport = {
 	canisterId: string;
 	profileId: string;
 	count: number;
+	score: bigint;
 };
 
 let videoStats: Record<number, VideoViewReport> = {};
@@ -118,7 +119,8 @@ async function updateStats(oldIndex) {
 		userId: $userProfile.principal_id,
 		video_publisher_id: stats.profileId,
 		video_id: stats.videoId,
-		watch_count: Math.ceil(stats.count + stats.progress)
+		watch_count: Math.ceil(stats.count + stats.progress),
+		home_feed_score: stats.score
 	});
 	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
 		stats.videoId,
@@ -177,7 +179,13 @@ function updateURL(post?: PostPopulated) {
 	window.history.replaceState('', '', url);
 }
 
-function recordStats(progress: number, canisterId: string, videoId: bigint, profileId: string) {
+function recordStats(
+	progress: number,
+	canisterId: string,
+	videoId: bigint,
+	profileId: string,
+	score: bigint
+) {
 	if (videoStats[currentPlayingIndex]) {
 		videoStats[currentPlayingIndex].progress = progress;
 		if (progress == 0) videoStats[currentPlayingIndex].count++;
@@ -187,7 +195,8 @@ function recordStats(progress: number, canisterId: string, videoId: bigint, prof
 			videoId,
 			canisterId,
 			profileId,
-			count: 0
+			count: 0,
+			score
 		};
 	}
 }
@@ -226,7 +235,8 @@ onMount(async () => {
 							detail,
 							video.publisher_canister_id,
 							video.id,
-							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id
+							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
+							video.home_feed_ranking_score
 						)}"
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
