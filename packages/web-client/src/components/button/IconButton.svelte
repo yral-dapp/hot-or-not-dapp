@@ -13,17 +13,17 @@ const style = '-webkit-tap-highlight-color: transparent;';
 $: classes = c(
 	'flex items-center select-none justify-center focus:outline-none ',
 	{
-		'pointer-events-none': disabled
+		'pointer-events-none opacity-60 grayscale': disabled
 	},
 	exportClass
 );
 </script>
 
-{#if href && !prefetch}
+{#if href && !prefetch && !disabled}
 	<a aria-label="{ariaLabel}" style="{style}" on:click href="{href}" class="{classes}">
 		<slot />
 	</a>
-{:else if href && prefetch}
+{:else if href && prefetch && !disabled}
 	<a
 		aria-label="{ariaLabel}"
 		style="{style}"

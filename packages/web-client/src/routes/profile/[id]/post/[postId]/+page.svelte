@@ -56,6 +56,7 @@ onMount(async () => {
 					individualUser="{individualUser}"
 					inView
 					swiperJs
+					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
 					src="{getMp4Url(video.video_uid)}" />
 			{/if}
