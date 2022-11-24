@@ -38,7 +38,7 @@
 		"vite-plugin-compression": "^0.5.1"
 	},
 	"devDependencies": {
-		"@playwright/test": "1.28.0",
+		"@playwright/test": "1.28.1",
 		"@sveltejs/adapter-cloudflare": "1.0.0-next.40",
 		"@sveltejs/adapter-node": "1.0.0-next.100",
 		"@sveltejs/adapter-static": "1.0.0-next.48",
