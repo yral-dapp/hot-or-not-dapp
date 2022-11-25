@@ -3,11 +3,11 @@ import { writable } from 'svelte/store';
 export const playerState = writable<{
 	initialized: boolean;
 	muted: boolean;
-	currentVideoUrl: string;
-	currentHotOrNotIndex: number;
+	currentFeedUrl: string;
+	currentHotOrNotUrl: string;
 }>({
 	initialized: false,
 	muted: true,
-	currentVideoUrl: '',
-	currentHotOrNotIndex: 0
+	currentFeedUrl: '',
+	currentHotOrNotUrl: ''
 });
