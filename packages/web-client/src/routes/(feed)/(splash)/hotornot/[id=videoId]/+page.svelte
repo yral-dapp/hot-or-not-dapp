@@ -100,7 +100,7 @@ const playVideo = debounce(50, async (index: number) => {
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
 	const url = post.publisher_canister_id + '@' + post.post_id;
-	$playerState.currentVideoUrl = url;
+	$playerState.currentHotOrNotUrl = url;
 	window.history.replaceState('', '', url);
 }
 
