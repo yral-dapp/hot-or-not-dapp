@@ -1,7 +1,11 @@
 <script lang="ts">
+import { playerState } from '$stores/playerState';
 import c from 'clsx';
 export let selected: 'videos' | 'hot-or-not' = 'videos';
 export let showDot: 'videos' | 'hot-or-not' | null = null;
+
+$: feedUrl = $playerState.currentFeedUrl == 'no-videos' ? '' : $playerState.currentFeedUrl;
+$: hotOrNotUrl = $playerState.currentHotOrNotUrl == 'no-videos' ? '' : $playerState.currentFeedUrl;
 </script>
 
 <home-selector class="flex w-full items-center justify-center pt-4">
@@ -23,7 +27,9 @@ export let showDot: 'videos' | 'hot-or-not' | null = null;
 			</selector-dot>
 		{/if}
 
-		<a href="/feed" on:click="{() => (selected = 'videos')}" class="z-[2]">Videos</a>
-		<a href="/hotornot" on:click="{() => (selected = 'hot-or-not')}" class="z-[2]">Hot or Not</a>
+		<a href="/feed/{feedUrl}" on:click="{() => (selected = 'videos')}" class="z-[2]">Videos</a>
+		<a href="/hotornot/{hotOrNotUrl}" on:click="{() => (selected = 'hot-or-not')}" class="z-[2]">
+			Hot or Not
+		</a>
 	</div>
 </home-selector>
