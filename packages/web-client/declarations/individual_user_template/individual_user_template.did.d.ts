@@ -137,20 +137,20 @@ export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
   'get_following_status_do_i_follow_this_user' : ActorMethod<
     [Principal],
-    boolean,
+    boolean
   >,
   'get_individual_post_details_by_id' : ActorMethod<
     [bigint],
-    PostDetailsForFrontend,
+    PostDetailsForFrontend
   >,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result,
+    Result
   >,
   'get_principals_i_follow_paginated' : ActorMethod<[bigint, bigint], Result_1>,
   'get_principals_that_follow_me_paginated' : ActorMethod<
     [bigint, bigint],
-    Result_1,
+    Result_1
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
@@ -158,37 +158,37 @@ export interface _SERVICE {
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_2,
+    Result_2
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
   'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
-    undefined,
+    undefined
   >,
   'update_post_as_ready_to_view' : ActorMethod<[bigint], undefined>,
   'update_post_increment_share_count' : ActorMethod<[bigint], bigint>,
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_principals_i_follow_toggle_list_with_principal_specified' : ActorMethod<
     [Principal],
-    Result_3,
+    Result_3
   >,
   'update_principals_that_follow_me_toggle_list_with_specified_principal' : ActorMethod<
     [Principal],
-    Result_4,
+    Result_4
   >,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_5,
+    Result_5
   >,
   'update_profile_resend_username_to_user_index_canister' : ActorMethod<
     [],
-    Result_6,
+    Result_6
   >,
   'update_profile_set_unique_username_once' : ActorMethod<[string], Result_6>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
-    undefined,
+    undefined
   >,
 }
