@@ -1,7 +1,9 @@
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import type { PostScoreIndexItem, TopPostsFetchError } from '$canisters/post_cache/post_cache.did';
+import { watchHistoryIdb } from '$lib/utils/idb';
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
+import { individualUser, postCache } from './backend';
 
 export interface PostPopulated
 	extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -26,7 +28,6 @@ export type FeedResponse =
 	  };
 
 async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexItem[]> {
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const keys = (await watchHistoryIdb.keys()) as string[];
 	if (!keys.length) return posts;
 	const filtered = posts.filter(
@@ -36,7 +37,6 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 }
 
 export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
 	if (!values.length) return [];
 	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
@@ -49,7 +49,6 @@ export async function getTopPosts(
 	filterViewed = false
 ): Promise<FeedResponse> {
 	try {
-		const { postCache } = await import('./backend');
 		const res =
 			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
 				BigInt(from),
@@ -91,7 +90,6 @@ export async function getHotOrNotPosts(
 	numberOfPosts: number = 10
 ): Promise<FeedResponse> {
 	try {
-		const { postCache } = await import('./backend');
 		const res =
 			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
 				BigInt(from),
@@ -129,8 +127,6 @@ export async function getHotOrNotPosts(
 
 async function populatePosts(posts: PostScoreIndexItem[]) {
 	try {
-		const { individualUser } = await import('./backend');
-
 		if (!posts.length) {
 			return { posts: [], error: false };
 		}

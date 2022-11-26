@@ -6,9 +6,10 @@ import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
 import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
+import { userIndex } from './backend';
+import { canisterIdb } from '$lib/utils/idb';
 
 async function updateUserIndexCanister() {
-	const { userIndex } = await import('./backend');
 	try {
 		const referralStore = get(referralId);
 		const referral: [] | [Principal] = referralStore.principalId
@@ -36,7 +37,6 @@ async function updateUserIndexCanister() {
 			userCanisterId: userCanisterPrincipal?.toText()
 		});
 		if (authStateData.isLoggedIn && authStateData.idString && userCanisterPrincipal) {
-			const { canisterIdb } = await import('$lib/utils/idb');
 			canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
 		}
 	} catch (e) {

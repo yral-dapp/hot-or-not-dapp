@@ -10,6 +10,7 @@ import {
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { watchHistoryIdb } from '$lib/utils/idb';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -130,7 +131,6 @@ async function updateStats(oldIndex) {
 
 async function recordView(post?: PostPopulated) {
 	if (!post) return;
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const postHistory: PostPopulatedHistory = {
 		...post,
 		watched_at: Date.now()
