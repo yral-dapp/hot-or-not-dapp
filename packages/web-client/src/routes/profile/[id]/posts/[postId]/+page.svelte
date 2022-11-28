@@ -1,7 +1,6 @@
 <script lang="ts">
 import 'swiper/css';
 import type { IndividualUserActor } from '$lib/helpers/backend';
-import { onMount } from 'svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { PageData } from './$types';
@@ -23,10 +22,6 @@ let videos = [video];
 let noMoreVideos = true;
 
 let individualUser: () => IndividualUserActor;
-
-onMount(async () => {
-	individualUser = (await import('$lib/helpers/backend')).individualUser;
-});
 </script>
 
 <HomeLayout>

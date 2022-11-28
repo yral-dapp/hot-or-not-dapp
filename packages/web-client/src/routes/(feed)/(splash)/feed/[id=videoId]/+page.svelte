@@ -2,7 +2,7 @@
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import type { IndividualUserActor } from '$lib/helpers/backend';
+import { individualUser } from '$lib/helpers/backend';
 import {
 	getTopPosts,
 	getWatchedVideosFromCache,
@@ -34,7 +34,6 @@ let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: VideoPlayer[] = [];
-let individualUser: (principal?: Principal | string) => IndividualUserActor;
 let fetchedVideosCount = 0;
 
 type VideoViewReport = {
@@ -202,7 +201,6 @@ function recordStats(
 }
 
 onMount(async () => {
-	individualUser = (await import('$lib/helpers/backend')).individualUser;
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;

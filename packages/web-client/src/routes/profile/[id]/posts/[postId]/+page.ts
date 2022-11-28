@@ -1,5 +1,6 @@
 export const ssr = false;
 
+import { individualUser } from '$lib/helpers/backend';
 import { getCanisterId } from '$lib/helpers/canisterId';
 import type { PostPopulated } from '$lib/helpers/feed';
 import Log from '$lib/utils/Log';
@@ -28,7 +29,6 @@ export const load: PageLoad = async ({ params }) => {
 
 		if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) me = true;
 
-		const individualUser = (await import('$lib/helpers/backend')).individualUser;
 		const post = await individualUser(Principal.from(canId)).get_individual_post_details_by_id(
 			BigInt(pid)
 		);

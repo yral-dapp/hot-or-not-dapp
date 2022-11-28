@@ -15,6 +15,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { authState } from '$stores/auth';
 import { goto } from '$app/navigation';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { individualUser, userIndex } from '$lib/helpers/backend';
 
 export let data: PageData;
 
@@ -50,7 +51,6 @@ async function isUsernameTaken() {
 		return false;
 	} else {
 		try {
-			const { userIndex } = await import('$lib/helpers/backend');
 			return await userIndex().get_index_details_is_user_name_taken(newUsername);
 		} catch (e) {
 			return true;
@@ -90,7 +90,6 @@ async function saveChanges() {
 
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
-	const { individualUser, userIndex } = await import('$lib/helpers/backend');
 	const newUsername = values.username.toLowerCase().trim();
 	if (username !== newUsername) {
 		try {

@@ -2,13 +2,12 @@
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
 import HotOrNotPlayer from '$components/video/HotOrNotPlayer.svelte';
-import type { IndividualUserActor } from '$lib/helpers/backend';
+import { individualUser } from '$lib/helpers/backend';
 import { getHotOrNotPosts, type PostPopulated } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
-import type { Principal } from '@dfinity/principal';
 import { onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
@@ -27,7 +26,6 @@ let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let videoPlayers: HotOrNotPlayer[] = [];
-let individualUser: (principal?: Principal | string) => IndividualUserActor;
 let fetchedVideosCount = 0;
 
 async function fetchNextVideos() {
@@ -105,7 +103,6 @@ function updateURL(post?: PostPopulated) {
 }
 
 onMount(async () => {
-	individualUser = (await import('$lib/helpers/backend')).individualUser;
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {

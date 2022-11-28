@@ -14,6 +14,7 @@ import { authState } from '$stores/auth';
 import userProfile, { type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
+import { individualUser } from './backend';
 import { getCanisterId } from './canisterId';
 
 export interface UserProfileFollows extends UserProfile {
@@ -21,7 +22,6 @@ export interface UserProfileFollows extends UserProfile {
 }
 
 async function fetchProfile() {
-	const { individualUser } = await import('./backend');
 	try {
 		return await individualUser().get_profile_details();
 	} catch (e) {
@@ -87,7 +87,7 @@ type ProfilePostsResponse =
 export async function fetchPosts(id: string, from: number): Promise<ProfilePostsResponse> {
 	try {
 		const canId = await getCanisterId(id);
-		const { individualUser } = await import('./backend');
+
 		const res = await individualUser(
 			Principal.from(canId)
 		).get_posts_of_this_user_profile_with_pagination(BigInt(from), BigInt(from + 10));
@@ -118,7 +118,7 @@ export async function fetchPosts(id: string, from: number): Promise<ProfilePosts
 export async function fetchLovers(id: string, from: number) {
 	try {
 		const canId = await getCanisterId(id);
-		const { individualUser } = await import('./backend');
+
 		const res = await individualUser(Principal.from(canId)).get_principals_that_follow_me_paginated(
 			BigInt(from),
 			BigInt(from + 10)
@@ -153,8 +153,6 @@ export async function fetchLovers(id: string, from: number) {
 
 async function populateProfiles(users: Principal[]) {
 	try {
-		const { individualUser } = await import('./backend');
-
 		if (!users.length) {
 			return { posts: [], error: false };
 		}
@@ -182,14 +180,13 @@ async function populateProfiles(users: Principal[]) {
 
 export async function doIFollowThisUser(userId?: string, canId?: string | Principal) {
 	if (!userId) return false;
-	const { individualUser } = await import('./backend');
+
 	return await individualUser(canId).get_following_status_do_i_follow_this_user(
 		Principal.from(userId)
 	);
 }
 
 export async function loveUser(userId: string) {
-	const { individualUser } = await import('./backend');
 	try {
 		const res =
 			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
@@ -253,7 +250,6 @@ export async function fetchHistory(
 	filter?: UnionKeyOf<MintEvent>
 ): Promise<HistoryResponse> {
 	try {
-		const { individualUser } = await import('./backend');
 		const res = await individualUser().get_user_utility_token_transaction_history_with_pagination(
 			BigInt(from),
 			BigInt(from + 10)
@@ -287,7 +283,6 @@ export async function fetchTokenBalance(): Promise<
 	{ error: false; balance: number } | { error: true }
 > {
 	try {
-		const { individualUser } = await import('./backend');
 		const res = await individualUser().get_utility_token_balance();
 		return { error: false, balance: Number(res) };
 	} catch (e) {
