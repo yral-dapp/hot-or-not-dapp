@@ -80,7 +80,9 @@ $: userId = $userProfile.username_set
 				</div>
 			</div>
 		{:else}
-			<LoginButton />
+			<div class="flex items-center justify-center">
+				<LoginButton />
+			</div>
 		{/if}
 		<div class="my-8 h-[1px] w-full bg-white/10"></div>
 		{#each links as link}
