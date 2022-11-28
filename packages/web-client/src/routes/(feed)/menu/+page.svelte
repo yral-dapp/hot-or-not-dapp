@@ -127,7 +127,7 @@ $: userId = $userProfile.username_set
 			{/if}
 		</div>
 		<div class="pb-2">
-			<OnChainDfinityIcon class="w-full" />
+			<OnChainDfinityIcon class="h-14" />
 		</div>
 	</div>
 </div>
