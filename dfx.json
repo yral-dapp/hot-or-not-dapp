@@ -6,6 +6,7 @@
 			"package": "individual_user_template",
 			"candid": "./packages/ic/canister/individual_user_template/api/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/individual_user_template"
 			}
 		},
@@ -20,6 +21,7 @@
 			"package": "post_cache",
 			"candid": "./packages/ic/canister/post_cache/api/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/post_cache"
 			}
 		},
@@ -28,6 +30,7 @@
 			"package": "project_member_index",
 			"candid": "./packages/ic/canister/project_member_index/api/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/project_member_index"
 			}
 		},
@@ -36,6 +39,7 @@
 			"package": "user_index",
 			"candid": "./packages/ic/canister/user_index/api/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/user_index"
 			}
 		},
