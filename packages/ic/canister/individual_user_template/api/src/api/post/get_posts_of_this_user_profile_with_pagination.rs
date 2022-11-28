@@ -1,7 +1,10 @@
 use candid::CandidType;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::PostDetailsForFrontend, AllCreatedPosts, Profile};
-use shared_utils::pagination::{self, PaginationError};
+use individual_user_template_lib::{AllCreatedPostsV1, Profile};
+use shared_utils::{
+    pagination::{self, PaginationError},
+    shared_types::individual_user_template::post::PostDetailsForFrontend,
+};
 
 #[derive(CandidType)]
 pub enum GetPostsOfUserProfileError {
@@ -16,7 +19,7 @@ fn get_posts_of_this_user_profile_with_pagination(
     from_inclusive_id: u64,
     to_exclusive_id: u64,
 ) -> Result<Vec<PostDetailsForFrontend>, GetPostsOfUserProfileError> {
-    let all_posts: AllCreatedPosts = s!(AllCreatedPosts);
+    let all_posts: AllCreatedPostsV1 = s!(AllCreatedPostsV1);
 
     let (from_inclusive_id, to_exclusive_id) =
         pagination::get_pagination_bounds(from_inclusive_id, to_exclusive_id, all_posts.len())

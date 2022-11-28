@@ -12,7 +12,7 @@ import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
 $: showBg = !(path.includes('feed') || path.includes('post'));
-$: feedUrl = $playerState.currentVideoUrl == 'no-videos' ? '' : $playerState.currentVideoUrl;
+$: feedUrl = $playerState.currentFeedUrl == 'no-videos' ? '' : $playerState.currentFeedUrl;
 
 function prefetchLinks() {
 	!path.includes('menu') && prefetch('/menu');

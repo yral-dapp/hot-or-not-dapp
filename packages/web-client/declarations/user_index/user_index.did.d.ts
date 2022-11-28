@@ -50,39 +50,35 @@ export interface UserIndexInitArgs {
 export interface _SERVICE {
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],
-    CanisterStatusResponse,
+    CanisterStatusResponse
   >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
   'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
     [[] | [Principal]],
-    Principal,
+    Principal
   >,
   'get_user_canister_id_from_unique_user_name' : ActorMethod<
     [string],
-    [] | [Principal],
+    [] | [Principal]
   >,
   'get_user_canister_id_from_user_principal_id' : ActorMethod<
     [Principal],
-    [] | [Principal],
-  >,
-  'get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id' : ActorMethod<
-    [],
-    Principal,
+    [] | [Principal]
   >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
-    Result,
+    Result
   >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<
     [],
-    UpgradeStatus,
+    UpgradeStatus
   >,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
-    undefined,
+    undefined
   >,
 }

@@ -2,7 +2,7 @@ use std::time::SystemTime;
 
 use candid::CandidType;
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use shared_utils::date_time::get_current_system_time::get_current_system_time_from_ic;
+use shared_utils::date_time::system_time::SystemTimeProvider;
 use speedy::{Readable, Writable};
 
 #[derive(CandidType, Readable, Writable)]
@@ -17,7 +17,7 @@ impl UpgradeStatus {
     pub fn new() -> Self {
         Self {
             version_number: 0,
-            last_run_on: get_current_system_time_from_ic(),
+            last_run_on: SystemTimeProvider::get_current_system_time(),
             successful_upgrade_count: 0,
             failed_canister_ids: Vec::new(),
         }

@@ -6,8 +6,8 @@ use ic_stable_memory::{
 };
 use post_cache_lib::{
     access_control::setup_initial_access_control, model::api_error::TopPostsFetchError,
-    util::known_principal_ids, AccessControlMap, MyKnownPrincipalIdsMap, PostsIndexSortedByScore,
-    PostsIndexSortedByScoreV1,
+    util::known_principal_ids, AccessControlMap, MyKnownPrincipalIdsMap,
+    PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
 };
 use shared_utils::{
     access_control::UserAccessRole,
@@ -31,7 +31,8 @@ fn init(init_args: PostCacheInitArgs) {
     // * initialize stable collections
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
-    s! { PostsIndexSortedByScoreV1 = PostsIndexSortedByScoreV1::default() };
+    s! { PostsIndexSortedByHomeFeedScore = PostsIndexSortedByHomeFeedScore::default() };
+    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);

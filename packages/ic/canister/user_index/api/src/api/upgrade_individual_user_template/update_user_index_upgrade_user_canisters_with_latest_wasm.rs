@@ -2,7 +2,7 @@ use ic_cdk::api::management_canister::main::CanisterInstallMode;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::{self, UserAccessRole},
-    date_time::get_current_system_time::get_current_system_time_from_ic,
+    date_time::system_time::SystemTimeProvider,
 };
 use user_index_lib::{
     model::upgrade_status::UpgradeStatus, util::canister_management, AccessControlMap,
@@ -60,7 +60,7 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() -> UpgradeS
 
     let new_upgrade_status = UpgradeStatus {
         version_number: saved_upgrade_status.version_number + 1,
-        last_run_on: get_current_system_time_from_ic(),
+        last_run_on: SystemTimeProvider::get_current_system_time(),
         successful_upgrade_count: upgrade_count,
         failed_canister_ids,
     };

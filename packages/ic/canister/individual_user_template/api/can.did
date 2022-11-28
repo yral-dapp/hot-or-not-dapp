@@ -47,6 +47,7 @@ type MintEvent = variant {
 type PostDetailsForFrontend = record {
   id : nat64;
   status : PostStatus;
+  home_feed_ranking_score : nat64;
   hashtags : vec text;
   like_count : nat64;
   description : text;
@@ -55,6 +56,7 @@ type PostDetailsForFrontend = record {
   created_by_unique_user_name : opt text;
   video_uid : text;
   created_by_user_principal_id : principal;
+  hot_or_not_feed_ranking_score : opt nat64;
   liked_by_me : bool;
   created_by_profile_photo_url : opt text;
 };
@@ -145,7 +147,6 @@ service : (IndividualUserTemplateInitArgs) -> {
   add_post : (PostDetailsFromFrontend) -> (nat64);
   get_following_status_do_i_follow_this_user : (principal) -> (bool) query;
   get_individual_post_details_by_id : (nat64) -> (PostDetailsForFrontend) query;
-  get_individual_post_score_by_id : (nat64) -> (nat64) query;
   get_posts_of_this_user_profile_with_pagination : (nat64, nat64) -> (
       Result,
     ) query;

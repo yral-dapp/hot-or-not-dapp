@@ -1,6 +1,5 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import SplashScreen from '$components/layout/SplashScreen.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import type { IndividualUserActor } from '$lib/helpers/backend';
@@ -44,6 +43,7 @@ type VideoViewReport = {
 	canisterId: string;
 	profileId: string;
 	count: number;
+	score: bigint;
 };
 
 let videoStats: Record<number, VideoViewReport> = {};
@@ -119,7 +119,8 @@ async function updateStats(oldIndex) {
 		userId: $userProfile.principal_id,
 		video_publisher_id: stats.profileId,
 		video_id: stats.videoId,
-		watch_count: Math.ceil(stats.count + stats.progress)
+		watch_count: Math.ceil(stats.count + stats.progress),
+		home_feed_score: stats.score
 	});
 	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
 		stats.videoId,
@@ -174,11 +175,17 @@ const playVideo = debounce(50, async (index: number) => {
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
 	const url = post.publisher_canister_id + '@' + post.post_id;
-	$playerState.currentVideoUrl = url;
+	$playerState.currentFeedUrl = url;
 	window.history.replaceState('', '', url);
 }
 
-function recordStats(progress: number, canisterId: string, videoId: bigint, profileId: string) {
+function recordStats(
+	progress: number,
+	canisterId: string,
+	videoId: bigint,
+	profileId: string,
+	score: bigint
+) {
 	if (videoStats[currentPlayingIndex]) {
 		videoStats[currentPlayingIndex].progress = progress;
 		if (progress == 0) videoStats[currentPlayingIndex].count++;
@@ -188,7 +195,8 @@ function recordStats(progress: number, canisterId: string, videoId: bigint, prof
 			videoId,
 			canisterId,
 			profileId,
-			count: 0
+			count: 0,
+			score
 		};
 	}
 }
@@ -207,8 +215,6 @@ onMount(async () => {
 	handleParams();
 });
 </script>
-
-<SplashScreen />
 
 <Swiper
 	direction="{'vertical'}"
@@ -229,7 +235,8 @@ onMount(async () => {
 							detail,
 							video.publisher_canister_id,
 							video.id,
-							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id
+							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
+							video.home_feed_ranking_score
 						)}"
 					bind:this="{videoPlayers[i]}"
 					i="{i}"
@@ -247,6 +254,8 @@ onMount(async () => {
 					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
 					swiperJs
+					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
+						video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
 					src="{src}" />
 			{/if}

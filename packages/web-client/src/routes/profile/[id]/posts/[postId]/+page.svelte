@@ -73,6 +73,8 @@ onMount(async () => {
 							userProfileSrc="{video.created_by_profile_photo_url[0]}"
 							individualUser="{individualUser}"
 							swiperJs
+							enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
+								video.hot_or_not_feed_ranking_score[0] !== undefined}"
 							thumbnail="{getThumbnailUrl(video.video_uid)}"
 							src="{src}" />
 					</SwiperSlide>

@@ -1,6 +1,9 @@
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use individual_user_template_lib::{model::post::PostStatus, AccessControlMap, AllCreatedPosts};
-use shared_utils::access_control::{self, UserAccessRole};
+use individual_user_template_lib::{AccessControlMap, AllCreatedPostsV1};
+use shared_utils::{
+    access_control::{self, UserAccessRole},
+    shared_types::individual_user_template::post::PostStatus,
+};
 
 /// # Access Control
 /// Only admin principals allowed
@@ -16,9 +19,9 @@ fn update_post_as_ready_to_view(id: u64) {
         SPrincipal(ic_cdk::caller())
     ));
 
-    let mut all_posts_mut: AllCreatedPosts = s!(AllCreatedPosts);
+    let mut all_posts_mut: AllCreatedPostsV1 = s!(AllCreatedPostsV1);
     let mut post_to_update = all_posts_mut.get_cloned(id).unwrap();
     post_to_update.update_status(PostStatus::ReadyToView);
     all_posts_mut.replace(id, &post_to_update);
-    s! { AllCreatedPosts = all_posts_mut };
+    s! { AllCreatedPostsV1 = all_posts_mut };
 }

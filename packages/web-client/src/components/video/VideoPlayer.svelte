@@ -16,7 +16,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
-import { createEventDispatcher } from 'svelte';
+import { createEventDispatcher, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
@@ -37,6 +37,7 @@ export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
 export let nextVideo = false;
+export let enrolledInHotOrNot = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
@@ -57,11 +58,15 @@ export async function play() {
 		if (videoEl) {
 			videoEl.currentTime = 0.1;
 			videoBgEl.currentTime = 0.1;
-			playPromise = videoEl.play().catch((_) => {
-				paused = true;
-			});
+			if (!playPromise) {
+				await tick();
+				playPromise = videoEl?.play().catch((_) => {
+					paused = true;
+				});
+			}
 			await playPromise;
-			await videoBgEl.play().catch((_) => {});
+			await tick();
+			await videoBgEl?.play().catch((_) => {});
 			if (isiPhone()) return;
 			if ($playerState.initialized && !$playerState.muted) {
 				videoEl.muted = $playerState.muted = false;
@@ -90,8 +95,10 @@ export async function stop() {
 				await playPromise;
 				playPromise = undefined;
 			}
-			videoEl.pause();
-			videoBgEl.pause();
+			await tick();
+
+			videoEl?.pause();
+			videoBgEl?.pause();
 		}
 	} catch (e: any) {
 		if (tryToStop) {
@@ -102,7 +109,7 @@ export async function stop() {
 		const ignoreError =
 			err.includes('The play() request') || err.includes('The request is not allowed');
 		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
 		}
 	}
 }
@@ -167,40 +174,42 @@ $: if (inView && loaded) {
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}">
-	<!-- svelte-ignore a11y-media-has-caption -->
-	<video
-		on:click="{handleClick}"
-		bind:this="{videoEl}"
-		loop
-		playsinline
-		on:loadeddata="{() => (loaded = true)}"
-		autoplay
-		muted
-		bind:paused
-		bind:currentTime
-		bind:duration
-		disableremoteplayback
-		x-webkit-airplay="deny"
-		preload="metadata"
-		src="{inView || nextVideo ? src : ''}"
-		poster="{thumbnail}"
-		class="object-fit absolute z-[3] h-full w-full"></video>
-	<!-- svelte-ignore a11y-media-has-caption -->
-	<video
-		on:click="{handleClick}"
-		bind:this="{videoBgEl}"
-		loop
-		playsinline
-		disableremoteplayback
-		muted
-		bind:paused
-		autoplay
-		poster="{thumbnail}"
-		preload="metadata"
-		x-webkit-airplay="deny"
-		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-		src="{inView || nextVideo ? src : ''}">
-	</video>
+	{#if inView || nextVideo}
+		<!-- svelte-ignore a11y-media-has-caption -->
+		<video
+			on:click="{handleClick}"
+			bind:this="{videoEl}"
+			loop
+			playsinline
+			on:loadeddata="{() => (loaded = true)}"
+			autoplay
+			muted
+			bind:paused
+			bind:currentTime
+			bind:duration
+			disableremoteplayback
+			x-webkit-airplay="deny"
+			preload="metadata"
+			src="{src}"
+			poster="{thumbnail}"
+			class="object-fit absolute z-[3] h-full w-full"></video>
+		<!-- svelte-ignore a11y-media-has-caption -->
+		<video
+			on:click="{handleClick}"
+			bind:this="{videoBgEl}"
+			loop
+			playsinline
+			disableremoteplayback
+			muted
+			bind:paused
+			autoplay
+			poster="{thumbnail}"
+			preload="metadata"
+			x-webkit-airplay="deny"
+			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
+			src="{src}">
+		</video>
+	{/if}
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
@@ -236,9 +245,8 @@ $: if (inView && loaded) {
 				</IconButton>
 				<IconButton
 					ariaLabel="Check out this post in Hot or Not"
-					on:click="{(e) => {
-						e.stopImmediatePropagation();
-					}}"
+					disabled="{!enrolledInHotOrNot}"
+					href="{`/hotornot/${publisherCanisterId}@${id}`}"
 					class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
 					<FireIcon class="h-5 w-5" />
 				</IconButton>

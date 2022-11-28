@@ -16,20 +16,23 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
+        post::v0::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
     },
     util::{access_control, known_principal_ids, periodic_update},
-    AccessControlMap, AllCreatedPosts, MyKnownPrincipalIdsMap, MyTokenBalance,
-    PostsIndexSortedByScore, PostsIndexSortedByScoreV1, PrincipalsIFollow, PrincipalsThatFollowMe,
-    Profile, SVersionDetails,
+    AccessControlMap, AllCreatedPosts, AllCreatedPostsV1, MyKnownPrincipalIdsMap, MyTokenBalance,
+    PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
+    PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
 };
 use shared_utils::{
     access_control::UserAccessRole,
     shared_types::{
-        individual_user_template::error_types::{
-            GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+        individual_user_template::{
+            error_types::{
+                GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+            },
+            post::PostDetailsForFrontend,
         },
         init_args::IndividualUserTemplateInitArgs,
         post::PostDetailsFromFrontend,
@@ -58,9 +61,11 @@ fn init(init_args: IndividualUserTemplateInitArgs) {
     s! { AllCreatedPosts = AllCreatedPosts::new() };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
-    s! { PostsIndexSortedByScoreV1 = PostsIndexSortedByScoreV1::default() };
+    s! { PostsIndexSortedByHomeFeedScore = PostsIndexSortedByHomeFeedScore::default() };
+    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
     s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
+    s! { AllCreatedPostsV1 = AllCreatedPostsV1::new() };
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);

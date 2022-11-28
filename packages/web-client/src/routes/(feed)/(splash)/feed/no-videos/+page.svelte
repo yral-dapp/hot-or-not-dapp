@@ -1,10 +1,13 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { handleParams } from '$lib/utils/params';
-import { onMount } from 'svelte';
+import { hideSplashScreen } from '$stores/splashScreen';
+import { onMount, tick } from 'svelte';
 
-onMount(() => {
+onMount(async () => {
 	handleParams();
+	await tick();
+	hideSplashScreen(500);
 });
 </script>
 

@@ -32,5 +32,3 @@ export const createActor = (canisterId, options = {}) => {
 		host: 'http://127.0.0.1:4943'
 	});
 };
-
-export const user_index = createActor(canisterId);
