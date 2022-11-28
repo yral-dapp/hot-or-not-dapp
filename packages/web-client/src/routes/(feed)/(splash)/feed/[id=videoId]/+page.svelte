@@ -10,7 +10,6 @@ import {
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
-import { watchHistoryIdb } from '$lib/utils/idb';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -135,6 +134,7 @@ async function recordView(post?: PostPopulated) {
 		...post,
 		watched_at: Date.now()
 	};
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
 }
 

@@ -1,6 +1,5 @@
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import type { PostScoreIndexItem, TopPostsFetchError } from '$canisters/post_cache/post_cache.did';
-import { watchHistoryIdb } from '$lib/utils/idb';
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
 import { individualUser, postCache } from './backend';
@@ -28,6 +27,7 @@ export type FeedResponse =
 	  };
 
 async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexItem[]> {
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const keys = (await watchHistoryIdb.keys()) as string[];
 	if (!keys.length) return posts;
 	const filtered = posts.filter(
@@ -37,6 +37,7 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 }
 
 export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
+	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
 	if (!values.length) return [];
 	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
