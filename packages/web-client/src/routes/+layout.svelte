@@ -10,13 +10,9 @@ import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.
 import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
+import { initializeAuthClient } from '$lib/helpers/auth';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
-
-async function initClient() {
-	const { initializeAuthClient } = await import('$lib/helpers/auth');
-	initializeAuthClient();
-}
 
 async function initSentry() {
 	if (import.meta.env.NODE_ENV == 'development') return;
@@ -44,7 +40,7 @@ onMount(() => {
 		hideSplashScreen(5000);
 		$navigateBack = null;
 		initSentry();
-		initClient();
+		initializeAuthClient();
 		registerServiceWorker();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');

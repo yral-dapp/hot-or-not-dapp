@@ -2,6 +2,7 @@ import type { PostDetailsForFrontend } from '$canisters/individual_user_template
 import type { PostScoreIndexItem, TopPostsFetchError } from '$canisters/post_cache/post_cache.did';
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
+import { individualUser, postCache } from './backend';
 
 export interface PostPopulated
 	extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -49,7 +50,6 @@ export async function getTopPosts(
 	filterViewed = false
 ): Promise<FeedResponse> {
 	try {
-		const { postCache } = await import('./backend');
 		const res =
 			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
 				BigInt(from),
@@ -91,7 +91,6 @@ export async function getHotOrNotPosts(
 	numberOfPosts: number = 10
 ): Promise<FeedResponse> {
 	try {
-		const { postCache } = await import('./backend');
 		const res =
 			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
 				BigInt(from),
@@ -129,8 +128,6 @@ export async function getHotOrNotPosts(
 
 async function populatePosts(posts: PostScoreIndexItem[]) {
 	try {
-		const { individualUser } = await import('./backend');
-
 		if (!posts.length) {
 			return { posts: [], error: false };
 		}

@@ -1,5 +1,6 @@
 export const ssr = false;
 
+import { individualUser } from '$lib/helpers/backend';
 import { getCanisterId } from '$lib/helpers/canisterId';
 import { sanitizeProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
@@ -27,7 +28,6 @@ export const load: PageLoad = async ({ params }) => {
 			throw error(404, "Couldn't find canister Id");
 		}
 		Log({ canId, from: '0 canId' }, 'info');
-		const individualUser = (await import('$lib/helpers/backend')).individualUser;
 		const fetchedProfile = await individualUser(Principal.from(canId)).get_profile_details();
 		const profile = sanitizeProfile(fetchedProfile, id);
 		return { me: false, profile, canId };

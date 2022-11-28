@@ -19,6 +19,7 @@ import TagsInput from '$components/tags-input/TagsInput.svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import Switch from '$components/switch/Switch.svelte';
+import { individualUser } from '$lib/helpers/backend';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -115,7 +116,6 @@ async function checkVideoProcessingStatus(uid: string) {
 async function handleSuccessfulUpload(videoUid: string) {
 	try {
 		Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
-		const individualUser = (await import('$lib/helpers/backend')).individualUser;
 		const postId = await individualUser().add_post({
 			description: videoDescription,
 			hashtags,

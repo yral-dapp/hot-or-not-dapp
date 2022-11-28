@@ -3,6 +3,7 @@ export const ssr = false;
 import { getWatchedVideosFromCache } from '$lib/helpers/feed';
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
+import { postCache } from '$lib/helpers/backend';
 
 export const load: PageLoad = async ({ url }) => {
 	let searchParams = url.searchParams.toString();
@@ -17,7 +18,6 @@ export const load: PageLoad = async ({ url }) => {
 		);
 	}
 
-	const { postCache } = await import('$lib/helpers/backend');
 	const res =
 		await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
 			BigInt(0),

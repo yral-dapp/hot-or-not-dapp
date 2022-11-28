@@ -1,6 +1,4 @@
 <script lang="ts">
-import type { IndividualUserActor } from '$lib/helpers/backend';
-import { onMount } from 'svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { PageData } from './$types';
@@ -10,16 +8,11 @@ import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { individualUser } from '$lib/helpers/backend';
 
 export let data: PageData;
 
 const { video, me } = data;
-
-let individualUser: () => IndividualUserActor;
-
-onMount(async () => {
-	individualUser = (await import('$lib/helpers/backend')).individualUser;
-});
 </script>
 
 <HomeLayout>

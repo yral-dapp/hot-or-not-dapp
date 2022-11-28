@@ -6,9 +6,9 @@ import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
 import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
+import { userIndex } from './backend';
 
 async function updateUserIndexCanister() {
-	const { userIndex } = await import('./backend');
 	try {
 		const referralStore = get(referralId);
 		const referral: [] | [Principal] = referralStore.principalId
