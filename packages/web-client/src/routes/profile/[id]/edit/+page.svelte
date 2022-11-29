@@ -133,7 +133,7 @@ async function saveChanges() {
 		loading = false;
 		goto(`/profile/${username_set ? $userProfile.unique_user_name : $userProfile.principal_id}`);
 
-		registerEvent('edit_profile', {
+		registerEvent('edit_my_profile', {
 			userId: $userProfile.principal_id,
 			display_name: displayName,
 			profile_image: imgSrc,

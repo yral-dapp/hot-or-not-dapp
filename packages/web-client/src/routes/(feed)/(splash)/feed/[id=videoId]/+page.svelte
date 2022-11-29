@@ -117,6 +117,7 @@ async function updateStats(oldIndex) {
 	registerEvent('view_video', {
 		userId: $userProfile.principal_id,
 		video_publisher_id: stats.profileId,
+		video_publisher_canister_id: stats.canisterId,
 		video_id: stats.videoId,
 		watch_count: Math.ceil(stats.count + stats.progress),
 		home_feed_score: stats.score

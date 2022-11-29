@@ -56,9 +56,11 @@ async function showShareDialog() {
 			url: `https://hotornot.wtf/profile/${userId}`
 		});
 	} catch (_) {}
-	registerEvent('share_profile', {
+	registerEvent(me ? 'share_my_profile' : 'share_profile', {
 		userId: $userProfile.principal_id,
-		profile_id: $page.params.id
+		profile_canister_id: canId,
+		profile_id: profile.principal_id,
+		profile_username: profile.unique_user_name
 	});
 }
 
@@ -109,9 +111,11 @@ onMount(async () => {
 	} else {
 		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
-	registerEvent('view_profile', {
+	registerEvent(me ? 'view_my_profile' : 'view_profile', {
 		userId: $userProfile.principal_id,
-		profile_id: $page.params.id
+		profile_id: profile.principal_id,
+		profile_canister_id: canId,
+		profile_username: profile.unique_user_name
 	});
 	load.page = false;
 	loadPosts();

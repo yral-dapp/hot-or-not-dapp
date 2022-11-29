@@ -110,6 +110,7 @@ async function handleShare() {
 	registerEvent('share_video', {
 		userId: $userProfile.principal_id,
 		video_publisher_id: profileLink,
+		video_publisher_canister_id: publisherCanisterId,
 		video_id: id
 	});
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
