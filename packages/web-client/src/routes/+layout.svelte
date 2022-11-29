@@ -60,8 +60,7 @@ beforeNavigate(({ from, to }) => {
 <svelte:window
 	on:appinstalled="{() => {
 		registerEvent('pwa_installed', {
-			display_name: $userProfile.display_name,
-			username: $userProfile.unique_user_name,
+			canister_id: $authState.userCanisterId,
 			userId: $userProfile.principal_id
 		});
 	}}" />
