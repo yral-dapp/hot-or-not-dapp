@@ -21,6 +21,10 @@ export default {
 			body: 'Hot or Not is currently available in the form of a web app on mobiles and desktops on both android and ios systems.'
 		},
 		{
+			title: 'Is Hot or Not 100% on-chain?',
+			body: 'Everything on the app is stored on-chain, with the exception of the videos and profile pictures, which are hosted on Cloudflare. We are awaiting the storage subnets so that we can later put these things on-chain as well. On this forum, at https://forum.dfinity.org/t/long-term-r-d-storage-subnets-proposal/9390, you can read more about the storage subnets. User experience, cost, and simplicity were taken into consideration when choosing Cloudflare over non-ICP on-chain services like IPFS. Our roadmap outlines our goal of becoming entirely on-chain as we are committed to creating a decentralised system where users have complete control over their data and content.'
+		},
+		{
 			title: 'In how many languages Hot or Not is available?',
 			body: 'As we are just starting out, we are able to provide the app in only the English language. Adding more languages to the app is on our roadmap in order to make it more accessible and inclusive.'
 		},
