@@ -13,7 +13,7 @@ import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/utils/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileToUpload } from '$stores/fileUpload';
-import { goto, prefetch } from '$app/navigation';
+import { goto, preloadData } from '$app/navigation';
 import { isiPhone } from '$lib/utils/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -305,15 +305,15 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 	}
 }
 
-function prefetchLinks() {
-	prefetch('/feed');
-	prefetch('/upload/new');
+function preloadLinks() {
+	preloadData('/feed');
+	preloadData('/upload/new');
 }
 
 onMount(async () => {
 	useCanvas = !isiPhone();
 	await requestMediaAccess();
-	prefetchLinks();
+	preloadLinks();
 });
 
 onDestroy(async () => {
@@ -390,7 +390,7 @@ onDestroy(async () => {
 				</div>
 			</div>
 		{:else}
-			<IconButton href="/feed" prefetch class="h-10 w-10 rounded-full bg-black/50">
+			<IconButton href="/feed" preload class="h-10 w-10 rounded-full bg-black/50">
 				<CloseIcon class="h-6 w-6 text-white" />
 			</IconButton>
 		{/if}
