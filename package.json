@@ -12,6 +12,7 @@
 		"web-client:preview:static": "npm run --prefix ./packages/web-client preview:static",
 		"web-client:dev": "npm run --prefix ./packages/web-client dev",
 		"web-client:test": "npm run --prefix ./packages/web-client test",
+		"web-client:test:e2e": "npm run --prefix ./packages/web-client test:e2e",
 		"web-client:sync": "npm run --prefix ./packages/web-client sync",
 		"workers:dev": "npm run --prefix ./src/workers dev",
 		"workers:publish": "npm run --prefix ./src/workers publish",
