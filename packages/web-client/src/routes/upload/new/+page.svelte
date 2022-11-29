@@ -181,7 +181,7 @@ onDestroy(() => {
 
 <UploadLayout>
 	<div slot="top-left">
-		<IconButton href="/upload" prefetch>
+		<IconButton href="/upload" preload>
 			<CaretLeftIcon class="h-7 w-7 text-white" />
 		</IconButton>
 	</div>
@@ -304,7 +304,7 @@ onDestroy(() => {
 			{:else if uploadStatus === 'uploaded'}
 				<div class="flex items-center justify-between space-x-4">
 					<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
-					<Button href="{getVideoLink()}" prefetch class="w-full">View Video</Button>
+					<Button href="{getVideoLink()}" preload class="w-full">View Video</Button>
 				</div>
 			{/if}
 		</div>

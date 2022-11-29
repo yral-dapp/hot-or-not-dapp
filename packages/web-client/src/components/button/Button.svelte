@@ -4,7 +4,7 @@ import c from 'clsx';
 export let type: 'primary' | 'secondary' = 'primary';
 export let disabled = false;
 export let href = '';
-export let prefetch = false;
+export let preload = false;
 export { exportClass as class };
 let exportClass: any = '';
 
@@ -22,12 +22,12 @@ $: classes = c(
 );
 </script>
 
-{#if href && !prefetch}
+{#if href && !preload}
 	<a href="{href}" class="{classes}">
 		<slot />
 	</a>
-{:else if href && prefetch}
-	<a data-sveltekit-prefetch href="{href}" class="{classes}">
+{:else if href && preload}
+	<a data-sveltekit-preload-data="tap" href="{href}" class="{classes}">
 		<slot />
 	</a>
 {:else}

@@ -3,7 +3,7 @@ import c from 'clsx';
 
 export let disabled = false;
 export let href = '';
-export let prefetch = false;
+export let preload = false;
 export let ariaLabel = '';
 export { exportClass as class };
 let exportClass: string = '';
@@ -19,16 +19,16 @@ $: classes = c(
 );
 </script>
 
-{#if href && !prefetch && !disabled}
+{#if href && !preload && !disabled}
 	<a aria-label="{ariaLabel}" style="{style}" on:click href="{href}" class="{classes}">
 		<slot />
 	</a>
-{:else if href && prefetch && !disabled}
+{:else if href && preload && !disabled}
 	<a
 		aria-label="{ariaLabel}"
 		style="{style}"
 		on:click
-		data-sveltekit-prefetch
+		data-sveltekit-preload-data="tap"
 		href="{href}"
 		class="{classes}">
 		<slot />
