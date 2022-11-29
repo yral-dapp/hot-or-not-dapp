@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-const debugMode = true;
+const debugMode = import.meta.env.NODE_ENV === 'development';
 
 export const registerPageview = (url: URL) => {
 	window.gtag('config', import.meta.env.VITE_GA_TRACKING_ID, {
