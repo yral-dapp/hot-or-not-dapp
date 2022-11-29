@@ -213,7 +213,7 @@ onMount(async () => {
 						class="w-full flex-1">
 						Reset
 					</Button>
-					<Button disabled="{loading}" on:click="{saveChanges}" prefetch class="w-full flex-1">
+					<Button disabled="{loading}" on:click="{saveChanges}" preload class="w-full flex-1">
 						Save changes
 					</Button>
 				</div>

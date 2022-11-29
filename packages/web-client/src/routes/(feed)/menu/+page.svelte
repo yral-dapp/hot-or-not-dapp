@@ -76,7 +76,8 @@ $: userId = $userProfile.username_set
 					<div class="text-xl">
 						{$userProfile.display_name}
 					</div>
-					<a href="/profile/{userId}" data-sveltekit-prefetch class=" text-primary">View Profile</a>
+					<a href="/profile/{userId}" data-sveltekit-preload-data="tap" class=" text-primary"
+						>View Profile</a>
 				</div>
 			</div>
 		{:else}
@@ -92,7 +93,7 @@ $: userId = $userProfile.username_set
 					on:keyup
 					on:click="{link.onClick}"
 					href="{link.href}"
-					data-sveltekit-prefetch
+					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">
 					<div class="flex items-center space-x-4 text-white">
 						<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />

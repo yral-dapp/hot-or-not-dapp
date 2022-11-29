@@ -16,7 +16,10 @@
 		</script>
 		%sveltekit.head%
 	</head>
-	<body style="overflow: hidden" class="h-screen bg-black">
+	<body
+		data-sveltekit-preload-data="hover"
+		style="overflow: hidden; background-color: black"
+		class="h-screen">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

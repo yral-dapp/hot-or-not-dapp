@@ -229,7 +229,7 @@ onMount(async () => {
 									{/if}
 								</div>
 								{#if me}
-									<Button href="/upload" prefetch class="w-full">Upload your first video</Button>
+									<Button href="/upload" preload class="w-full">Upload your first video</Button>
 								{/if}
 							</div>
 						{/if}
