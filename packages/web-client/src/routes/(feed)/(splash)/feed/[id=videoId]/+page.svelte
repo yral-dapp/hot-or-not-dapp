@@ -163,9 +163,9 @@ function updateMetadata(video?: PostPopulated) {
 
 const playVideo = debounce(50, async (index: number) => {
 	try {
-		videoPlayers[currentPlayingIndex]?.stop();
-		videoPlayers[index]?.play();
-		videoPlayers[index + 1]?.stop();
+		if (videoPlayers[currentPlayingIndex]) videoPlayers[currentPlayingIndex].stop();
+		if (videoPlayers[index]) videoPlayers[index].play();
+		if (videoPlayers[index + 1]) videoPlayers[index + 1].stop();
 		currentPlayingIndex = index;
 	} catch (e) {
 		Log({ error: e, index, source: '1 playVideo' }, 'error');
