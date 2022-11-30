@@ -22,7 +22,7 @@ async function initSentry() {
 	Sentry.init({
 		dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
 		integrations: [new BrowserTracing()],
-		tracesSampleRate: 1.0
+		tracesSampleRate: 0.1
 	});
 	Log('Sentry Initialized', 'info');
 }
