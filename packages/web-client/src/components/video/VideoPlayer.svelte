@@ -50,35 +50,25 @@ let currentTime = 0;
 let duration = 0;
 let loaded = false;
 let paused = true;
-let playPromise: Promise<void> | undefined = undefined;
-let tryToStop = true;
 
-export async function play() {
+export function play() {
 	try {
 		if (videoEl) {
 			videoEl.currentTime = 0.1;
+			paused = false;
+		}
+
+		if (videoBgEl) {
 			videoBgEl.currentTime = 0.1;
-			if (!playPromise) {
-				await tick();
-				playPromise = videoEl?.play().catch((_) => {
-					paused = true;
-				});
-			}
-			await playPromise;
-			await tick();
-			await videoBgEl?.play().catch((_) => {});
-			if (isiPhone()) return;
-			if ($playerState.initialized && !$playerState.muted) {
-				videoEl.muted = $playerState.muted = false;
-			}
+		}
+
+		if (isiPhone()) return;
+		if ($playerState.initialized && !$playerState.muted) {
+			videoEl.muted = $playerState.muted = false;
 		}
 	} catch (e: any) {
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
-		}
+		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -86,35 +76,21 @@ export async function play() {
 	}
 }
 
-export async function stop() {
+export function stop() {
 	try {
-		if (videoEl && videoBgEl) {
+		if (videoEl) {
 			videoEl.currentTime = 0.1;
+			paused = true;
+		}
+		if (videoBgEl) {
 			videoBgEl.currentTime = 0.1;
-			if (playPromise) {
-				await playPromise;
-				playPromise = undefined;
-			}
-			await tick();
-
-			videoEl?.pause();
-			videoBgEl?.pause();
 		}
 	} catch (e: any) {
-		if (tryToStop) {
-			setTimeout(stop, 100);
-			tryToStop = false;
-		}
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
-		}
+		Log({ error: e, i, src, inView, source: '2 stop' }, 'error');
 	}
 }
 
-async function handleClick() {
+function handleClick() {
 	try {
 		if (videoEl) {
 			if (paused) {
@@ -167,6 +143,8 @@ $: if (inView && !paused) {
 $: if (inView && loaded) {
 	dispatch('loaded');
 }
+
+$: muted = $playerState.muted;
 </script>
 
 <player
@@ -185,7 +163,7 @@ $: if (inView && loaded) {
 			playsinline
 			on:loadeddata="{() => (loaded = true)}"
 			autoplay
-			muted
+			muted="{muted || nextVideo}"
 			bind:paused
 			bind:currentTime
 			bind:duration
@@ -203,7 +181,7 @@ $: if (inView && loaded) {
 			playsinline
 			disableremoteplayback
 			muted
-			bind:paused
+			paused="{paused}"
 			autoplay
 			poster="{thumbnail}"
 			preload="metadata"
