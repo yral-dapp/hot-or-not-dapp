@@ -7,3 +7,11 @@ export function getThumbnailUrl(uid: string) {
 export function getMp4Url(uid: string) {
 	return `${host}/${uid}/downloads/default.mp4`;
 }
+
+export function getHlsUrl(uid: string) {
+	return `${host}/${uid}/manifest/video.m3u8`;
+}
+
+export function getDashUrl(uid: string) {
+	return `${host}/${uid}/manifest/video.mpd`;
+}
