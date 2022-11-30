@@ -94,6 +94,9 @@ onMount(() => {
 		if (inView && paused) {
 			paused = false;
 		}
+		return () => {
+			hls.destroy();
+		};
 	} else {
 		console.log('hls js not supported', i);
 	}
