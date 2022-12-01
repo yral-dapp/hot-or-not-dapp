@@ -1,10 +1,7 @@
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use shared_utils::{
-    date_time::system_time::SystemTimeProvider,
-    shared_types::{
-        individual_user_template::post::{PostDetailsForFrontend, PostStatus},
-        post::PostDetailsFromFrontend,
-    },
+use shared_utils::shared_types::{
+    individual_user_template::post::{PostDetailsForFrontend, PostStatus},
+    post::PostDetailsFromFrontend,
 };
 use speedy::{Readable, Writable};
 use std::{
@@ -63,14 +60,18 @@ impl From<v0::Post> for Post {
 }
 
 impl Post {
-    pub fn new(id: u64, post_details_from_frontend: PostDetailsFromFrontend) -> Self {
+    pub fn new(
+        id: u64,
+        post_details_from_frontend: PostDetailsFromFrontend,
+        time_provider: &impl Fn() -> SystemTime,
+    ) -> Self {
         let mut post = Post {
             id,
             description: post_details_from_frontend.description,
             hashtags: post_details_from_frontend.hashtags,
             video_uid: post_details_from_frontend.video_uid,
             status: PostStatus::Uploaded,
-            created_at: SystemTimeProvider::get_current_system_time(),
+            created_at: time_provider(),
             likes: HashSet::new(),
             share_count: 0,
             view_stats: PostViewStatistics {
@@ -99,26 +100,30 @@ impl Post {
         self.status = status;
     }
 
-    pub fn toggle_like_status(&mut self, user_principal_id: &SPrincipal) -> bool {
+    pub fn toggle_like_status(
+        &mut self,
+        user_principal_id: &SPrincipal,
+        time_provider: &impl Fn() -> SystemTime,
+    ) -> bool {
         // if liked, return true & if unliked, return false
         if self.likes.contains(user_principal_id) {
             self.likes.remove(user_principal_id);
 
-            self.recalculate_home_feed_score();
+            self.recalculate_home_feed_score(time_provider);
 
             return false;
         } else {
             self.likes.insert(user_principal_id.clone());
 
-            self.recalculate_home_feed_score();
+            self.recalculate_home_feed_score(time_provider);
 
             return true;
         }
     }
 
-    pub fn increment_share_count(&mut self) -> u64 {
+    pub fn increment_share_count(&mut self, time_provider: &impl Fn() -> SystemTime) -> u64 {
         self.share_count += 1;
-        self.recalculate_home_feed_score();
+        self.recalculate_home_feed_score(time_provider);
         self.share_count
     }
 
@@ -129,7 +134,7 @@ impl Post {
             / (self.view_stats.total_view_count + additional_views as u64)) as u8
     }
 
-    pub fn recalculate_home_feed_score(&mut self) {
+    pub fn recalculate_home_feed_score(&mut self, time_provider: &impl Fn() -> SystemTime) {
         let likes_component = match self.view_stats.total_view_count {
             0 => 0,
             _ => 1000 * self.likes.len() as u64 * 10 / self.view_stats.total_view_count,
@@ -145,7 +150,7 @@ impl Post {
             _ => 1000 * self.share_count * 100 / self.view_stats.total_view_count,
         };
 
-        let current_time = SystemTimeProvider::get_current_system_time();
+        let current_time = time_provider();
         let subtracting_factor = (current_time
             .duration_since(self.created_at)
             .unwrap_or(Duration::ZERO)
@@ -166,7 +171,7 @@ impl Post {
         );
     }
 
-    pub fn recalculate_hot_or_not_feed_score(&mut self) {
+    pub fn recalculate_hot_or_not_feed_score(&mut self, time_provider: &impl Fn() -> SystemTime) {
         if self.hot_or_not_feed_details.is_some() {
             let likes_component = match self.view_stats.total_view_count {
                 0 => 0,
@@ -203,7 +208,7 @@ impl Post {
                         .len() as u64)
                     / self.view_stats.total_view_count);
 
-            let current_time = SystemTimeProvider::get_current_system_time();
+            let current_time = time_provider();
             let subtracting_factor = (current_time
                 .duration_since(self.created_at)
                 .unwrap_or(Duration::ZERO)
@@ -227,7 +232,11 @@ impl Post {
         }
     }
 
-    pub fn add_view_details(&mut self, details: PostViewDetailsFromFrontend) {
+    pub fn add_view_details(
+        &mut self,
+        details: PostViewDetailsFromFrontend,
+        time_provider: &impl Fn() -> SystemTime,
+    ) {
         match details {
             PostViewDetailsFromFrontend::WatchedPartially { percentage_watched } => {
                 assert!(percentage_watched <= 100 && percentage_watched > 0);
@@ -255,7 +264,7 @@ impl Post {
             }
         }
 
-        self.recalculate_home_feed_score();
+        self.recalculate_home_feed_score(time_provider);
     }
 
     pub fn get_post_details_for_frontend_for_this_post(
@@ -286,33 +295,23 @@ impl Post {
 }
 
 // TODO: try this https://github.com/asomers/mockall/issues/437
-// #[cfg(test)]
-// mod test {
-//     use super::*;
-//     use mockall::{predicate::*, *};
+#[cfg(test)]
+mod test {
+    use super::*;
 
-//     mock! {
-//         pub SystemTimeProvider {
-//             fn get_current_system_time() -> SystemTime;
-//         }
-//     }
+    #[test]
+    fn when_new_post_created_then_their_hot_or_not_feed_score_is_calculated() {
+        let post = Post::new(
+            0,
+            PostDetailsFromFrontend {
+                description: "Doggos and puppers".into(),
+                hashtags: vec!["doggo".into(), "pupper".into()],
+                video_uid: "abcd#1234".into(),
+                creator_consent_for_inclusion_in_hot_or_not: true,
+            },
+            &|| SystemTime::now(),
+        );
 
-//     #[test]
-//     fn when_new_post_created_then_their_hot_or_not_feed_score_is_calculated() {
-//         MockSystemTimeProvider::get_current_system_time_context()
-//             .expect()
-//             .returning(|| SystemTime::now());
-
-//         let post = Post::new(
-//             0,
-//             PostDetailsFromFrontend {
-//                 description: "Doggos and puppers".into(),
-//                 hashtags: vec!["doggo".into(), "pupper".into()],
-//                 video_uid: "abcd#1234".into(),
-//                 creator_consent_for_inclusion_in_hot_or_not: true,
-//             },
-//         );
-
-//         assert_eq!(post.hot_or_not_feed_details.unwrap().score, 0);
-//     }
-// }
+        assert_eq!(post.hot_or_not_feed_details.unwrap().score, 0);
+    }
+}
