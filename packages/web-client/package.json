@@ -51,6 +51,8 @@
 		"@types/throttle-debounce": "5.0.0",
 		"@types/w3c-image-capture": "^1.0.7",
 		"autoprefixer": "10.4.13",
+		"bip39": "^3.0.4",
+		"hdkey": "^2.0.1",
 		"isomorphic-fetch": "^3.0.0",
 		"postcss": "8.4.19",
 		"svelte": "3.53.1",
