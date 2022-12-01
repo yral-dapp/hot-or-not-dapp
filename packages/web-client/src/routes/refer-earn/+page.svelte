@@ -143,7 +143,7 @@ onMount(() => {
 						<div class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
 							<DollarCoinIcon class="h-5 text-primary" />
 						</div>
-						<span class="text-center text-xs">You both win 1,000 tokens each</span>
+						<span class="text-center text-xs">You both win 500 tokens each</span>
 					</div>
 				</div>
 			{:else if $authState.isLoggedIn}
