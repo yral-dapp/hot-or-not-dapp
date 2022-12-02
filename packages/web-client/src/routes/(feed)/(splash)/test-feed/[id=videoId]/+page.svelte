@@ -2,7 +2,7 @@
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import ShakaPlayer from '$components/video/ShakaPlayer.svelte';
 import { getTopPosts, getWatchedVideosFromCache, type PostPopulated } from '$lib/helpers/feed';
-import { getDashUrl, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getDashUrl, getHlsUrl, getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -116,12 +116,12 @@ onMount(async () => {
 	spaceBetween="{100}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
-		{@const src = getDashUrl(video.video_uid)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<ShakaPlayer
 					shaka="{shaka}"
-					src="{src}"
+					srcDash="{getDashUrl(video.video_uid)}"
+					srcHls="{getHlsUrl(video.video_uid)}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
 					inView="{i == currentVideoIndex}"
 					i="{i}"

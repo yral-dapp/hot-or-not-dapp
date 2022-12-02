@@ -8,7 +8,8 @@ import { playerState } from '$stores/playerState';
 import c from 'clsx';
 import { createEventDispatcher, onMount } from 'svelte';
 
-export let src;
+export let srcHls;
+export let srcDash = ''
 export let i: number;
 export let inView = false;
 export let thumbnail = '';
@@ -42,7 +43,7 @@ export function play() {
 			videoEl.muted = $playerState.muted = false;
 		}
 	} catch (e: any) {
-		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
+		Log({ error: e, i, srcDash, inView, source: '1 play' }, 'error');
 
 		if (videoEl) {
 			$playerState.muted = true;
@@ -61,7 +62,7 @@ export function stop() {
 			videoBgEl.currentTime = 0.1;
 		}
 	} catch (e: any) {
-		Log({ error: e, i, src, inView, source: '2 stop' }, 'error');
+		Log({ error: e, i, srcDash, inView, source: '2 stop' }, 'error');
 	}
 }
 
@@ -76,7 +77,7 @@ function handleClick() {
 			}
 		}
 	} catch (e) {
-		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
+		Log({ error: e, i, srcDash, inView, source: '1 handleClick' }, 'error');
 	}
 }
 
@@ -85,19 +86,25 @@ $: if (inView && loaded) {
 }
 
 onMount(() => {
-	player = new shaka.Player(videoEl);
-	playerBg = new shaka.Player(videoBgEl);
-	player.load(src);
-	playerBg.load(src);
+	if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+		videoEl.src = srcHls;
+		videoBgEl.src = srcHls;
+	}else {
 
-	if (inView && paused) {
-		paused = false;
+		player = new shaka.Player(videoEl);
+		playerBg = new shaka.Player(videoBgEl);
+		player.load(srcDash);
+		playerBg.load(srcDash);
+		
+		if (inView && paused) {
+			paused = false;
+		}
+		
+		return () => {
+			player.destroy();
+			playerBg.destroy();
+		};
 	}
-
-	return () => {
-		player.destroy();
-		playerBg.destroy();
-	};
 });
 </script>
 
