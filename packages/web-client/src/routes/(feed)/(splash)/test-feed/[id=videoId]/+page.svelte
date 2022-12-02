@@ -120,7 +120,8 @@ onMount(async () => {
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<ShakaPlayer
 					shaka="{shaka}"
-					src="{getHlsUrl(video.video_uid)}"
+					srcHls="{getHlsUrl(video.video_uid)}"
+					srcDash="{getDashUrl(video.video_uid)}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
 					inView="{i == currentVideoIndex}"
 					i="{i}"
