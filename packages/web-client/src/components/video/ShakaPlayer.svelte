@@ -8,8 +8,7 @@ import { playerState } from '$stores/playerState';
 import c from 'clsx';
 import { createEventDispatcher, onMount } from 'svelte';
 
-export let srcHls;
-export let srcDash = ''
+export let src;
 export let i: number;
 export let inView = false;
 export let thumbnail = '';
@@ -26,6 +25,7 @@ let videoBgEl: HTMLVideoElement;
 let currentTime = 0;
 let loaded = false;
 let paused = true;
+let hls = false
 
 export function play() {
 	try {
@@ -38,12 +38,13 @@ export function play() {
 			videoBgEl.currentTime = 0.1;
 		}
 
+
 		if (isiPhone()) return;
 		if ($playerState.initialized && !$playerState.muted) {
 			videoEl.muted = $playerState.muted = false;
 		}
 	} catch (e: any) {
-		Log({ error: e, i, srcDash, inView, source: '1 play' }, 'error');
+		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
 
 		if (videoEl) {
 			$playerState.muted = true;
@@ -62,7 +63,7 @@ export function stop() {
 			videoBgEl.currentTime = 0.1;
 		}
 	} catch (e: any) {
-		Log({ error: e, i, srcDash, inView, source: '2 stop' }, 'error');
+		Log({ error: e, i, src, inView, source: '2 stop' }, 'error');
 	}
 }
 
@@ -77,7 +78,7 @@ function handleClick() {
 			}
 		}
 	} catch (e) {
-		Log({ error: e, i, srcDash, inView, source: '1 handleClick' }, 'error');
+		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
 	}
 }
 
@@ -86,15 +87,12 @@ $: if (inView && loaded) {
 }
 
 onMount(() => {
-	if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-		videoEl.src = srcHls;
-		videoBgEl.src = srcHls;
-	}else {
+
 
 		player = new shaka.Player(videoEl);
 		playerBg = new shaka.Player(videoBgEl);
-		player.load(srcDash);
-		playerBg.load(srcDash);
+		player.load(src);
+		playerBg.load(src);
 		
 		if (inView && paused) {
 			paused = false;
@@ -104,7 +102,7 @@ onMount(() => {
 			player.destroy();
 			playerBg.destroy();
 		};
-	}
+	
 });
 </script>
 
@@ -158,7 +156,7 @@ onMount(() => {
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%);"
 		class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-64 w-full">
-		<div class="absolute bottom-16 bg-black">SHAKA DASH</div>
+		<div class="absolute bottom-16 bg-black">SHAKA {hls? 'HLS' : 'DASH'}</div>
 	</div>
 </player>
 
