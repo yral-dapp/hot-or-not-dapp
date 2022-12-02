@@ -92,7 +92,7 @@ onMount(() => {
 	player = new shaka.Player(videoEl);
 	playerBg = new shaka.Player(videoBgEl);
 	player.load(hls? srcHls: srcDash);
-	player.load(hls? srcHls: srcDash);
+	playerBg.load(hls? srcHls: srcDash);
 	
 	if (inView && paused) {
 		paused = false;
