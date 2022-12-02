@@ -117,6 +117,9 @@ export async function stop() {
 async function handleClick() {
 	try {
 		if (videoEl) {
+			if(!$playerState.initialized) {
+				$playerState.initialized = true
+			}
 			if (paused) {
 				play();
 			} else {
