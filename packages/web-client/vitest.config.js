@@ -6,7 +6,8 @@ export default mergeConfig(
 	viteConfig,
 	defineConfig({
 		test: {
-			include: ['**/*.e2e.ts']
+			include: ['**/*.e2e.ts'],
+			testTimeout: 30_000
 		}
 	})
 );
