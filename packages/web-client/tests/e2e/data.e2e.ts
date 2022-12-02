@@ -34,18 +34,25 @@ describe('e2e test suite', () => {
 	});
 	it('Setup initial data', async () => {
 		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch, identity });
+		console.log('1');
 		await agent.fetchRootKey();
+		console.log('2');
 		const userIndexActor = createUserIndexActor(canisterIds.user_index.local, { agent });
+		console.log('3');
 		const userCanisterPrincipal =
 			await userIndexActor.get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
 				[]
 			);
-
+		console.log('4');
 		const userCansiterId = userCanisterPrincipal.toText();
 
 		console.log('user canisterId', userCansiterId);
 
+		console.log('5');
+
 		const individualUserActor = createIndividualUserActor(userCanisterPrincipal, { agent });
+
+		console.log('6');
 
 		const posts = await Promise.all(
 			cloudflareVideoUid.map((video_uid, i) =>
