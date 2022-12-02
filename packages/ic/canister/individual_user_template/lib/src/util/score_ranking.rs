@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use crate::{
     AllCreatedPostsV1, MyKnownPrincipalIdsMap, PostsIndexSortedByHomeFeedScore,
     PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
@@ -95,7 +97,9 @@ pub fn send_top_hot_or_not_feed_post_scores_to_post_cache_canister() {
     );
 }
 
-pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score() {
+pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score(
+    time_provider: &impl Fn() -> SystemTime,
+) {
     let posts_index_sorted_by_home_feed_score = s!(PostsIndexSortedByHomeFeedScore);
     let mut all_created_posts = s!(AllCreatedPostsV1);
 
@@ -104,7 +108,7 @@ pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home
             .get_cloned(post_score_index_item.post_id)
             .unwrap();
 
-        post.recalculate_home_feed_score();
+        post.recalculate_home_feed_score(time_provider);
 
         all_created_posts.replace(post_score_index_item.post_id, &post);
     }
@@ -113,6 +117,7 @@ pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home
 }
 
 pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score(
+    time_provider: &impl Fn() -> SystemTime,
 ) {
     let posts_index_sorted_by_hot_or_not_feed_score = s!(PostsIndexSortedByHomeFeedScore);
     let mut all_created_posts = s!(AllCreatedPostsV1);
@@ -122,7 +127,7 @@ pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_b
             .get_cloned(post_score_index_item.post_id)
             .unwrap();
 
-        post.recalculate_hot_or_not_feed_score();
+        post.recalculate_hot_or_not_feed_score(time_provider);
 
         all_created_posts.replace(post_score_index_item.post_id, &post);
     }
