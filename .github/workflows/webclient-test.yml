@@ -138,13 +138,13 @@ jobs:
         if: always()
         run: dfx ping http://localhost:4943
 
+      - name: Run e2e tests
+        run: npm run web-client:test:e2e
+
       - name: Run Playwright tests
         run: npm run web-client:test
         env:
           runner: "linux"
-
-      - name: Run e2e tests
-        run: npm run web-client:test:e2e
 
       - name: Stop DFX Server
         run: dfx stop
