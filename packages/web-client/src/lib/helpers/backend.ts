@@ -14,6 +14,7 @@ import { authHelper, authState } from '$stores/auth';
 import type { ActorSubclass } from '@dfinity/agent';
 import { get } from 'svelte/store';
 import { Principal } from '@dfinity/principal';
+import { identity } from '$lib/helpers/identity';
 
 export const host =
 	import.meta.env.NODE_ENV === 'development' ? 'http://localhost:4943' : 'https://ic0.app';
@@ -25,7 +26,7 @@ export type PostCacheActor = ActorSubclass<_POST_CACHE_SERVICE>;
 export function userIndex(): UserIndexActor {
 	const authHelperData = get(authHelper);
 	return createUserIndexActor(userIndexCanisterId as string, {
-		agentOptions: { identity: authHelperData?.identity, host }
+		agentOptions: { identity: process.env.CI ? identity : authHelperData?.identity, host }
 	}) as UserIndexActor;
 }
 
@@ -38,13 +39,13 @@ export function individualUser(principal?: Principal | string): IndividualUserAc
 			: Principal.from(principal)
 		: (authStateData.userCanisterId as string);
 	return createIndividualUserActor(canisterId, {
-		agentOptions: { identity: authHelperData?.identity, host }
+		agentOptions: { identity: process.env.CI ? identity : authHelperData?.identity, host }
 	}) as IndividualUserActor;
 }
 
 export function postCache(): PostCacheActor {
 	const authHelperData = get(authHelper);
 	return createPostCacheActor(postCacheCanisterId as string, {
-		agentOptions: { identity: authHelperData?.identity, host }
+		agentOptions: { identity: process.env.CI ? identity : authHelperData?.identity, host }
 	}) as PostCacheActor;
 }
