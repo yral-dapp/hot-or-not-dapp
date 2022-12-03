@@ -16,6 +16,7 @@ import { page } from '$app/stores';
 import userProfile from '$stores/userProfile';
 import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
+import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
 
 $: links = [
 	{
@@ -34,6 +35,12 @@ $: links = [
 		icon: MessageBoxIcon,
 		title: 'FAQs',
 		href: '/faq'
+	},
+	{
+		icon: WhatsappIcon,
+		title: 'Talk to the team',
+		class: 'w-5 h-5 pl-0.5',
+		href: 'https://wa.me/17863388713'
 	},
 	{
 		icon: NotebookIcon,
@@ -92,6 +99,7 @@ $: userId = $userProfile.username_set
 					this="{link.href ? 'a' : 'button'}"
 					on:keyup
 					on:click="{link.onClick}"
+					target="{link.title.includes('team') ? '_blank':''}"
 					href="{link.href}"
 					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">
