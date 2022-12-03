@@ -1,6 +1,6 @@
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use ic_state_machine_tests::{CanisterId, CanisterInstallMode, CanisterSettingsArgs, StateMachine};
-use shared_utils::shared_types::{
+use shared_utils::types::{
     init_args::{PostCacheInitArgs, ProjectMemberIndexInitArgs, UserIndexInitArgs},
     known_principal::{KnownPrincipalMap, KnownPrincipalType},
 };

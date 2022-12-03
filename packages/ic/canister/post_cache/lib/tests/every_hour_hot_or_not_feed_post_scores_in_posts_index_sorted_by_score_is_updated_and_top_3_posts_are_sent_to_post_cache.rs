@@ -1,8 +1,11 @@
 use candid::Principal;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
-use post_cache_lib::model::api_error::TopPostsFetchError;
-use shared_utils::shared_types::{
-    individual_user_template::post::PostDetailsForFrontend, post::PostDetailsFromFrontend,
+use shared_utils::types::{
+    canister_specific::{
+        individual_user_template::post::PostDetailsForFrontend,
+        post_cache::error_types::TopPostsFetchError,
+    },
+    post::PostDetailsFromFrontend,
     top_posts::v0::PostScoreIndexItem,
 };
 use std::time::Duration;

@@ -7,7 +7,10 @@ use ic_stable_memory::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{init_args::UserIndexInitArgs, user_index::error_types::SetUniqueUsernameError},
+    types::{
+        canister_specific::user_index::error_types::SetUniqueUsernameError,
+        init_args::UserIndexInitArgs,
+    },
 };
 use user_index_lib::{
     model::upgrade_status::UpgradeStatus,

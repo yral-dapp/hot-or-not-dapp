@@ -1,9 +1,11 @@
 use crate::PostsIndexSortedByHotOrNotFeedScore;
 use ic_stable_memory::s;
-use post_cache_lib::model::api_error::TopPostsFetchError;
 use shared_utils::{
     pagination::{self, PaginationError},
-    shared_types::top_posts::v0::PostScoreIndexItem,
+    types::{
+        canister_specific::post_cache::error_types::TopPostsFetchError,
+        top_posts::v0::PostScoreIndexItem,
+    },
 };
 
 #[ic_cdk_macros::query]
