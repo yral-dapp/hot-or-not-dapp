@@ -3,7 +3,7 @@ use individual_user_template_lib::{model::post::v1::Post, AccessControlMap, AllC
 use shared_utils::{
     access_control::{self, UserAccessRole},
     date_time::system_time,
-    shared_types::post::PostDetailsFromFrontend,
+    types::post::PostDetailsFromFrontend,
 };
 
 /// # Access Control

@@ -8,7 +8,7 @@ use ic_cdk::api::call;
 use ic_stable_memory::s;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use shared_utils::constant;
-use shared_utils::shared_types::top_posts::v0::PostScoreIndexItem;
+use shared_utils::types::top_posts::v0::PostScoreIndexItem;
 
 pub fn update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
     post_id: u64,

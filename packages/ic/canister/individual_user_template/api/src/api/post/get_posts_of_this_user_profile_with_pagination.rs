@@ -3,7 +3,7 @@ use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use individual_user_template_lib::{AllCreatedPostsV1, Profile};
 use shared_utils::{
     pagination::{self, PaginationError},
-    shared_types::individual_user_template::post::PostDetailsForFrontend,
+    types::canister_specific::individual_user_template::post::PostDetailsForFrontend,
 };
 
 #[derive(CandidType)]

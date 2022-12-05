@@ -5,7 +5,7 @@ use individual_user_template_lib::{
 use shared_utils::{
     constant::get_user_index_canister_principal_id,
     date_time::system_time,
-    shared_types::utility_token::{v0::MintEvent, v1::TokenEventV1},
+    types::utility_token::{v0::MintEvent, v1::TokenEventV1},
 };
 
 #[ic_cdk_macros::update]

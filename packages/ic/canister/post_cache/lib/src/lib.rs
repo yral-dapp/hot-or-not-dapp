@@ -1,7 +1,7 @@
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{
+    types::{
         known_principal::KnownPrincipalMap,
         top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
     },

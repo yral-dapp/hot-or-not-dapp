@@ -143,6 +143,7 @@ export interface _SERVICE {
     [bigint],
     PostDetailsForFrontend
   >,
+  'get_my_hot_or_not_bet_details_for_this_post' : ActorMethod<[bigint], {}>,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result

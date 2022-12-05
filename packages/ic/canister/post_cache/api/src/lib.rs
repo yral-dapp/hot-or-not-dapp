@@ -5,13 +5,16 @@ use ic_stable_memory::{
     s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
 };
 use post_cache_lib::{
-    access_control::setup_initial_access_control, model::api_error::TopPostsFetchError,
-    util::known_principal_ids, AccessControlMap, MyKnownPrincipalIdsMap,
-    PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
+    access_control::setup_initial_access_control, util::known_principal_ids, AccessControlMap,
+    MyKnownPrincipalIdsMap, PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore,
+    PostsIndexSortedByScore,
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{init_args::PostCacheInitArgs, top_posts::v0::PostScoreIndexItem},
+    types::{
+        canister_specific::post_cache::error_types::TopPostsFetchError,
+        init_args::PostCacheInitArgs, top_posts::v0::PostScoreIndexItem,
+    },
 };
 
 mod api;

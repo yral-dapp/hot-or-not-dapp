@@ -147,6 +147,7 @@ service : (IndividualUserTemplateInitArgs) -> {
   add_post : (PostDetailsFromFrontend) -> (nat64);
   get_following_status_do_i_follow_this_user : (principal) -> (bool) query;
   get_individual_post_details_by_id : (nat64) -> (PostDetailsForFrontend) query;
+  get_my_hot_or_not_bet_details_for_this_post : (nat64) -> (record {}) query;
   get_posts_of_this_user_profile_with_pagination : (nat64, nat64) -> (
       Result,
     ) query;
