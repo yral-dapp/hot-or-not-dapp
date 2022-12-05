@@ -113,7 +113,7 @@ fn every_hour_hot_or_not_feed_post_scores_in_posts_index_sorted_by_score_is_upda
 
     assert!(hot_or_not_feed_post_score > 0);
 
-    // * Advance time by 1 hours
+    // * Advance time by 1/2 hour
     state_machine.advance_time(Duration::from_secs(30 * 60));
     state_machine.tick();
 
