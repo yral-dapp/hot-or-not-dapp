@@ -10,18 +10,20 @@ import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
-import { authState } from '$stores/auth';
 import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
-import { createEventDispatcher, tick } from 'svelte';
+import { createEventDispatcher, onMount, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { throttle } from 'throttle-debounce';
 
 export let swiperJs: boolean;
-export let src;
+export let srcHls;
+export let srcDash;
+export let shaka: any
 export let i: number;
 export let id: bigint;
 export let inView = false;
@@ -36,7 +38,6 @@ export let liked = false;
 export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
-export let nextVideo = false;
 export let enrolledInHotOrNot = false;
 
 const dispatch = createEventDispatcher<{
@@ -44,41 +45,29 @@ const dispatch = createEventDispatcher<{
 	loaded: void;
 }>();
 
+let player: shaka.Player;
+let playerBg: shaka.Player;
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let currentTime = 0;
 let duration = 0;
 let loaded = false;
 let paused = true;
-let playPromise: Promise<void> | undefined = undefined;
-let tryToStop = true;
+let hls = false
+let ready = false
 
-export async function play() {
+
+export function play() {
 	try {
-		if (videoEl) {
-			videoEl.currentTime = 0.1;
-			videoBgEl.currentTime = 0.1;
-			if (!playPromise) {
-				await tick();
-				playPromise = videoEl?.play().catch((_) => {
-					paused = true;
-				});
-			}
-			await playPromise;
-			await tick();
-			await videoBgEl?.play().catch((_) => {});
-			if (isiPhone()) return;
-			if ($playerState.initialized && !$playerState.muted) {
-				videoEl.muted = $playerState.muted = false;
-			}
+		paused = false;
+		if (isiPhone()) return;
+		
+		if ($playerState.initialized && !$playerState.muted) {
+			console.log('unmuting')
+			videoEl.muted = $playerState.muted = false;
 		}
 	} catch (e: any) {
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
-		}
+		Log({ error: e, i, srcDash, inView, source: '1 play' }, 'error');
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -86,64 +75,60 @@ export async function play() {
 	}
 }
 
-export async function stop() {
-	try {
-		if (videoEl && videoBgEl) {
-			videoEl.currentTime = 0.1;
-			videoBgEl.currentTime = 0.1;
-			if (playPromise) {
-				await playPromise;
-				playPromise = undefined;
-			}
-			await tick();
 
-			videoEl?.pause();
-			videoBgEl?.pause();
+export function stop() {
+	try {
+		if (videoEl) {
+			videoEl.currentTime = 0.1;
 		}
+		if (videoBgEl) {
+			videoBgEl.currentTime = 0.1;
+		}
+		paused = true;
 	} catch (e: any) {
-		if (tryToStop) {
-			setTimeout(stop, 100);
-			tryToStop = false;
-		}
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
-		}
+		Log({ error: e, i, srcDash, inView, source: '2 stop' }, 'error');
 	}
 }
 
-async function handleClick() {
+
+
+function handleClick() {
+	console.log('click', i)
 	try {
+		if(!$playerState.initialized) {
+			$playerState.initialized = true
+		}
 		if (videoEl) {
-			if(!$playerState.initialized) {
-				$playerState.initialized = true
-			}
 			if (paused) {
-				play();
+				videoEl?.play()
+				videoEl.muted = false
+				if(isiPhone()) {
+					videoEl.muted = $playerState.muted = false;
+				}
 			} else {
 				videoEl.muted = !videoEl.muted;
 				$playerState.muted = videoEl.muted;
 			}
 		}
 	} catch (e) {
-		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
+		Log({ error: e, i, srcDash, inView, source: '1 handleClick' }, 'error');
 	}
 }
 
 async function handleLike() {
-	if ($authState.isLoggedIn) {
-		liked = !liked;
-		registerEvent('like_video', {
-			userId: $userProfile.principal_id,
-			video_publisher_id: profileLink,
-			video_publisher_canister_id: publisherCanisterId,
-			video_id: id,
-			likes: likeCount
-		});
-		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
-	} else $authState.showLogin = true;
+	// if ($authState.isLoggedIn) {
+	// 	liked = !liked;
+	// 	registerEvent('like_video', {
+	// 		userId: $userProfile.principal_id,
+	// 		video_publisher_id: profileLink,
+	// 		video_publisher_canister_id: publisherCanisterId,
+	// 		video_id: id,
+	// 		likes: likeCount
+	// 	});
+	// 	await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
+	// } else $authState.showLogin = true;
+
+	player.load('https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/2e4a66ca07d7489496550697e2ca2897/manifest/video.m3u8')
 }
 
 async function handleShare() {
@@ -163,13 +148,45 @@ async function handleShare() {
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
 
-$: if (inView && !paused) {
+const dispatchWatchedPercentage = throttle(300, (currentTime:number, duration:number)=> {
 	dispatch('watchedPercentage', (currentTime / duration) * 100);
+
+}) 
+
+$: if (inView && !paused) {
+	dispatchWatchedPercentage(currentTime, duration)
 }
 
 $: if (inView && loaded) {
 	dispatch('loaded');
 }
+
+$: if(inView && loaded && ready) {
+	play()
+	dispatch
+}
+
+$: if(!inView) {
+	stop()
+}
+
+
+onMount(() => {
+	hls = !!videoEl.canPlayType('application/vnd.apple.mpegurl')
+	player = new shaka.Player(videoEl);
+	
+	player.load(hls? srcHls: srcDash);
+	
+	
+	
+	ready = true
+	
+	return () => {
+		player.destroy();
+	
+	};
+	
+});
 </script>
 
 <player
@@ -179,42 +196,27 @@ $: if (inView && loaded) {
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}">
-	{#if inView || nextVideo}
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			on:click="{handleClick}"
-			bind:this="{videoEl}"
-			loop
-			playsinline
-			on:loadeddata="{() => (loaded = true)}"
-			autoplay
-			muted
-			bind:paused
-			bind:currentTime
-			bind:duration
-			disableremoteplayback
-			x-webkit-airplay="deny"
-			preload="metadata"
-			src="{src}"
-			poster="{thumbnail}"
-			class="object-fit absolute z-[3] h-full w-full"></video>
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			on:click="{handleClick}"
-			bind:this="{videoBgEl}"
-			loop
-			playsinline
-			disableremoteplayback
-			muted
-			bind:paused
-			autoplay
-			poster="{thumbnail}"
-			preload="metadata"
-			x-webkit-airplay="deny"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-			src="{src}">
-		</video>
-	{/if}
+	<!-- svelte-ignore a11y-media-has-caption -->
+	<video
+		on:click="{handleClick}"
+		bind:this="{videoEl}"
+		loop
+		playsinline
+		on:loadeddata="{() => (loaded = true)}"
+		autoplay
+		muted
+		bind:paused
+		bind:currentTime
+		bind:duration
+		disableremoteplayback
+		x-webkit-airplay="deny"
+		preload="metadata"
+		poster="{thumbnail}"
+		class="object-fit absolute z-[3] h-full w-full"></video>
+
+		<img alt="background" src="{thumbnail}" class="h-full blur-xl w-full absolute z-[2]" />
+	
+	
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">

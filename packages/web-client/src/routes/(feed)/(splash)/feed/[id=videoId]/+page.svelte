@@ -9,7 +9,7 @@ import {
 	type PostPopulated,
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
-import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getDashUrl, getHlsUrl, getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -19,7 +19,6 @@ import { Principal } from '@dfinity/principal';
 import { onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { debounce } from 'throttle-debounce';
 import type { PageData } from './$types';
 
 export let data: PageData;
@@ -33,8 +32,9 @@ let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
-let videoPlayers: VideoPlayer[] = [];
+let videoPlayers: Record<number, VideoPlayer> = {};
 let fetchedVideosCount = 0;
+let shaka: any;
 
 type VideoViewReport = {
 	progress: number;
@@ -143,7 +143,6 @@ async function handleChange(e: CustomEvent) {
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
-	playVideo(index);
 	recordView(videos[currentVideoIndex]);
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
@@ -160,17 +159,6 @@ function updateMetadata(video?: PostPopulated) {
 		artwork: [{ src: getThumbnailUrl(video.video_uid), type: 'image/png' }]
 	});
 }
-
-const playVideo = debounce(50, async (index: number) => {
-	try {
-		videoPlayers[currentPlayingIndex]?.stop();
-		videoPlayers[index]?.play();
-		videoPlayers[index + 1]?.stop();
-		currentPlayingIndex = index;
-	} catch (e) {
-		Log({ error: e, index, source: '1 playVideo' }, 'error');
-	}
-});
 
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
@@ -203,6 +191,9 @@ function recordStats(
 
 onMount(async () => {
 	updateURL();
+	//@ts-ignore
+	shaka = await import('shaka-player/dist/shaka-player.compiled.js');
+	await shaka.polyfill.installAll();
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
@@ -215,64 +206,71 @@ onMount(async () => {
 });
 </script>
 
-<Swiper
-	direction="{'vertical'}"
-	observer
-	slidesPerView="{1}"
-	on:slideChange="{handleChange}"
-	cssMode
-	spaceBetween="{100}"
-	class="h-full w-full">
-	{#each videos as video, i (i)}
-		{@const src = getMp4Url(video.video_uid)}
-		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
-				<VideoPlayer
-					on:loaded="{() => hideSplashScreen(500)}"
-					on:watchedPercentage="{({ detail }) =>
-						recordStats(
-							detail,
-							video.publisher_canister_id,
-							video.id,
-							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
-							video.home_feed_ranking_score
-						)}"
-					bind:this="{videoPlayers[i]}"
-					i="{i}"
-					id="{video.id}"
-					likeCount="{Number(video.like_count)}"
-					displayName="{video.created_by_display_name[0]}"
-					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
-					liked="{video.liked_by_me}"
-					description="{video.description}"
-					createdById="{video.created_by_user_principal_id}"
-					videoViews="{Number(video.total_view_count)}"
-					publisherCanisterId="{video.publisher_canister_id}"
-					userProfileSrc="{video.created_by_profile_photo_url[0]}"
-					individualUser="{individualUser}"
-					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
-					inView="{i == currentVideoIndex}"
-					swiperJs
-					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
-						video.hot_or_not_feed_ranking_score[0] !== undefined}"
-					thumbnail="{getThumbnailUrl(video.video_uid)}"
-					src="{src}" />
+<div class="relative h-full w-full">
+	<div class="h-full w-full absolute z-10">
+		<Swiper
+			direction="{'vertical'}"
+			observer
+			slidesPerView="{1}"
+			on:slideChange="{handleChange}"
+			cssMode
+			spaceBetween="{100}"
+			class="h-full w-full">
+			{#each videos as video, i (i)}
+				<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
+					{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
+						<VideoPlayer
+							on:loaded="{() => hideSplashScreen(500)}"
+							on:watchedPercentage="{({ detail }) =>
+								recordStats(
+									detail,
+									video.publisher_canister_id,
+									video.id,
+									video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
+									video.home_feed_ranking_score
+								)}"
+							bind:this="{videoPlayers[i]}"
+							i="{i}"
+							id="{video.id}"
+							likeCount="{Number(video.like_count)}"
+							displayName="{video.created_by_display_name[0]}"
+							profileLink="{video.created_by_unique_user_name[0] ??
+								video.created_by_user_principal_id}"
+							liked="{video.liked_by_me}"
+							description="{video.description}"
+							createdById="{video.created_by_user_principal_id}"
+							videoViews="{Number(video.total_view_count)}"
+							publisherCanisterId="{video.publisher_canister_id}"
+							userProfileSrc="{video.created_by_profile_photo_url[0]}"
+							individualUser="{individualUser}"
+							inView="{i == currentVideoIndex}"
+							swiperJs
+							enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
+								video.hot_or_not_feed_ranking_score[0] !== undefined}"
+							thumbnail="{getThumbnailUrl(video.video_uid)}"
+							shaka="{shaka}"
+							srcDash="{getDashUrl(video.video_uid)}"
+							srcHls="{getHlsUrl(video.video_uid)}" />
+					{/if}
+				</SwiperSlide>
+			{/each}
+			{#if loading}
+				<SwiperSlide class="flex h-full w-full items-center justify-center">
+					<div
+						class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+						<div class="text-center text-lg font-bold">Loading</div>
+					</div>
+				</SwiperSlide>
 			{/if}
-		</SwiperSlide>
-	{/each}
-	{#if loading}
-		<SwiperSlide class="flex h-full w-full items-center justify-center">
-			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-				<div class="text-center text-lg font-bold">Loading</div>
-			</div>
-		</SwiperSlide>
-	{/if}
-	{#if noMoreVideos}
-		<SwiperSlide class="flex h-full w-full items-center justify-center">
-			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-				<NoVideosIcon class="w-56" />
-				<div class="text-center text-lg font-bold">No more videos to display today</div>
-			</div>
-		</SwiperSlide>
-	{/if}
-</Swiper>
+			{#if noMoreVideos}
+				<SwiperSlide class="flex h-full w-full items-center justify-center">
+					<div
+						class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+						<NoVideosIcon class="w-56" />
+						<div class="text-center text-lg font-bold">No more videos to display today</div>
+					</div>
+				</SwiperSlide>
+			{/if}
+		</Swiper>
+	</div>
+</div>
