@@ -156,6 +156,10 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>Edit Profile | Hot or Not</title>
+</svelte:head>
+
 {#if pageLoaded}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
@@ -174,7 +178,10 @@ onMount(async () => {
 		<svelte:fragment slot="content">
 			<div
 				class="flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-auto p-8">
-				<ProfileImageSelector bind:src="{values.imageSrc}" bind:error bind:loading />
+				<ProfileImageSelector
+					bind:src="{values.imageSrc}"
+					bind:error="{error}"
+					bind:loading="{loading}" />
 				<div class="flex w-full flex-col space-y-2">
 					<span class="text-white/60">Your name</span>
 					<Input

@@ -215,6 +215,10 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>Home Feed | Hot or Not</title>
+</svelte:head>
+
 <Swiper
 	direction="{'vertical'}"
 	observer
