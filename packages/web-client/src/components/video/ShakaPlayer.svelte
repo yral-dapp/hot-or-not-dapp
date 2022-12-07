@@ -6,7 +6,6 @@ import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
-import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
@@ -19,9 +18,9 @@ import { createEventDispatcher, onMount } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { throttle } from 'throttle-debounce';
+import { authState } from '$stores/auth';
 
-export let srcHls;
-export let srcDash;
+export let src: string;
 export let shaka: any;
 export let i: number;
 export let id: bigint;
@@ -37,34 +36,33 @@ export let liked = false;
 export let createdById = '';
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let enrolledInHotOrNot = false;
+export let likeCount;
+export let ready = false;
+export let externalAudio = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
 	loaded: void;
+	inView: string;
 }>();
 
 let player: shaka.Player;
-let playerBg: shaka.Player;
 let videoEl: HTMLVideoElement;
 let videoBgEl: HTMLVideoElement;
 let currentTime = 0;
 let duration = 0;
 let loaded = false;
 let paused = true;
-let hls = false;
-let ready = false;
 
 export function play() {
 	try {
 		paused = false;
-		if (isiPhone()) return;
-
-		if ($playerState.initialized && !$playerState.muted) {
-			console.log('unmuting');
-			videoEl.muted = $playerState.muted = false;
+		if (externalAudio) return;
+		if ($playerState.initialized) {
+			videoEl.muted = $playerState.muted;
 		}
 	} catch (e: any) {
-		Log({ error: e, i, srcDash, inView, source: '1 play' }, 'error');
+		Log({ error: e, i, src, inView, source: '1 play' }, 'error');
 		if (videoEl) {
 			$playerState.muted = true;
 			videoEl.muted = true;
@@ -80,51 +78,24 @@ export function stop() {
 		if (videoBgEl) {
 			videoBgEl.currentTime = 0.1;
 		}
-		paused = true;
+		videoEl?.pause();
 	} catch (e: any) {
-		Log({ error: e, i, srcDash, inView, source: '2 stop' }, 'error');
-	}
-}
-
-function handleClick() {
-	console.log('click', i);
-	try {
-		if (!$playerState.initialized) {
-			$playerState.initialized = true;
-		}
-		if (videoEl) {
-			if (paused) {
-				videoEl?.play();
-				videoEl.muted = false;
-				if (isiPhone()) {
-					videoEl.muted = $playerState.muted = false;
-				}
-			} else {
-				videoEl.muted = !videoEl.muted;
-				$playerState.muted = videoEl.muted;
-			}
-		}
-	} catch (e) {
-		Log({ error: e, i, srcDash, inView, source: '1 handleClick' }, 'error');
+		Log({ error: e, i, src, inView, source: '2 stop' }, 'error');
 	}
 }
 
 async function handleLike() {
-	// if ($authState.isLoggedIn) {
-	// 	liked = !liked;
-	// 	registerEvent('like_video', {
-	// 		userId: $userProfile.principal_id,
-	// 		video_publisher_id: profileLink,
-	// 		video_publisher_canister_id: publisherCanisterId,
-	// 		video_id: id,
-	// 		likes: likeCount
-	// 	});
-	// 	await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
-	// } else $authState.showLogin = true;
-
-	player.load(
-		'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com/2e4a66ca07d7489496550697e2ca2897/manifest/video.m3u8'
-	);
+	if ($authState.isLoggedIn) {
+		liked = !liked;
+		registerEvent('like_video', {
+			userId: $userProfile.principal_id,
+			video_publisher_id: profileLink,
+			video_publisher_canister_id: publisherCanisterId,
+			video_id: id,
+			likes: likeCount
+		});
+		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
+	} else $authState.showLogin = true;
 }
 
 async function handleShare() {
@@ -144,6 +115,23 @@ async function handleShare() {
 	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
 
+function handleClick() {
+	try {
+		if (!$playerState.initialized) {
+			$playerState.initialized = true;
+		}
+		if (paused) {
+			videoEl?.play();
+			videoEl.muted = false;
+		} else if (!externalAudio) {
+			videoEl.muted = !videoEl.muted;
+			$playerState.muted = videoEl.muted;
+		}
+	} catch (e) {
+		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
+	}
+}
+
 const dispatchWatchedPercentage = throttle(300, (currentTime: number, duration: number) => {
 	dispatch('watchedPercentage', (currentTime / duration) * 100);
 });
@@ -156,23 +144,24 @@ $: if (inView && loaded) {
 	dispatch('loaded');
 }
 
-$: if (inView && loaded && ready) {
+$: if ((inView && externalAudio && ready) || (!externalAudio && inView)) {
 	play();
-	dispatch;
+}
+
+$: if (inView) {
+	dispatch('inView', src);
 }
 
 $: if (!inView) {
 	stop();
 }
 
-onMount(() => {
-	hls = !!videoEl.canPlayType('application/vnd.apple.mpegurl');
+onMount(async () => {
 	player = new shaka.Player(videoEl);
-
-	player.load(hls ? srcHls : srcDash);
-
-	ready = true;
-
+	await player.load(src);
+	if (externalAudio) {
+		stop();
+	}
 	return () => {
 		player.destroy();
 	};
@@ -187,12 +176,13 @@ onMount(() => {
 	)}">
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
+		on:click
 		on:click="{handleClick}"
 		bind:this="{videoEl}"
 		loop
 		playsinline
+		autoplay="{!externalAudio}"
 		on:loadeddata="{() => (loaded = true)}"
-		autoplay
 		muted
 		bind:paused="{paused}"
 		bind:currentTime="{currentTime}"
@@ -205,7 +195,7 @@ onMount(() => {
 
 	<img alt="background" src="{thumbnail}" class="h-full blur-xl w-full absolute z-[2]" />
 
-	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
+	{#if $playerState.muted && !paused && inView}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
 				<IconButton ariaLabel="Unmute this video">
@@ -269,7 +259,7 @@ onMount(() => {
 	</div>
 </player>
 
-{#if !loaded}
+{#if !loaded || (!ready && externalAudio)}
 	<loader
 		class="max-w-16 fade-in pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
 		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
