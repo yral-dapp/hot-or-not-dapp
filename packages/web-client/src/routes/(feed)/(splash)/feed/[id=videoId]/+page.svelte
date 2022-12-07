@@ -248,6 +248,10 @@ onMount(async () => {
 			class="opacity-0 border h-20 w-20 {useExternalAudio ? 'pointer-events-auto' : ''} "
 			bind:this="{videoEl}"
 			loop
+			playsinline
+			x-webkit-airplay="deny"
+			disableremoteplayback
+			preload="metadata"
 			bind:currentTime="{currentTime}"
 			muted>
 		</video>
