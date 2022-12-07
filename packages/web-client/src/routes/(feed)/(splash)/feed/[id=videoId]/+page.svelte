@@ -34,6 +34,11 @@ let loading = false;
 let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
 let shaka: any;
+let videoEl: HTMLVideoElement;
+let player: shaka.Player;
+let ready = false;
+let currentTime = 0;
+let useExternalAudio = false;
 
 type VideoViewReport = {
 	progress: number;
@@ -139,6 +144,8 @@ async function recordView(post?: PostPopulated) {
 }
 
 async function handleChange(e: CustomEvent) {
+	ready = false;
+	currentTime = 0;
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
@@ -189,7 +196,31 @@ function recordStats(
 	}
 }
 
+function handleClick() {
+	videoEl.muted = !videoEl.muted;
+	$playerState.muted = videoEl.muted;
+}
+
+async function loadNewVideo(src: string) {
+	if (!player) {
+		player = new shaka.Player(videoEl);
+	}
+	await player.load(src);
+	videoEl.play();
+}
+
+function initPlayer() {
+	if (useExternalAudio) {
+		loadNewVideo(getDashUrl(videos[0].video_uid));
+	}
+}
+
+$: if (currentTime > 0 && currentTime < 1 && !ready) {
+	ready = true;
+}
+
 onMount(async () => {
+	useExternalAudio = !!videoEl.canPlayType('application/vnd.apple.mpegurl');
 	updateURL();
 	handleParams();
 	//@ts-ignore
@@ -201,11 +232,22 @@ onMount(async () => {
 		videos = [data.post, ...videos];
 		await recordView(data.post);
 	}
+	initPlayer();
 	await fetchNextVideos();
 });
 </script>
 
 <div class="relative h-full w-full">
+	<div class="z-[11] absolute inset-0 flex items-center justify-center pointer-events-none">
+		<video
+			on:click="{handleClick}"
+			class="opacity-0 border h-20 w-20 {useExternalAudio ? 'pointer-events-auto' : ''} "
+			bind:this="{videoEl}"
+			loop
+			bind:currentTime="{currentTime}"
+			muted>
+		</video>
+	</div>
 	<div class="h-full w-full absolute z-10">
 		<Swiper
 			direction="{'vertical'}"
@@ -219,6 +261,9 @@ onMount(async () => {
 				<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 					{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 						<ShakaPlayer
+							on:inView="{({ detail }) => {
+								useExternalAudio && loadNewVideo(detail);
+							}}"
 							on:loaded="{() => hideSplashScreen(500)}"
 							on:watchedPercentage="{({ detail }) =>
 								recordStats(
@@ -241,12 +286,14 @@ onMount(async () => {
 							userProfileSrc="{video.created_by_profile_photo_url[0]}"
 							individualUser="{individualUser}"
 							inView="{i == currentVideoIndex}"
+							ready="{ready}"
 							enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 								video.hot_or_not_feed_ranking_score[0] !== undefined}"
 							thumbnail="{getThumbnailUrl(video.video_uid)}"
 							shaka="{shaka}"
-							srcDash="{getDashUrl(video.video_uid)}"
-							srcHls="{getHlsUrl(video.video_uid)}" />
+							externalAudio="{useExternalAudio}"
+							likeCount="{video.like_count}"
+							src="{useExternalAudio ? getHlsUrl(video.video_uid) : getDashUrl(video.video_uid)}" />
 					{/if}
 				</SwiperSlide>
 			{/each}
