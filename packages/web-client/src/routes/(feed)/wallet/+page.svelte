@@ -115,6 +115,8 @@ $: loggedIn && init();
 		<div class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pt-4 pb-16">
 			{#if errorList}
 				<div class="text-sm opacity-50 font-bold">Error fetching transactions</div>
+			{:else if loadList}
+				<div class="text-sm opacity-50 font-bold">Loading</div>
 			{:else}
 				{#each history as item}
 					{@const name = 'NewUserSignup' in item.details ? 'Signup' : 'Referral'}
