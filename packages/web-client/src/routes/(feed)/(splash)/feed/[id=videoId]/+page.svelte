@@ -1,7 +1,7 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import VideoPlayer from '$components/video/VideoPlayer.svelte';
+import ShakaPlayer from '$components/video/ShakaPlayer.svelte';
 import { individualUser } from '$lib/helpers/backend';
 import {
 	getTopPosts,
@@ -32,7 +32,6 @@ let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
-let videoPlayers: Record<number, VideoPlayer> = {};
 let fetchedVideosCount = 0;
 let shaka: any;
 
@@ -60,6 +59,7 @@ function joinArrayUniquely<T>(a: T[], b: T[]): T[] {
 }
 
 async function fetchNextVideos() {
+	await tick();
 	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
@@ -191,6 +191,7 @@ function recordStats(
 
 onMount(async () => {
 	updateURL();
+	handleParams();
 	//@ts-ignore
 	shaka = await import('shaka-player/dist/shaka-player.compiled.js');
 	await shaka.polyfill.installAll();
@@ -200,9 +201,7 @@ onMount(async () => {
 		videos = [data.post, ...videos];
 		await recordView(data.post);
 	}
-	await tick();
 	await fetchNextVideos();
-	handleParams();
 });
 </script>
 
@@ -219,7 +218,7 @@ onMount(async () => {
 			{#each videos as video, i (i)}
 				<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 					{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
-						<VideoPlayer
+						<ShakaPlayer
 							on:loaded="{() => hideSplashScreen(500)}"
 							on:watchedPercentage="{({ detail }) =>
 								recordStats(
@@ -229,10 +228,8 @@ onMount(async () => {
 									video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
 									video.home_feed_ranking_score
 								)}"
-							bind:this="{videoPlayers[i]}"
 							i="{i}"
 							id="{video.id}"
-							likeCount="{Number(video.like_count)}"
 							displayName="{video.created_by_display_name[0]}"
 							profileLink="{video.created_by_unique_user_name[0] ??
 								video.created_by_user_principal_id}"
@@ -244,7 +241,6 @@ onMount(async () => {
 							userProfileSrc="{video.created_by_profile_photo_url[0]}"
 							individualUser="{individualUser}"
 							inView="{i == currentVideoIndex}"
-							swiperJs
 							enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 								video.hot_or_not_feed_ranking_score[0] !== undefined}"
 							thumbnail="{getThumbnailUrl(video.video_uid)}"
