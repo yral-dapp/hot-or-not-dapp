@@ -93,7 +93,7 @@ async function handleLove(userIndex: number, userId?: string) {
 						<div class="flex grow flex-col items-start overflow-hidden">
 							<span>{user.display_name}</span>
 							<span class="text-ellipsis whitespace-nowrap text-sm text-white/50">
-								@{userId}
+								@{user.unique_user_name}
 							</span>
 						</div>
 					</div>
