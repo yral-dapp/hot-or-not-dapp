@@ -81,6 +81,10 @@ onMount(() => {
 });
 </script>
 
+<svelte:head>
+	<title>Refer & Earn | Hot or Not</title>
+</svelte:head>
+
 <HomeLayout>
 	<svelte:fragment slot="top">
 		<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
@@ -153,7 +157,7 @@ onMount(() => {
 					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
 						.toDateString()
 						.substring(4)}
-					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : {INVITE_WIN_TOKENS}}
+					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : { INVITE_WIN_TOKENS }}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img

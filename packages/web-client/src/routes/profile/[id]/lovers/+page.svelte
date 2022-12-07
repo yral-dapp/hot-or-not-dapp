@@ -67,6 +67,10 @@ async function handleLove(userIndex: number, userId?: string) {
 }
 </script>
 
+<svelte:head>
+	<title>{me ? 'Your' : "User's"} Lovers | Hot or Not</title>
+</svelte:head>
+
 <ProfileLayout>
 	<svelte:fragment slot="top-left">
 		<IconButton on:click="{() => goto(`/profile/${userId}`)}" class="shrink-0">

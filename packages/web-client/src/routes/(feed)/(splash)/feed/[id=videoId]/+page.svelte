@@ -237,6 +237,10 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>Home Feed | Hot or Not</title>
+</svelte:head>
+
 <div class="relative h-full w-full">
 	<div class="z-[11] absolute inset-0 flex items-center justify-center pointer-events-none">
 		<video
