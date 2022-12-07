@@ -209,8 +209,9 @@ async function loadNewVideo(src: string) {
 	videoEl.play();
 }
 
-function initPlayer() {
+async function initPlayer() {
 	if (useExternalAudio) {
+		await tick();
 		loadNewVideo(getDashUrl(videos[0].video_uid));
 	}
 }
