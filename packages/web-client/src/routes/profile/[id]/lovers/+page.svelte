@@ -92,9 +92,6 @@ async function handleLove(userIndex: number, userId?: string) {
 							class="h-10 w-10 shrink-0 rounded-full object-cover" />
 						<div class="flex grow flex-col items-start overflow-hidden">
 							<span>{user.display_name}</span>
-							<span class="text-ellipsis whitespace-nowrap text-sm text-white/50">
-								@{user.unique_user_name}
-							</span>
 						</div>
 					</div>
 					{#if $userProfile.principal_id !== user.principal_id}
