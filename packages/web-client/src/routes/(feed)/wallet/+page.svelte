@@ -71,6 +71,10 @@ function init() {
 $: loggedIn && init();
 </script>
 
+<svelte:head>
+	<title>Wallet | Hot or Not</title>
+</svelte:head>
+
 {#if !$authState.isLoggedIn}
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-2">
 		<div class="text-center text-sm opacity-70">Please login to access your wallet</div>

@@ -68,6 +68,10 @@ $: userId = $userProfile.username_set
 	: $authState.idString;
 </script>
 
+<svelte:head>
+	<title>Menu | Hot or Not</title>
+</svelte:head>
+
 <LogoutPopup bind:show="{showLogoutPopup}" />
 
 <div
@@ -99,7 +103,7 @@ $: userId = $userProfile.username_set
 					this="{link.href ? 'a' : 'button'}"
 					on:keyup
 					on:click="{link.onClick}"
-					target="{link.title.includes('team') ? '_blank':''}"
+					target="{link.title.includes('team') ? '_blank' : ''}"
 					href="{link.href}"
 					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">

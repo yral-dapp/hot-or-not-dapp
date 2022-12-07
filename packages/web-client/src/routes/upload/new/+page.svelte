@@ -180,6 +180,10 @@ onDestroy(() => {
 });
 </script>
 
+<svelte:head>
+	<title>Upload | Hot or Not</title>
+</svelte:head>
+
 <UploadLayout>
 	<div slot="top-left">
 		<IconButton href="/upload" preload>
@@ -203,8 +207,8 @@ onDestroy(() => {
 						previewMuted = false;
 					}}"
 					bind:paused="{previewPaused}"
-					bind:videoHeight
-					bind:videoWidth
+					bind:videoHeight="{videoHeight}"
+					bind:videoWidth="{videoWidth}"
 					src="{videoSrc}"
 					playsinline
 					autoplay
