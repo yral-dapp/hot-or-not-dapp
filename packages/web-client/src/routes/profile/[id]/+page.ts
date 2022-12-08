@@ -18,6 +18,10 @@ export const load: PageLoad = async ({ params }) => {
 		throw redirect(307, '/menu');
 	}
 
+	if (id === '2vsx-fae') {
+		throw redirect(307, '/menu?logout=true');
+	}
+
 	const userProfileData = get(userProfile);
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
 		return { me: true, profile: userProfileData };
