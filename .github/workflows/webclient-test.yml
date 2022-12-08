@@ -76,6 +76,7 @@ jobs:
 
   google-chat-webhook:
     name: Google chat bot
+    if: github.actor != 'dependabot[bot]'
     needs: ["deploy-preview"]
     runs-on: ubuntu-latest
     steps:
