@@ -6,7 +6,7 @@ use shared_utils::{
         top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
     },
 };
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashMap};
 
 pub mod access_control;
 pub mod model;
@@ -22,3 +22,11 @@ pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
 pub type PostsIndexSortedByHomeFeedScore = PostScoreIndex;
 pub type PostsIndexSortedByHotOrNotFeedScore = PostScoreIndex;
+
+#[derive(Default)]
+pub struct CanisterData {
+    pub my_known_principal_ids_map: KnownPrincipalMap,
+    pub access_control_map: HashMap<SPrincipal, Vec<UserAccessRole>>,
+    pub posts_index_sorted_by_home_feed_score: PostScoreIndex,
+    pub posts_index_sorted_by_hot_or_not_feed_score: PostScoreIndex,
+}
