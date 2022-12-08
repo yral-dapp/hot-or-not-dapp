@@ -1,6 +1,5 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
-import WaitlistIcon from '$components/icons/WaitlistIcon.svelte';
 import { handleParams } from '$lib/utils/params';
 import { onMount } from 'svelte';
 
@@ -15,17 +14,17 @@ onMount(() => {
 
 <div
 	class="flex overflow-hidden absolute h-full overflow-y-scroll w-full flex-col items-center pt-16 pb-32 gap-8 px-12">
-	<WaitlistIcon class="w-64 shrink-0" />
-	<div class="flex flex-col gap-2 items-center">
-		<div class="text-2xl">Sorry</div>
+	<div class="flex flex-col gap-4 items-center">
+		<div class="text-3xl font-bold">Logins paused</div>
 		<div class="text-center opacity-70">
-			We have received an overwherlming amount of onboarding and we are trying to accomodate
-			everyone here. Currently, all the slots are full
+			Due to sudden high demand, new user registrations are temporarily closed. You can continue to
+			browse the platform's hundreds of videos while we implement the global timer and resume
+			logins! Thank you for bearing with us.
 		</div>
 	</div>
 	<div class="text-center">
-		We appreciate your interest and request you to fill out your email address in the form below to
-		get notified when a slot is avaiable.
+		We request you to fill out your email address in the form below to get notified when
+		registration resumes.
 	</div>
 
 	<iframe
@@ -36,5 +35,5 @@ onMount(() => {
 		marginheight="0"
 		marginwidth="0">Loading…</iframe>
 
-	<Button href="/">Go Home</Button>
+	<Button href="/">Continue browsing</Button>
 </div>
