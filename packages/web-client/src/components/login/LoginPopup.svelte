@@ -23,6 +23,7 @@ import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
+import { goto } from '$app/navigation';
 
 export let hideNfid = false;
 
@@ -61,7 +62,10 @@ async function handleSuccessfulLogin(type: LoginType) {
 		if (principal) {
 			canId = await getCanisterId(principal.toString());
 		}
-		await initializeAuthClient();
+		const res = await initializeAuthClient();
+		if (res.error) {
+			goto('/waitlist?logout=true');
+		}
 		registerEvent(canId ? 'login' : 'sign_up', {
 			login_method: type,
 			display_name: $userProfile.display_name,
