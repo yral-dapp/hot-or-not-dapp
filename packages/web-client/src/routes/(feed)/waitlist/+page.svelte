@@ -22,10 +22,10 @@ onMount(() => {
 			logins! Thank you for bearing with us.
 		</div>
 	</div>
-	<div class="text-center">
-		We request you to fill out your email address in the form below to get notified when
-		registration resumes.
-	</div>
+
+	<Button href="/">Continue browsing</Button>
+
+	<div class="text-center">Register to get notified when logins resume</div>
 
 	<iframe
 		class="w-full h-[36rem] shrink-0"
@@ -34,6 +34,4 @@ onMount(() => {
 		frameborder="0"
 		marginheight="0"
 		marginwidth="0">Loading…</iframe>
-
-	<Button href="/">Continue browsing</Button>
 </div>
