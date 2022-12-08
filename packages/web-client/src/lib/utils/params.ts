@@ -4,7 +4,7 @@ import { authState, authHelper, referralId } from '$stores/auth';
 import { isPrincipal } from './isPrincipal';
 import { initializeAuthClient } from '$lib/helpers/auth';
 
-export function handleParams() {
+export async function handleParams() {
 	const pageStore = get(page);
 	if (!pageStore) return;
 
@@ -38,7 +38,7 @@ export function handleParams() {
 	const logout = pageStore.url.searchParams.get('logout');
 	if (logout) {
 		const authHelperState = get(authHelper);
-		authHelperState.client?.logout();
+		await authHelperState.client?.logout();
 		initializeAuthClient();
 	}
 }
