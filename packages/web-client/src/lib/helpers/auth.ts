@@ -13,12 +13,6 @@ async function updateUserIndexCanister(): Promise<{
 	error_details?: 'SIGNUP_NOT_ALLOWED' | 'OTHER';
 }> {
 	try {
-		const isSignupAllowed = false;
-
-		if (!isSignupAllowed) {
-			return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
-		}
-
 		const referralStore = get(referralId);
 		const referral: [] | [Principal] = referralStore.principalId
 			? [Principal.from(referralStore.principalId)]
@@ -28,6 +22,13 @@ async function updateUserIndexCanister(): Promise<{
 			await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
 				referral
 			);
+
+		// Query API
+		const isSignupAllowed = false;
+
+		if (!isSignupAllowed && userCanisterPrincipal.toText() === 'qcdty-nyaaa-aaaao-aaloq-cai') {
+			return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
+		}
 
 		Log(
 			{
