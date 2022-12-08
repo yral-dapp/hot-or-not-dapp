@@ -9,6 +9,7 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import ProfileLayout from '$components/layout/ProfileLayout.svelte';
 import { fetchLovers, loveUser, type UserProfileFollows } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
+import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 import type { PageData } from './$types';
 
@@ -59,6 +60,10 @@ async function loadLovers() {
 
 async function handleLove(userIndex: number, userId?: string) {
 	if (!userId) return;
+	if (!$authState.isLoggedIn) {
+		$authState.showLogin = true;
+		return;
+	}
 	const res = await loveUser(userId);
 	if (res) {
 		lovers[userIndex].i_follow = !lovers[userIndex].i_follow;
