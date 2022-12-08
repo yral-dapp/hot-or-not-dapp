@@ -8,16 +8,27 @@ import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
 
-async function updateUserIndexCanister() {
+async function updateUserIndexCanister(): Promise<{
+	error: boolean;
+	error_details?: 'SIGNUP_NOT_ALLOWED' | 'OTHER';
+}> {
 	try {
+		const isSignupAllowed = false;
+
+		if (!isSignupAllowed) {
+			return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
+		}
+
 		const referralStore = get(referralId);
 		const referral: [] | [Principal] = referralStore.principalId
 			? [Principal.from(referralStore.principalId)]
 			: [];
+
 		const userCanisterPrincipal =
 			await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
 				referral
 			);
+
 		Log(
 			{
 				userCanisterPrincipal: userCanisterPrincipal?.toText(),
@@ -39,12 +50,14 @@ async function updateUserIndexCanister() {
 			const { canisterIdb } = await import('$lib/utils/idb');
 			canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
 		}
+		return { error: false };
 	} catch (e) {
 		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
+		return { error: true, error_details: 'OTHER' };
 	}
 }
 
-export async function initializeAuthClient(): Promise<void> {
+export async function initializeAuthClient(): Promise<{ error: boolean }> {
 	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
 	const authHelperData = get(authHelper);
@@ -76,7 +89,10 @@ export async function initializeAuthClient(): Promise<void> {
 			idPrincipal: principal
 		});
 
-		await updateUserIndexCanister();
+		const res = await updateUserIndexCanister();
+		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
+			return { error: true };
+		}
 		await updateProfile();
 		setUser(principal?.toText());
 	} else {
@@ -94,7 +110,11 @@ export async function initializeAuthClient(): Promise<void> {
 			idPrincipal: principal
 		});
 
-		await updateUserIndexCanister();
+		const res = await updateUserIndexCanister();
+		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
+			return { error: true };
+		}
 	}
 	loadingAuthStatus.set(false);
+	return { error: false };
 }
