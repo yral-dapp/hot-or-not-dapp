@@ -91,6 +91,7 @@ export async function initializeAuthClient(): Promise<{ error: boolean }> {
 
 		const res = await updateUserIndexCanister();
 		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
+			loadingAuthStatus.set(false);
 			return { error: true };
 		}
 		await updateProfile();
@@ -112,6 +113,7 @@ export async function initializeAuthClient(): Promise<{ error: boolean }> {
 
 		const res = await updateUserIndexCanister();
 		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
+			loadingAuthStatus.set(false);
 			return { error: true };
 		}
 	}
