@@ -14,7 +14,7 @@ onMount(() => {
 </svelte:head>
 
 <div
-	class="flex overflow-hidden absolute h-full border overflow-y-scroll w-full flex-col items-center pt-16 pb-32 gap-8 px-12">
+	class="flex overflow-hidden absolute h-full overflow-y-scroll w-full flex-col items-center pt-16 pb-32 gap-8 px-12">
 	<WaitlistIcon class="w-64 shrink-0" />
 	<div class="flex flex-col gap-2 items-center">
 		<div class="text-2xl">Sorry</div>
