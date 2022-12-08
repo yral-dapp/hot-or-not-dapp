@@ -54,7 +54,6 @@ async function loadHistory() {
 }
 
 function init() {
-	console.log('called init');
 	refreshTokenBalance();
 	loadHistory();
 }

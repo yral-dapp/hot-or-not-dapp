@@ -17,6 +17,8 @@ import userProfile from '$stores/userProfile';
 import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
 import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
+import { onMount } from 'svelte';
+import { handleParams } from '$lib/utils/params';
 
 $: links = [
 	{
@@ -66,6 +68,10 @@ let showLogoutPopup = false;
 $: userId = $userProfile.username_set
 	? $userProfile.unique_user_name || $authState.idString
 	: $authState.idString;
+
+onMount(() => {
+	handleParams();
+});
 </script>
 
 <svelte:head>
