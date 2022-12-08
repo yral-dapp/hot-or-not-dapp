@@ -7,6 +7,7 @@ import { loadingAuthStatus } from '$stores/loading';
 import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
+import { identity as ciIdentity } from './identity';
 
 async function updateUserIndexCanister() {
 	try {
@@ -50,11 +51,15 @@ export async function initializeAuthClient(): Promise<void> {
 	const authHelperData = get(authHelper);
 	let client: AuthClient | undefined = undefined;
 	if (!authHelperData.client) {
+		const identity = await ciIdentity;
+
+		console.log('IDENTITY', identity);
 		client = await AuthClient.create({
 			idleOptions: {
 				disableIdle: true,
 				disableDefaultIdleCallback: true
-			}
+			},
+			identity
 		});
 	} else {
 		client = authHelperData.client;
