@@ -6,7 +6,7 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     constant,
-    shared_types::{
+    types::canister_specific::{
         individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
         user_index::error_types::SetUniqueUsernameError,
     },

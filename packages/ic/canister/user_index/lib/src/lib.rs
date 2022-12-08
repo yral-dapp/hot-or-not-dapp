@@ -1,8 +1,6 @@
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
 use model::upgrade_status::UpgradeStatus;
-use shared_utils::{
-    access_control::UserAccessRole, shared_types::known_principal::KnownPrincipalMap,
-};
+use shared_utils::{access_control::UserAccessRole, types::known_principal::KnownPrincipalMap};
 
 pub mod model;
 pub mod util;

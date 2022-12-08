@@ -1,6 +1,6 @@
 use ic_stable_memory::s;
 use post_cache_lib::{PostsIndexSortedByHomeFeedScore, PostsIndexSortedByScore};
-use shared_utils::shared_types::top_posts::v0::PostScoreIndexItem;
+use shared_utils::types::top_posts::v0::PostScoreIndexItem;
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

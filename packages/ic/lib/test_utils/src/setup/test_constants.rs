@@ -16,8 +16,12 @@ pub fn get_bob_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[2])
 }
 
-pub fn get_cathy_principal_id() -> PrincipalId {
+pub fn get_charlie_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[3])
+}
+
+pub fn get_dan_principal_id() -> PrincipalId {
+    PrincipalId::new_self_authenticating(&[4])
 }
 
 pub fn get_user_index_canister_wasm() -> Vec<u8> {

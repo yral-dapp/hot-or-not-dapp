@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, time::SystemTime};
 
-use shared_utils::shared_types::utility_token::{v0::TokenEvent, v1::TokenEventV1};
+use shared_utils::types::utility_token::{v0::TokenEvent, v1::TokenEventV1};
 use speedy::{Readable, Writable};
 
 #[derive(Readable, Writable, Default)]

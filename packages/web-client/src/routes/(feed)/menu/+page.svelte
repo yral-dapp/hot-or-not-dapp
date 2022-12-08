@@ -17,6 +17,8 @@ import userProfile from '$stores/userProfile';
 import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
 import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
+import { onMount } from 'svelte';
+import { handleParams } from '$lib/utils/params';
 
 $: links = [
 	{
@@ -66,7 +68,15 @@ let showLogoutPopup = false;
 $: userId = $userProfile.username_set
 	? $userProfile.unique_user_name || $authState.idString
 	: $authState.idString;
+
+onMount(() => {
+	handleParams();
+});
 </script>
+
+<svelte:head>
+	<title>Menu | Hot or Not</title>
+</svelte:head>
 
 <LogoutPopup bind:show="{showLogoutPopup}" />
 
@@ -99,7 +109,7 @@ $: userId = $userProfile.username_set
 					this="{link.href ? 'a' : 'button'}"
 					on:keyup
 					on:click="{link.onClick}"
-					target="{link.title.includes('team') ? '_blank':''}"
+					target="{link.title.includes('team') ? '_blank' : ''}"
 					href="{link.href}"
 					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">

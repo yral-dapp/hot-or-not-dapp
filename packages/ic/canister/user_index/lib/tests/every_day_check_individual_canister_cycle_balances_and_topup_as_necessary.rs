@@ -32,18 +32,21 @@ fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
         alice_canister_id
     }).unwrap();
 
-    let alice_starting_cycle_balance = state_machine.execute_ingress_as(
-        get_global_super_admin_principal_id(),
-        user_index_canister_id,
-        "get_canister_status_from_management_canister",
-        candid::encode_one(alice_canister_id).unwrap(),
-    ).map(|reply_payload| {
-        let (response,): (CanisterStatusResponse,) = match reply_payload {
-            WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-            _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
-        };
-        response.cycles
-    }).unwrap();
+    let alice_starting_cycle_balance = state_machine
+        .execute_ingress_as(
+            get_global_super_admin_principal_id(),
+            user_index_canister_id,
+            "get_canister_status_from_management_canister",
+            candid::encode_one(alice_canister_id).unwrap(),
+        )
+        .map(|reply_payload| {
+            let (response,): (CanisterStatusResponse,) = match reply_payload {
+                WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+                _ => panic!("\n🛑 get_canister_status_from_management_canister failed\n"),
+            };
+            response.cycles
+        })
+        .unwrap();
 
     println!(
         "🧪 alice_starting_cycle_balance: {}",
@@ -67,18 +70,21 @@ fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
         )
         .unwrap();
 
-    let alice_reduced_cycle_balance = state_machine.execute_ingress_as(
-        get_global_super_admin_principal_id(),
-        user_index_canister_id,
-        "get_canister_status_from_management_canister",
-        candid::encode_one(alice_canister_id).unwrap(),
-    ).map(|reply_payload| {
-        let (response,): (CanisterStatusResponse,) = match reply_payload {
-            WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-            _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
-        };
-        response.cycles
-    }).unwrap();
+    let alice_reduced_cycle_balance = state_machine
+        .execute_ingress_as(
+            get_global_super_admin_principal_id(),
+            user_index_canister_id,
+            "get_canister_status_from_management_canister",
+            candid::encode_one(alice_canister_id).unwrap(),
+        )
+        .map(|reply_payload| {
+            let (response,): (CanisterStatusResponse,) = match reply_payload {
+                WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+                _ => panic!("\n🛑 get_canister_status_from_management_canister failed\n"),
+            };
+            response.cycles
+        })
+        .unwrap();
 
     println!(
         "🧪 alice_reduced_cycle_balance: {}",
@@ -94,18 +100,21 @@ fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
         )
         .unwrap();
 
-    let alice_topped_up_cycle_balance = state_machine.execute_ingress_as(
+    let alice_topped_up_cycle_balance = state_machine
+        .execute_ingress_as(
             get_global_super_admin_principal_id(),
             user_index_canister_id,
             "get_canister_status_from_management_canister",
             candid::encode_one(alice_canister_id).unwrap(),
-        ).map(|reply_payload| {
+        )
+        .map(|reply_payload| {
             let (response,): (CanisterStatusResponse,) = match reply_payload {
                 WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-                _ => panic!("\n🛑 get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id failed\n"),
+                _ => panic!("\n🛑 get_canister_status_from_management_canister failed\n"),
             };
             response.cycles
-        }).unwrap();
+        })
+        .unwrap();
 
     println!(
         "🧪 alice_topped_up_cycle_balance: {}",

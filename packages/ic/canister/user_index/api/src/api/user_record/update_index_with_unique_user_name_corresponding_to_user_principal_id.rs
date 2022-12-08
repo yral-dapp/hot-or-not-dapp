@@ -1,6 +1,6 @@
 use candid::Principal;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
-use shared_utils::shared_types::user_index::error_types::SetUniqueUsernameError;
+use shared_utils::types::canister_specific::user_index::error_types::SetUniqueUsernameError;
 use user_index_lib::{UniqueUserNameToUserPrincipalIdMap, UserPrincipalIdToCanisterIdMap};
 
 #[ic_cdk_macros::update]

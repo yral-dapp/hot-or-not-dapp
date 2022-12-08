@@ -6,15 +6,11 @@ import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/h
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 
-let load = {
-	balance: true,
-	list: true
-};
+let loadBalanced = true;
+let loadList = true;
 
-let error = {
-	balance: false,
-	list: false
-};
+let errorBalance = false;
+let errorList = false;
 
 let endOfList = false;
 let tokenBalance = 0;
@@ -23,15 +19,14 @@ let history: TransactionHistory[] = [];
 $: loggedIn = $authState.isLoggedIn;
 
 async function refreshTokenBalance() {
+	loadBalanced = true;
 	const res = await fetchTokenBalance();
 	if (res.error) {
-		error.balance = true;
-		error = error;
+		errorBalance = true;
 	} else {
 		tokenBalance = res.balance;
 	}
-	load.balance = false;
-	load = load;
+	loadBalanced = false;
 }
 
 async function loadHistory() {
@@ -39,15 +34,13 @@ async function loadHistory() {
 		return;
 	}
 
-	load.list = true;
-	error.list = false;
+	loadList = true;
+	errorList = false;
 	const res = await fetchHistory(history.length);
 
 	if (res.error) {
-		error.list = true;
-		load.list = false;
-		load = load;
-		error = error;
+		errorList = true;
+		loadList = false;
 		return;
 	}
 
@@ -57,19 +50,20 @@ async function loadHistory() {
 	console.log(history);
 
 	endOfList = res.endOfList;
-	load.list = false;
-	load = load;
-	error = error;
+	loadList = false;
 }
 
 function init() {
-	console.log('called init');
 	refreshTokenBalance();
 	loadHistory();
 }
 
 $: loggedIn && init();
 </script>
+
+<svelte:head>
+	<title>Wallet | Hot or Not</title>
+</svelte:head>
 
 {#if !$authState.isLoggedIn}
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-2">
@@ -90,7 +84,13 @@ $: loggedIn && init();
 		</div>
 		<div class="flex w-full flex-col items-center justify-center space-y-1 py-4">
 			<div class="text-sm uppercase">Your coins balance</div>
-			<div class="text-4xl font-bold">{tokenBalance.toLocaleString()}</div>
+			{#if errorBalance}
+				<div class="text-sm opacity-50 font-bold">Error loading balance</div>
+			{:else if loadBalanced}
+				<div class="text-sm opacity-50 font-bold">Loading</div>
+			{:else}
+				<div class="text-4xl font-bold">{tokenBalance.toLocaleString()}</div>
+			{/if}
 		</div>
 
 		<!-- <div class="px-6 py-4">
@@ -112,29 +112,35 @@ $: loggedIn && init();
 			<!-- <button class="text-sm opacity-50">See all</button> -->
 		</div>
 		<div class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pt-4 pb-16">
-			{#each history as item}
-				{@const name = 'NewUserSignup' in item.details ? 'Signup' : 'Referral'}
-				<div class="flex items-center justify-between py-4">
-					<div class="flex items-center space-x-4">
-						<div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
-							<div
-								class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-								<ArrowUpIcon class="h-6 w-6" />
+			{#if errorList}
+				<div class="text-sm opacity-50 font-bold">Error fetching transactions</div>
+			{:else if loadList}
+				<div class="text-sm opacity-50 font-bold">Loading</div>
+			{:else}
+				{#each history as item}
+					{@const name = 'NewUserSignup' in item.details ? 'Signup' : 'Referral'}
+					<div class="flex items-center justify-between py-4">
+						<div class="flex items-center space-x-4">
+							<div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
+								<div
+									class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
+									<ArrowUpIcon class="h-6 w-6" />
+								</div>
+							</div>
+							<div class="flex flex-col space-y-1">
+								<div>{name}</div>
+								<div class="text-sm opacity-50">{item.token} Coins</div>
 							</div>
 						</div>
-						<div class="flex flex-col space-y-1">
-							<div>{name}</div>
-							<div class="text-sm opacity-50">{item.token} Coins</div>
-						</div>
+						<div class="text-sm text-green-600">+ {item.token}</div>
 					</div>
-					<div class="text-sm text-green-600">+ {item.token}</div>
-				</div>
-			{:else}
-				<div class="flex grow h-full w-full items-center justify-center">
-					<NoTransactionsIcon class="w-full max-w-sm px-10" />
-				</div>
-				<div class="opacity-70 pt-4 text-center">No transactions yet</div>
-			{/each}
+				{:else}
+					<div class="flex grow h-full w-full items-center justify-center">
+						<NoTransactionsIcon class="w-full max-w-sm px-10" />
+					</div>
+					<div class="opacity-70 pt-4 text-center">No transactions yet</div>
+				{/each}
+			{/if}
 		</div>
 	</div>
 {/if}

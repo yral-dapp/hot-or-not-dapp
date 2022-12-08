@@ -1,6 +1,6 @@
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use shared_utils::shared_types::{
-    individual_user_template::post::{PostDetailsForFrontend, PostStatus},
+use shared_utils::types::{
+    canister_specific::individual_user_template::post::{PostDetailsForFrontend, PostStatus},
     post::PostDetailsFromFrontend,
 };
 use speedy::{Readable, Writable};
