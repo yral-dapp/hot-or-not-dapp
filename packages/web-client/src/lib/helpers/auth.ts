@@ -13,21 +13,32 @@ async function updateUserIndexCanister(): Promise<{
 	error_details?: 'SIGNUP_NOT_ALLOWED' | 'OTHER';
 }> {
 	try {
-		const referralStore = get(referralId);
-		const referral: [] | [Principal] = referralStore.principalId
-			? [Principal.from(referralStore.principalId)]
-			: [];
+		const authStateData = get(authState);
 
-		const userCanisterPrincipal =
-			await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-				referral
-			);
-
-		// Query API
+		//QUERY API
 		const isSignupAllowed = false;
 
-		if (!isSignupAllowed && userCanisterPrincipal.toText() === 'qcdty-nyaaa-aaaao-aaloq-cai') {
-			return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
+		let userCanisterPrincipal: Principal;
+
+		if (!isSignupAllowed) {
+			const res = await userIndex().get_user_canister_id_from_user_principal_id(
+				Principal.from(authStateData.idString)
+			);
+			if (res[0]) {
+				userCanisterPrincipal = res[0];
+			} else {
+				return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
+			}
+		} else {
+			const referralStore = get(referralId);
+			const referral: [] | [Principal] = referralStore.principalId
+				? [Principal.from(referralStore.principalId)]
+				: [];
+
+			userCanisterPrincipal =
+				await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
+					referral
+				);
 		}
 
 		Log(
@@ -37,7 +48,7 @@ async function updateUserIndexCanister(): Promise<{
 			},
 			'info'
 		);
-		const authStateData = get(authState);
+
 		const authHelperData = get(authHelper);
 		authHelper.set({
 			...authHelperData,
