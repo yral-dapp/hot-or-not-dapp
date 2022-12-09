@@ -38,7 +38,7 @@ fn when_bob_charlie_dan_places_new_bet_on_alice_post_then_expected_outcomes_occu
       alice_canister_id
   }).unwrap();
 
-    let newly_created_post_id = state_machine
+    state_machine
         .execute_ingress_as(
             alice_principal_id,
             CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
