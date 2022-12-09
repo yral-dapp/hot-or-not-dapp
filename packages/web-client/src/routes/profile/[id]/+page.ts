@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params }) => {
 	const userProfileData = get(userProfile);
 
 	if (id === '2vxsx-fae') {
-		throw redirect(307, '/menu' + id === userProfileData.principal_id ? '?logout=true' : '');
+		throw redirect(307, `/menu${id === userProfileData.principal_id ? '?logout=true' : ''}`);
 	}
 
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
