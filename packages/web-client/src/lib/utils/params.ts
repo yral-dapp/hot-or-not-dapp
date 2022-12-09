@@ -41,4 +41,14 @@ export function handleParams() {
 		authHelperState.client?.logout();
 		initializeAuthClient();
 	}
+
+	const test = pageStore.url.searchParams.get('test');
+	if (test) {
+		const authStateData = get(authState);
+		authState.set({
+			t: true,
+			...authStateData
+		});
+		initializeAuthClient();
+	}
 }
