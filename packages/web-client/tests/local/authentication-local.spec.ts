@@ -1,15 +1,19 @@
 import { test, expect } from '@playwright/test';
 
-test('[Local] Modal for login works on menu page', async ({ page }) => {
-	await page.goto('http://localhost:5173/menu');
+test('[Local] Check logged in state & visit profile page', async ({ page }) => {
+	await page.goto('http://localhost:5173/menu?test=true');
 
-	const loginBtn = page.locator('text=Login');
+	await page.evaluate(() => {
+		return new Promise((resolve) => setTimeout(resolve, 500));
+	});
 
-	await expect(loginBtn).toBeVisible({ timeout: 20_000 });
+	const viewProfileLink = page.locator('text=View Profile');
 
-	await expect(page.getByText('Join Hot or Not')).toBeHidden();
+	await expect(viewProfileLink).toBeVisible({ timeout: 20_000 });
 
-	await loginBtn.click();
+	await Promise.all([page.waitForNavigation(), await viewProfileLink.click()]);
 
-	await expect(page.getByText('Join Hot or Not')).toBeVisible();
+	console.log('viewProfileLink', viewProfileLink);
+
+	await expect(page.url().includes('profile')).toBeTruthy();
 });
