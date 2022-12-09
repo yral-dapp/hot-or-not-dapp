@@ -16,6 +16,7 @@ export const authState = localWritable<{
 	idString?: string;
 	userCanisterId?: string;
 	showLogin: boolean;
+	t?: boolean;
 }>('auth-state', {
 	isLoggedIn: false,
 	showLogin: false
