@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use candid::Principal;
 
 use crate::types::known_principal::{KnownPrincipalMap, KnownPrincipalType};
@@ -9,7 +11,9 @@ pub const RECHARGE_CYCLES_AMOUNT: u128 = 500_000_000_000;
 pub const MAX_USERS_IN_FOLLOWER_FOLLOWING_LIST: u64 = 10000;
 pub const MAX_POSTS_IN_ONE_REQUEST: u64 = 100;
 pub const TOP_POSTS_SYNC_INTERVAL: u64 = 1_000_000_000 * 60 * 30; // 30 minutes
+pub const TOP_POSTS_SYNC_INTERVAL_DURATION: Duration = Duration::from_secs(30 * 60); // 30 minutes
 pub const SCORE_RECALCULATION_SYNC_INTERVAL: u64 = 1_000_000_000 * 60 * 60; // 60 minutes
+pub const SCORE_RECALCULATION_SYNC_INTERVAL_DURATION: Duration = Duration::from_secs(60 * 60); // 60 minutes
 
 // * Important Principal IDs
 

@@ -8,6 +8,7 @@ use ic_cdk::api::call;
 use ic_stable_memory::s;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use shared_utils::constant;
+use shared_utils::date_time::system_time;
 use shared_utils::types::top_posts::v0::PostScoreIndexItem;
 
 pub fn update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
@@ -116,7 +117,56 @@ pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home
     s! { AllCreatedPostsV1 = all_created_posts };
 }
 
+pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1() {
+    update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1_impl(
+        &system_time::get_current_system_time_from_ic,
+    );
+}
+
+pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1_impl(
+    time_provider: &impl Fn() -> SystemTime,
+) {
+    let posts_index_sorted_by_home_feed_score = s!(PostsIndexSortedByHomeFeedScore);
+    let mut all_created_posts = s!(AllCreatedPostsV1);
+
+    for post_score_index_item in posts_index_sorted_by_home_feed_score.iter() {
+        let mut post = all_created_posts
+            .get_cloned(post_score_index_item.post_id)
+            .unwrap();
+
+        post.recalculate_home_feed_score(time_provider);
+
+        all_created_posts.replace(post_score_index_item.post_id, &post);
+    }
+
+    s! { AllCreatedPostsV1 = all_created_posts };
+}
+
 pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score(
+    time_provider: &impl Fn() -> SystemTime,
+) {
+    let posts_index_sorted_by_hot_or_not_feed_score = s!(PostsIndexSortedByHomeFeedScore);
+    let mut all_created_posts = s!(AllCreatedPostsV1);
+
+    for post_score_index_item in posts_index_sorted_by_hot_or_not_feed_score.iter() {
+        let mut post = all_created_posts
+            .get_cloned(post_score_index_item.post_id)
+            .unwrap();
+
+        post.recalculate_hot_or_not_feed_score(time_provider);
+
+        all_created_posts.replace(post_score_index_item.post_id, &post);
+    }
+
+    s! { AllCreatedPostsV1 = all_created_posts };
+}
+
+pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1(
+) {
+    update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1_impl(&system_time::get_current_system_time_from_ic);
+}
+
+pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1_impl(
     time_provider: &impl Fn() -> SystemTime,
 ) {
     let posts_index_sorted_by_hot_or_not_feed_score = s!(PostsIndexSortedByHomeFeedScore);

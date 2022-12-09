@@ -15,7 +15,7 @@ members = [
 [workspace.dependencies]
 candid = "0.8.4"
 cfg-if = "1.0.0"
-ic-cdk = "0.6.8"
+ic-cdk = { version = "0.6.8" }
 ic-cdk-macros = "0.6.8"
 ic-cron = "0.7.1"
 ic-stable-memory = "0.2.6"
