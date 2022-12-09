@@ -16,6 +16,7 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
+        // hot_or_not::HotOrNotBetDetailsForPost,
         post::v0::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,
@@ -27,8 +28,8 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{
-        individual_user_template::{
+    types::{
+        canister_specific::individual_user_template::{
             error_types::{
                 GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
             },

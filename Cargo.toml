@@ -19,7 +19,7 @@ ic-cdk = "0.6.8"
 ic-cdk-macros = "0.6.8"
 ic-cron = "0.7.1"
 ic-stable-memory = "0.2.6"
-ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "997ab2e9cc49189302fe54c1e60709abfbeb1d42" }
+ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "36f4a1c2903aed012b95b3b073e052c4036aef09" }
 mockall = "0.11.3"
 serde = "1.0.148"
 speedy = "0.8.5"

@@ -8,16 +8,39 @@ import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
 
-async function updateUserIndexCanister() {
+async function updateUserIndexCanister(): Promise<{
+	error: boolean;
+	error_details?: 'SIGNUP_NOT_ALLOWED' | 'OTHER';
+}> {
 	try {
-		const referralStore = get(referralId);
-		const referral: [] | [Principal] = referralStore.principalId
-			? [Principal.from(referralStore.principalId)]
-			: [];
-		const userCanisterPrincipal =
-			await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-				referral
+		const authStateData = get(authState);
+
+		//QUERY API
+		const isSignupAllowed = false;
+
+		let userCanisterPrincipal: Principal;
+
+		if (!isSignupAllowed) {
+			const res = await userIndex().get_user_canister_id_from_user_principal_id(
+				Principal.from(authStateData.idString)
 			);
+			if (res[0]) {
+				userCanisterPrincipal = res[0];
+			} else {
+				return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
+			}
+		} else {
+			const referralStore = get(referralId);
+			const referral: [] | [Principal] = referralStore.principalId
+				? [Principal.from(referralStore.principalId)]
+				: [];
+
+			userCanisterPrincipal =
+				await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
+					referral
+				);
+		}
+
 		Log(
 			{
 				userCanisterPrincipal: userCanisterPrincipal?.toText(),
@@ -25,7 +48,7 @@ async function updateUserIndexCanister() {
 			},
 			'info'
 		);
-		const authStateData = get(authState);
+
 		const authHelperData = get(authHelper);
 		authHelper.set({
 			...authHelperData,
@@ -39,12 +62,14 @@ async function updateUserIndexCanister() {
 			const { canisterIdb } = await import('$lib/utils/idb');
 			canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
 		}
+		return { error: false };
 	} catch (e) {
 		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
+		return { error: true, error_details: 'OTHER' };
 	}
 }
 
-export async function initializeAuthClient(): Promise<void> {
+export async function initializeAuthClient(): Promise<{ error: boolean }> {
 	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
 	const authHelperData = get(authHelper);
@@ -76,7 +101,11 @@ export async function initializeAuthClient(): Promise<void> {
 			idPrincipal: principal
 		});
 
-		await updateUserIndexCanister();
+		const res = await updateUserIndexCanister();
+		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
+			loadingAuthStatus.set(false);
+			return { error: true };
+		}
 		await updateProfile();
 		setUser(principal?.toText());
 	} else {
@@ -94,7 +123,12 @@ export async function initializeAuthClient(): Promise<void> {
 			idPrincipal: principal
 		});
 
-		await updateUserIndexCanister();
+		const res = await updateUserIndexCanister();
+		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
+			loadingAuthStatus.set(false);
+			return { error: true };
+		}
 	}
 	loadingAuthStatus.set(false);
+	return { error: false };
 }

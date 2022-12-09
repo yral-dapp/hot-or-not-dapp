@@ -16,6 +16,10 @@ function toggleAccordion(i: number) {
 }
 </script>
 
+<svelte:head>
+	<title>FAQ | Hot or Not</title>
+</svelte:head>
+
 <HomeLayout>
 	<svelte:fragment slot="top">
 		<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">

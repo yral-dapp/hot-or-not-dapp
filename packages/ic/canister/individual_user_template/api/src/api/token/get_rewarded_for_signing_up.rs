@@ -4,8 +4,8 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     constant::get_user_index_canister_principal_id,
-    date_time::system_time::SystemTimeProvider,
-    shared_types::utility_token::{v0::MintEvent, v1::TokenEventV1},
+    date_time::system_time,
+    types::utility_token::{v0::MintEvent, v1::TokenEventV1},
 };
 
 #[ic_cdk_macros::update]
@@ -28,7 +28,7 @@ fn get_rewarded_for_signing_up() {
                 profile.get_user_profile_details_for_frontend().principal_id,
             ),
         },
-        timestamp: SystemTimeProvider::get_current_system_time(),
+        timestamp: system_time::get_current_system_time_from_ic(),
     });
 
     s! { MyTokenBalance = updated_token_balance };

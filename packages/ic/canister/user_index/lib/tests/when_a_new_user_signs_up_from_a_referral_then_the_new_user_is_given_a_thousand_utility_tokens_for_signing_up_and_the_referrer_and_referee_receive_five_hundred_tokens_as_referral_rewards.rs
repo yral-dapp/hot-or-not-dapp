@@ -2,8 +2,8 @@ use candid::Principal;
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use ic_state_machine_tests::{CanisterId, StateMachine, WasmResult};
 
-use shared_utils::shared_types::{
-    individual_user_template::error_types::GetUserUtilityTokenTransactionHistoryError,
+use shared_utils::types::{
+    canister_specific::individual_user_template::error_types::GetUserUtilityTokenTransactionHistoryError,
     utility_token::{v0::MintEvent, v1::TokenEventV1},
 };
 use test_utils::setup::{

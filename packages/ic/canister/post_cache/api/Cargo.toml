@@ -17,3 +17,6 @@ post_cache_lib = { path = "../lib" }
 shared_utils = { path = "../../../lib/shared_utils" }
 serde = { workspace = true }
 speedy = { workspace = true }
+
+[dev-dependencies]
+test_utils = { path = "../../../lib/test_utils" }

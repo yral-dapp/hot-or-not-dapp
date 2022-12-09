@@ -330,6 +330,10 @@ onDestroy(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>Create | Hot or Not</title>
+</svelte:head>
+
 <CameraLayout>
 	<svelte:fragment slot="content">
 		<div class="realtive h-full w-full bg-black">

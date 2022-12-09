@@ -1,7 +1,10 @@
 use crate::util::score_ranking;
 use candid::{CandidType, Deserialize};
 use ic_cron::types::{Iterations, SchedulingOptions};
-use shared_utils::constant::{SCORE_RECALCULATION_SYNC_INTERVAL, TOP_POSTS_SYNC_INTERVAL};
+use shared_utils::{
+    constant::{SCORE_RECALCULATION_SYNC_INTERVAL, TOP_POSTS_SYNC_INTERVAL},
+    date_time::system_time,
+};
 
 ic_cron::implement_cron!();
 
@@ -23,8 +26,8 @@ fn heartbeat() {
                 score_ranking::send_top_hot_or_not_feed_post_scores_to_post_cache_canister();
             }
             TaskKind::UpdatePostScoresEveryHour => {
-                score_ranking::update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score();
-                score_ranking::update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score();
+                score_ranking::update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score(&system_time::get_current_system_time_from_ic);
+                score_ranking::update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score(&system_time::get_current_system_time_from_ic);
             }
         };
     }
