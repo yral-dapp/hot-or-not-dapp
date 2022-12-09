@@ -10,7 +10,7 @@ use model::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{
+    types::{
         known_principal::KnownPrincipalMap,
         top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
     },

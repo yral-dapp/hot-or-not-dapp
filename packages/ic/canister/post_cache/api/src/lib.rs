@@ -1,55 +1,62 @@
-use std::collections::HashMap;
+use std::cell::RefCell;
 
 use candid::{export_service, Principal};
-use ic_stable_memory::{
-    s, stable_memory_init, stable_memory_post_upgrade, stable_memory_pre_upgrade,
-};
-use post_cache_lib::{
-    access_control::setup_initial_access_control, model::api_error::TopPostsFetchError,
-    util::known_principal_ids, AccessControlMap, MyKnownPrincipalIdsMap,
-    PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
-};
+use ic_cdk::storage;
+
+use post_cache_lib::{access_control, CanisterData};
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{init_args::PostCacheInitArgs, top_posts::v0::PostScoreIndexItem},
+    types::{
+        canister_specific::post_cache::error_types::TopPostsFetchError,
+        init_args::PostCacheInitArgs, top_posts::v0::PostScoreIndexItem,
+    },
 };
 
 mod api;
 #[cfg(test)]
 mod test;
 
+thread_local! {
+    static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
+}
+
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]
 fn init(init_args: PostCacheInitArgs) {
-    // * initialize stable memory
-    stable_memory_init(true, 0);
+    // TODO: populate the canister data access control map
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        let mut canister_data = canister_data_ref_cell.borrow_mut();
 
-    // * initialize stable variables
-    s! { MyKnownPrincipalIdsMap = HashMap::new() }
-    known_principal_ids::save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(init_args);
+        access_control::setup_initial_access_control_v1(
+            &mut canister_data.access_control_map,
+            &init_args.known_principal_ids,
+        );
 
-    // * initialize stable collections
-    s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
-    s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
-    s! { PostsIndexSortedByHomeFeedScore = PostsIndexSortedByHomeFeedScore::default() };
-    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
-
-    // * initialize access control
-    let mut user_id_access_control_map = s!(AccessControlMap);
-    setup_initial_access_control(&mut user_id_access_control_map);
-    s! { AccessControlMap = user_id_access_control_map };
+        canister_data.my_known_principal_ids_map = init_args.known_principal_ids;
+    });
 }
 
 #[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
-    // * save stable variables meta-info
-    stable_memory_pre_upgrade();
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        let canister_data = canister_data_ref_cell.take();
+
+        storage::stable_save((canister_data,)).ok();
+    });
 }
 
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
-    // * reinitialize stable memory and variables
-    stable_memory_post_upgrade(0);
+    match storage::stable_restore() {
+        Ok((canister_data,)) => {
+            CANISTER_DATA.with(|canister_data_ref_cell| {
+                *canister_data_ref_cell.borrow_mut() = canister_data;
+            });
+        }
+        Err(_) => {
+            panic!("Failed to restore canister data from stable memory");
+        }
+    }
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

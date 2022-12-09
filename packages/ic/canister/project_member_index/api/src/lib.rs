@@ -8,9 +8,7 @@ use project_member_index_lib::{
     util::{access_control, known_principal_ids},
     AccessControlMap, MyKnownPrincipalIdsMap,
 };
-use shared_utils::{
-    access_control::UserAccessRole, shared_types::init_args::ProjectMemberIndexInitArgs,
-};
+use shared_utils::{access_control::UserAccessRole, types::init_args::ProjectMemberIndexInitArgs};
 
 mod api;
 #[cfg(test)]

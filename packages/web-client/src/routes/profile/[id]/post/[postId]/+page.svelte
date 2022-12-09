@@ -15,6 +15,10 @@ export let data: PageData;
 const { video, me } = data;
 </script>
 
+<svelte:head>
+	<title>{me ? 'Your' : "User's"} Videos | Hot or Not</title>
+</svelte:head>
+
 <HomeLayout>
 	<svelte:fragment slot="top">
 		{#if me != undefined}

@@ -11,7 +11,6 @@ $: innerHeight = browser ? window?.innerHeight : 0;
 <svelte:window on:resize="{() => (innerHeight = window?.innerHeight)}" />
 
 <home
-	on:click|once="{() => ($playerState.initialized = true)}"
 	style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
 	class="relative block h-full w-full overflow-hidden text-white"
 	on:keyup>

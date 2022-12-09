@@ -124,6 +124,10 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>{me ? 'Your' : "User's"} Videos | Hot or Not</title>
+</svelte:head>
+
 {#if !load.page}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">

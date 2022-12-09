@@ -1,8 +1,11 @@
 use candid::Principal;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
-use post_cache_lib::model::api_error::TopPostsFetchError;
-use shared_utils::shared_types::{
-    individual_user_template::post::PostDetailsForFrontend, post::PostDetailsFromFrontend,
+use shared_utils::types::{
+    canister_specific::{
+        individual_user_template::post::PostDetailsForFrontend,
+        post_cache::error_types::TopPostsFetchError,
+    },
+    post::PostDetailsFromFrontend,
     top_posts::v0::PostScoreIndexItem,
 };
 use std::time::Duration;
@@ -110,7 +113,7 @@ fn every_hour_hot_or_not_feed_post_scores_in_posts_index_sorted_by_score_is_upda
 
     assert!(hot_or_not_feed_post_score > 0);
 
-    // * Advance time by 1 hours
+    // * Advance time by 1/2 hour
     state_machine.advance_time(Duration::from_secs(30 * 60));
     state_machine.tick();
 

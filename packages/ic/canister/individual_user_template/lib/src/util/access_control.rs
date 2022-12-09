@@ -5,7 +5,7 @@ use shared_utils::{
         get_global_super_admin_principal_id, get_post_cache_canister_principal_id,
         get_user_index_canister_principal_id,
     },
-    shared_types::init_args::IndividualUserTemplateInitArgs,
+    types::init_args::IndividualUserTemplateInitArgs,
 };
 
 use crate::MyKnownPrincipalIdsMap;

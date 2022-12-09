@@ -15,11 +15,11 @@ members = [
 [workspace.dependencies]
 candid = "0.8.4"
 cfg-if = "1.0.0"
-ic-cdk = "0.6.7"
-ic-cdk-macros = "0.6.7"
+ic-cdk = "0.6.8"
+ic-cdk-macros = "0.6.8"
 ic-cron = "0.7.1"
 ic-stable-memory = "0.2.6"
-ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "f7e3c96a2be92186718f6a1e67eea37bf3252c00" }
+ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "36f4a1c2903aed012b95b3b073e052c4036aef09" }
 mockall = "0.11.3"
-serde = "1.0.147"
+serde = "1.0.148"
 speedy = "0.8.5"

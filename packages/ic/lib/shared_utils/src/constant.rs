@@ -1,6 +1,6 @@
 use candid::Principal;
 
-use crate::shared_types::known_principal::{KnownPrincipalMap, KnownPrincipalType};
+use crate::types::known_principal::{KnownPrincipalMap, KnownPrincipalType};
 
 pub const DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE: u64 = 1_000_000_000_000; // 1T Cycles
 pub const CYCLES_THRESHOLD_TO_INITIATE_RECHARGE: u128 = 500_000_000_000;

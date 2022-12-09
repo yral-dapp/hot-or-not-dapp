@@ -2,7 +2,7 @@ use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use individual_user_template_lib::{AccessControlMap, AllCreatedPostsV1};
 use shared_utils::{
     access_control::{self, UserAccessRole},
-    shared_types::individual_user_template::post::PostStatus,
+    types::canister_specific::individual_user_template::post::PostStatus,
 };
 
 /// # Access Control

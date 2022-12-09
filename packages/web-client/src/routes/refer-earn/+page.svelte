@@ -30,6 +30,8 @@ let loading = true;
 let error = false;
 let history: TransactionHistory[] = [];
 
+const INVITE_WIN_TOKENS = 500;
+
 async function loadHistory() {
 	if (endOfList) {
 		return;
@@ -79,6 +81,10 @@ onMount(() => {
 });
 </script>
 
+<svelte:head>
+	<title>Refer & Earn | Hot or Not</title>
+</svelte:head>
+
 <HomeLayout>
 	<svelte:fragment slot="top">
 		<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
@@ -98,7 +104,7 @@ onMount(() => {
 				<div class="shrink-0 py-4">
 					<CoinsStashIcon class="h-36" />
 				</div>
-				<div class="text-center text-2xl font-bold">Invite & Win 500 tokens</div>
+				<div class="text-center text-2xl font-bold">Invite & Win {INVITE_WIN_TOKENS} tokens</div>
 				{#if $authState.isLoggedIn}
 					<div class="text-center text-sm opacity-70">
 						Send a referral link to your friends via link/whatsapp and win tokens
@@ -143,7 +149,7 @@ onMount(() => {
 						<div class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
 							<DollarCoinIcon class="h-5 text-primary" />
 						</div>
-						<span class="text-center text-xs">You both win 1,000 tokens each</span>
+						<span class="text-center text-xs">You both win {INVITE_WIN_TOKENS} tokens each</span>
 					</div>
 				</div>
 			{:else if $authState.isLoggedIn}
@@ -151,7 +157,7 @@ onMount(() => {
 					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
 						.toDateString()
 						.substring(4)}
-					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : 500}
+					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : { INVITE_WIN_TOKENS }}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img

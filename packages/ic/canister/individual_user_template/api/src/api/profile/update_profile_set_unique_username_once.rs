@@ -4,7 +4,7 @@ use individual_user_template_lib::{AccessControlMap, MyKnownPrincipalIdsMap, Pro
 use shared_utils::{
     access_control::{self, UserAccessRole},
     constant,
-    shared_types::{
+    types::canister_specific::{
         individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
         user_index::error_types::SetUniqueUsernameError,
     },

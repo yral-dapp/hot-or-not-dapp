@@ -1,6 +1,6 @@
 use candid::Principal;
 use ic_stable_memory::s;
-use shared_utils::shared_types::init_args::{IndividualUserTemplateInitArgs, UserIndexInitArgs};
+use shared_utils::types::init_args::{IndividualUserTemplateInitArgs, UserIndexInitArgs};
 
 use crate::MyKnownPrincipalIdsMap;
 

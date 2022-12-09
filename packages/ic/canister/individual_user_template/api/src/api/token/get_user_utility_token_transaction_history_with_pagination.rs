@@ -2,8 +2,8 @@ use ic_stable_memory::s;
 use individual_user_template_lib::MyTokenBalance;
 use shared_utils::{
     pagination::{self, PaginationError},
-    shared_types::{
-        individual_user_template::error_types::GetUserUtilityTokenTransactionHistoryError,
+    types::{
+        canister_specific::individual_user_template::error_types::GetUserUtilityTokenTransactionHistoryError,
         utility_token::v1::TokenEventV1,
     },
 };

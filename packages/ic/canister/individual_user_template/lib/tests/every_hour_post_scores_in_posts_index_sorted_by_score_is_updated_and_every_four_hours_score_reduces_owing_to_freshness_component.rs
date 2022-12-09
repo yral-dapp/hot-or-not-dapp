@@ -1,7 +1,8 @@
 use candid::Principal;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
-use shared_utils::shared_types::{
-    individual_user_template::post::PostDetailsForFrontend, post::PostDetailsFromFrontend,
+use shared_utils::types::{
+    canister_specific::individual_user_template::post::PostDetailsForFrontend,
+    post::PostDetailsFromFrontend,
 };
 use std::time::Duration;
 use test_utils::setup::{
@@ -14,7 +15,6 @@ use test_utils::setup::{
 #[test]
 fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_four_hours_score_reduces_owing_to_freshness_component(
 ) {
-    // * Arrange
     let state_machine = StateMachine::new();
     let KnownCanisters {
         user_index_canister_id,
@@ -24,7 +24,6 @@ fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_fo
 
     println!("🧪 user_index_canister_id: {:?}", user_index_canister_id);
 
-    // * Act
     let alice_canister_id = state_machine.execute_ingress_as(
         alice_principal_id,
         user_index_canister_id,

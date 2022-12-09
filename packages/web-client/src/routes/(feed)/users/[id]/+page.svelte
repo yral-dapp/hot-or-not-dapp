@@ -5,6 +5,10 @@ import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 </script>
 
+<svelte:head>
+	<title>User's Videos | Hot or Not</title>
+</svelte:head>
+
 <HomeLayout>
 	<svelte:fragment slot="top">
 		<div class="flex items-center rounded-full bg-black/10 py-2 px-4">User's Videos</div>
