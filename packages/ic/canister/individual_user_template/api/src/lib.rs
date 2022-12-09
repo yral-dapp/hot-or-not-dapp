@@ -16,7 +16,7 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        hot_or_not::HotOrNotBetDetailsForPost,
+        // hot_or_not::HotOrNotBetDetailsForPost,
         post::v0::PostViewDetailsFromFrontend,
         profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
         version_details::VersionDetails,

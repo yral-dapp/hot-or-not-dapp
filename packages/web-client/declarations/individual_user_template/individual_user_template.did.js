@@ -167,11 +167,6 @@ export const idlFactory = ({ IDL }) => {
         [PostDetailsForFrontend],
         ['query'],
       ),
-    'get_my_hot_or_not_bet_details_for_this_post' : IDL.Func(
-        [IDL.Nat64],
-        [IDL.Record({})],
-        ['query'],
-      ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [Result],

@@ -1,3 +1,4 @@
+use candid::{CandidType, Deserialize};
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::UserAccessRole,
@@ -23,7 +24,7 @@ pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
 pub type PostsIndexSortedByHomeFeedScore = PostScoreIndex;
 pub type PostsIndexSortedByHotOrNotFeedScore = PostScoreIndex;
 
-#[derive(Default)]
+#[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {
     pub my_known_principal_ids_map: KnownPrincipalMap,
     pub access_control_map: HashMap<SPrincipal, Vec<UserAccessRole>>,
