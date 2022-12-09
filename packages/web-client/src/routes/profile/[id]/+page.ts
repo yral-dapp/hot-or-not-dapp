@@ -4,6 +4,7 @@ import { individualUser } from '$lib/helpers/backend';
 import { getCanisterId } from '$lib/helpers/canisterId';
 import { sanitizeProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
+import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { error, redirect } from '@sveltejs/kit';
@@ -19,9 +20,10 @@ export const load: PageLoad = async ({ params }) => {
 	}
 
 	const userProfileData = get(userProfile);
+	const authStateData = get(authState);
 
-	if (id === '2vxsx-fae') {
-		throw redirect(307, '/menu' + id === userProfileData.principal_id ? '?logout=true' : '');
+	if (id === '2vxsx-fae' && !authStateData.t) {
+		throw redirect(307, `/menu${id === userProfileData.principal_id ? '?logout=true' : ''}`);
 	}
 
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
