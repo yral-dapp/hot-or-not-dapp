@@ -116,15 +116,6 @@ pub fn remove_role_from_principal_id_v1(
         return;
     }
 
-    // let mut roles = user_id_access_control_map
-    //     .get(&user_id)
-    //     .unwrap_or(&vec![])
-    //     .to_vec();
-
-    // roles.retain(|r| r != &role);
-
-    // user_id_access_control_map.insert(user_id, roles);
-
     user_id_access_control_map.entry(user_id).and_modify(|r| {
         r.retain(|x| x != &role);
     });
