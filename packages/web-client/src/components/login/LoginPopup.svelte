@@ -64,6 +64,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 		}
 		const res = await initializeAuthClient();
 		if (res.error) {
+			Log({ error: 'Signup prevented' }, 'warn');
 			$authState.showLogin = false;
 			registerEvent('sign_up_blocked', {
 				login_method: type,
