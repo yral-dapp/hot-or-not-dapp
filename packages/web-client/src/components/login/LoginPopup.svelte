@@ -64,7 +64,15 @@ async function handleSuccessfulLogin(type: LoginType) {
 		}
 		const res = await initializeAuthClient();
 		if (res.error) {
+			$authState.showLogin = false;
+			registerEvent('sign_up_blocked', {
+				login_method: type,
+				display_name: $userProfile.display_name,
+				username: $userProfile.unique_user_name,
+				userId: $userProfile.principal_id
+			});
 			goto('/waitlist?logout=true');
+			return;
 		}
 		registerEvent(canId ? 'login' : 'sign_up', {
 			login_method: type,
