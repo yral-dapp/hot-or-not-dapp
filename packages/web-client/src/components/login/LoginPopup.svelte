@@ -56,15 +56,24 @@ async function handleLogin(type: LoginType) {
 async function handleSuccessfulLogin(type: LoginType) {
 	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
 	$authState.isLoggedIn = true;
+
 	try {
-		let canId: string | undefined = undefined;
 		const principal = $authHelper.client?.getIdentity()?.getPrincipal();
-		if (principal) {
-			canId = await getCanisterId(principal.toString());
-		}
 		const res = await initializeAuthClient();
 		if (res.error) {
+			Log({ error: 'Signup prevented' }, 'warn');
+			$authState.showLogin = false;
+			registerEvent('sign_up_blocked', {
+				login_method: type,
+				userId: principal?.toText()
+			});
 			goto('/waitlist?logout=true');
+			return;
+		}
+
+		let canId: string | undefined = undefined;
+		if (principal) {
+			canId = await getCanisterId(principal.toString());
 		}
 		registerEvent(canId ? 'login' : 'sign_up', {
 			login_method: type,
