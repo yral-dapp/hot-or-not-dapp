@@ -1,7 +1,7 @@
 const handler = async (request) => {
 	try {
 		// eslint-disable-next-line no-undef
-		const val = await CONFIG.get('signupsEnabled');
+		const val = await configuration.get('signupsEnabled');
 
 		return new Response({ allowed: val === true });
 	} catch (error) {
