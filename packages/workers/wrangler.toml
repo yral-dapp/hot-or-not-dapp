@@ -16,7 +16,7 @@ kv_namespaces = [
 [env.localhost.vars]
 CLOUDFLARE_ACCOUNT_ID = "d297dffa4033356cd9fcbcdde15c46de"
 
-[env.localhost]
+[env.main]
 kv_namespaces = [
   { binding = "CONFIG", id = "c3def24f07b04827a0c6c02c2afca5c5" }
 ]
