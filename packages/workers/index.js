@@ -32,7 +32,7 @@ router.post('/video/getVideoUploadURL', getVideoUploadURL);
 router.get('/video/:cloudflareVideoUid/getVideoProcessingStatus', getVideoProcessingStatus);
 router.get('/video/:cloudflareVideoUid/enableMp4Download', enableMp4Download);
 router.post('/image/getImageUploadURL', getImageUploadURL);
-router.post('/backend/signupStatus', signupStatus);
+router.get('/backend/signupStatus', signupStatus);
 
 // 404 for everything else
 router.all('*', () => new Response('Not Found.', { status: 404 }));
