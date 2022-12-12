@@ -4,7 +4,7 @@ const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST;
 
 export async function checkSignupStatus() {
 	try {
-		const res = await fetch(`${cfWorkerHost}/backend/signup`);
+		const res = await fetch(`${cfWorkerHost}/backend/signupStatus`);
 		const body = await res.json();
 		Log({ body, from: '0 checkSignupStatus' }, 'info');
 	} catch (e) {

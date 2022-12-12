@@ -20,6 +20,7 @@ import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
 import { onMount } from 'svelte';
 import { handleParams } from '$lib/utils/params';
 import { preloadData } from '$app/navigation';
+import { checkSignupStatus } from '$lib/helpers/signup';
 
 $: links = [
 	{
@@ -73,6 +74,7 @@ $: userId = $userProfile.username_set
 onMount(() => {
 	handleParams();
 	preloadData('/waitlist');
+	checkSignupStatus();
 });
 </script>
 
