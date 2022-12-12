@@ -6,6 +6,9 @@ on:
     paths:
       - "packages/workers/**"
       - ".github/workflows/workers-deploy.yml"
+  pull_request:
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
