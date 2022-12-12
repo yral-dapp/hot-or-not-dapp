@@ -7,6 +7,7 @@ import { loadingAuthStatus } from '$stores/loading';
 import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
+import { checkSignupStatus } from './signup';
 
 async function updateUserIndexCanister(): Promise<{
 	error: boolean;
@@ -16,7 +17,7 @@ async function updateUserIndexCanister(): Promise<{
 		const authStateData = get(authState);
 
 		//QUERY API
-		const isSignupAllowed = false;
+		const isSignupAllowed = await checkSignupStatus();
 
 		let userCanisterPrincipal: Principal;
 
