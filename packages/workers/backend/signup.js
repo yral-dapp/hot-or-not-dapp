@@ -1,8 +1,15 @@
 const handler = async (request) => {
 	try {
-		const val = await request.json();
+		// eslint-disable-next-line no-undef
+		const val = await CONFIG.get('signupsEnabled');
 
-		return new Response({ allowed: val === true });
+		return new Response(JSON.stringify({ allowed: val === 'true' }), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+				...request.corsHeaders
+			}
+		});
 	} catch (error) {
 		console.error(error);
 		return new Response(JSON.stringify({ error }), {
