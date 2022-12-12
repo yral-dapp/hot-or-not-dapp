@@ -43,7 +43,7 @@
 		"@sveltejs/adapter-cloudflare": "1.0.0-next.40",
 		"@sveltejs/adapter-node": "1.0.0-next.104",
 		"@sveltejs/adapter-static": "1.0.0-next.49",
-		"@sveltejs/kit": "1.0.0-next.572",
+		"@sveltejs/kit": "1.0.0-next.578",
 		"@tailwindcss/forms": "0.5.3",
 		"@types/gtag.js": "0.0.12",
 		"@types/lodash-es": "4.17.6",
