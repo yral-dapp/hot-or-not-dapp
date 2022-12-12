@@ -1,4 +1,5 @@
 name = "hot-or-not-upload-api"
+account_id = "a209c523d2d9646cc56227dbe6ce3ede"
 workers_dev = true
 compatibility_date = "2022-08-25"
 main = "index.js"
@@ -18,7 +19,6 @@ CORS_ALLOW_ORIGINS = "http://localhost:5173"
 
 
 [env.main]
-account_id = "a209c523d2d9646cc56227dbe6ce3ede"
 kv_namespaces = [
   { binding = "CONFIG", id = "c3def24f07b04827a0c6c02c2afca5c5" }
 ]
