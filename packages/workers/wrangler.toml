@@ -6,9 +6,6 @@ main = "index.js"
 # [secrets]
 # CLOUDFLARE_API_TOKEN
 
-[vars]
-CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app,https://hotornot.wtf,http://localhost:5173"
-
 [env.localhost]
 account_id = "d297dffa4033356cd9fcbcdde15c46de"
 kv_namespaces = [
@@ -17,6 +14,8 @@ kv_namespaces = [
 
 [env.localhost.vars]
 CLOUDFLARE_ACCOUNT_ID = "d297dffa4033356cd9fcbcdde15c46de"
+CORS_ALLOW_ORIGINS = "http://localhost:5173"
+
 
 [env.main]
 account_id = "a209c523d2d9646cc56227dbe6ce3ede"
@@ -26,3 +25,5 @@ kv_namespaces = [
 
 [env.main.vars]
 CLOUDFLARE_ACCOUNT_ID = "a209c523d2d9646cc56227dbe6ce3ede"
+CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app,https://hotornot.wtf,http://localhost:5173"
+
