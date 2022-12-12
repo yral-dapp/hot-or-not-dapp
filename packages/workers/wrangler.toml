@@ -4,7 +4,7 @@ workers_dev = true
 compatibility_date = "2022-08-25"
 main = "index.js"
 kv_namespaces = [
-  { binding = "CONFIG", id = "c3def24f07b04827a0c6c02c2afca5c5" }
+  { binding = "configuration", id = "c3def24f07b04827a0c6c02c2afca5c5" }
 ]
 
 # [secrets]
@@ -21,5 +21,5 @@ CORS_ALLOW_ORIGINS = "http://localhost:5173"
 CLOUDFLARE_ACCOUNT_ID = "a209c523d2d9646cc56227dbe6ce3ede"
 CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app,https://hotornot.wtf,http://localhost:5173"
 kv_namespaces = [
-  { binding = "CONFIG", id = "c3def24f07b04827a0c6c02c2afca5c5" }
+  { binding = "configuration", id = "c3def24f07b04827a0c6c02c2afca5c5" }
 ]
