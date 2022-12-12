@@ -6,13 +6,10 @@ const handler = async (request) => {
 		return new Response({ allowed: val === true });
 	} catch (error) {
 		console.error(error);
-		return new Response(
-			{ error },
-			{
-				status: 403,
-				headers: { ...request.corsHeaders }
-			}
-		);
+		return new Response(JSON.stringify({ error }), {
+			status: 403,
+			headers: { ...request.corsHeaders }
+		});
 	}
 };
 
