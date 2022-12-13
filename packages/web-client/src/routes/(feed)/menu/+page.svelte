@@ -25,7 +25,7 @@ import CrowdfundIcon from '$components/icons/CrowdfundIcon.svelte';
 $: links = [
 	{
 		icon: CrowdfundIcon,
-		title: 'Our Crowdfund is live!',
+		title: 'Our Crowdfund is live now!',
 		class: 'w-5 h-5 pl-0.5',
 		href: 'http://bit.ly/3uM3H1a'
 	},
