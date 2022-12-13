@@ -1,22 +1,25 @@
 {
-	"name": "hot-or-not",
+	"name": "hnn",
 	"version": "0.0.0",
 	"type": "module",
+	"workspaces": [
+		"./packages/web-client",
+		"./packages/workers"
+	],
 	"scripts": {
-		"build": "npm run web-client:build",
-		"web-client:check": "npm run --prefix ./packages/web-client check",
-		"web-client:tsc": "npm run --prefix ./packages/web-client tsc",
-		"web-client:build": "npm run --prefix ./packages/web-client build",
-		"web-client:build:static": "npm run --prefix ./packages/web-client build:static",
-		"web-client:preview": "npm run --prefix ./packages/web-client preview",
-		"web-client:preview:static": "npm run --prefix ./packages/web-client preview:static",
-		"web-client:dev": "npm run --prefix ./packages/web-client dev",
-		"web-client:test": "npm run --prefix ./packages/web-client test",
-		"web-client:test:e2e": "npm run --prefix ./packages/web-client test:e2e",
-		"web-client:sync": "npm run --prefix ./packages/web-client sync",
-		"workers:dev": "npm run --prefix ./src/workers dev",
-		"workers:publish": "npm run --prefix ./src/workers publish",
-		"postinstall": "find ./packages/* -maxdepth 2 -name package.json -execdir npm install \\;"
+		"build": "npm run web-client:build --workspace @hnn/web-client",
+		"web-client:check": "npm run check --workspace @hnn/web-client",
+		"web-client:tsc": "npm run tsc --workspace @hnn/web-client",
+		"web-client:build": "npm run build --workspace @hnn/web-client",
+		"web-client:build:static": "npm run build:static --workspace @hnn/web-client",
+		"web-client:preview": "npm run preview --workspace @hnn/web-client",
+		"web-client:preview:static": "npm run preview:static --workspace @hnn/web-client",
+		"web-client:dev": "npm run dev --workspace @hnn/web-client",
+		"web-client:test": "npm run test --workspace @hnn/web-client",
+		"web-client:test:e2e": "npm run test:e2e --workspace @hnn/web-client",
+		"web-client:sync": "npm run sync --workspace @hnn/web-client",
+		"workers:dev": "npm run dev --workspace @hnn/workers-api",
+		"workers:publish": "npm run publish --workspace @hnn/workers-api"
 	},
 	"devDependencies": {
 		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
