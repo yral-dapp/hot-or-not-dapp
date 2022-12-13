@@ -119,7 +119,7 @@ onMount(() => {
 					this="{link.href ? 'a' : 'button'}"
 					on:keyup
 					on:click="{link.onClick}"
-					target="{link.title.includes('team') ? '_blank' : ''}"
+					target="{link.href?.includes('http') ? '_blank' : ''}"
 					href="{link.href}"
 					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">
