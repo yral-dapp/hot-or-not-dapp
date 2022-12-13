@@ -20,8 +20,15 @@ import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
 import { onMount } from 'svelte';
 import { handleParams } from '$lib/utils/params';
 import { preloadData } from '$app/navigation';
+import CrowdfundIcon from '$components/icons/CrowdfundIcon.svelte';
 
 $: links = [
+	{
+		icon: CrowdfundIcon,
+		title: 'Our Crowdfund is live!',
+		class: 'w-5 h-5 pl-0.5',
+		href: 'http://bit.ly/3uM3H1a'
+	},
 	{
 		icon: CoinBagIcon,
 		title: 'Refer and Earn',
@@ -45,6 +52,7 @@ $: links = [
 		class: 'w-5 h-5 pl-0.5',
 		href: 'https://wa.me/17863388713'
 	},
+
 	{
 		icon: NotebookIcon,
 		title: 'Terms of Service',
