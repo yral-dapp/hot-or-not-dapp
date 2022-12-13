@@ -1,5 +1,5 @@
 {
-	"name": "hot-or-not-frontend",
+	"name": "@hnn/web-client",
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
