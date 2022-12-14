@@ -1,3 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 
-throw redirect(307, '/profile');
+export const load = async () => {
+	throw redirect(307, '/profile');
+};

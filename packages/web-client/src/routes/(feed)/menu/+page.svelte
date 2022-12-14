@@ -45,6 +45,7 @@ $: links = [
 		class: 'w-5 h-5 pl-0.5',
 		href: 'https://wa.me/17863388713'
 	},
+
 	{
 		icon: NotebookIcon,
 		title: 'Terms of Service',
@@ -111,7 +112,7 @@ onMount(() => {
 					this="{link.href ? 'a' : 'button'}"
 					on:keyup
 					on:click="{link.onClick}"
-					target="{link.title.includes('team') ? '_blank' : ''}"
+					target="{link.href?.includes('http') ? '_blank' : ''}"
 					href="{link.href}"
 					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">

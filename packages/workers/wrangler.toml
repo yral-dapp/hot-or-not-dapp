@@ -9,11 +9,21 @@ main = "index.js"
 
 [env.localhost]
 account_id = "d297dffa4033356cd9fcbcdde15c46de"
+kv_namespaces = [
+  { binding = "CONFIG", id = "dd03685e1bec4c2888f2f81adf14bb4d" }
+]
 
 [env.localhost.vars]
 CLOUDFLARE_ACCOUNT_ID = "d297dffa4033356cd9fcbcdde15c46de"
 CORS_ALLOW_ORIGINS = "http://localhost:5173"
 
+
+[env.main]
+kv_namespaces = [
+  { binding = "CONFIG", id = "c3def24f07b04827a0c6c02c2afca5c5" }
+]
+
 [env.main.vars]
 CLOUDFLARE_ACCOUNT_ID = "a209c523d2d9646cc56227dbe6ce3ede"
 CORS_ALLOW_ORIGINS = "https://vyatz-hqaaa-aaaam-qauea-cai.ic0.app,https://hotornot.wtf,http://localhost:5173"
+
