@@ -1,4 +1,4 @@
-import { Secp256k1KeyIdentity } from '@dfinity/identity';
+import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import hdkey from 'hdkey';
 import bip39 from 'bip39';
 
