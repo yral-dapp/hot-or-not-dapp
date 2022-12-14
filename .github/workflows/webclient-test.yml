@@ -26,9 +26,9 @@ jobs:
       - name: Install dependencies & build
         run: npm ci
       - name: Run sync
-        run: npm run web-client:sync
+        run: npm run wc:sync
       - name: Run svelte-check
-        run: npm run web-client:check
+        run: npm run wc:check
 
   deploy-preview:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run web-client:build
+      - run: npm run wc:build
 
       - name: Deploy preview build
         uses: cloudflare/wrangler-action@2.0.0
@@ -153,10 +153,10 @@ jobs:
         run: dfx ping http://localhost:4943
 
       - name: Run e2e tests
-        run: npm run web-client:test:e2e
+        run: npm run wc:test:e2e
 
       - name: Run Playwright tests
-        run: npm run web-client:test
+        run: npm run wc:test
         env:
           runner: "linux"
 
