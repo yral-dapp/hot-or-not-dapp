@@ -4,9 +4,9 @@ on:
     branches:
       - main
     paths:
-      - 'packages/web-client/**'
-      - '.github/workflows/webclient-deploy.yml'
-      - '.github/workflows/webclient-setup/action.yml'
+      - "packages/web-client/**"
+      - ".github/workflows/webclient-deploy.yml"
+      - ".github/workflows/webclient-setup/action.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run web-client:build:static
+      - run: npm run wc:build:static
       - run: DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
       - run: |
@@ -36,13 +36,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run web-client:build
+      - run: npm run wc:build
 
       - name: Deploy production build
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: 'packages/web-client/'
+          workingDirectory: "packages/web-client/"
           command: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
         env:
-          CLOUDFLARE_ACCOUNT_ID: 'a209c523d2d9646cc56227dbe6ce3ede'
+          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
