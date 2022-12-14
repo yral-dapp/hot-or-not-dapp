@@ -22,15 +22,15 @@ export const load: PageLoad = async ({ params }) => {
 	const userProfileData = get(userProfile);
 	const authStateData = get(authState);
 
-	if ((id === '2vxsx-fae' || id === 'rajeshmoundekar') && !authStateData.t) {
-		throw redirect(
-			307,
-			`/menu${
-				id === userProfileData.principal_id || id === userProfileData.unique_user_name
-					? '?logout=true'
-					: ''
-			}`
-		);
+	const redir =
+		id === '2vxsx-fae' ||
+		id === 'rajeshmoundekar' ||
+		(authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai' && authStateData.isLoggedIn);
+
+	if (redir && !authStateData.t) {
+		const logout =
+			authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai' && authStateData.isLoggedIn;
+		throw redirect(307, `/menu${logout ? '?logout=true' : ''}`);
 	}
 
 	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
