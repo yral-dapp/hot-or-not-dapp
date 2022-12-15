@@ -70,12 +70,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 			goto('/waitlist?logout=true');
 			return;
 		}
-
-		let canId: string | undefined = undefined;
-		if (principal) {
-			canId = await getCanisterId(principal.toString());
-		}
-		registerEvent(canId ? 'login' : 'sign_up', {
+		registerEvent(res.new_user ? 'sign_up' : 'login', {
 			login_method: type,
 			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
