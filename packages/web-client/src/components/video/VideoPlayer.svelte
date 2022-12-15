@@ -19,6 +19,8 @@ import type { Principal } from '@dfinity/principal';
 import { createEventDispatcher, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { onMount } from 'svelte';
+import Hls from 'hls.js';
 
 export let swiperJs: boolean;
 export let src;
@@ -45,83 +47,38 @@ const dispatch = createEventDispatcher<{
 }>();
 
 let videoEl: HTMLVideoElement;
-let videoBgEl: HTMLVideoElement;
+let hls: Hls;
 let currentTime = 0;
 let duration = 0;
 let loaded = false;
 let paused = true;
-let playPromise: Promise<void> | undefined = undefined;
-let tryToStop = true;
-
-export async function play() {
-	try {
-		if (videoEl) {
-			videoEl.currentTime = 0.1;
-			videoBgEl.currentTime = 0.1;
-			if (!playPromise) {
-				await tick();
-				playPromise = videoEl?.play().catch((_) => {
-					paused = true;
-				});
-			}
-			await playPromise;
-			await tick();
-			await videoBgEl?.play().catch((_) => {});
-			if (isiPhone()) return;
-			if ($playerState.initialized && !$playerState.muted) {
-				videoEl.muted = $playerState.muted = false;
-			}
-		}
-	} catch (e: any) {
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
-		}
-		if (videoEl) {
-			$playerState.muted = true;
-			videoEl.muted = true;
-		}
-	}
-}
 
 export async function stop() {
 	try {
-		if (videoEl && videoBgEl) {
+		if (videoEl) {
 			videoEl.currentTime = 0.1;
-			videoBgEl.currentTime = 0.1;
-			if (playPromise) {
-				await playPromise;
-				playPromise = undefined;
-			}
-			await tick();
-
-			videoEl?.pause();
-			videoBgEl?.pause();
 		}
+		paused = true;
 	} catch (e: any) {
-		if (tryToStop) {
-			setTimeout(stop, 100);
-			tryToStop = false;
-		}
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
-		}
+		Log({ error: e, i, src, inView, source: '2 play' }, 'error');
+	}
+}
+
+export async function play() {
+	paused = false;
+	if (videoEl) {
+		videoEl.muted = $playerState.muted;
 	}
 }
 
 async function handleClick() {
 	try {
 		if (videoEl) {
-			if(!$playerState.initialized) {
-				$playerState.initialized = true
+			if (!$playerState.initialized) {
+				$playerState.initialized = true;
 			}
 			if (paused) {
-				play();
+				paused = false;
 			} else {
 				videoEl.muted = !videoEl.muted;
 				$playerState.muted = videoEl.muted;
@@ -170,6 +127,30 @@ $: if (inView && !paused) {
 $: if (inView && loaded) {
 	dispatch('loaded');
 }
+
+$: if (inView) {
+	play();
+} else if (!paused) {
+	stop();
+}
+
+onMount(() => {
+	if (Hls.isSupported()) {
+		hls = new Hls();
+		hls.loadSource(src);
+		hls.attachMedia(videoEl);
+		paused = true;
+		return () => {
+			hls.destroy();
+		};
+	} else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+		videoEl.src = src;
+	} else if (inView) {
+		// setTimeout(() => {
+		// 	dispatch('inView', { hls, i, src });
+		// }, 50);
+	}
+});
 </script>
 
 <player
@@ -179,42 +160,28 @@ $: if (inView && loaded) {
 		loaded ? 'opacity-100' : 'opacity-0',
 		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
 	)}">
-	{#if inView || nextVideo}
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			on:click="{handleClick}"
-			bind:this="{videoEl}"
-			loop
-			playsinline
-			on:loadeddata="{() => (loaded = true)}"
-			autoplay
-			muted
-			bind:paused
-			bind:currentTime
-			bind:duration
-			disableremoteplayback
-			x-webkit-airplay="deny"
-			preload="metadata"
-			src="{src}"
-			poster="{thumbnail}"
-			class="object-fit absolute z-[3] h-full w-full"></video>
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			on:click="{handleClick}"
-			bind:this="{videoBgEl}"
-			loop
-			playsinline
-			disableremoteplayback
-			muted
-			bind:paused
-			autoplay
-			poster="{thumbnail}"
-			preload="metadata"
-			x-webkit-airplay="deny"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-			src="{src}">
-		</video>
-	{/if}
+	<!-- svelte-ignore a11y-media-has-caption -->
+	<video
+		on:click="{handleClick}"
+		bind:this="{videoEl}"
+		loop
+		playsinline
+		on:loadeddata="{() => (loaded = true)}"
+		autoplay
+		muted
+		bind:paused="{paused}"
+		bind:currentTime="{currentTime}"
+		bind:duration="{duration}"
+		disableremoteplayback
+		x-webkit-airplay="deny"
+		preload="metadata"
+		poster="{thumbnail}"
+		class="object-fit absolute z-[3] h-full w-full"></video>
+	<img
+		alt="background"
+		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
+		src="{thumbnail}" />
+
 	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
