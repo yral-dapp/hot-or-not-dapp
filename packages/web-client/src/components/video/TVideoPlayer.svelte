@@ -19,9 +19,10 @@ import type { Principal } from '@dfinity/principal';
 import { createEventDispatcher, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import Hls from 'hls.js';
+import { onMount } from 'svelte';
 
-export let swiperJs: boolean;
-export let src;
+export let src: string;
 export let i: number;
 export let id: bigint;
 export let inView = false;
@@ -34,103 +35,16 @@ export let publisherCanisterId: string;
 export let userProfileSrc = '';
 export let liked = false;
 export let createdById = '';
-export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
-export let nextVideo = false;
 export let enrolledInHotOrNot = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
 	loaded: void;
+	inView: { hls: Hls; i: number };
 }>();
 
-let videoEl: HTMLVideoElement;
-let videoBgEl: HTMLVideoElement;
-let currentTime = 0;
-let duration = 0;
-let loaded = false;
-let paused = true;
-let playPromise: Promise<void> | undefined = undefined;
-let tryToStop = true;
-
-export async function play() {
-	try {
-		if (videoEl) {
-			videoEl.currentTime = 0.1;
-			videoBgEl.currentTime = 0.1;
-			if (!playPromise) {
-				await tick();
-				playPromise = videoEl?.play().catch((_) => {
-					paused = true;
-				});
-			}
-			await playPromise;
-			await tick();
-			await videoBgEl?.play().catch((_) => {});
-			if (isiPhone()) return;
-			if ($playerState.initialized && !$playerState.muted) {
-				videoEl.muted = $playerState.muted = false;
-			}
-		}
-	} catch (e: any) {
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '1 play' }, 'error');
-		}
-		if (videoEl) {
-			$playerState.muted = true;
-			videoEl.muted = true;
-		}
-	}
-}
-
-export async function stop() {
-	try {
-		if (videoEl && videoBgEl) {
-			videoEl.currentTime = 0.1;
-			videoBgEl.currentTime = 0.1;
-			if (playPromise) {
-				await playPromise;
-				playPromise = undefined;
-			}
-			await tick();
-
-			videoEl?.pause();
-			videoBgEl?.pause();
-		}
-	} catch (e: any) {
-		if (tryToStop) {
-			setTimeout(stop, 100);
-			tryToStop = false;
-		}
-		const err = e.toString();
-		const ignoreError =
-			err.includes('The play() request') || err.includes('The request is not allowed');
-		if (!ignoreError) {
-			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
-		}
-	}
-}
-
-async function handleClick() {
-	try {
-		if (videoEl) {
-			if(!$playerState.initialized) {
-				$playerState.initialized = true
-			}
-			if (paused) {
-				play();
-			} else {
-				videoEl.muted = !videoEl.muted;
-				$playerState.muted = videoEl.muted;
-			}
-		}
-	} catch (e) {
-		Log({ error: e, i, src, inView, source: '1 handleClick' }, 'error');
-	}
-}
+let hls: Hls;
 
 async function handleLike() {
 	if ($authState.isLoggedIn) {
@@ -142,7 +56,6 @@ async function handleLike() {
 			video_id: id,
 			likes: likeCount
 		});
-		await individualUser(publisherCanisterId).update_post_toggle_like_status_by_caller(id);
 	} else $authState.showLogin = true;
 }
 
@@ -160,71 +73,34 @@ async function handleShare() {
 		video_publisher_canister_id: publisherCanisterId,
 		video_id: id
 	});
-	await individualUser(publisherCanisterId).update_post_increment_share_count(id);
 }
 
-$: if (inView && !paused) {
-	dispatch('watchedPercentage', (currentTime / duration) * 100);
+$: if (inView) {
+	dispatch('inView', { hls, i });
 }
-
-$: if (inView && loaded) {
-	dispatch('loaded');
-}
+onMount(() => {
+	hls = new Hls();
+	hls.loadSource(src);
+	//@ts-ignore
+	hls.on('hlsManifestLoaded', () => {
+		console.log('manifest loaded', i);
+	});
+	return () => {
+		hls.destroy();
+	};
+});
 </script>
 
 <player
 	i="{i}"
 	class="{c(
-		'block h-full items-center justify-center overflow-auto transition-all duration-500',
-		loaded ? 'opacity-100' : 'opacity-0',
-		swiperJs ? 'w-full' : 'min-h-full w-auto snap-center snap-always'
+		'block h-full items-center justify-center overflow-auto w-full transition-all duration-500'
 	)}">
-	{#if inView || nextVideo}
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			on:click="{handleClick}"
-			bind:this="{videoEl}"
-			loop
-			playsinline
-			on:loadeddata="{() => (loaded = true)}"
-			autoplay
-			muted
-			bind:paused
-			bind:currentTime
-			bind:duration
-			disableremoteplayback
-			x-webkit-airplay="deny"
-			preload="metadata"
-			src="{src}"
-			poster="{thumbnail}"
-			class="object-fit absolute z-[3] h-full w-full"></video>
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			on:click="{handleClick}"
-			bind:this="{videoBgEl}"
-			loop
-			playsinline
-			disableremoteplayback
-			muted
-			bind:paused
-			autoplay
-			poster="{thumbnail}"
-			preload="metadata"
-			x-webkit-airplay="deny"
-			class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-			src="{src}">
-		</video>
-	{/if}
-	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
-		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
-			<div class="flex h-full items-center justify-center">
-				<IconButton ariaLabel="Unmute this video">
-					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
-				</IconButton>
-			</div>
-		</div>
-	{/if}
-
+	<img alt="fg" src="{thumbnail}" class="object-cover w-full absolute z-[3] inset-0 my-auto" />
+	<img
+		alt="bg"
+		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
+		src="{thumbnail}" />
 	<div
 		style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0.8) 100%);"
 		class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-64 w-full">
@@ -278,10 +154,3 @@ $: if (inView && loaded) {
 		</div>
 	</div>
 </player>
-
-{#if !loaded}
-	<loader
-		class="max-w-16 fade-in pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
-		<LoadingIcon class="h-36 w-36 animate-spin-slow text-primary" />
-	</loader>
-{/if}
