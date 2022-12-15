@@ -14,7 +14,7 @@ export const load: PageLoad = async ({ url }) => {
 	if (cachedVideos.length) {
 		throw redirect(
 			307,
-			`/feed/${cachedVideos[0].publisher_canister_id}@${cachedVideos[0].post_id}`
+			`/tfeed/${cachedVideos[0].publisher_canister_id}@${cachedVideos[0].post_id}`
 		);
 	}
 
@@ -27,9 +27,9 @@ export const load: PageLoad = async ({ url }) => {
 	if ('Ok' in res && res.Ok[0]) {
 		throw redirect(
 			307,
-			`/feed/${res.Ok[0].publisher_canister_id.toText()}@${res.Ok[0].post_id}${searchParams}`
+			`/tfeed/${res.Ok[0].publisher_canister_id.toText()}@${res.Ok[0].post_id}${searchParams}`
 		);
 	} else {
-		throw redirect(307, `/feed/no-videos${searchParams}`);
+		throw redirect(307, `/tfeed/no-videos${searchParams}`);
 	}
 };
