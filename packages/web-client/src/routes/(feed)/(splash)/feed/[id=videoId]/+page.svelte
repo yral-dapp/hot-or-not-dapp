@@ -9,7 +9,7 @@ import {
 	type PostPopulated,
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
-import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getHlsUrl, getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -33,7 +33,6 @@ let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
-let videoPlayers: VideoPlayer[] = [];
 let fetchedVideosCount = 0;
 
 type VideoViewReport = {
@@ -46,18 +45,6 @@ type VideoViewReport = {
 };
 
 let videoStats: Record<number, VideoViewReport> = {};
-
-function joinArrayUniquely<T>(a: T[], b: T[]): T[] {
-	const arrayWithoutNoDuplicates = [...a, ...b].filter(
-		(value: any, index, self) =>
-			index ===
-			self.findIndex(
-				(t: any) =>
-					t.post_id === value.post_id && t.publisher_canister_id === value.publisher_canister_id
-			)
-	);
-	return arrayWithoutNoDuplicates;
-}
 
 async function fetchNextVideos() {
 	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
@@ -143,11 +130,11 @@ async function handleChange(e: CustomEvent) {
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
-	playVideo(index);
 	recordView(videos[currentVideoIndex]);
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
+	currentPlayingIndex = index;
 }
 
 function updateMetadata(video?: PostPopulated) {
@@ -160,17 +147,6 @@ function updateMetadata(video?: PostPopulated) {
 		artwork: [{ src: getThumbnailUrl(video.video_uid), type: 'image/png' }]
 	});
 }
-
-const playVideo = debounce(50, async (index: number) => {
-	try {
-		videoPlayers[currentPlayingIndex]?.stop();
-		videoPlayers[index]?.play();
-		videoPlayers[index + 1]?.stop();
-		currentPlayingIndex = index;
-	} catch (e) {
-		Log({ error: e, index, source: '1 playVideo' }, 'error');
-	}
-});
 
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
@@ -228,7 +204,7 @@ onMount(async () => {
 	spaceBetween="{100}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
-		{@const src = getMp4Url(video.video_uid)}
+		{@const src = getHlsUrl(video.video_uid)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
@@ -241,7 +217,6 @@ onMount(async () => {
 							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
 							video.home_feed_ranking_score
 						)}"
-					bind:this="{videoPlayers[i]}"
 					i="{i}"
 					id="{video.id}"
 					likeCount="{Number(video.like_count)}"
