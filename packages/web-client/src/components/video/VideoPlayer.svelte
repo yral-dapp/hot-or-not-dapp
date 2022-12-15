@@ -57,16 +57,17 @@ export async function stop() {
 	try {
 		if (videoEl) {
 			videoEl.currentTime = 0.1;
+			videoEl.pause();
 		}
-		paused = true;
 	} catch (e: any) {
 		Log({ error: e, i, src, inView, source: '2 play' }, 'error');
 	}
 }
 
 export async function play() {
-	paused = false;
 	if (videoEl) {
+		videoEl.play();
+		if (isiPhone()) return;
 		videoEl.muted = $playerState.muted;
 	}
 }
@@ -78,7 +79,7 @@ async function handleClick() {
 				$playerState.initialized = true;
 			}
 			if (paused) {
-				paused = false;
+				videoEl.play();
 			} else {
 				videoEl.muted = !videoEl.muted;
 				$playerState.muted = videoEl.muted;
@@ -182,7 +183,7 @@ onMount(() => {
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
 		src="{thumbnail}" />
 
-	{#if (videoEl?.muted || $playerState.muted) && !paused && inView}
+	{#if (videoEl?.muted || $playerState.muted) && !paused}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
 				<IconButton ariaLabel="Unmute this video">
