@@ -41,11 +41,12 @@ export let individualUser: (principal?: Principal | string) => IndividualUserAct
 export let likeCount: number = 0;
 export let nextVideo = false;
 export let enrolledInHotOrNot = false;
+export let showLoading = false;
 
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
 	loaded: void;
-	audio: string;
+	audio: { src: string; index: number };
 }>();
 
 let videoEl: HTMLVideoElement;
@@ -66,18 +67,31 @@ export async function stop() {
 	}
 }
 
-export const play = debounce(500, () => {
-	console.log('trying to play', i, { apple });
-	if (videoEl) {
-		if (videoEl.paused) {
-			videoEl.play().catch((e) => {
-				console.log('play 1 error', i, e);
-			});
+export const dispatchSrc = debounce(
+	2000,
+	() => {
+		console.log('dispathcing', i, { apple });
+		dispatch('audio', { src, index: i });
+	},
+	{ atBegin: true }
+);
+
+export const play = debounce(
+	100,
+	() => {
+		console.log('trying to play', i, { apple });
+		if (videoEl) {
+			if (videoEl.paused) {
+				videoEl.play().catch((e) => {
+					console.log('play 1 error', i, e);
+				});
+			}
+			if (apple) return;
+			videoEl.muted = $playerState.muted;
 		}
-		if (apple) return;
-		videoEl.muted = $playerState.muted;
-	}
-});
+	},
+	{ atBegin: true }
+);
 
 async function handleClick() {
 	try {
@@ -139,10 +153,12 @@ $: if (inView && loaded) {
 }
 
 $: if (inView) {
-	console.log('inView playing', i);
-	play();
+	console.log('inView called playing', i);
 	if (apple) {
-		dispatch('audio', src);
+		stop();
+		dispatchSrc();
+	} else {
+		play();
 	}
 } else if (!paused) {
 	stop();
@@ -215,6 +231,9 @@ onMount(() => {
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
 			<div class="flex flex-col space-y-6">
+				{#if showLoading}
+					<LoadingIcon class="h-8 w-8 animate-spin-slow text-white" />
+				{/if}
 				<IconButton
 					ariaLabel="Toggle like on this post"
 					on:click="{(e) => {
