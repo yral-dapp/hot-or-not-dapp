@@ -11,35 +11,39 @@ import { checkSignupStatus } from './signup';
 
 async function updateUserIndexCanister(): Promise<{
 	error: boolean;
+	new_user: boolean;
 	error_details?: 'SIGNUP_NOT_ALLOWED' | 'OTHER';
 }> {
 	try {
-		const authStateData = get(authState);
-
-		//QUERY API
-		const isSignupAllowed = await checkSignupStatus();
-
+		let new_user = false;
 		let userCanisterPrincipal: Principal;
 
-		if (!isSignupAllowed) {
-			const res = await userIndex().get_user_canister_id_from_user_principal_id(
-				Principal.from(authStateData.idString)
-			);
-			if (res[0]) {
-				userCanisterPrincipal = res[0];
-			} else {
-				return { error: true, error_details: 'SIGNUP_NOT_ALLOWED' };
-			}
-		} else {
-			const referralStore = get(referralId);
-			const referral: [] | [Principal] = referralStore.principalId
-				? [Principal.from(referralStore.principalId)]
-				: [];
+		const authStateData = get(authState);
 
-			userCanisterPrincipal =
-				await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-					referral
-				);
+		const res = await userIndex().get_user_canister_id_from_user_principal_id(
+			Principal.from(authStateData.idString)
+		);
+
+		if (res[0]) {
+			//existing user
+			userCanisterPrincipal = res[0];
+			new_user = false;
+		} else {
+			// new user
+			const isSignupAllowed = await checkSignupStatus();
+			if (!isSignupAllowed) {
+				return { error: true, error_details: 'SIGNUP_NOT_ALLOWED', new_user: true };
+			} else {
+				new_user = true;
+				const referralStore = get(referralId);
+				const referral: [] | [Principal] = referralStore.principalId
+					? [Principal.from(referralStore.principalId)]
+					: [];
+				userCanisterPrincipal =
+					await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
+						referral
+					);
+			}
 		}
 
 		Log(
@@ -63,14 +67,15 @@ async function updateUserIndexCanister(): Promise<{
 			const { canisterIdb } = await import('$lib/utils/idb');
 			canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
 		}
-		return { error: false };
+
+		return { error: false, new_user };
 	} catch (e) {
 		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
-		return { error: true, error_details: 'OTHER' };
+		return { error: true, error_details: 'OTHER', new_user: false };
 	}
 }
 
-export async function initializeAuthClient(): Promise<{ error: boolean }> {
+export async function initializeAuthClient(): Promise<{ error: boolean; new_user: boolean }> {
 	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
 	const authHelperData = get(authHelper);
@@ -106,10 +111,13 @@ export async function initializeAuthClient(): Promise<{ error: boolean }> {
 		const res = await updateUserIndexCanister();
 		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
 			loadingAuthStatus.set(false);
-			return { error: true };
+			return { error: true, new_user: true };
 		}
 		await updateProfile();
 		setUser(principal?.toText());
+		loadingAuthStatus.set(false);
+
+		return { error: false, new_user: res.new_user };
 	} else {
 		authState.set({
 			isLoggedIn: false,
@@ -126,11 +134,11 @@ export async function initializeAuthClient(): Promise<{ error: boolean }> {
 		});
 
 		const res = await updateUserIndexCanister();
+		loadingAuthStatus.set(false);
 		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
-			loadingAuthStatus.set(false);
-			return { error: true };
+			return { error: true, new_user: res.new_user };
+		} else {
+			return { error: false, new_user: res.new_user };
 		}
 	}
-	loadingAuthStatus.set(false);
-	return { error: false };
 }
