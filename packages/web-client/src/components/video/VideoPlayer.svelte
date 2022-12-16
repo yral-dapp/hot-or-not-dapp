@@ -6,7 +6,6 @@ import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
-import { isiPhone } from '$lib/utils/isSafari';
 import c from 'clsx';
 import { playerState } from '$stores/playerState';
 import SoundIcon from '$components/icons/SoundIcon.svelte';
@@ -21,6 +20,7 @@ import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { onMount } from 'svelte';
 import Hls from 'hls.js';
+import { debounce } from 'throttle-debounce';
 
 export let swiperJs: boolean;
 export let src;
@@ -36,6 +36,7 @@ export let publisherCanisterId: string;
 export let userProfileSrc = '';
 export let liked = false;
 export let createdById = '';
+export let apple = false;
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
 export let nextVideo = false;
@@ -44,6 +45,7 @@ export let enrolledInHotOrNot = false;
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
 	loaded: void;
+	audio: string;
 }>();
 
 let videoEl: HTMLVideoElement;
@@ -64,13 +66,18 @@ export async function stop() {
 	}
 }
 
-export async function play() {
+export const play = debounce(500, () => {
+	console.log('trying to play', i, { apple });
 	if (videoEl) {
-		videoEl.play();
-		if (isiPhone()) return;
+		if (videoEl.paused) {
+			videoEl.play().catch((e) => {
+				console.log('play 1 error', i, e);
+			});
+		}
+		if (apple) return;
 		videoEl.muted = $playerState.muted;
 	}
-}
+});
 
 async function handleClick() {
 	try {
@@ -79,8 +86,10 @@ async function handleClick() {
 				$playerState.initialized = true;
 			}
 			if (paused) {
-				videoEl.play();
-			} else {
+				videoEl.play().catch((e) => {
+					console.log('play 2 error', e);
+				});
+			} else if (!apple) {
 				videoEl.muted = !videoEl.muted;
 				$playerState.muted = videoEl.muted;
 			}
@@ -130,7 +139,11 @@ $: if (inView && loaded) {
 }
 
 $: if (inView) {
+	console.log('inView playing', i);
 	play();
+	if (apple) {
+		dispatch('audio', src);
+	}
 } else if (!paused) {
 	stop();
 }
@@ -177,13 +190,15 @@ onMount(() => {
 		x-webkit-airplay="deny"
 		preload="metadata"
 		poster="{thumbnail}"
-		class="object-fit absolute z-[3] h-full w-full"></video>
+		class="object-fit absolute z-[3] transition-all delay-300 {duration > 0.05
+			? 'opacity-100'
+			: 'opacity-0'} h-full w-full"></video>
 	<img
 		alt="background"
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
 		src="{thumbnail}" />
 
-	{#if (videoEl?.muted || $playerState.muted) && !paused}
+	{#if $playerState.muted && !paused}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
 				<IconButton ariaLabel="Unmute this video">
