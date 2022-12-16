@@ -19,7 +19,6 @@ import { Principal } from '@dfinity/principal';
 import { onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { debounce } from 'throttle-debounce';
 import type { PageData } from './$types';
 
 export let data: PageData;
@@ -29,11 +28,13 @@ const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
+let audioEl: HTMLAudioElement;
 let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
+let apple = false;
 
 type VideoViewReport = {
 	progress: number;
@@ -179,22 +180,52 @@ function recordStats(
 
 onMount(async () => {
 	updateURL();
+	if (audioEl.canPlayType('application/vnd.apple.mpegurl')) {
+		apple = true;
+	}
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
 		videos = [data.post, ...videos];
 		await recordView(data.post);
 	}
+
 	await tick();
 	await fetchNextVideos();
 	handleParams();
 });
+
+function handleAppleClick() {
+	audioEl.play().catch((e) => {
+		console.log('audio click error', e);
+	});
+	audioEl.muted = $playerState.muted = !audioEl.muted;
+}
+
+function updateAudioSource(src: string) {
+	audioEl.src = src;
+	audioEl
+		.play()
+		.then()
+		.catch((e) => {
+			console.log('audio autoplay error', e);
+		});
+	if (!$playerState.muted) {
+		audioEl.muted = $playerState.muted;
+	}
+}
 </script>
 
 <svelte:head>
 	<title>Home Feed | Hot or Not</title>
 </svelte:head>
 
+<audio
+	bind:this="{audioEl}"
+	playsinline
+	muted
+	autoplay
+	class="absolute border-2 h-10 opacity-0 z-[15] w-10"></audio>
 <Swiper
 	direction="{'vertical'}"
 	observer
@@ -202,12 +233,14 @@ onMount(async () => {
 	on:slideChange="{handleChange}"
 	cssMode
 	spaceBetween="{100}"
+	on:click="{() => apple && handleAppleClick()}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
 		{@const src = getHlsUrl(video.video_uid)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
+					on:audio="{({ detail }) => updateAudioSource(detail)}"
 					on:loaded="{() => hideSplashScreen(500)}"
 					on:watchedPercentage="{({ detail }) =>
 						recordStats(
@@ -219,6 +252,7 @@ onMount(async () => {
 						)}"
 					i="{i}"
 					id="{video.id}"
+					apple="{apple}"
 					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
