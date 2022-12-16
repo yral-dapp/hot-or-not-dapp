@@ -236,11 +236,10 @@ function updateAudioSource(src: string, i: number) {
 <Swiper
 	direction="{'vertical'}"
 	observer
-	speed="{1000}"
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
 	cssMode="{!apple}"
-	spaceBetween="{2000}"
+	spaceBetween="{300}"
 	on:click="{() => apple && handleAppleClick()}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
