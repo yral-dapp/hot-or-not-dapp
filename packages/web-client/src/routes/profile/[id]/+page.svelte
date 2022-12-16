@@ -24,6 +24,7 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { handleParams } from '$lib/utils/params';
+import { authState } from '$stores/auth';
 
 export let data: PageData;
 let { me, profile, canId } = data;
@@ -68,6 +69,10 @@ let selectedTab: 'posts' | 'trophy' = 'posts';
 
 async function handleLove() {
 	if (!profile.principal_id) return;
+	if (!$authState.isLoggedIn) {
+		$authState.showLogin = true;
+		return;
+	}
 	load.follow = true;
 	const res = await loveUser(profile.principal_id);
 	if (res) {
