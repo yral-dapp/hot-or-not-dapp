@@ -28,6 +28,7 @@ const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
+let videoPlayers: VideoPlayer[] = [];
 let audioEl: HTMLAudioElement;
 let currentVideoIndex = 0;
 let noMoreVideos = false;
@@ -35,6 +36,7 @@ let loading = false;
 let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
 let apple = false;
+let showLoading = false;
 
 type VideoViewReport = {
 	progress: number;
@@ -202,11 +204,15 @@ function handleAppleClick() {
 	audioEl.muted = $playerState.muted = !audioEl.muted;
 }
 
-function updateAudioSource(src: string) {
+function updateAudioSource(src: string, i: number) {
+	showLoading = true;
 	audioEl.src = src;
 	audioEl
 		.play()
-		.then()
+		.then(() => {
+			videoPlayers[i].play();
+			showLoading = false;
+		})
 		.catch((e) => {
 			console.log('audio autoplay error', e);
 		});
@@ -224,15 +230,17 @@ function updateAudioSource(src: string) {
 	bind:this="{audioEl}"
 	playsinline
 	muted
+	loop
 	autoplay
 	class="absolute border-2 h-10 opacity-0 z-[15] w-10"></audio>
 <Swiper
 	direction="{'vertical'}"
 	observer
+	speed="{1000}"
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
-	cssMode
-	spaceBetween="{100}"
+	cssMode="{!apple}"
+	spaceBetween="{2000}"
 	on:click="{() => apple && handleAppleClick()}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
@@ -240,7 +248,8 @@ function updateAudioSource(src: string) {
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
-					on:audio="{({ detail }) => updateAudioSource(detail)}"
+					bind:this="{videoPlayers[i]}"
+					on:audio="{({ detail }) => updateAudioSource(detail.src, detail.index)}"
 					on:loaded="{() => hideSplashScreen(500)}"
 					on:watchedPercentage="{({ detail }) =>
 						recordStats(
@@ -251,6 +260,7 @@ function updateAudioSource(src: string) {
 							video.home_feed_ranking_score
 						)}"
 					i="{i}"
+					showLoading="{showLoading}"
 					id="{video.id}"
 					apple="{apple}"
 					likeCount="{Number(video.like_count)}"
