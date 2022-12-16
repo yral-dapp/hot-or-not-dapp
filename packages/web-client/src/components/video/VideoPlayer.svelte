@@ -56,16 +56,21 @@ let duration = 0;
 let loaded = false;
 let paused = true;
 
-export async function stop() {
-	try {
-		if (videoEl) {
-			videoEl.currentTime = 0.1;
-			videoEl.pause();
+export const stop = debounce(
+	500,
+	() => {
+		console.log('stopping', i);
+		try {
+			if (videoEl) {
+				videoEl.currentTime = 0.1;
+				videoEl.pause();
+			}
+		} catch (e: any) {
+			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
 		}
-	} catch (e: any) {
-		Log({ error: e, i, src, inView, source: '2 play' }, 'error');
-	}
-}
+	},
+	{ atBegin: true }
+);
 
 export const dispatchSrc = debounce(
 	2000,
@@ -160,7 +165,9 @@ $: if (inView) {
 	} else {
 		play();
 	}
-} else if (!paused) {
+}
+
+$: if (!inView) {
 	stop();
 }
 
