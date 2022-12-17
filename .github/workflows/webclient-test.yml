@@ -157,8 +157,6 @@ jobs:
 
       - name: Run Playwright tests
         run: npm run wc:test
-        env:
-          runner: "linux"
 
       - name: Stop DFX Server
         run: dfx stop
