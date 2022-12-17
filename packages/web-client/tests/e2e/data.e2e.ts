@@ -33,7 +33,7 @@ describe('e2e test suite', () => {
 		expect(anonPrincipalId.toText()).toBeTruthy();
 	});
 	it('Setup initial data', async () => {
-		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch, identity });
+		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch, identity: identity as any });
 		await agent.fetchRootKey();
 
 		const userIndexActor = createUserIndexActor(canisterIds.user_index.local, { agent });
