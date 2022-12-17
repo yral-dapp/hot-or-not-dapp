@@ -26,19 +26,21 @@ fn when_bob_charlie_dan_places_new_bet_on_alice_post_then_expected_outcomes_occu
     println!("🧪 user_index_canister_id: {:?}", user_index_canister_id);
 
     let alice_canister_id = state_machine.execute_ingress_as(
-      alice_principal_id,
-      user_index_canister_id,
-      "get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer",
-      candid::encode_one(()).unwrap(),
-  ).map(|reply_payload| {
-      let (alice_canister_id,): (Principal,) = match reply_payload {
-          WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
-          _ => panic!("\n🛑 get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer failed\n"),
-      };
-      alice_canister_id
-  }).unwrap();
+        alice_principal_id,
+        user_index_canister_id,
+        "get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer",
+        candid::encode_one(()).unwrap(),
+    ).map(|reply_payload| {
+        let (alice_canister_id,): (Principal,) = match reply_payload {
+            WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+            _ => panic!("\n🛑 get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer failed\n"),
+        };
+        alice_canister_id
+    }).unwrap();
 
-    state_machine
+    println!("🧪 alice_canister_id: {:?}", alice_canister_id.to_text());
+
+    let newly_created_post_id = state_machine
         .execute_ingress_as(
             alice_principal_id,
             CanisterId::new(PrincipalId(alice_canister_id)).unwrap(),
@@ -52,16 +54,18 @@ fn when_bob_charlie_dan_places_new_bet_on_alice_post_then_expected_outcomes_occu
             .unwrap(),
         )
         .map(|reply_payload| {
-            let (newly_created_post_id,): (u64,) = match reply_payload {
-                WasmResult::Reply(payload) => candid::decode_args(&payload).unwrap(),
+            let newly_created_post_id: u64 = match reply_payload {
+                WasmResult::Reply(payload) => candid::decode_one(&payload).unwrap(),
                 _ => panic!("\n🛑 add_post failed\n"),
             };
             newly_created_post_id
         })
         .unwrap();
 
+    println!("🧪 newly_created_post_id: {:?}", newly_created_post_id);
+
     // * Advance time by 1/2 hour
-    state_machine.advance_time(Duration::from_secs(30 * 60));
+    state_machine.advance_time(Duration::from_secs(40 * 60));
     state_machine.tick();
 
     let returned_posts: Vec<PostScoreIndexItem> = state_machine
