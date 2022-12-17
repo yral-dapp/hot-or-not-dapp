@@ -111,6 +111,7 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: |
+          cd packages/web-client
           npm i @playwright/test
           npx playwright install
 
