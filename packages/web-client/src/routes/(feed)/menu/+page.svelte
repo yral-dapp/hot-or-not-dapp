@@ -43,7 +43,7 @@ $: links = [
 		icon: WhatsappIcon,
 		title: 'Talk to the team',
 		class: 'w-5 h-5 pl-0.5',
-		href: 'https://wa.me/17863388713'
+		href: 'https://t.me/+c-LTX0Cp-ENmMzI1'
 	},
 
 	{
