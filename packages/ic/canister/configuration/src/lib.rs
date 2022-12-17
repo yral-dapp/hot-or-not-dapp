@@ -20,7 +20,6 @@ thread_local! {
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
-    // let x
     export_service!();
     __export_service()
 }

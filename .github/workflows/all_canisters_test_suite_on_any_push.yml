@@ -47,12 +47,16 @@ jobs:
         run: dfx start --background
       - name: Provision local canister IDs for the canisters
         run: |
+          dfx canister create --no-wallet configuration
           dfx canister create --no-wallet individual_user_template
           dfx canister create --no-wallet user_index
-          dfx canister create --no-wallet project_member_index
           dfx canister create --no-wallet post_cache
       - name: Stop local replica
         run: dfx stop
+      - name: Build configuration canister
+        run: |
+          dfx build configuration
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/configuration.wasm
       - name: Build individual_user_template canister
         run: |
           dfx build individual_user_template
@@ -65,10 +69,6 @@ jobs:
         run: |
           dfx build post_cache
           gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
-      - name: Build project_member_index canister
-        run: |
-          dfx build project_member_index
-          gzip -f -1 ./target/wasm32-unknown-unknown/release/project_member_index.wasm
 
       - name: Run canister test suite
         run: cargo test

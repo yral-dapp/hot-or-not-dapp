@@ -12,11 +12,7 @@ gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
 
 # cargo test
 
-dfx canister install configuration --network ic --mode upgrade --argument "(record {
-  known_principal_ids = opt null;
-  signups_enabled = opt null;
-  access_control_map = opt null;
-})"
+dfx canister install configuration --network ic --mode upgrade --argument "(record { known_principal_ids = null; signups_enabled = null; access_control_map = null; })"
 dfx canister install user_index --network ic --mode upgrade --argument "(record {
   known_principal_ids = vec {}
 })"
