@@ -89,16 +89,25 @@ async function handleLove(userIndex: number, userId?: string) {
 	<svelte:fragment slot="content">
 		<div class="flex h-full w-full flex-col space-y-8 overflow-y-auto p-8">
 			{#each lovers as user, i}
+				{@const userId = user.username_set ? user.unique_user_name : user.principal_id || ''}
 				<div class="flex w-full items-center justify-between text-white">
-					<div class="flex w-full items-center space-x-4 overflow-hidden">
+					<a href="/profile/{userId}" class="flex w-full items-center space-x-4 overflow-hidden">
 						<img
 							src="{user.profile_picture_url}"
 							alt="avatar"
 							class="h-10 w-10 shrink-0 rounded-full object-cover" />
 						<div class="flex grow flex-col items-start overflow-hidden">
 							<span>{user.display_name}</span>
+							<span
+								class="text-ellipsis whitespace-nowrap overflow-hidden text-sm w-full pr-4 text-white/50">
+								{#if user.username_set}
+									@{user.unique_user_name}
+								{:else}
+									{user.principal_id}
+								{/if}
+							</span>
 						</div>
-					</div>
+					</a>
 					{#if $userProfile.principal_id !== user.principal_id}
 						<div class="w-full max-w-[5rem] shrink-0">
 							<Button
