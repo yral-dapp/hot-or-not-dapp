@@ -33,7 +33,7 @@ export const idlFactory = ({ IDL }) => {
     'Err' : ErrorUpdateListOfWellKnownPrincipals,
   });
   return IDL.Service({
-    'are_signups_enabled' : IDL.Func([], [], ['query']),
+    'are_signups_enabled' : IDL.Func([], [IDL.Bool], ['query']),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],

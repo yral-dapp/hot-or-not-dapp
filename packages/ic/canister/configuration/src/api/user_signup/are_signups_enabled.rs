@@ -2,11 +2,11 @@ use crate::{data::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
-fn are_signups_enabled() {
+fn are_signups_enabled() -> bool {
     CANISTER_DATA.with(|canister_data_ref_cell| {
         let canister_data = canister_data_ref_cell.borrow();
-        are_signups_enabled_impl(&canister_data);
-    });
+        are_signups_enabled_impl(&canister_data)
+    })
 }
 
 fn are_signups_enabled_impl(canister_data: &CanisterData) -> bool {
