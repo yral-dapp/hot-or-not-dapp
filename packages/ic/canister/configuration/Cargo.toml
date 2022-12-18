@@ -1,5 +1,5 @@
 [package]
-name = "project_member_index"
+name = "configuration"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,8 +12,8 @@ crate-type = ["cdylib"]
 candid = { workspace = true }
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }
-ic-stable-memory = { workspace = true }
-shared_utils = { path = "../../../lib/shared_utils" }
+shared_utils = { path = "../../lib/shared_utils" }
 serde = { workspace = true }
-speedy = { workspace = true }
-project_member_index_lib = { path = "../lib" }
+
+[dev-dependencies]
+test_utils = { path = "../../lib/test_utils" }

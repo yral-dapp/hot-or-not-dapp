@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{cell::RefCell, collections::HashMap};
 
 use candid::{export_service, Principal};
 use ic_cdk::api::management_canister::main::CanisterStatusResponse;
@@ -15,13 +15,17 @@ use shared_utils::{
 use user_index_lib::{
     model::upgrade_status::UpgradeStatus,
     util::{access_control, known_principal_ids},
-    AccessControlMap, LastRunUpgradeStatus, MyKnownPrincipalIdsMap,
+    AccessControlMap, CanisterData, LastRunUpgradeStatus, MyKnownPrincipalIdsMap,
     UniqueUserNameToUserPrincipalIdMap, UserPrincipalIdToCanisterIdMap,
 };
 
 mod api;
 #[cfg(test)]
 mod test;
+
+thread_local! {
+    static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
+}
 
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]
@@ -55,11 +59,69 @@ fn pre_upgrade() {
 fn post_upgrade() {
     // * reinitialize stable memory and variables
     stable_memory_post_upgrade(0);
+
+    // TODO: reenable this
+    // // copy stable variables to heap memory
+    // // upgrade status
+    // let last_run_upgrade_status = s!(LastRunUpgradeStatus);
+    // CANISTER_DATA.with(|canister_data| {
+    //     canister_data.borrow_mut().last_run_upgrade_status = last_run_upgrade_status;
+    // });
+
+    // // known principal ids
+    // let my_known_principal_ids_map = s!(MyKnownPrincipalIdsMap);
+    // CANISTER_DATA.with(|canister_data| {
+    //     canister_data.borrow_mut().my_known_principal_ids_map = my_known_principal_ids_map;
+    // });
+
+    // // access control
+    // let access_control_map = s!(AccessControlMap);
+    // CANISTER_DATA.with(|canister_data| {
+    //     let mut iterator_over_map = access_control_map.iter();
+
+    //     while iterator_over_map.has_next() {
+    //         let (user_principal_id, user_roles): (SPrincipal, Vec<UserAccessRole>) =
+    //             iterator_over_map.next().unwrap();
+    //         canister_data
+    //             .borrow_mut()
+    //             .access_control_map
+    //             .insert(user_principal_id.0, user_roles);
+    //     }
+    // });
+
+    // // user principal id to canister id map
+    // let user_principal_id_to_canister_id_map = s!(UserPrincipalIdToCanisterIdMap);
+    // CANISTER_DATA.with(|canister_data| {
+    //     let mut iterator_over_map = user_principal_id_to_canister_id_map.iter();
+
+    //     while iterator_over_map.has_next() {
+    //         let (user_principal_id, canister_id): (SPrincipal, SPrincipal) =
+    //             iterator_over_map.next().unwrap();
+    //         canister_data
+    //             .borrow_mut()
+    //             .user_principal_id_to_canister_id_map
+    //             .insert(user_principal_id.0, canister_id.0);
+    //     }
+    // });
+
+    // // unique user name to user principal id map
+    // let unique_user_name_to_user_principal_id_map = s!(UniqueUserNameToUserPrincipalIdMap);
+    // CANISTER_DATA.with(|canister_data| {
+    //     let mut iterator_over_map = unique_user_name_to_user_principal_id_map.iter();
+
+    //     while iterator_over_map.has_next() {
+    //         let (unique_user_name, user_principal_id): (String, SPrincipal) =
+    //             iterator_over_map.next().unwrap();
+    //         canister_data
+    //             .borrow_mut()
+    //             .unique_user_name_to_user_principal_id_map
+    //             .insert(unique_user_name, user_principal_id.0);
+    //     }
+    // });
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {
-    // let x: CanisterStatusResponse
     export_service!();
     __export_service()
 }

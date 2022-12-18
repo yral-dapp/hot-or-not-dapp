@@ -30,9 +30,11 @@ type IndividualUserTemplateInitArgs = record {
 };
 type KnownPrincipalType = variant {
   CanisterIdUserIndex;
+  CanisterIdConfiguration;
   CanisterIdProjectMemberIndex;
   CanisterIdTopicCacheIndex;
   CanisterIdRootCanister;
+  CanisterIdDataBackup;
   CanisterIdPostCache;
   CanisterIdSNSController;
   UserIdGlobalSuperAdmin;

@@ -25,13 +25,13 @@
 				"output": "./packages/web-client/declarations/post_cache"
 			}
 		},
-		"project_member_index": {
+		"configuration": {
 			"type": "rust",
-			"package": "project_member_index",
-			"candid": "./packages/ic/canister/project_member_index/api/can.did",
+			"package": "configuration",
+			"candid": "./packages/ic/canister/configuration/can.did",
 			"declarations": {
 				"node_compatibility": true,
-				"output": "./packages/web-client/declarations/project_member_index"
+				"output": "./packages/web-client/declarations/configuration"
 			}
 		},
 		"user_index": {
