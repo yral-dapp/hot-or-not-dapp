@@ -6,6 +6,7 @@ on:
     paths:
       - 'packages/ic/**'
       - '.github/workflows/all_canisters_main_deploy.yml'
+      - '.github/workflows/all_canisters_test_suite_on_any_push.yml'
 
 jobs:
   test:

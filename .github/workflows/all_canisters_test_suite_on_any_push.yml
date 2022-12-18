@@ -1,4 +1,4 @@
-name: Canisters test suite run on any push except main
+name: Canisters test suite run on any push
 on:
   workflow_call:
   push:
