@@ -157,6 +157,8 @@ async function populateProfiles(users: Principal[]) {
 			return { posts: [], error: false };
 		}
 
+		const authStateData = get(authState);
+
 		const res = await Promise.all(
 			users.map(async (userId) => {
 				const canId = await getCanisterId(userId.toText());
@@ -165,7 +167,7 @@ async function populateProfiles(users: Principal[]) {
 
 					return {
 						...sanitizeProfile(r, userId.toText()),
-						i_follow: await doIFollowThisUser(userId.toText())
+						i_follow: authStateData.isLoggedIn ? await doIFollowThisUser(userId.toText()) : false
 					};
 				}
 			})
