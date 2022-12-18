@@ -10,7 +10,6 @@ on:
 jobs:
   deploy:
     name: Deploy all canisters
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
