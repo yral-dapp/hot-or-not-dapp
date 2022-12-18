@@ -91,13 +91,12 @@ pub fn get_user_index_canister_wasm() -> Vec<u8> {
     bytes
 }
 
-pub fn get_project_member_index_canister_wasm() -> Vec<u8> {
+pub fn get_configuration_canister_wasm() -> Vec<u8> {
     let mut file_path = PathBuf::from(
         std::env::var("CARGO_MANIFEST_DIR")
             .expect("Failed to read CARGO_MANIFEST_DIR env variable"),
     );
-    file_path
-        .push("../../../../../target/wasm32-unknown-unknown/release/project_member_index.wasm.gz");
+    file_path.push("../../../../../target/wasm32-unknown-unknown/release/configuration.wasm.gz");
 
     let mut file = File::open(&file_path)
         .unwrap_or_else(|_| panic!("Failed to open file: {}", file_path.to_str().unwrap()));
