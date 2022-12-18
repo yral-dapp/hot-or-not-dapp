@@ -1,6 +1,5 @@
 name: Canisters test suite run on any push except main
 on:
-  workflow_call:
   push:
     paths:
       - 'packages/ic/**'
