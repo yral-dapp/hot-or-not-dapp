@@ -6,8 +6,8 @@ use shared_utils::types::{
 };
 
 use super::test_constants::{
-    get_global_super_admin_principal_id, get_post_cache_canister_wasm,
-    get_project_member_index_canister_wasm, get_user_index_canister_wasm,
+    get_configuration_canister_wasm, get_global_super_admin_principal_id,
+    get_post_cache_canister_wasm, get_user_index_canister_wasm,
     CANISTER_INITIAL_CYCLES_FOR_INDEX_CANISTERS, CANISTER_INITIAL_CYCLES_FOR_REGULAR_CANISTERS,
 };
 
@@ -89,7 +89,7 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
         .install_wasm_in_mode(
             project_member_index_canister_id,
             CanisterInstallMode::Install,
-            get_project_member_index_canister_wasm(),
+            get_configuration_canister_wasm(),
             candid::encode_one(ProjectMemberIndexInitArgs {
                 known_principal_ids: known_principal_ids.clone(),
             })

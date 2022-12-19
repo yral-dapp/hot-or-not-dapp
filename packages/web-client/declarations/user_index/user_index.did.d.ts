@@ -19,9 +19,11 @@ export interface DefiniteCanisterSettings {
   'compute_allocation' : bigint,
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdConfiguration' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
+  { 'CanisterIdDataBackup' : null } |
   { 'CanisterIdPostCache' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'UserIdGlobalSuperAdmin' : null };

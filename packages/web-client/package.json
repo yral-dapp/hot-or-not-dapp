@@ -23,12 +23,12 @@
 		"@dfinity/auth-client": "0.15.0",
 		"@dfinity/candid": "0.15.0",
 		"@dfinity/identity": "0.15.0",
-		"@dfinity/principal": "0.15.0",
-		"@dfinity/identity-secp256k1": "0.15.0",
+		"@dfinity/principal": "0.15.1",
+		"@dfinity/identity-secp256k1": "0.15.1",
 		"@esbuild-plugins/node-globals-polyfill": "0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "0.1.4",
 		"@sentry/svelte": "7.26.0",
-		"@sentry/tracing": "7.26.0",
+		"@sentry/tracing": "7.27.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
 		"hls.js": "1.2.9",
@@ -60,7 +60,7 @@
 		"ts-node": "10.9.1",
 		"tslib": "2.4.1",
 		"typescript": "4.9.4",
-		"vite": "4.0.0",
+		"vite": "4.0.2",
 		"vitest": "0.25.7"
 	}
 }

@@ -8,13 +8,8 @@ on:
       - '.github/workflows/all_canisters_main_deploy.yml'
 
 jobs:
-  test:
-    name: Run test suite
-    uses: ./.github/workflows/all_canisters_test_suite_on_any_push.yml
-    secrets: inherit
   deploy:
     name: Deploy all canisters
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -43,6 +38,10 @@ jobs:
             target/
             .dfx/
           key: ${{ runner.os }}-deploy-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build configuration canister
+        run: |
+          dfx build --network ic configuration
+          gzip -f -1 ./target/wasm32-unknown-unknown/release/configuration.wasm
       - name: Build individual_user_template canister
         run: |
           dfx build --network ic individual_user_template
@@ -55,15 +54,11 @@ jobs:
         run: |
           dfx build --network ic post_cache
           gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
-      - name: Build project_member_index canister
-        run: |
-          dfx build --network ic project_member_index
-          gzip -f -1 ./target/wasm32-unknown-unknown/release/project_member_index.wasm
+      - name: Deploy configuration canister
+        run: dfx canister --network ic install configuration --mode upgrade --argument "(record { known_principal_ids = null; signups_enabled = null; access_control_map = null; })"
       - name: Deploy user_index canister
         run: dfx canister --network ic install user_index --mode upgrade --argument "(record { known_principal_ids = vec {} })"
       - name: Loop through and deploy all individual user canisters
         run: dfx canister --network ic call user_index update_user_index_upgrade_user_canisters_with_latest_wasm --async
       - name: Deploy post_cache canister
         run: dfx canister --network ic install post_cache --mode upgrade --argument "(record { known_principal_ids = vec {} })"
-      - name: Deploy project_member_index canister
-        run: dfx canister --network ic install project_member_index --mode upgrade --argument "(record { known_principal_ids = vec {} })"

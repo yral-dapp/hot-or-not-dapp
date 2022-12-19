@@ -4,6 +4,7 @@ use ic_cdk::api::call;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use user_index_lib::util::canister_management::create_users_canister;
 
+// TODO: ignore anonymous principal
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 async fn get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(

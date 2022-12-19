@@ -1,6 +1,6 @@
 #!/home/saikat/bin/ic-repl
 
-import user_index_canister = "r7inp-6aaaa-aaaaa-aaabq-cai";
+import user_index_canister = "rkp4c-7iaaa-aaaaa-aaaca-cai";
 
 identity bob "~/.config/dfx/identity/bob/identity.pem";
 
