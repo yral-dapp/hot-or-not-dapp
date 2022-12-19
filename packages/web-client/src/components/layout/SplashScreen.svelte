@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fade } from 'svelte/transition';
-import { hideSplashScreen, showSplashScreen } from '$stores/splashScreen';
+import { hideSplashScreen, splashScreen } from '$stores/splashScreen';
 import HotorNotIcon from '$components/icons/HotorNotIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { onMount } from 'svelte';
@@ -10,7 +10,7 @@ onMount(() => {
 });
 </script>
 
-{#if $showSplashScreen}
+{#if $splashScreen.show}
 	<splash-screen
 		out:fade|local="{{ duration: 500 }}"
 		class="spacy-y-8 absolute z-[15] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black">
