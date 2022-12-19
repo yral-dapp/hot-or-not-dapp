@@ -1,12 +1,19 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 
-export const showSplashScreen = writable<boolean>(true);
+export const splashScreen = writable<{
+	show: boolean;
+	shown: boolean;
+}>({
+	show: true,
+	shown: false
+});
 
 let timeout;
 
 export function hideSplashScreen(timeoutMs: number = 2000) {
+	if (get(splashScreen).shown) return;
 	if (timeout) clearTimeout(timeout);
 	timeout = setTimeout(() => {
-		showSplashScreen.set(false);
+		splashScreen.set({ show: false, shown: true });
 	}, timeoutMs);
 }
