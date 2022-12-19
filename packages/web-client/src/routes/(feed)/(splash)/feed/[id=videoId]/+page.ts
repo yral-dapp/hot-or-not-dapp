@@ -7,7 +7,6 @@ import type { PostPopulated } from '$lib/helpers/feed';
 import { individualUser } from '$lib/helpers/backend';
 
 export const load: PageLoad = async ({ params }) => {
-	console.log('running load function');
 	const id = params.id.split('@');
 	const postId = BigInt(Number(id[1]));
 	const principal = Principal.from(id[0]);
