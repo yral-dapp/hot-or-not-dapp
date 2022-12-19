@@ -9,10 +9,12 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { individualUser } from '$lib/helpers/backend';
+import { isiPhone } from '$lib/utils/isSafari';
 
 export let data: PageData;
 
 const { video, me } = data;
+let isIPhone = isiPhone();
 </script>
 
 <svelte:head>
@@ -42,6 +44,7 @@ const { video, me } = data;
 			{#if individualUser}
 				<VideoPlayer
 					i="{0}"
+					isiPhone="{isIPhone}"
 					id="{video.id}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
@@ -52,7 +55,6 @@ const { video, me } = data;
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
 					inView
-					swiperJs
 					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 						video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"

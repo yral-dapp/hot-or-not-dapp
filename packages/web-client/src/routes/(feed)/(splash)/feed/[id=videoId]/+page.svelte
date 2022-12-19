@@ -31,13 +31,11 @@ const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
 let videoPlayers: VideoPlayer[] = [];
-let vEl: HTMLVideoElement;
 let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
-let canPlayHlsNatively = false;
 let isIPhone = isiPhone();
 
 type VideoViewReport = {
@@ -200,10 +198,6 @@ function recordStats(
 onMount(async () => {
 	updateURL();
 
-	if (vEl.canPlayType('application/vnd.apple.mpegurl')) {
-		canPlayHlsNatively = true;
-	}
-
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
@@ -221,8 +215,6 @@ onMount(async () => {
 	<title>Home Feed | Hot or Not</title>
 </svelte:head>
 
-<!-- svelte-ignore a11y-media-has-caption -->
-<video bind:this="{vEl}" playsinline class="h-0 pointer-events-none hidden w-0"></video>
 <Swiper
 	direction="{'vertical'}"
 	observer
@@ -248,7 +240,6 @@ onMount(async () => {
 					i="{i}"
 					id="{video.id}"
 					isiPhone="{isIPhone}"
-					canPlayHlsNatively="{canPlayHlsNatively}"
 					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
