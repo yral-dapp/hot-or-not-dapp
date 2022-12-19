@@ -47,16 +47,16 @@ type VideoViewReport = {
 
 let videoStats: Record<number, VideoViewReport> = {};
 
-function joinArrayUniquely<T>(a: T[], b: T[]): T[] {
-	const arrayWithoutNoDuplicates = [...a, ...b].filter(
-		(value: any, index, self) =>
-			index ===
-			self.findIndex(
-				(t: any) =>
-					t.post_id === value.post_id && t.publisher_canister_id === value.publisher_canister_id
-			)
-	);
-	return arrayWithoutNoDuplicates;
+function joinArrayUniquely(a: PostPopulated[], b: PostPopulated[]): PostPopulated[] {
+	b.forEach((o) => {
+		const unique = a.findIndex(
+			(v) => v.post_id === o.post_id && v.publisher_canister_id === o.publisher_canister_id
+		);
+		if (unique < 0) {
+			a.push(o);
+		}
+	});
+	return a;
 }
 
 async function fetchNextVideos() {
@@ -74,13 +74,13 @@ async function fetchNextVideos() {
 
 			fetchedVideosCount = res.from;
 
-			videos = [...videos, ...res.posts];
+			videos = joinArrayUniquely(videos, res.posts);
 
 			if (!res.noMorePosts && res.posts.length == 0) {
 				fetchNextVideos();
 			} else if (res.noMorePosts) {
 				const watchedVideos = await getWatchedVideosFromCache();
-				videos = [...videos, ...watchedVideos];
+				videos = joinArrayUniquely(videos, watchedVideos);
 			}
 
 			noMoreVideos = res.noMorePosts;
