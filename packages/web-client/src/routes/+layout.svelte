@@ -10,11 +10,12 @@ import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
+import { page } from '$app/stores';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
 async function initSentry() {
-	if (import.meta.env.NODE_ENV == 'development') return;
+	if (!$page.url.host.includes('t:')) return;
 
 	const Sentry = await import('@sentry/svelte');
 
@@ -27,7 +28,7 @@ async function initSentry() {
 }
 
 function registerServiceWorker() {
-	if (import.meta.env.NODE_ENV == 'development') return;
+	if (!$page.url.host.includes('t:')) return;
 
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/service-worker.js');
