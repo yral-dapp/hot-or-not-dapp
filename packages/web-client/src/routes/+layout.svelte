@@ -15,7 +15,7 @@ import { page } from '$app/stores';
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
 async function initSentry() {
-	if (!$page.url.host.includes('t:')) return;
+	if ($page.url.host.includes('t:')) return;
 
 	const Sentry = await import('@sentry/svelte');
 
@@ -28,7 +28,7 @@ async function initSentry() {
 }
 
 function registerServiceWorker() {
-	if (!$page.url.host.includes('t:')) return;
+	if ($page.url.host.includes('t:')) return;
 
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/service-worker.js');
