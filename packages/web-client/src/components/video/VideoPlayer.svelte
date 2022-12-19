@@ -160,16 +160,17 @@ $: if (!inView) {
 }
 
 onMount(() => {
-	if (!canPlayHlsNatively) {
-		if (Hls.isSupported()) hls = new Hls();
-		hls.loadSource(src);
-		hls.attachMedia(videoEl);
-		return () => {
-			hls.destroy();
-		};
-	} else {
-		Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
-	}
+	if (!canPlayHlsNatively)
+		if (Hls.isSupported()) {
+			hls = new Hls();
+			hls.loadSource(src);
+			hls.attachMedia(videoEl);
+			return () => {
+				hls.destroy();
+			};
+		} else {
+			Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
+		}
 });
 </script>
 
