@@ -106,32 +106,33 @@ async function updateStats(oldIndex) {
 	}
 
 	delete videoStats[oldIndex];
-	if (!$page.url.host.includes('t:')) {
-		const payload =
-			stats.count == 0
-				? {
-						WatchedPartially: { percentage_watched: Math.ceil(stats.progress) || 1 }
-				  }
-				: {
-						WatchedMultipleTimes: {
-							percentage_watched: Math.ceil(stats.progress) || 1,
-							watch_count: stats.count
-						}
-				  };
-		Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
-		registerEvent('view_video', {
-			userId: $userProfile.principal_id,
-			video_publisher_id: stats.profileId,
-			video_publisher_canister_id: stats.canisterId,
-			video_id: stats.videoId,
-			watch_count: Math.ceil(stats.count + stats.progress),
-			home_feed_score: stats.score
-		});
-		await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
-			stats.videoId,
-			payload
-		);
-	}
+
+	if ($page.url.host.includes('t:')) return;
+
+	const payload =
+		stats.count == 0
+			? {
+					WatchedPartially: { percentage_watched: Math.ceil(stats.progress) || 1 }
+			  }
+			: {
+					WatchedMultipleTimes: {
+						percentage_watched: Math.ceil(stats.progress) || 1,
+						watch_count: stats.count
+					}
+			  };
+	Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
+	registerEvent('view_video', {
+		userId: $userProfile.principal_id,
+		video_publisher_id: stats.profileId,
+		video_publisher_canister_id: stats.canisterId,
+		video_id: stats.videoId,
+		watch_count: Math.ceil(stats.count + stats.progress),
+		home_feed_score: stats.score
+	});
+	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
+		stats.videoId,
+		payload
+	);
 }
 
 async function recordView(post?: PostPopulated) {
