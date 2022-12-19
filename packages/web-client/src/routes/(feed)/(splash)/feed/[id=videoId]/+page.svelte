@@ -9,7 +9,7 @@ import {
 	type PostPopulated,
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
-import { getHlsUrl, getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getHlsUrl, getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -20,6 +20,8 @@ import { onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
+import { isiPhone } from '$lib/utils/isSafari';
+import { page } from '$app/stores';
 
 export let data: PageData;
 
@@ -29,14 +31,14 @@ const keepVideosLoadedCount: number = 4;
 
 let videos: PostPopulated[] = [];
 let videoPlayers: VideoPlayer[] = [];
-let audioEl: HTMLAudioElement;
+let vEl: HTMLVideoElement;
 let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
-let apple = false;
-let showLoading = false;
+let canPlayHlsNatively = false;
+let isIPhone = isiPhone();
 
 type VideoViewReport = {
 	progress: number;
@@ -104,30 +106,32 @@ async function updateStats(oldIndex) {
 	}
 
 	delete videoStats[oldIndex];
-	const payload =
-		stats.count == 0
-			? {
-					WatchedPartially: { percentage_watched: Math.ceil(stats.progress) || 1 }
-			  }
-			: {
-					WatchedMultipleTimes: {
-						percentage_watched: Math.ceil(stats.progress) || 1,
-						watch_count: stats.count
-					}
-			  };
-	Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
-	registerEvent('view_video', {
-		userId: $userProfile.principal_id,
-		video_publisher_id: stats.profileId,
-		video_publisher_canister_id: stats.canisterId,
-		video_id: stats.videoId,
-		watch_count: Math.ceil(stats.count + stats.progress),
-		home_feed_score: stats.score
-	});
-	await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
-		stats.videoId,
-		payload
-	);
+	if (!$page.url.host.includes('t:')) {
+		const payload =
+			stats.count == 0
+				? {
+						WatchedPartially: { percentage_watched: Math.ceil(stats.progress) || 1 }
+				  }
+				: {
+						WatchedMultipleTimes: {
+							percentage_watched: Math.ceil(stats.progress) || 1,
+							watch_count: stats.count
+						}
+				  };
+		Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info');
+		registerEvent('view_video', {
+			userId: $userProfile.principal_id,
+			video_publisher_id: stats.profileId,
+			video_publisher_canister_id: stats.canisterId,
+			video_id: stats.videoId,
+			watch_count: Math.ceil(stats.count + stats.progress),
+			home_feed_score: stats.score
+		});
+		await individualUser(Principal.from(stats.canisterId)).update_post_add_view_details(
+			stats.videoId,
+			payload
+		);
+	}
 }
 
 async function recordView(post?: PostPopulated) {
@@ -194,9 +198,11 @@ function recordStats(
 
 onMount(async () => {
 	updateURL();
-	if (audioEl.canPlayType('application/vnd.apple.mpegurl')) {
-		apple = true;
+
+	if (vEl.canPlayType('application/vnd.apple.mpegurl')) {
+		canPlayHlsNatively = true;
 	}
+
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
@@ -208,59 +214,27 @@ onMount(async () => {
 	await fetchNextVideos();
 	handleParams();
 });
-
-function handleAppleClick() {
-	audioEl.play().catch((e) => {
-		console.log('audio click error', e);
-	});
-	audioEl.muted = $playerState.muted = !audioEl.muted;
-}
-
-function updateAudioSource(src: string, i: number) {
-	showLoading = true;
-	audioEl.src = src;
-	audioEl
-		.play()
-		.then(() => {
-			videoPlayers[i].play();
-			showLoading = false;
-		})
-		.catch((e) => {
-			console.log('audio autoplay error', e);
-		});
-	if (!$playerState.muted) {
-		audioEl.muted = $playerState.muted;
-	}
-}
 </script>
 
 <svelte:head>
 	<title>Home Feed | Hot or Not</title>
 </svelte:head>
 
-<audio
-	bind:this="{audioEl}"
-	playsinline
-	muted
-	loop
-	autoplay
-	class="absolute border-2 h-10 opacity-0 z-[15] w-10"></audio>
+<!-- svelte-ignore a11y-media-has-caption -->
+<video bind:this="{vEl}" playsinline class="h-0 pointer-events-none hidden w-0"></video>
 <Swiper
 	direction="{'vertical'}"
 	observer
+	cssMode
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
-	cssMode="{!apple}"
 	spaceBetween="{300}"
-	on:click="{() => apple && handleAppleClick()}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
-		{@const src = getHlsUrl(video.video_uid)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
-					on:audio="{({ detail }) => updateAudioSource(detail.src, detail.index)}"
 					on:loaded="{() => hideSplashScreen(500)}"
 					on:watchedPercentage="{({ detail }) =>
 						recordStats(
@@ -271,9 +245,9 @@ function updateAudioSource(src: string, i: number) {
 							video.home_feed_ranking_score
 						)}"
 					i="{i}"
-					showLoading="{showLoading}"
 					id="{video.id}"
-					apple="{apple}"
+					isiPhone="{isIPhone}"
+					canPlayHlsNatively="{canPlayHlsNatively}"
 					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
@@ -284,13 +258,11 @@ function updateAudioSource(src: string, i: number) {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
-					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
-					swiperJs
 					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 						video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
-					src="{src}" />
+					src="{getHlsUrl(video.video_uid)}" />
 			{/if}
 		</SwiperSlide>
 	{/each}
