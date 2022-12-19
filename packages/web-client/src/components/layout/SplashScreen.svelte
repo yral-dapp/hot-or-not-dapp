@@ -1,8 +1,13 @@
 <script lang="ts">
 import { fade } from 'svelte/transition';
-import { showSplashScreen } from '$stores/splashScreen';
+import { hideSplashScreen, showSplashScreen } from '$stores/splashScreen';
 import HotorNotIcon from '$components/icons/HotorNotIcon.svelte';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
+import { onMount } from 'svelte';
+
+onMount(() => {
+	hideSplashScreen(5000);
+});
 </script>
 
 {#if $showSplashScreen}
