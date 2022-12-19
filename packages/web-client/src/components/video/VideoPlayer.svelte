@@ -36,7 +36,6 @@ export let publisherCanisterId: string;
 export let userProfileSrc = '';
 export let liked = false;
 export let createdById = '';
-export let canPlayHlsNatively = false;
 export let individualUser: (principal?: Principal | string) => IndividualUserActor;
 export let likeCount: number = 0;
 export let enrolledInHotOrNot = false;
@@ -160,17 +159,18 @@ $: if (!inView) {
 }
 
 onMount(() => {
-	if (!canPlayHlsNatively)
-		if (Hls.isSupported()) {
-			hls = new Hls();
-			hls.loadSource(src);
-			hls.attachMedia(videoEl);
-			return () => {
-				hls.destroy();
-			};
-		} else {
-			Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
-		}
+	if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+		videoEl.src = src + '#t=0.1';
+	} else if (Hls.isSupported()) {
+		hls = new Hls();
+		hls.loadSource(src);
+		hls.attachMedia(videoEl);
+		return () => {
+			hls.destroy();
+		};
+	} else {
+		Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
+	}
 });
 </script>
 
@@ -182,7 +182,6 @@ onMount(() => {
 		on:click="{handleClick}"
 		on:loadeddata="{() => (loaded = true)}"
 		bind:this="{videoEl}"
-		src="{isiPhone ? src + '#t=0.1' : undefined}"
 		loop
 		muted="{$playerState.muted}"
 		disablepictureinpicture
