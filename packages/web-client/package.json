@@ -27,7 +27,7 @@
 		"@dfinity/identity-secp256k1": "0.15.1",
 		"@esbuild-plugins/node-globals-polyfill": "0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "0.1.4",
-		"@sentry/svelte": "7.26.0",
+		"@sentry/svelte": "7.27.0",
 		"@sentry/tracing": "7.27.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
