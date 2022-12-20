@@ -10,7 +10,7 @@ export let likes: number;
 <a
 	href="{`/profile/${$page.params.id}/post/${id}`}"
 	data-sveltekit-preload-data="tap"
-	class="relative h-40 w-full cursor-pointer rounded-md border-[1px] border-white/5 bg-cover"
+	class="relative aspect-[9/16] w-full cursor-pointer rounded-md overflow-hidden border-[1px] border-white/5 bg-center bg-cover"
 	style="background-image: url('{imageBg}')">
 	<div class="pointer-events-none absolute inset-x-0 left-2 bottom-2 flex items-center space-x-1">
 		<div class="flex h-5 w-5 items-center justify-center rounded-full bg-black/50">
