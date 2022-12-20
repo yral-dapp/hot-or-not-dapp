@@ -27,7 +27,7 @@ export let data: PageData;
 
 const fetchCount = 50;
 const fetchWhenVideosLeft = 10;
-const keepVideosLoadedCount: number = 4;
+const keepVideosLoadedCount: number = 3;
 
 let videos: PostPopulated[] = [];
 let videoPlayers: VideoPlayer[] = [];
