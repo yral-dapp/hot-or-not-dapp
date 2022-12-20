@@ -56,7 +56,6 @@ export const stop = debounce(
 	1000,
 	() => {
 		try {
-			console.log('Stop called', i);
 			if (videoEl) {
 				videoEl.volume = 0;
 				videoEl.currentTime = 0.05;
@@ -72,7 +71,6 @@ export const stop = debounce(
 export const checkVideoIsPlaying = debounce(
 	500,
 	() => {
-		console.log('is paused', i, videoEl?.paused);
 		if (videoEl?.paused) {
 			paused = true;
 		} else {
@@ -87,10 +85,8 @@ export const checkVideoIsPlaying = debounce(
 export const play = debounce(
 	1000,
 	() => {
-		console.log('trying to play', i);
 		if (videoEl?.paused) {
 			if (isiPhone) {
-				console.log('yes to iphone');
 				videoEl.volume = 0;
 			} else {
 				videoEl.muted = $playerState.muted;
@@ -101,10 +97,9 @@ export const play = debounce(
 					videoEl.volume = 1;
 					paused = false;
 					checkVideoIsPlaying();
-					console.log('now playing', i);
 				})
-				.catch((e) => {
-					console.log('Autoplay failed', i);
+				.catch(() => {
+					paused = true;
 				});
 		}
 	},
@@ -118,9 +113,7 @@ async function handleClick() {
 				$playerState.initialized = true;
 			}
 			if (videoEl.paused) {
-				videoEl.play().catch((e) => {
-					console.log('Click play failed', e);
-				});
+				videoEl.play().catch(() => {});
 				$playerState.muted = false;
 				videoEl.muted = false;
 				paused = false;
