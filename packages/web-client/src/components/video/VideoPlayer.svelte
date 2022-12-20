@@ -20,8 +20,6 @@ import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { debounce } from 'throttle-debounce';
 import Hls from 'hls.js';
 import PlayIcon from '$components/icons/PlayIcon.svelte';
-import { videoHasAudio } from '$lib/utils/video';
-import NoSoundIcon from '$components/icons/NoSoundIcon.svelte';
 
 export let src;
 export let i: number;
@@ -51,14 +49,16 @@ let currentTime = 0;
 let duration = 0;
 let loaded = false;
 let hls: Hls;
-let hasAudio = true;
+let waiting = false;
+let paused = false;
 
 export const stop = debounce(
 	1000,
 	() => {
 		try {
+			console.log('Stop called', i);
 			if (videoEl) {
-				videoEl.muted = true;
+				videoEl.volume = 0;
 				videoEl.currentTime = 0.05;
 				videoEl.pause();
 			}
@@ -69,21 +69,43 @@ export const stop = debounce(
 	{ atBegin: true }
 );
 
+export const checkVideoIsPlaying = debounce(
+	500,
+	() => {
+		console.log('is paused', i, videoEl?.paused);
+		if (videoEl?.paused) {
+			paused = true;
+		} else {
+			videoEl.volume = 1;
+		}
+	},
+	{
+		atBegin: false
+	}
+);
+
 export const play = debounce(
 	1000,
 	() => {
+		console.log('trying to play', i);
 		if (videoEl?.paused) {
-			hasAudio = videoHasAudio(videoEl);
-
 			if (isiPhone) {
 				console.log('yes to iphone');
 				videoEl.volume = 0;
 			} else {
 				videoEl.muted = $playerState.muted;
 			}
-			videoEl.play().catch((e) => {
-				console.log('Autoplay failed', i);
-			});
+			videoEl
+				.play()
+				.then(() => {
+					videoEl.volume = 1;
+					paused = false;
+					checkVideoIsPlaying();
+					console.log('now playing', i);
+				})
+				.catch((e) => {
+					console.log('Autoplay failed', i);
+				});
 		}
 	},
 	{ atBegin: true }
@@ -101,6 +123,7 @@ async function handleClick() {
 				});
 				$playerState.muted = false;
 				videoEl.muted = false;
+				paused = false;
 			} else {
 				$playerState.muted = !$playerState.muted;
 				videoEl.muted = $playerState.muted;
@@ -148,10 +171,9 @@ $: if (inView && !videoEl?.paused) {
 
 $: if (inView && loaded) {
 	dispatch('loaded');
-}
-
-$: if (inView) {
-	play();
+	if (videoEl.paused) {
+		play();
+	}
 }
 
 $: if (!inView) {
@@ -180,7 +202,19 @@ onMount(() => {
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video
 		on:click="{handleClick}"
-		on:loadeddata="{() => (loaded = true)}"
+		on:waiting="{() => {
+			waiting = true;
+		}}"
+		on:playing="{() => {
+			waiting = false;
+			loaded = true;
+		}}"
+		on:canplay="{() => {
+			loaded = true;
+		}}"
+		on:pause="{() => {
+			inView && play();
+		}}"
 		bind:this="{videoEl}"
 		loop
 		muted="{$playerState.muted}"
@@ -195,12 +229,12 @@ onMount(() => {
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
 		src="{thumbnail}" />
 
-	{#if $playerState.muted || !$playerState.initialized}
+	{#if $playerState.muted || !$playerState.initialized || paused}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
-				{#if !$playerState.initialized}
+				{#if !$playerState.initialized || paused}
 					<PlayIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
-				{:else}
+				{:else if $playerState.muted}
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
 				{/if}
 			</div>
@@ -214,7 +248,7 @@ onMount(() => {
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
 			<div class="flex flex-col space-y-6">
-				{#if !loaded}
+				{#if !loaded || waiting}
 					<LoadingIcon class="h-8 w-8 animate-spin-slow text-white" />
 				{/if}
 				<IconButton
@@ -246,13 +280,6 @@ onMount(() => {
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 flex flex-col space-y-2 left-4 z-[9] pr-20">
-			{#if !hasAudio}
-				<div
-					class="flex w-fit space-x-1 text-white/80 items-center text-xs bg-black/50 rounded-full p-1 px-2">
-					<NoSoundIcon class="w-3 h-3" />
-					<span class="">Video has no audio </span>
-				</div>
-			{/if}
 			<div class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
