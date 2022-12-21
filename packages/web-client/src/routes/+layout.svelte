@@ -7,7 +7,6 @@ import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
 import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
@@ -37,7 +36,6 @@ function registerServiceWorker() {
 
 onMount(() => {
 	try {
-		hideSplashScreen(5000);
 		$navigateBack = null;
 		initSentry();
 		initializeAuthClient();
