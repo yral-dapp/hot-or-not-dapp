@@ -152,8 +152,8 @@ jobs:
         if: always()
         run: dfx ping http://localhost:4943
 
-      - name: Run e2e tests
-        run: npm run wc:test:e2e
+      - name: Run vitest
+        run: npm run wc:test:vi
 
       - name: Run Playwright tests
         run: npm run wc:test
