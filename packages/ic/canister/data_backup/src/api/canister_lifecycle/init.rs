@@ -1,17 +1,17 @@
-use shared_utils::canister_specific::configuration::types::args::ConfigurationInitArgs;
+use shared_utils::canister_specific::data_backup::types::args::DataBackupInitArgs;
 
 use crate::{data::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]
-fn init(init_args: ConfigurationInitArgs) {
+fn init(init_args: DataBackupInitArgs) {
     CANISTER_DATA.with(|canister_data_ref_cell| {
         let mut data = canister_data_ref_cell.borrow_mut();
         init_impl(init_args, &mut data);
     });
 }
 
-fn init_impl(init_args: ConfigurationInitArgs, data: &mut CanisterData) {
+fn init_impl(init_args: DataBackupInitArgs, data: &mut CanisterData) {
     init_args
         .known_principal_ids
         .unwrap_or_default()
@@ -29,8 +29,6 @@ fn init_impl(init_args: ConfigurationInitArgs, data: &mut CanisterData) {
             data.access_control_list
                 .insert(principal.clone(), access_roles.clone());
         });
-
-    data.signups_enabled = init_args.signups_enabled.unwrap_or(data.signups_enabled);
 }
 
 #[cfg(test)]
@@ -39,7 +37,6 @@ mod test {
 
     use shared_utils::{
         access_control::UserAccessRole,
-        canister_specific::configuration::types::args::ConfigurationInitArgs,
         types::known_principal::{KnownPrincipalMapV1, KnownPrincipalType},
     };
     use test_utils::setup::test_constants::{
@@ -81,10 +78,9 @@ mod test {
         );
 
         // * Create the init args
-        let init_args = ConfigurationInitArgs {
+        let init_args = DataBackupInitArgs {
             known_principal_ids: Some(known_principal_ids),
             access_control_map: Some(access_control_map),
-            signups_enabled: Some(true),
         };
         let mut data = CanisterData::default();
 
@@ -125,6 +121,5 @@ mod test {
                 .unwrap(),
             &vec![UserAccessRole::ProjectCanister]
         );
-        assert_eq!(data.signups_enabled, true);
     }
 }

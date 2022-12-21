@@ -3,7 +3,8 @@ use std::cell::RefCell;
 use candid::{export_service, Principal};
 use data::CanisterData;
 use shared_utils::{
-    access_control::UserAccessRole, canister_specific::configuration::ConfigurationInitArgs,
+    access_control::UserAccessRole,
+    canister_specific::configuration::types::args::ConfigurationInitArgs,
     types::known_principal::KnownPrincipalType,
 };
 

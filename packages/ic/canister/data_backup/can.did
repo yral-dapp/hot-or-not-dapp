@@ -1,14 +1,17 @@
+type DataBackupInitArgs = record {
+  known_principal_ids : opt vec record { KnownPrincipalType; principal };
+  access_control_map : opt vec record { principal; vec UserAccessRole };
+};
 type KnownPrincipalType = variant {
   CanisterIdUserIndex;
+  CanisterIdConfiguration;
   CanisterIdProjectMemberIndex;
   CanisterIdTopicCacheIndex;
   CanisterIdRootCanister;
+  CanisterIdDataBackup;
   CanisterIdPostCache;
   CanisterIdSNSController;
   UserIdGlobalSuperAdmin;
-};
-type ProjectMemberIndexInitArgs = record {
-  known_principal_ids : vec record { KnownPrincipalType; principal };
 };
 type UserAccessRole = variant {
   CanisterController;
@@ -16,7 +19,7 @@ type UserAccessRole = variant {
   CanisterAdmin;
   ProjectCanister;
 };
-service : (ProjectMemberIndexInitArgs) -> {
+service : (DataBackupInitArgs) -> {
   get_user_roles : (principal) -> (vec UserAccessRole) query;
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();
