@@ -11,9 +11,13 @@ export default mergeConfig(
 		test: {
 			globals: true,
 			environment: 'jsdom',
-			include: ['**/*.vi.ts', 'src/components/**'],
+			include: ['**/*.vi.ts'],
 			testTimeout: 30_000,
-			reporters: ['text', 'lcov']
+			coverage: {
+				all: true,
+				include: ['src/components/**'],
+				reporter: ['text', 'lcov']
+			}
 		}
 	})
 );
