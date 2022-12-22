@@ -16,7 +16,7 @@ export default mergeConfig(
 			coverage: {
 				all: true,
 				include: ['src/components/**'],
-				reporter: ['text', 'lcov']
+				reporter: ['text', 'json', 'html']
 			}
 		}
 	})
