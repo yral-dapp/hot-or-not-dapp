@@ -20,7 +20,9 @@ jobs:
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build:static
-      - run: DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      - run: |
+          set -euxo pipefail
+          DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
       - run: |
           touch actions_identity.pem

@@ -11,7 +11,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"itty-router": "3.0.8"
+		"itty-router": "3.0.10"
 	},
 	"devDependencies": {
 		"wrangler": "2.6.2"

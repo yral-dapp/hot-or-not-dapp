@@ -153,10 +153,14 @@ jobs:
         run: dfx ping http://localhost:4943
 
       - name: Run vitest
-        run: npm run wc:test:vi
+        run: |
+          set -euxo pipefail
+          npm run wc:test:vi
 
       - name: Run Playwright tests
-        run: npm run wc:test
+        run: |
+          set -euxo pipefail
+          npm run wc:test
 
       - name: Stop DFX Server
         run: dfx stop
