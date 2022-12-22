@@ -12,9 +12,9 @@ const projects: PlaywrightTestConfig['projects'] = [
 
 const config: PlaywrightTestConfig = {
 	testDir: './tests',
-	timeout: 30 * 1000,
+	timeout: 60_000,
 	expect: {
-		timeout: 5000
+		timeout: 20_000
 	},
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
