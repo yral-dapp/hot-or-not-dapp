@@ -5,6 +5,6 @@ use shared_utils::{access_control::UserAccessRole, types::known_principal::Known
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {
-    pub my_known_principal_ids_map: KnownPrincipalMapV1,
-    pub access_control_map: HashMap<Principal, Vec<UserAccessRole>>,
+    pub known_principal_ids: KnownPrincipalMapV1,
+    pub access_control_list: HashMap<Principal, Vec<UserAccessRole>>,
 }

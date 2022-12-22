@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@builder.io/partytown": "0.7.3",
-		"@dfinity/agent": "0.15.0",
+		"@dfinity/agent": "0.15.1",
 		"@dfinity/auth-client": "0.15.0",
 		"@dfinity/candid": "0.15.1",
 		"@dfinity/identity": "0.15.0",
@@ -27,8 +27,8 @@
 		"@dfinity/identity-secp256k1": "0.15.1",
 		"@esbuild-plugins/node-globals-polyfill": "0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "0.1.4",
-		"@sentry/svelte": "7.27.0",
-		"@sentry/tracing": "7.27.0",
+		"@sentry/svelte": "7.28.0",
+		"@sentry/tracing": "7.28.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
 		"hls.js": "1.2.9",
@@ -53,7 +53,7 @@
 		"isomorphic-fetch": "3.0.0",
 		"postcss": "8.4.20",
 		"svelte": "3.55.0",
-		"svelte-check": "2.10.2",
+		"svelte-check": "2.10.3",
 		"svelte-easy-crop": "1.0.8",
 		"svelte-preprocess": "5.0.0",
 		"tailwindcss": "3.2.4",
@@ -61,6 +61,6 @@
 		"tslib": "2.4.1",
 		"typescript": "4.9.4",
 		"vite": "4.0.2",
-		"vitest": "0.25.7"
+		"vitest": "0.26.1"
 	}
 }

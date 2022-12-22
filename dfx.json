@@ -1,6 +1,24 @@
 {
 	"version": 1,
 	"canisters": {
+		"configuration": {
+			"type": "rust",
+			"package": "configuration",
+			"candid": "./packages/ic/canister/configuration/can.did",
+			"declarations": {
+				"node_compatibility": true,
+				"output": "./packages/web-client/declarations/configuration"
+			}
+		},
+		"data_backup": {
+			"type": "rust",
+			"package": "data_backup",
+			"candid": "./packages/ic/canister/data_backup/can.did",
+			"declarations": {
+				"node_compatibility": true,
+				"output": "./packages/web-client/declarations/data_backup"
+			}
+		},
 		"individual_user_template": {
 			"type": "rust",
 			"package": "individual_user_template",
@@ -23,15 +41,6 @@
 			"declarations": {
 				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/post_cache"
-			}
-		},
-		"configuration": {
-			"type": "rust",
-			"package": "configuration",
-			"candid": "./packages/ic/canister/configuration/can.did",
-			"declarations": {
-				"node_compatibility": true,
-				"output": "./packages/web-client/declarations/configuration"
 			}
 		},
 		"user_index": {

@@ -3,6 +3,8 @@ set -euo pipefail
 
 dfx build --network=ic configuration
 gzip -f -1 ./target/wasm32-unknown-unknown/release/configuration.wasm
+dfx build --network=ic data_backup
+gzip -f -1 ./target/wasm32-unknown-unknown/release/data_backup.wasm
 dfx build --network=ic individual_user_template
 gzip -f -1 ./target/wasm32-unknown-unknown/release/individual_user_template.wasm
 dfx build --network=ic user_index
@@ -13,6 +15,7 @@ gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
 # cargo test
 
 dfx canister install configuration --network ic --mode upgrade --argument "(record { known_principal_ids = null; signups_enabled = null; access_control_map = null; })"
+dfx canister install data_backup --network ic --mode upgrade --argument "(record { known_principal_ids = null; access_control_map = null; })"
 dfx canister install user_index --network ic --mode upgrade --argument "(record {
   known_principal_ids = vec {}
 })"

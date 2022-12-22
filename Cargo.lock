@@ -901,6 +901,7 @@ dependencies = [
  "ic-cdk-macros",
  "serde",
  "shared_utils",
+ "test_utils",
 ]
 
 [[package]]
