@@ -12,10 +12,15 @@ export default mergeConfig(
 			globals: true,
 			environment: 'jsdom',
 			include: ['**/*.vi.ts'],
+			// include: ['**/*.{vi.ts,spec.ts}'],
 			testTimeout: 30_000,
 			coverage: {
 				all: true,
-				include: ['src/components/**/*.svelte', '!src/components/icons/**'],
+				include: [
+					'src/components/**/*.svelte',
+					'!src/components/icons/**'
+					// 'src/routes/**/*.svelte'
+				],
 				reporter: ['text', 'json', 'html']
 			}
 		}
