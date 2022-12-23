@@ -15,7 +15,7 @@ export default mergeConfig(
 			testTimeout: 30_000,
 			coverage: {
 				all: true,
-				include: ['src/components/**'],
+				include: ['src/components/**/*.svelte', '!src/components/icons/**'],
 				reporter: ['text', 'json', 'html']
 			}
 		}
