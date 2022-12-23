@@ -172,3 +172,10 @@ jobs:
           name: playwright-report
           path: packages/web-client/playwright-report/
           retention-days: 7
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: packages/web-client/coverage/
+          retention-days: 7
