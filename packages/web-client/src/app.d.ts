@@ -18,6 +18,7 @@ namespace svelte.JSX {
 
 	interface HTMLProps<T> {
 		disableremoteplayback?: boolean;
+		disablepictureinpicture?: boolean;
 		'x-webkit-airplay'?: 'deny' | 'allow';
 	}
 }
