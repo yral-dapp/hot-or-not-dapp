@@ -14,7 +14,6 @@ describe('e2e test suite', () => {
 			await userIndexActor.get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
 				[]
 			);
-
 		expect(anonPrincipalId.toText()).toBeTruthy();
 	});
 });
