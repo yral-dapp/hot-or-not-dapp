@@ -4,6 +4,16 @@ import viteConfig from './vite.config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+const excludedComponentDirs = [
+	'icons',
+	'bet-result',
+	'coming-soon',
+	'corner-ribbon',
+	'intersection-observer',
+	'layout',
+	'home'
+];
+
 export default mergeConfig(
 	viteConfig,
 	defineConfig({
@@ -19,7 +29,7 @@ export default mergeConfig(
 				include: [
 					'src/components/**/*.svelte',
 					// ignore UI components
-					'!src/components/{icons,bet-result,coming-soon,corner-ribbon,layout,home}/**'
+					`!src/components/{${excludedComponentDirs.join(',')}}/**`
 					// 'src/routes/**/*.svelte'
 				],
 				reporter: ['text', 'json', 'html']
