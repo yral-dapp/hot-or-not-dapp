@@ -7,7 +7,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default mergeConfig(
 	viteConfig,
 	defineConfig({
-		plugins: [tsconfigPaths(), svelte({ hot: !process.env.VITEST })],
+		plugins: [tsconfigPaths({ root: '.' }), svelte({ hot: !process.env.VITEST })],
 		test: {
 			globals: true,
 			environment: 'jsdom',
@@ -18,10 +18,14 @@ export default mergeConfig(
 				all: true,
 				include: [
 					'src/components/**/*.svelte',
-					'!src/components/icons/**'
+					// ignore UI components
+					'!src/components/{icons,bet-result,coming-soon,corner-ribbon,layout,home}/**'
 					// 'src/routes/**/*.svelte'
 				],
 				reporter: ['text', 'json', 'html']
+			},
+			deps: {
+				inline: ['clsx']
 			}
 		}
 	})
