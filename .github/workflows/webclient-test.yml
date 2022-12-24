@@ -145,6 +145,7 @@ jobs:
 
       - name: Lighthouse CI check
         run: |
+          npm run wc:build
           npm install -g @lhci/cli
           lhci_host=http://localhost:4173 lhci autorun
         env:
