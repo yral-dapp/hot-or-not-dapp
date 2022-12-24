@@ -75,6 +75,11 @@ async function startUploading() {
 	Log({ uploadRes, source: '0 startUploading' }, 'info');
 	if (!uploadRes.success) {
 		Log({ error: uploadRes.error, source: '1 startUploading' }, 'error');
+		registerEvent('video_upload_failed', {
+			at_step: 'uploading_progress',
+			userId: $userProfile.principal_id,
+			user_canister_id: $authState.userCanisterId
+		});
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
 		uploadProgress.set(0);
@@ -104,6 +109,11 @@ async function checkVideoProcessingStatus(uid: string) {
 			}
 		} catch (e) {
 			Log({ error: 'Processing error', e, source: '1 checkVideoProcessingStatus' }, 'error');
+			registerEvent('video_upload_failed', {
+				at_step: 'processing',
+				userId: $userProfile.principal_id,
+				user_canister_id: $authState.userCanisterId
+			});
 			hashtagError = 'Uploading failed. Please try again';
 			uploadStatus = 'to-upload';
 			uploadStep = 'uploading';
@@ -137,6 +147,11 @@ async function handleSuccessfulUpload(videoUid: string) {
 			{ error: 'Couldnt send details to backend', e, source: '1 handleSuccessfulUpload' },
 			'error'
 		);
+		registerEvent('video_upload_failed', {
+			at_step: 'updating_db',
+			userId: $userProfile.principal_id,
+			user_canister_id: $authState.userCanisterId
+		});
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
 		uploadProgress.set(0);
