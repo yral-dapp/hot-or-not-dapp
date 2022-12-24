@@ -55,25 +55,6 @@ jobs:
         run: |
           echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
 
-  lighthouse-ci:
-    name: Lighthouse
-    needs: ["deploy-preview"]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli
-          lhci_host=${{ needs.deploy-preview.outputs.previewUrl }} lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: lhci-report
-          path: lhci_report/
-          retention-days: 7
-
   google-chat-webhook:
     name: Google chat bot
     if: github.actor != 'dependabot[bot]'
@@ -162,9 +143,23 @@ jobs:
           set -euxo pipefail
           npm run wc:test
 
+      - name: Lighthouse CI check
+        run: |
+          npm install -g @lhci/cli
+          lhci_host=http://localhost:4173 lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
       - name: Stop DFX Server
         run: dfx stop
         if: always()
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lighthouse-ci-report
+          path: lhci-report
+          retention-days: 7
 
       - uses: actions/upload-artifact@v3
         if: always()
