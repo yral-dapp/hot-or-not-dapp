@@ -1,17 +1,17 @@
 use shared_utils::canister_specific::data_backup::types::args::DataBackupInitArgs;
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data::heap_data::HeapData, CANISTER_DATA};
 
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]
 fn init(init_args: DataBackupInitArgs) {
     CANISTER_DATA.with(|canister_data_ref_cell| {
         let mut data = canister_data_ref_cell.borrow_mut();
-        init_impl(init_args, &mut data);
+        init_impl(init_args, &mut data.heap_data);
     });
 }
 
-fn init_impl(init_args: DataBackupInitArgs, data: &mut CanisterData) {
+fn init_impl(init_args: DataBackupInitArgs, data: &mut HeapData) {
     init_args
         .known_principal_ids
         .unwrap_or_default()
@@ -82,7 +82,7 @@ mod test {
             known_principal_ids: Some(known_principal_ids),
             access_control_map: Some(access_control_map),
         };
-        let mut data = CanisterData::default();
+        let mut data = HeapData::default();
 
         // * Run the init impl
         init_impl(init_args, &mut data);
