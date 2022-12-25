@@ -12,6 +12,7 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
+import { isiPhone } from '$lib/utils/isSafari';
 
 export let data: PageData;
 
@@ -20,6 +21,7 @@ const { video, me } = data;
 
 let videos = [video];
 let noMoreVideos = true;
+let isIPhone = isiPhone();
 
 let individualUser: () => IndividualUserActor;
 </script>
@@ -67,7 +69,7 @@ let individualUser: () => IndividualUserActor;
 							publisherCanisterId="{video.publisher_canister_id}"
 							userProfileSrc="{video.created_by_profile_photo_url[0]}"
 							individualUser="{individualUser}"
-							swiperJs
+							isiPhone="{isIPhone}"
 							enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 								video.hot_or_not_feed_ranking_score[0] !== undefined}"
 							thumbnail="{getThumbnailUrl(video.video_uid)}"

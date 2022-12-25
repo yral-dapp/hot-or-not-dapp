@@ -31,6 +31,7 @@
 		"@sentry/tracing": "7.28.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
+		"hls.js": "1.2.9",
 		"idb": "7.1.1",
 		"svelte-local-storage-store": "0.3.2",
 		"swiper": "8.4.5",

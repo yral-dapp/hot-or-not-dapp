@@ -9,7 +9,7 @@ import {
 	type PostPopulated,
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
-import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getHlsUrl, getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -19,22 +19,24 @@ import { Principal } from '@dfinity/principal';
 import { onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
-import { debounce } from 'throttle-debounce';
 import type { PageData } from './$types';
+import { isiPhone } from '$lib/utils/isSafari';
+import { page } from '$app/stores';
 
 export let data: PageData;
 
 const fetchCount = 50;
 const fetchWhenVideosLeft = 10;
-const keepVideosLoadedCount: number = 4;
+const keepVideosLoadedCount: number = 3;
 
 let videos: PostPopulated[] = [];
+let videoPlayers: VideoPlayer[] = [];
 let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
 let currentPlayingIndex = 0;
-let videoPlayers: VideoPlayer[] = [];
 let fetchedVideosCount = 0;
+let isIPhone = isiPhone();
 
 type VideoViewReport = {
 	progress: number;
@@ -102,6 +104,9 @@ async function updateStats(oldIndex) {
 	}
 
 	delete videoStats[oldIndex];
+
+	if ($page.url.host.includes('t:')) return;
+
 	const payload =
 		stats.count == 0
 			? {
@@ -143,11 +148,11 @@ async function handleChange(e: CustomEvent) {
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
 	updateStats(currentPlayingIndex);
-	playVideo(index);
 	recordView(videos[currentVideoIndex]);
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
+	currentPlayingIndex = index;
 }
 
 function updateMetadata(video?: PostPopulated) {
@@ -160,17 +165,6 @@ function updateMetadata(video?: PostPopulated) {
 		artwork: [{ src: getThumbnailUrl(video.video_uid), type: 'image/png' }]
 	});
 }
-
-const playVideo = debounce(50, async (index: number) => {
-	try {
-		videoPlayers[currentPlayingIndex]?.stop();
-		videoPlayers[index]?.play();
-		videoPlayers[index + 1]?.stop();
-		currentPlayingIndex = index;
-	} catch (e) {
-		Log({ error: e, index, source: '1 playVideo' }, 'error');
-	}
-});
 
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
@@ -203,12 +197,14 @@ function recordStats(
 
 onMount(async () => {
 	updateURL();
+
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
 		videos = [data.post, ...videos];
 		await recordView(data.post);
 	}
+
 	await tick();
 	await fetchNextVideos();
 	handleParams();
@@ -222,16 +218,16 @@ onMount(async () => {
 <Swiper
 	direction="{'vertical'}"
 	observer
+	cssMode
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
-	cssMode
-	spaceBetween="{100}"
+	spaceBetween="{300}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
-		{@const src = getMp4Url(video.video_uid)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
+			{#if currentVideoIndex - 1 < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
+					bind:this="{videoPlayers[i]}"
 					on:loaded="{() => hideSplashScreen(500)}"
 					on:watchedPercentage="{({ detail }) =>
 						recordStats(
@@ -241,9 +237,9 @@ onMount(async () => {
 							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
 							video.home_feed_ranking_score
 						)}"
-					bind:this="{videoPlayers[i]}"
 					i="{i}"
 					id="{video.id}"
+					isiPhone="{isIPhone}"
 					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
@@ -254,13 +250,11 @@ onMount(async () => {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
-					nextVideo="{currentVideoIndex + 1 == i || currentVideoIndex + 2 == i}"
 					inView="{i == currentVideoIndex}"
-					swiperJs
 					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 						video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
-					src="{src}" />
+					src="{getHlsUrl(video.video_uid)}" />
 			{/if}
 		</SwiperSlide>
 	{/each}
