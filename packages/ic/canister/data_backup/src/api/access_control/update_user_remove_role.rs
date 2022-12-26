@@ -1,7 +1,7 @@
 use candid::Principal;
 use shared_utils::access_control::{self, UserAccessRole};
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data::heap_data::HeapData, CANISTER_DATA};
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
@@ -10,18 +10,18 @@ fn update_user_remove_role(role: UserAccessRole, principal_id: Principal) {
 
     CANISTER_DATA.with(|canister_data_ref_cell| {
         let mut canister_data = canister_data_ref_cell.borrow_mut();
-        update_user_remove_role_impl(role, principal_id, &mut canister_data, api_caller);
+        update_user_remove_role_impl(role, principal_id, &mut canister_data.heap_data, api_caller);
     });
 }
 
 fn update_user_remove_role_impl(
     role: UserAccessRole,
     principal_id: Principal,
-    canister_data: &mut CanisterData,
+    heap_data: &mut HeapData,
     api_caller: Principal,
 ) {
     access_control::remove_role_from_principal_id_v2(
-        &mut canister_data.access_control_list,
+        &mut heap_data.access_control_list,
         principal_id,
         role,
         api_caller,
@@ -35,19 +35,19 @@ mod test {
         get_alice_principal_id_v1, get_bob_principal_id_v1, get_global_super_admin_principal_id_v1,
     };
 
-    use crate::data::CanisterData;
+    use crate::data::heap_data::HeapData;
 
     #[test]
     fn test_update_user_add_role_impl() {
-        let mut canister_data = CanisterData::default();
-        canister_data.access_control_list.insert(
+        let mut heap_data = HeapData::default();
+        heap_data.access_control_list.insert(
             get_global_super_admin_principal_id_v1(),
             vec![
                 UserAccessRole::CanisterAdmin,
                 UserAccessRole::CanisterController,
             ],
         );
-        canister_data.access_control_list.insert(
+        heap_data.access_control_list.insert(
             get_alice_principal_id_v1(),
             vec![UserAccessRole::ProfileOwner],
         );
@@ -58,11 +58,11 @@ mod test {
         super::update_user_remove_role_impl(
             UserAccessRole::ProfileOwner,
             principal_id,
-            &mut canister_data,
+            &mut heap_data,
             api_caller,
         );
         assert_eq!(
-            canister_data.access_control_list.get(&principal_id),
+            heap_data.access_control_list.get(&principal_id),
             Some(&vec![UserAccessRole::ProfileOwner])
         );
 
@@ -72,11 +72,11 @@ mod test {
         super::update_user_remove_role_impl(
             UserAccessRole::ProfileOwner,
             principal_id,
-            &mut canister_data,
+            &mut heap_data,
             api_caller,
         );
         assert_eq!(
-            canister_data.access_control_list.get(&principal_id),
+            heap_data.access_control_list.get(&principal_id),
             Some(&vec![])
         );
     }

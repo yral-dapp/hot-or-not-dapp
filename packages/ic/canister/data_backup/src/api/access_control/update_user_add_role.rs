@@ -1,7 +1,7 @@
 use candid::Principal;
 use shared_utils::access_control::{add_role_to_principal_id_v2, UserAccessRole};
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data::heap_data::HeapData, CANISTER_DATA};
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
@@ -10,18 +10,18 @@ fn update_user_add_role(role: UserAccessRole, principal_id: Principal) {
 
     CANISTER_DATA.with(|canister_data_ref_cell| {
         let mut canister_data = canister_data_ref_cell.borrow_mut();
-        update_user_add_role_impl(role, principal_id, &mut canister_data, api_caller);
+        update_user_add_role_impl(role, principal_id, &mut canister_data.heap_data, api_caller);
     });
 }
 
 fn update_user_add_role_impl(
     role: UserAccessRole,
     principal_id: Principal,
-    canister_data: &mut CanisterData,
+    heap_data: &mut HeapData,
     api_caller: Principal,
 ) {
     add_role_to_principal_id_v2(
-        &mut canister_data.access_control_list,
+        &mut heap_data.access_control_list,
         principal_id,
         role,
         api_caller,
@@ -35,12 +35,12 @@ mod test {
         get_alice_principal_id_v1, get_bob_principal_id_v1, get_global_super_admin_principal_id_v1,
     };
 
-    use crate::data::CanisterData;
+    use crate::data::heap_data::HeapData;
 
     #[test]
     fn test_update_user_add_role_impl() {
-        let mut canister_data = CanisterData::default();
-        canister_data.access_control_list.insert(
+        let mut heap_data = HeapData::default();
+        heap_data.access_control_list.insert(
             get_global_super_admin_principal_id_v1(),
             vec![
                 UserAccessRole::CanisterAdmin,
@@ -54,12 +54,12 @@ mod test {
         super::update_user_add_role_impl(
             UserAccessRole::ProfileOwner,
             principal_id,
-            &mut canister_data,
+            &mut heap_data,
             api_caller,
         );
 
         let user_roles = access_control::get_roles_for_principal_id_v2(
-            &canister_data.access_control_list,
+            &heap_data.access_control_list,
             principal_id,
         );
         assert!(user_roles.contains(&UserAccessRole::ProfileOwner));
@@ -70,12 +70,12 @@ mod test {
         super::update_user_add_role_impl(
             UserAccessRole::CanisterController,
             principal_id,
-            &mut canister_data,
+            &mut heap_data,
             api_caller,
         );
 
         let user_roles = access_control::get_roles_for_principal_id_v2(
-            &canister_data.access_control_list,
+            &heap_data.access_control_list,
             principal_id,
         );
         assert!(!user_roles.contains(&UserAccessRole::CanisterController));

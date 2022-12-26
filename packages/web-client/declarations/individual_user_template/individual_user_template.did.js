@@ -31,6 +31,10 @@ export const idlFactory = ({ IDL }) => {
     'Transcoding' : IDL.Null,
     'Deleted' : IDL.Null,
   });
+  const SystemTime = IDL.Record({
+    'nanos_since_epoch' : IDL.Nat32,
+    'secs_since_epoch' : IDL.Nat64,
+  });
   const PostDetailsForFrontend = IDL.Record({
     'id' : IDL.Nat64,
     'status' : PostStatus,
@@ -40,6 +44,7 @@ export const idlFactory = ({ IDL }) => {
     'description' : IDL.Text,
     'total_view_count' : IDL.Nat64,
     'created_by_display_name' : IDL.Opt(IDL.Text),
+    'created_at' : SystemTime,
     'created_by_unique_user_name' : IDL.Opt(IDL.Text),
     'video_uid' : IDL.Text,
     'created_by_user_principal_id' : IDL.Principal,
@@ -84,10 +89,6 @@ export const idlFactory = ({ IDL }) => {
     'ProfileOwner' : IDL.Null,
     'CanisterAdmin' : IDL.Null,
     'ProjectCanister' : IDL.Null,
-  });
-  const SystemTime = IDL.Record({
-    'nanos_since_epoch' : IDL.Nat32,
-    'secs_since_epoch' : IDL.Nat64,
   });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),

@@ -278,6 +278,7 @@ impl Post {
             created_by_unique_user_name: user_profile.unique_user_name,
             created_by_user_principal_id: user_profile.principal_id,
             created_by_profile_photo_url: user_profile.profile_picture_url,
+            created_at: self.created_at,
             description: self.description.clone(),
             hashtags: self.hashtags.clone(),
             video_uid: self.video_uid.clone(),
