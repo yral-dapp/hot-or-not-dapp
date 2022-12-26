@@ -2,11 +2,12 @@ use std::collections::HashMap;
 
 use candid::{CandidType, Deserialize, Principal};
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
+use serde::Serialize;
 use speedy::{Readable, Writable};
 
 /// The different user roles to be used in access control for principals
 /// making calls to a canister
-#[derive(Readable, Writable, PartialEq, Eq, Debug, CandidType, Deserialize, Clone)]
+#[derive(Readable, Writable, PartialEq, Eq, Debug, CandidType, Deserialize, Clone, Serialize)]
 pub enum UserAccessRole {
     /// User has canister WASM install/uninstall/delete capabilities
     CanisterController,

@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 
 use candid::{export_service, Principal};
-use data::CanisterData;
+use data::memory_layout::CanisterData;
 use shared_utils::{
     access_control::UserAccessRole, canister_specific::data_backup::types::args::DataBackupInitArgs,
 };
@@ -12,7 +12,7 @@ mod data;
 mod test;
 
 thread_local! {
-    static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
+    pub static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

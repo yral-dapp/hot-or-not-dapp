@@ -55,6 +55,7 @@ type PostDetailsForFrontend = record {
   description : text;
   total_view_count : nat64;
   created_by_display_name : opt text;
+  created_at : SystemTime;
   created_by_unique_user_name : opt text;
   video_uid : text;
   created_by_user_principal_id : principal;
