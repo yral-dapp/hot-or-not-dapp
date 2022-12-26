@@ -159,7 +159,7 @@ jobs:
         if: always()
         with:
           name: lighthouse-ci-report
-          path: lhci-report
+          path: packages/web-client/lhci-report
           retention-days: 7
 
       - uses: actions/upload-artifact@v3
