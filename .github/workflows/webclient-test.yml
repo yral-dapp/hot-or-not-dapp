@@ -148,6 +148,8 @@ jobs:
           npm run wc:build
           npm install -g @lhci/cli
           lhci_host=http://localhost:4173 lhci autorun
+          ls
+          ls packages/*/*/*
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
