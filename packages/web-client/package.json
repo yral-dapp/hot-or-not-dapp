@@ -20,15 +20,15 @@
 	"dependencies": {
 		"@builder.io/partytown": "0.7.3",
 		"@dfinity/agent": "0.15.1",
-		"@dfinity/auth-client": "0.15.1",
+		"@dfinity/auth-client": "0.15.0",
 		"@dfinity/candid": "0.15.1",
-		"@dfinity/identity": "0.15.1",
+		"@dfinity/identity": "0.15.0",
 		"@dfinity/principal": "0.15.1",
 		"@dfinity/identity-secp256k1": "0.15.1",
 		"@esbuild-plugins/node-globals-polyfill": "0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "0.1.4",
-		"@sentry/svelte": "7.28.1",
-		"@sentry/tracing": "7.28.1",
+		"@sentry/svelte": "7.28.0",
+		"@sentry/tracing": "7.28.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
 		"hls.js": "1.2.9",
@@ -38,7 +38,7 @@
 		"throttle-debounce": "5.0.0"
 	},
 	"devDependencies": {
-		"@playwright/test": "1.29.1",
+		"@playwright/test": "1.29.0",
 		"@sveltejs/adapter-cloudflare": "1.0.0",
 		"@sveltejs/adapter-static": "1.0.0",
 		"@sveltejs/kit": "1.0.1",
@@ -60,7 +60,7 @@
 		"ts-node": "10.9.1",
 		"tslib": "2.4.1",
 		"typescript": "4.9.4",
-		"vite": "4.0.3",
-		"vitest": "0.26.2"
+		"vite": "4.0.2",
+		"vitest": "0.26.1"
 	}
 }
