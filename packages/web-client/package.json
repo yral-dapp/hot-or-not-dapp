@@ -38,7 +38,7 @@
 		"throttle-debounce": "5.0.0"
 	},
 	"devDependencies": {
-		"@playwright/test": "1.29.0",
+		"@playwright/test": "1.29.1",
 		"@sveltejs/adapter-cloudflare": "1.0.0",
 		"@sveltejs/adapter-static": "1.0.0",
 		"@sveltejs/kit": "1.0.1",
