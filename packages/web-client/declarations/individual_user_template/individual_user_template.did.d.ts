@@ -56,7 +56,6 @@ export interface PostDetailsForFrontend {
   'description' : string,
   'total_view_count' : bigint,
   'created_by_display_name' : [] | [string],
-  'created_at' : SystemTime,
   'created_by_unique_user_name' : [] | [string],
   'video_uid' : string,
   'created_by_user_principal_id' : Principal,
