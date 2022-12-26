@@ -55,7 +55,7 @@ async function nextStep() {
 			descriptionError = 'Description is too short';
 		}
 		if (!hashtags.length) {
-			hashtagError = 'Please add atleast 1 hashtag';
+			hashtagError = 'Please add at least 1 hashtag';
 		}
 		if (hashtagError || descriptionError) return;
 		if (!$authState.isLoggedIn) {
