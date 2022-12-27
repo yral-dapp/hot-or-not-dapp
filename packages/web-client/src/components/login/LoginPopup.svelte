@@ -73,7 +73,9 @@ async function handleSuccessfulLogin(type: LoginType) {
 			login_method: type,
 			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
-			userId: $userProfile.principal_id
+			userId: $userProfile.principal_id,
+			referral: !!res.referral,
+			...(!!res.referral && { referral_id: res.referral })
 		});
 		loading = false;
 		$authState.showLogin = false;
