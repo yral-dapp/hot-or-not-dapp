@@ -31,8 +31,6 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 					creating content, engaging with it or sharing it with their friends and family!
 				</div>
 			</div>
-
-			<Button href="https://hotornot.wtf" class="w-full">Visit the website</Button>
 		</div>
 	</svelte:fragment>
 </HomeLayout>
