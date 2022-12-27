@@ -253,7 +253,7 @@ onMount(() => {
 						e.stopImmediatePropagation();
 						handleLike();
 					}}">
-					<HeartIcon filled="{liked}" class="h-8 w-8" />
+					<HeartIcon filled="{liked && $authState.isLoggedIn}" class="h-8 w-8" />
 				</IconButton>
 				<IconButton
 					ariaLabel="Share this post"
