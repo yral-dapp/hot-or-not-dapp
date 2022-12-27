@@ -14,13 +14,12 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
-import { createEventDispatcher, onMount } from 'svelte';
+import { createEventDispatcher, onMount, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import { debounce } from 'throttle-debounce';
+import { debounce, throttle } from 'throttle-debounce';
 import Hls from 'hls.js';
 import PlayIcon from '$components/icons/PlayIcon.svelte';
-import { tick } from 'svelte/types/runtime/internal/scheduler';
 
 export let src;
 export let i: number;
@@ -53,23 +52,6 @@ let hls: Hls;
 let waiting = false;
 let paused = false;
 
-export const stop = debounce(
-	1000,
-	async () => {
-		try {
-			await tick();
-			if (videoEl) {
-				videoEl.volume = 0;
-				videoEl.currentTime = 0.05;
-				videoEl.pause();
-			}
-		} catch (e: any) {
-			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
-		}
-	},
-	{ atBegin: true }
-);
-
 export const checkVideoIsPlaying = debounce(
 	500,
 	() => {
@@ -85,32 +67,44 @@ export const checkVideoIsPlaying = debounce(
 	}
 );
 
-export const play = debounce(
-	1000,
-	async () => {
-		await tick();
-		if (videoEl?.paused) {
-			if (isiPhone) {
-				videoEl.volume = 0;
-			} else if (videoEl) {
-				videoEl.muted = $playerState.muted;
+export const control = throttle(1000, async (method: 'play' | 'stop') => {
+	await tick();
+	if (method === 'play') {
+		try {
+			if (videoEl?.paused) {
+				if (isiPhone) {
+					videoEl.volume = 0;
+				} else if (videoEl) {
+					videoEl.muted = $playerState.muted;
+				}
+				if (videoEl) {
+					videoEl
+						.play()
+						.then(() => {
+							videoEl.volume = 1;
+							paused = false;
+							checkVideoIsPlaying();
+						})
+						.catch(() => {
+							paused = true;
+						});
+				}
 			}
-			if (videoEl) {
-				videoEl
-					.play()
-					.then(() => {
-						videoEl.volume = 1;
-						paused = false;
-						checkVideoIsPlaying();
-					})
-					.catch(() => {
-						paused = true;
-					});
-			}
+		} catch (e: any) {
+			Log({ error: e, i, src, inView, source: '2 control' }, 'error');
 		}
-	},
-	{ atBegin: true }
-);
+	} else if (method === 'stop') {
+		try {
+			if (videoEl) {
+				videoEl.volume = 0;
+				videoEl.currentTime = 0.05;
+				videoEl.pause();
+			}
+		} catch (e: any) {
+			Log({ error: e, i, src, inView, source: '3 control' }, 'error');
+		}
+	}
+});
 
 async function handleClick() {
 	try {
@@ -172,12 +166,12 @@ $: if (inView && !videoEl?.paused) {
 $: if (inView && loaded) {
 	dispatch('loaded');
 	if (videoEl?.paused) {
-		play();
+		control('play');
 	}
 }
 
 $: if (!inView && !paused) {
-	stop();
+	control('stop');
 }
 
 onMount(() => {
@@ -213,7 +207,7 @@ onMount(() => {
 			loaded = true;
 		}}"
 		on:pause="{() => {
-			inView && play();
+			inView && control('play');
 		}}"
 		bind:this="{videoEl}"
 		loop
