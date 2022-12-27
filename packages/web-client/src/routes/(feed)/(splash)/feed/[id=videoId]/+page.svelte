@@ -218,7 +218,7 @@ onMount(async () => {
 <Swiper
 	direction="{'vertical'}"
 	observer
-	speed="{1500}"
+	speed="{500}"
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
 	spaceBetween="{100}"
