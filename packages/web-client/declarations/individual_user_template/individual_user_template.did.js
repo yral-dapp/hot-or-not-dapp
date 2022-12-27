@@ -31,6 +31,10 @@ export const idlFactory = ({ IDL }) => {
     'Transcoding' : IDL.Null,
     'Deleted' : IDL.Null,
   });
+  const SystemTime = IDL.Record({
+    'nanos_since_epoch' : IDL.Nat32,
+    'secs_since_epoch' : IDL.Nat64,
+  });
   const PostDetailsForFrontend = IDL.Record({
     'id' : IDL.Nat64,
     'status' : PostStatus,
@@ -84,10 +88,6 @@ export const idlFactory = ({ IDL }) => {
     'ProfileOwner' : IDL.Null,
     'CanisterAdmin' : IDL.Null,
     'ProjectCanister' : IDL.Null,
-  });
-  const SystemTime = IDL.Record({
-    'nanos_since_epoch' : IDL.Nat32,
-    'secs_since_epoch' : IDL.Nat64,
   });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),

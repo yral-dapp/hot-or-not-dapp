@@ -73,7 +73,8 @@ export const checkVideoIsPlaying = debounce(
 	() => {
 		if (videoEl?.paused) {
 			paused = true;
-		} else {
+		} else if (videoEl) {
+			paused = false;
 			videoEl.volume = 1;
 		}
 	},
@@ -88,19 +89,21 @@ export const play = debounce(
 		if (videoEl?.paused) {
 			if (isiPhone) {
 				videoEl.volume = 0;
-			} else {
+			} else if (videoEl) {
 				videoEl.muted = $playerState.muted;
 			}
-			videoEl
-				.play()
-				.then(() => {
-					videoEl.volume = 1;
-					paused = false;
-					checkVideoIsPlaying();
-				})
-				.catch(() => {
-					paused = true;
-				});
+			if (videoEl) {
+				videoEl
+					.play()
+					.then(() => {
+						videoEl.volume = 1;
+						paused = false;
+						checkVideoIsPlaying();
+					})
+					.catch(() => {
+						paused = true;
+					});
+			}
 		}
 	},
 	{ atBegin: true }
@@ -117,7 +120,7 @@ async function handleClick() {
 				$playerState.muted = false;
 				videoEl.muted = false;
 				paused = false;
-			} else {
+			} else if (videoEl) {
 				$playerState.muted = !$playerState.muted;
 				videoEl.muted = $playerState.muted;
 			}
@@ -164,12 +167,12 @@ $: if (inView && !videoEl?.paused) {
 
 $: if (inView && loaded) {
 	dispatch('loaded');
-	if (videoEl.paused) {
+	if (videoEl?.paused) {
 		play();
 	}
 }
 
-$: if (!inView) {
+$: if (!inView && !paused) {
 	stop();
 }
 
@@ -222,10 +225,10 @@ onMount(() => {
 		class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
 		src="{thumbnail}" />
 
-	{#if $playerState.muted || !$playerState.initialized || paused}
+	{#if $playerState.muted || paused}
 		<div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
 			<div class="flex h-full items-center justify-center">
-				{#if !$playerState.initialized || paused}
+				{#if paused}
 					<PlayIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
 				{:else if $playerState.muted}
 					<SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
