@@ -20,6 +20,7 @@ import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { debounce } from 'throttle-debounce';
 import Hls from 'hls.js';
 import PlayIcon from '$components/icons/PlayIcon.svelte';
+import { tick } from 'svelte/types/runtime/internal/scheduler';
 
 export let src;
 export let i: number;
@@ -54,8 +55,9 @@ let paused = false;
 
 export const stop = debounce(
 	1000,
-	() => {
+	async () => {
 		try {
+			await tick();
 			if (videoEl) {
 				videoEl.volume = 0;
 				videoEl.currentTime = 0.05;
@@ -85,7 +87,8 @@ export const checkVideoIsPlaying = debounce(
 
 export const play = debounce(
 	1000,
-	() => {
+	async () => {
+		await tick();
 		if (videoEl?.paused) {
 			if (isiPhone) {
 				videoEl.volume = 0;
@@ -111,6 +114,7 @@ export const play = debounce(
 
 async function handleClick() {
 	try {
+		await tick();
 		if (videoEl) {
 			if (!$playerState.initialized) {
 				$playerState.initialized = true;
