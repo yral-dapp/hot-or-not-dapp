@@ -6,7 +6,6 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
-import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { individualUser } from '$lib/helpers/backend';
 import { isiPhone } from '$lib/utils/isSafari';
@@ -32,9 +31,7 @@ let isIPhone = isiPhone();
 		{/if}
 
 		<div class="absolute top-4 left-4">
-			<IconButton
-				on:click="{() =>
-					history.length > 2 ? history.back() : goto(`/profile/${$page.params.id}`)}">
+			<IconButton href="{`/profile/${$page.params.id}`}" preload>
 				<CaretLeftIcon class="h-5 w-5" />
 			</IconButton>
 		</div>

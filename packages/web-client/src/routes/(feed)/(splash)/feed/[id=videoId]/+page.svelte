@@ -22,6 +22,7 @@ import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
 import { isiPhone } from '$lib/utils/isSafari';
 import { page } from '$app/stores';
+import navigateBack from '$stores/navigateBack';
 
 export let data: PageData;
 
@@ -169,7 +170,7 @@ function updateMetadata(video?: PostPopulated) {
 function updateURL(post?: PostPopulated) {
 	if (!post) return;
 	const url = post.publisher_canister_id + '@' + post.post_id;
-	$playerState.currentFeedUrl = url;
+	$navigateBack = $playerState.currentFeedUrl = url;
 	window.history.replaceState('', '', url);
 }
 
