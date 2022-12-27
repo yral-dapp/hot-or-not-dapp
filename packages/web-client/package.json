@@ -10,7 +10,7 @@
 		"test:vi": "vitest --coverage",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build --threshold warning --diagnostic-sources \"js,ts,svelte\"",
+		"check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build,tests --threshold warning --diagnostic-sources \"js,ts,svelte\"",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"tsc": "tsc -b",
 		"sync": "svelte-kit sync",
