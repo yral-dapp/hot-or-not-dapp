@@ -148,8 +148,7 @@ jobs:
           npm run wc:build
           npm install -g @lhci/cli
           lhci_host=http://localhost:4173 lhci autorun
-          ls
-          ls packages/*/*/*
+
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -161,7 +160,7 @@ jobs:
         if: always()
         with:
           name: lighthouse-ci-report
-          path: packages/web-client/lhci-report
+          path: lhci_report
           retention-days: 7
 
       - uses: actions/upload-artifact@v3
