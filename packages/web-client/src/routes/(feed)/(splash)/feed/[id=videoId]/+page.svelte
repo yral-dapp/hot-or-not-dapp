@@ -218,14 +218,14 @@ onMount(async () => {
 <Swiper
 	direction="{'vertical'}"
 	observer
-	cssMode
+	speed="{1500}"
 	slidesPerView="{1}"
 	on:slideChange="{handleChange}"
-	spaceBetween="{300}"
+	spaceBetween="{100}"
 	class="h-full w-full">
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-			{#if currentVideoIndex - 1 < i && currentVideoIndex + keepVideosLoadedCount > i}
+			{#if currentVideoIndex - keepVideosLoadedCount < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
 					on:loaded="{() => hideSplashScreen(500)}"
