@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { HttpAgent } from '@dfinity/agent';
-import canisterIds from '../../../../.dfx/local/canister_ids.json' assert { type: 'json' };
-import { createActor as createUserIndexActor } from '../../declarations/user_index/index.js';
+import canisterIds from '../../../../../.dfx/local/canister_ids.json';
+import { createActor as createUserIndexActor } from '../../../declarations/user_index/index.js';
 import fetch from 'isomorphic-fetch';
 
 // The two tests marked with concurrent will be run in parallel

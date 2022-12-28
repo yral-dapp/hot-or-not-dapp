@@ -21,7 +21,7 @@ export default mergeConfig(
 		test: {
 			globals: true,
 			environment: 'jsdom',
-			include: ['**/*.vi.ts'],
+			include: ['tests/vitest/**/*.spec.ts'],
 			// include: ['**/*.{vi.ts,spec.ts}'],
 			testTimeout: 30_000,
 			coverage: {

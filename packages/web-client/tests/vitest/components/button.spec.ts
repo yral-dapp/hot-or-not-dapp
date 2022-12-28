@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'vitest';
-import Button from '../../src/components/button/Button.svelte';
+import Button from '../../../src/components/button/Button.svelte';
 
 let host: HTMLElement;
 

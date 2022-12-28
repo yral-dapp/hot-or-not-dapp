@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'vitest';
-import Avatar from '../../src/components/avatar/Avatar.svelte';
+import Avatar from '../../../src/components/avatar/Avatar.svelte';
 
 let host: HTMLElement;
 

@@ -1,6 +1,6 @@
 import { tick } from 'svelte';
 import { afterEach, expect, test } from 'vitest';
-import Input from '../../src/components/input/Input.svelte';
+import Input from '../../../src/components/input/Input.svelte';
 
 let host: HTMLElement;
 
