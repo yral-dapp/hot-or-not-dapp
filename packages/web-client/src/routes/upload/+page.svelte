@@ -308,15 +308,9 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 	}
 }
 
-function preloadLinks() {
-	preloadData('/feed');
-	preloadData('/upload/new');
-}
-
 onMount(async () => {
 	useCanvas = !isiPhone();
 	await requestMediaAccess();
-	preloadLinks();
 });
 
 onDestroy(async () => {
@@ -348,7 +342,7 @@ onDestroy(async () => {
 					{#if initState == 'denied'}
 						<span class="font-semibold">Enable Camera Access</span>
 						<span class="text-center text-white/60">
-							Please provide us access to your camera, whch is required for recording video
+							Please provide us access to your camera, which is required for recording video
 						</span>
 					{/if}
 				</div>
