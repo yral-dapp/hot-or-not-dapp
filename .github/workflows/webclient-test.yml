@@ -133,10 +133,10 @@ jobs:
         if: always()
         run: dfx ping http://localhost:4943
 
-      - name: Run e2e tests
+      - name: Run vitest
         run: |
           set -euxo pipefail
-          npm run wc:test:e2e
+          npm run wc:test:vi
 
       - name: Run Playwright tests
         run: |
@@ -168,4 +168,11 @@ jobs:
         with:
           name: playwright-report
           path: packages/web-client/playwright-report/
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: packages/web-client/coverage/
           retention-days: 7

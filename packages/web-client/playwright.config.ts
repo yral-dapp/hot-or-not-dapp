@@ -11,7 +11,7 @@ const projects: PlaywrightTestConfig['projects'] = [
 ];
 
 const config: PlaywrightTestConfig = {
-	testDir: './tests',
+	testDir: './tests/playwright',
 	timeout: 60_000,
 	expect: {
 		timeout: 20_000

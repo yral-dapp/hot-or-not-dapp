@@ -24,6 +24,13 @@
 		"strict": true,
 		"types": ["gtag.js", "w3c-image-capture"]
 	},
-	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "declarations"],
+	"include": [
+		"src/**/*.d.ts",
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.svelte",
+		"declarations",
+		"tests/**/*.ts"
+	],
 	"exclude": ["node_modules", "build"]
 }
