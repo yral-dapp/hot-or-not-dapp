@@ -9,6 +9,7 @@ import DownloadIcon from '$components/icons/DownloadIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
@@ -77,6 +78,11 @@ function copyLink() {
 onMount(() => {
 	if ($authState.isLoggedIn) {
 		loadHistory();
+		registerEvent('refer_earn_visit', {
+			display_name: $userProfile.display_name,
+			username: $userProfile.unique_user_name,
+			userId: $userProfile.principal_id
+		});
 	}
 });
 </script>

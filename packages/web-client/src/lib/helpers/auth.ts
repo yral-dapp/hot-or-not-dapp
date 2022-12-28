@@ -12,6 +12,7 @@ import { checkSignupStatus } from './signup';
 async function updateUserIndexCanister(): Promise<{
 	error: boolean;
 	new_user: boolean;
+	referral?: string;
 	error_details?: 'SIGNUP_NOT_ALLOWED' | 'OTHER';
 }> {
 	try {
@@ -19,6 +20,7 @@ async function updateUserIndexCanister(): Promise<{
 		let userCanisterPrincipal: Principal;
 
 		const authStateData = get(authState);
+		const referralStore = get(referralId);
 
 		const res = await userIndex().get_user_canister_id_from_user_principal_id(
 			Principal.from(authStateData.idString)
@@ -32,10 +34,14 @@ async function updateUserIndexCanister(): Promise<{
 			// new user
 			const isSignupAllowed = await checkSignupStatus();
 			if (!isSignupAllowed) {
-				return { error: true, error_details: 'SIGNUP_NOT_ALLOWED', new_user: true };
+				return {
+					error: true,
+					error_details: 'SIGNUP_NOT_ALLOWED',
+
+					new_user: true
+				};
 			} else {
 				new_user = true;
-				const referralStore = get(referralId);
 				const referral: [] | [Principal] = referralStore.principalId
 					? [Principal.from(referralStore.principalId)]
 					: [];
@@ -68,14 +74,18 @@ async function updateUserIndexCanister(): Promise<{
 			canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
 		}
 
-		return { error: false, new_user };
+		return { error: false, new_user, referral: referralStore.principalId };
 	} catch (e) {
 		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
 		return { error: true, error_details: 'OTHER', new_user: false };
 	}
 }
 
-export async function initializeAuthClient(): Promise<{ error: boolean; new_user: boolean }> {
+export async function initializeAuthClient(): Promise<{
+	error: boolean;
+	new_user: boolean;
+	referral?: string;
+}> {
 	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
 	const authHelperData = get(authHelper);
@@ -117,7 +127,7 @@ export async function initializeAuthClient(): Promise<{ error: boolean; new_user
 		setUser(principal?.toText());
 		loadingAuthStatus.set(false);
 
-		return { error: false, new_user: res.new_user };
+		return { error: false, new_user: res.new_user, referral: res.referral };
 	} else {
 		authState.set({
 			isLoggedIn: false,

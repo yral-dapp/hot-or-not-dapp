@@ -5,6 +5,7 @@ import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 let loadBalanced = true;
 let loadList = true;
@@ -25,6 +26,14 @@ async function refreshTokenBalance() {
 		errorBalance = true;
 	} else {
 		tokenBalance = res.balance;
+		if (loggedIn) {
+			registerEvent('token_balance', {
+				balance: tokenBalance,
+				userId: $userProfile.principal_id,
+				profile_id: $userProfile.principal_id,
+				profile_username: $userProfile.unique_user_name
+			});
+		}
 	}
 	loadBalanced = false;
 }

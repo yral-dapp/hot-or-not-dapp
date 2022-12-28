@@ -7,6 +7,7 @@ import type {
 	TokenEventV1,
 	UserProfileDetailsForFrontend
 } from '$canisters/individual_user_template/individual_user_template.did';
+import { setUserProperties } from '$components/seo/GoogleAnalytics.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -68,10 +69,22 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
 			const { canisterIdb } = await import('$lib/utils/idb');
 			canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
 		}
+		updateUserProperties();
 		Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
 	} else {
 		Log({ error: 'No profile fetched', from: '1 updateProfile' }, 'error');
 	}
+}
+
+async function updateUserProperties() {
+	const profile = get(userProfile);
+	const res = await fetchTokenBalance();
+	setUserProperties({
+		display_name: profile.display_name,
+		username: profile.unique_user_name,
+		userId: profile.principal_id,
+		...(!res.error && { wallet_balance: res.balance })
+	});
 }
 
 type ProfilePostsResponse =
