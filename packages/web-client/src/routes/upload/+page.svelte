@@ -281,10 +281,11 @@ function startCapturing() {
 	captureInterval = setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
 }
 
-const checkWhichEl = debounce(500, () => {
-	const captureArea = cameraEl.getBoundingClientRect();
+const checkWhichEl = debounce(500, async () => {
+	await tick();
+	const captureArea = cameraEl?.getBoundingClientRect();
 	for (let i = 0; i < filtersEl.children.length - 1; i++) {
-		const filterEl = filtersEl.children[i].getBoundingClientRect();
+		const filterEl = filtersEl.children[i]?.getBoundingClientRect();
 		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
 			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
 			selectedFilter = filterElSelected ?? 'clear';
@@ -294,8 +295,10 @@ const checkWhichEl = debounce(500, () => {
 });
 
 async function checkClickAndStartRecording(e: MouseEvent) {
-	const captureArea = cameraEl.getBoundingClientRect();
+	await tick();
+	const captureArea = cameraEl?.getBoundingClientRect();
 	if (
+		captureArea &&
 		e.x > captureArea.left &&
 		e.x < captureArea.right &&
 		e.y > captureArea.top &&
