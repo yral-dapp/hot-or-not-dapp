@@ -7,7 +7,7 @@ import { loadingAuthStatus } from '$stores/loading';
 import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
-import { checkSignupStatus } from './signup';
+import { checkSignupStatusCanister } from './signup';
 
 async function updateUserIndexCanister(): Promise<{
 	error: boolean;
@@ -30,7 +30,7 @@ async function updateUserIndexCanister(): Promise<{
 			new_user = false;
 		} else {
 			// new user
-			const isSignupAllowed = await checkSignupStatus();
+			const isSignupAllowed = await checkSignupStatusCanister();
 			if (!isSignupAllowed) {
 				return { error: true, error_details: 'SIGNUP_NOT_ALLOWED', new_user: true };
 			} else {
