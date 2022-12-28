@@ -22,7 +22,7 @@ pub fn pre_upgrade() {
         })
         .expect("failed to encode state");
 
-    // * Write the length of the serialized bytes to memory, followed by the
+    // * Write the length of the serialized bytes to memory, followed
     // * by the bytes themselves.
     let len = state_bytes.len() as u32;
     let mut memory = memory_layout::get_heap_data_memory();
