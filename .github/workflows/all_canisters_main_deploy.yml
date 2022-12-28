@@ -60,7 +60,7 @@ jobs:
           gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
       - name: Deploy configuration canister
         run: dfx canister install configuration --network ic --mode upgrade --argument "(record { known_principal_ids = null; signups_enabled = null; access_control_map = null; })"
-      - name: Deploy configuration canister
+      - name: Deploy data_backup canister
         run: dfx canister install data_backup --network ic --mode upgrade --argument "(record { known_principal_ids = null; access_control_map = null; })"
       - name: Deploy post_cache canister
         run: dfx canister install post_cache --network ic --mode upgrade --argument "(record { known_principal_ids = vec {} })"
