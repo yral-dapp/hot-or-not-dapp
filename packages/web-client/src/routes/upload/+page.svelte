@@ -283,13 +283,15 @@ function startCapturing() {
 
 const checkWhichEl = debounce(500, async () => {
 	await tick();
-	const captureArea = cameraEl?.getBoundingClientRect();
-	for (let i = 0; i < filtersEl.children.length - 1; i++) {
-		const filterEl = filtersEl.children[i]?.getBoundingClientRect();
-		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
-			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
-			selectedFilter = filterElSelected ?? 'clear';
-			break;
+	if (filtersEl && cameraEl) {
+		const captureArea = cameraEl.getBoundingClientRect();
+		for (let i = 0; i < filtersEl.children.length - 1; i++) {
+			const filterEl = filtersEl.children[i].getBoundingClientRect();
+			if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
+				const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
+				selectedFilter = filterElSelected ?? 'clear';
+				break;
+			}
 		}
 	}
 });
