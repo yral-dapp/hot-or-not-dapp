@@ -13,6 +13,7 @@
 		"wc:build": "npm run build --w @hnn/web-client",
 		"wc:build:static": "npm run build:static --w @hnn/web-client",
 		"wc:preview": "npm run preview --w @hnn/web-client",
+		"serve:lhci": "npm run wc:preview",
 		"wc:preview:static": "npm run preview:static --w @hnn/web-client",
 		"wc:dev": "npm run dev --w @hnn/web-client",
 		"wc:test": "npm run test --w @hnn/web-client",
