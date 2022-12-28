@@ -8,7 +8,7 @@ import UploadLayout from '$components/layout/UploadLayout.svelte';
 import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
-import { onMount, onDestroy } from 'svelte';
+import { onMount, onDestroy, tick } from 'svelte';
 import { fileToUpload } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 import { authState } from '$stores/auth';
@@ -20,6 +20,7 @@ import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import Switch from '$components/switch/Switch.svelte';
 import { individualUser } from '$lib/helpers/backend';
+import { debounce } from 'throttle-debounce';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -106,6 +107,7 @@ async function checkVideoProcessingStatus(uid: string) {
 			} else if (videoStatus.result.readyToStream) {
 				handleSuccessfulUpload(uid);
 				clearInterval(videoStatusInterval);
+				await tick();
 			}
 		} catch (e) {
 			Log({ error: 'Processing error', e, source: '1 checkVideoProcessingStatus' }, 'error');
@@ -123,41 +125,46 @@ async function checkVideoProcessingStatus(uid: string) {
 	}, 4000);
 }
 
-async function handleSuccessfulUpload(videoUid: string) {
-	try {
-		Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
-		const postId = await individualUser().add_post({
-			description: videoDescription,
-			hashtags,
-			video_uid: videoUid,
-			creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot
-		});
-		uploadedVideoId = Number(postId);
-		registerEvent('video_uploaded', {
-			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
-			userId: $userProfile.principal_id,
-			user_canister_id: $authState.userCanisterId,
-			video_uid: uploadedVideoId
-		});
-		uploadStep = 'verified';
-		uploadStatus = 'uploaded';
-		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
-	} catch (e) {
-		Log(
-			{ error: 'Couldnt send details to backend', e, source: '1 handleSuccessfulUpload' },
-			'error'
-		);
-		registerEvent('video_upload_failed', {
-			at_step: 'updating_db',
-			userId: $userProfile.principal_id,
-			user_canister_id: $authState.userCanisterId
-		});
-		hashtagError = 'Uploading failed. Please try again';
-		uploadStatus = 'to-upload';
-		uploadProgress.set(0);
-		return;
-	}
-}
+const handleSuccessfulUpload = debounce(
+	10000,
+	async (videoUid: string) => {
+		clearInterval(videoStatusInterval);
+		try {
+			Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
+			const postId = await individualUser().add_post({
+				description: videoDescription,
+				hashtags,
+				video_uid: videoUid,
+				creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot
+			});
+			uploadedVideoId = Number(postId);
+			registerEvent('video_uploaded', {
+				type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+				userId: $userProfile.principal_id,
+				user_canister_id: $authState.userCanisterId,
+				video_uid: uploadedVideoId
+			});
+			uploadStep = 'verified';
+			uploadStatus = 'uploaded';
+			Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
+		} catch (e) {
+			Log(
+				{ error: "Couldn't send details to backend", e, source: '1 handleSuccessfulUpload' },
+				'error'
+			);
+			registerEvent('video_upload_failed', {
+				at_step: 'updating_db',
+				userId: $userProfile.principal_id,
+				user_canister_id: $authState.userCanisterId
+			});
+			hashtagError = 'Uploading failed. Please try again';
+			uploadStatus = 'to-upload';
+			uploadProgress.set(0);
+			return;
+		}
+	},
+	{ atBegin: true }
+);
 
 async function showShareDialog() {
 	const videoLink = getVideoLink();
