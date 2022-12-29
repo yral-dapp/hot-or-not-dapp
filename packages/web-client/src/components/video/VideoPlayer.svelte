@@ -14,7 +14,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
-import { createEventDispatcher, onMount, tick } from 'svelte';
+import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { debounce, throttle } from 'throttle-debounce';
@@ -181,12 +181,13 @@ onMount(() => {
 		hls = new Hls();
 		hls.loadSource(src);
 		hls.attachMedia(videoEl);
-		return () => {
-			hls.destroy();
-		};
 	} else {
 		Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
 	}
+});
+
+onDestroy(() => {
+	hls.destroy && hls.destroy();
 });
 </script>
 
