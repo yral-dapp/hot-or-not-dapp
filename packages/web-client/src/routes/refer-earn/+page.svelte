@@ -81,7 +81,8 @@ onMount(() => {
 		registerEvent('refer_earn_visit', {
 			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
-			userId: $userProfile.principal_id
+			userId: $userProfile.principal_id,
+			user_canister_id: $authState.userCanisterId
 		});
 	}
 });
