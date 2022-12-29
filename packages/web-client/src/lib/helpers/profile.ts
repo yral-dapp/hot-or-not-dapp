@@ -78,11 +78,13 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
 
 async function updateUserProperties() {
 	const profile = get(userProfile);
+	const authStateData = get(authState);
 	const res = await fetchTokenBalance();
 	setUserProperties({
 		display_name: profile.display_name,
 		username: profile.unique_user_name,
 		userId: profile.principal_id,
+		user_canister_id: authStateData.userCanisterId,
 		...(!res.error && { wallet_balance: res.balance })
 	});
 }
