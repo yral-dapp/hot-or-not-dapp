@@ -114,10 +114,14 @@ async function handleClick() {
 				$playerState.initialized = true;
 			}
 			if (videoEl.paused) {
-				videoEl.play().catch(() => {});
+				videoEl
+					.play()
+					.then(() => {
+						paused = false;
+					})
+					.catch(() => {});
 				$playerState.muted = false;
 				videoEl.muted = false;
-				paused = false;
 			} else if (videoEl) {
 				$playerState.muted = !$playerState.muted;
 				videoEl.muted = $playerState.muted;
