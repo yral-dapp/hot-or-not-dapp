@@ -1,13 +1,15 @@
 [
 	{
 		"match": ".well-known",
+		"headers": {
+			"Access-Control-Allow-Origin": "*"
+		},
 		"ignore": false
 	},
 	{
-		"match": ".well-known/ii-alternative-origins",
+		"match": ".ic-assets.json",
 		"headers": {
-			"Access-Control-Allow-Origin": "*",
-			"Content-Type": "application/json"
+			"Access-Control-Allow-Origin": "*"
 		},
 		"ignore": false
 	}
