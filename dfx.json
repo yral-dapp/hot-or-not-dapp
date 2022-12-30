@@ -56,7 +56,7 @@
 			"frontend": {
 				"entrypoint": "./packages/web-client/build/index.html"
 			},
-			"source": ["./packages/web-client/build", "./packages/web-client/ic-assets"],
+			"source": ["./packages/web-client/build"],
 			"type": "assets"
 		}
 	}
