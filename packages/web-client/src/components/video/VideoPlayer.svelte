@@ -67,44 +67,48 @@ export const checkVideoIsPlaying = debounce(
 	}
 );
 
-export const control = throttle(1000, async (method: 'play' | 'stop') => {
-	await tick();
-	if (method === 'play') {
-		try {
-			if (videoEl?.paused) {
-				if (isiPhone) {
-					videoEl.volume = 0;
-				} else if (videoEl) {
-					videoEl.muted = $playerState.muted;
-				}
-				if (videoEl) {
-					videoEl
-						.play()
-						.then(() => {
-							videoEl.volume = 1;
-							paused = false;
-							checkVideoIsPlaying();
-						})
-						.catch(() => {
-							paused = true;
-						});
-				}
-			}
-		} catch (e: any) {
-			Log({ error: e, i, src, inView, source: '2 control' }, 'error');
-		}
-	} else if (method === 'stop') {
+export const stop = debounce(
+	1000,
+	() => {
 		try {
 			if (videoEl) {
 				videoEl.volume = 0;
 				videoEl.currentTime = 0.05;
 				videoEl.pause();
+				paused = true;
 			}
 		} catch (e: any) {
-			Log({ error: e, i, src, inView, source: '3 control' }, 'error');
+			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
 		}
-	}
-});
+	},
+	{ atBegin: true }
+);
+
+export const play = debounce(
+	1000,
+	() => {
+		if (videoEl?.paused) {
+			if (isiPhone) {
+				videoEl.volume = 0;
+			} else if (videoEl) {
+				videoEl.muted = $playerState.muted;
+			}
+			if (videoEl) {
+				videoEl
+					.play()
+					.then(() => {
+						videoEl.volume = 1;
+						paused = false;
+						checkVideoIsPlaying();
+					})
+					.catch(() => {
+						paused = true;
+					});
+			}
+		}
+	},
+	{ atBegin: true }
+);
 
 async function handleClick() {
 	try {
@@ -170,12 +174,12 @@ $: if (inView && !videoEl?.paused) {
 $: if (inView && loaded) {
 	dispatch('loaded');
 	if (videoEl?.paused) {
-		control('play');
+		play();
 	}
 }
 
 $: if (!inView && !paused) {
-	control('stop');
+	stop();
 }
 
 onMount(() => {
@@ -211,7 +215,7 @@ onMount(() => {
 			loaded = true;
 		}}"
 		on:pause="{() => {
-			inView && control('play');
+			inView && play();
 		}}"
 		bind:this="{videoEl}"
 		loop
