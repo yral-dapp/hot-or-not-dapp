@@ -48,7 +48,7 @@ let videoEl: HTMLVideoElement;
 let currentTime = 0;
 let duration = 0;
 let loaded = false;
-let hls: Hls;
+let hls: Hls | null = null;
 let waiting = false;
 let paused = false;
 
@@ -187,7 +187,9 @@ onMount(() => {
 });
 
 onDestroy(() => {
-	hls.destroy && hls.destroy();
+	if (hls && hls.destroy) {
+		hls.destroy();
+	}
 });
 </script>
 
