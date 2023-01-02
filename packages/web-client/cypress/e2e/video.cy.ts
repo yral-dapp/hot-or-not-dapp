@@ -1,12 +1,10 @@
-/// <reference types="cypress" />
-
 describe('visit home feed', () => {
 	beforeEach(() => {
 		cy.visit('https://hotornot.wtf');
 	});
 
 	it('video has source', () => {
-		cy.get('video').should('have.prop', 'src', true);
+		cy.get('video').should('have.prop', 'src');
 	});
 
 	it('video is autoplaying', () => {
