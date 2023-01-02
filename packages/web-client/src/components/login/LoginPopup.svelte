@@ -48,8 +48,7 @@ async function handleLogin(type: LoginType) {
 		maxTimeToLive: BigInt(30 * 24 * 60 * 60 * 1000 * 1000 * 1000),
 		onSuccess: () => handleSuccessfulLogin(type),
 		onError: (e) => handleError(type, e),
-		identityProvider: getIdentityProviderURL(type),
-		derivationOrigin: `https://${import.meta.env.VITE_WEBCLIENT_CANISTER_ID}.ic0.app`
+		identityProvider: getIdentityProviderURL(type)
 	});
 }
 
