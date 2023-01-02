@@ -1,6 +1,6 @@
 name: Deploy Web-Client
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:

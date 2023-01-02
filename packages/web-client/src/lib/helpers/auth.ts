@@ -127,8 +127,6 @@ export async function initializeAuthClient(): Promise<{
 		setUser(principal?.toText());
 		loadingAuthStatus.set(false);
 
-		console.log({ authState: get(authState), authHelper: get(authHelper) });
-
 		return { error: false, new_user: res.new_user, referral: res.referral };
 	} else {
 		authState.set({
