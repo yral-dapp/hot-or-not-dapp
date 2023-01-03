@@ -55,7 +55,6 @@ export async function getTopPosts(
 				BigInt(from),
 				BigInt(from + numberOfPosts)
 			);
-		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
 			const filteredPosts = await filterPosts(res.Ok);
 			const populatedRes = await populatePosts(filterViewed ? filteredPosts : res.Ok);
@@ -96,7 +95,6 @@ export async function getHotOrNotPosts(
 				BigInt(from),
 				BigInt(from + numberOfPosts)
 			);
-		Log({ res, from: '0 getTopPosts' }, 'info');
 		if ('Ok' in res) {
 			const populatedRes = await populatePosts(res.Ok);
 			if (populatedRes.error) {

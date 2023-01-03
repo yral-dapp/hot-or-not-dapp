@@ -241,7 +241,7 @@ onDestroy(() => {
 	class="h-full w-full">
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-			{#if currentVideoIndex - 1 < i && currentVideoIndex + keepVideosLoadedCount > i}
+			{#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
 					on:loaded="{() => hideSplashScreen(500)}"
