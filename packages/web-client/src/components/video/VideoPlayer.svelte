@@ -54,7 +54,8 @@ let paused = false;
 
 export const checkVideoIsPlaying = debounce(
 	500,
-	() => {
+	async () => {
+		await tick();
 		if (videoEl?.paused) {
 			paused = true;
 		} else if (videoEl) {
@@ -69,13 +70,13 @@ export const checkVideoIsPlaying = debounce(
 
 export const stop = debounce(
 	1000,
-	() => {
+	async () => {
 		try {
+			await tick();
 			if (videoEl) {
 				videoEl.volume = 0;
 				videoEl.currentTime = 0.05;
 				videoEl.pause();
-				paused = true;
 			}
 		} catch (e: any) {
 			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
@@ -86,7 +87,8 @@ export const stop = debounce(
 
 export const play = debounce(
 	1000,
-	() => {
+	async () => {
+		await tick();
 		if (videoEl?.paused) {
 			if (isiPhone) {
 				videoEl.volume = 0;
@@ -178,7 +180,7 @@ $: if (inView && loaded) {
 	}
 }
 
-$: if (!inView && !paused) {
+$: if (!inView) {
 	stop();
 }
 
