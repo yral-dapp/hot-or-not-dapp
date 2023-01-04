@@ -1,5 +1,8 @@
 use candid::{CandidType, Deserialize, Principal};
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use shared_utils::canister_specific::individual_user_template::types::profile::{
+    UserProfileDetailsForFrontend, UserProfileGlobalStats,
+};
 use speedy::{Readable, Writable};
 
 use crate::{PrincipalsIFollow, PrincipalsThatFollowMe};
@@ -11,30 +14,6 @@ pub struct UserProfile {
     principal_id: SPrincipal,
     profile_picture_url: Option<String>,
     profile_stats: UserProfileGlobalStats,
-}
-
-#[derive(Readable, Writable, CandidType, Deserialize, Clone, Copy, Debug)]
-pub struct UserProfileGlobalStats {
-    lifetime_earnings: u64,
-    hots_earned_count: u64,
-    nots_earned_count: u64,
-}
-
-#[derive(CandidType, Deserialize, Debug)]
-pub struct UserProfileDetailsForFrontend {
-    pub principal_id: Principal,
-    pub display_name: Option<String>,
-    pub unique_user_name: Option<String>,
-    pub profile_picture_url: Option<String>,
-    profile_stats: UserProfileGlobalStats,
-    followers_count: u64,
-    following_count: u64,
-}
-
-#[derive(Deserialize, CandidType)]
-pub struct UserProfileUpdateDetailsFromFrontend {
-    pub display_name: Option<String>,
-    pub profile_picture_url: Option<String>,
 }
 
 impl UserProfile {
@@ -80,4 +59,10 @@ impl UserProfile {
     pub fn set_unique_user_name(&mut self, unique_user_name: String) {
         self.unique_user_name = Some(unique_user_name);
     }
+}
+
+#[derive(Deserialize, CandidType)]
+pub struct UserProfileUpdateDetailsFromFrontend {
+    pub display_name: Option<String>,
+    pub profile_picture_url: Option<String>,
 }

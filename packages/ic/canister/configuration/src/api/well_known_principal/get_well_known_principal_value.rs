@@ -1,5 +1,5 @@
 use candid::Principal;
-use shared_utils::types::known_principal::KnownPrincipalType;
+use shared_utils::common::types::known_principal::KnownPrincipalType;
 
 use crate::{data::CanisterData, CANISTER_DATA};
 

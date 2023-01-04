@@ -1,7 +1,7 @@
 use candid::{CandidType, Principal};
 use shared_utils::{
     access_control::{self, UserAccessRole},
-    types::known_principal::KnownPrincipalType,
+    common::types::known_principal::KnownPrincipalType,
 };
 
 use crate::{data::CanisterData, CANISTER_DATA};

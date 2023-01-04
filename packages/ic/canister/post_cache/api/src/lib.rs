@@ -3,12 +3,14 @@ use std::cell::RefCell;
 use candid::{export_service, Principal};
 use ic_cdk::storage;
 
+use ic_stable_memory::utils::ic_types::SPrincipal;
 use post_cache_lib::{access_control, CanisterData};
 use shared_utils::{
     access_control::UserAccessRole,
+    common::types::init_args::PostCacheInitArgs,
     types::{
         canister_specific::post_cache::error_types::TopPostsFetchError,
-        init_args::PostCacheInitArgs, top_posts::v0::PostScoreIndexItem,
+        top_posts::v0::PostScoreIndexItem,
     },
 };
 
@@ -32,7 +34,11 @@ fn init(init_args: PostCacheInitArgs) {
             &init_args.known_principal_ids,
         );
 
-        canister_data.my_known_principal_ids_map = init_args.known_principal_ids;
+        canister_data.my_known_principal_ids_map = init_args
+            .known_principal_ids
+            .iter()
+            .map(|(k, v)| (k.clone(), SPrincipal(v.clone())))
+            .collect();
     });
 }
 

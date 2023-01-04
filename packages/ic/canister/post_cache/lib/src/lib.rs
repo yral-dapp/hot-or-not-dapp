@@ -2,10 +2,8 @@ use candid::{CandidType, Deserialize};
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::UserAccessRole,
-    types::{
-        known_principal::KnownPrincipalMap,
-        top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
-    },
+    common::types::known_principal::KnownPrincipalMap,
+    types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
 };
 use std::collections::{BTreeSet, HashMap};
 
@@ -13,7 +11,6 @@ pub mod access_control;
 pub mod model;
 pub mod post;
 pub mod score_ranking;
-pub mod util;
 
 // * Stable Variables
 pub type MyKnownPrincipalIdsMap = KnownPrincipalMap;

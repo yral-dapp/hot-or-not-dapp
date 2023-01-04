@@ -1,10 +1,8 @@
 use ic_cdk::api::call;
 use ic_stable_memory::s;
-use individual_user_template_lib::{
-    model::profile::{UserProfile, UserProfileDetailsForFrontend},
-    MyKnownPrincipalIdsMap, Profile,
-};
+use individual_user_template_lib::{model::profile::UserProfile, MyKnownPrincipalIdsMap, Profile};
 use shared_utils::{
+    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
     constant,
     types::canister_specific::{
         individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,

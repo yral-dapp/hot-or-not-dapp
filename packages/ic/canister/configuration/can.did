@@ -24,6 +24,9 @@ type UserAccessRole = variant {
 };
 service : (ConfigurationInitArgs) -> {
   are_signups_enabled : () -> (bool) query;
+  get_current_list_of_all_well_known_principal_values : () -> (
+      vec record { KnownPrincipalType; principal },
+    ) query;
   get_user_roles : (principal) -> (vec UserAccessRole) query;
   get_well_known_principal_value : (KnownPrincipalType) -> (
       opt principal,

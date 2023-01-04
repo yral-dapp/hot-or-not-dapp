@@ -10,10 +10,8 @@ use model::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    types::{
-        known_principal::KnownPrincipalMap,
-        top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
-    },
+    common::types::known_principal::KnownPrincipalMap,
+    types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
 };
 use std::collections::BTreeSet;
 
