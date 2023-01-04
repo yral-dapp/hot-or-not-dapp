@@ -6,17 +6,23 @@ import LoginPopup from '$components/login/LoginPopup.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
-import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { page } from '$app/stores';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
-let TawkTo: any = undefined;
+let TawkTo: any;
+let GoogleAnalytics: any;
+let registerEvent: any;
 
 async function initializeTawkTo() {
 	TawkTo = (await import('$components/seo/TawkTo.svelte')).default;
+}
+
+async function initializeGoogleAnalytics() {
+	GoogleAnalytics = (await import('$components/seo/GoogleAnalytics.svelte')).default;
+	registerEvent = (await import('$components/seo/GoogleAnalytics.svelte')).registerEvent;
 }
 
 async function initSentry() {
@@ -47,6 +53,7 @@ onMount(() => {
 		initializeAuthClient();
 		registerServiceWorker();
 		initializeTawkTo();
+		initializeGoogleAnalytics();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -83,7 +90,9 @@ beforeNavigate(({ from, to }) => {
 	<slot />
 </div>
 
-<GoogleAnalytics />
+{#if GoogleAnalytics}
+	<svelte:component this="{GoogleAnalytics}" />
+{/if}
 
 {#if TawkTo}
 	<svelte:component this="{TawkTo}" />
