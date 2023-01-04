@@ -24,6 +24,10 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProjectCanister' : null };
 export interface _SERVICE {
   'are_signups_enabled' : ActorMethod<[], boolean>,
+  'get_current_list_of_all_well_known_principal_values' : ActorMethod<
+    [],
+    Array<[KnownPrincipalType, Principal]>
+  >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],

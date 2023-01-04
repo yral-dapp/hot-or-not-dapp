@@ -20,6 +20,14 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProjectCanister' : null };
 export interface _SERVICE {
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'get_well_known_principal_value' : ActorMethod<
+    [KnownPrincipalType],
+    [] | [Principal]
+  >,
+  'receive_principal_id_to_canister_id_mapping_from_user_index_canister' : ActorMethod<
+    [Principal, Principal],
+    undefined
+  >,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],

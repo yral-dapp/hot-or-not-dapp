@@ -34,6 +34,11 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'are_signups_enabled' : IDL.Func([], [IDL.Bool], ['query']),
+    'get_current_list_of_all_well_known_principal_values' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))],
+        ['query'],
+      ),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],
