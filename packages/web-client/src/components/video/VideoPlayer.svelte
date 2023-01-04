@@ -14,7 +14,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import type { Principal } from '@dfinity/principal';
-import { createEventDispatcher, onMount, tick } from 'svelte';
+import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { debounce, throttle } from 'throttle-debounce';
@@ -48,13 +48,14 @@ let videoEl: HTMLVideoElement;
 let currentTime = 0;
 let duration = 0;
 let loaded = false;
-let hls: Hls;
+let hls: Hls | null = null;
 let waiting = false;
 let paused = false;
 
 export const checkVideoIsPlaying = debounce(
 	500,
-	() => {
+	async () => {
+		await tick();
 		if (videoEl?.paused) {
 			paused = true;
 		} else if (videoEl) {
@@ -67,44 +68,49 @@ export const checkVideoIsPlaying = debounce(
 	}
 );
 
-export const control = throttle(1000, async (method: 'play' | 'stop') => {
-	await tick();
-	if (method === 'play') {
+export const stop = debounce(
+	1000,
+	async () => {
 		try {
-			if (videoEl?.paused) {
-				if (isiPhone) {
-					videoEl.volume = 0;
-				} else if (videoEl) {
-					videoEl.muted = $playerState.muted;
-				}
-				if (videoEl) {
-					videoEl
-						.play()
-						.then(() => {
-							videoEl.volume = 1;
-							paused = false;
-							checkVideoIsPlaying();
-						})
-						.catch(() => {
-							paused = true;
-						});
-				}
-			}
-		} catch (e: any) {
-			Log({ error: e, i, src, inView, source: '2 control' }, 'error');
-		}
-	} else if (method === 'stop') {
-		try {
+			await tick();
 			if (videoEl) {
 				videoEl.volume = 0;
 				videoEl.currentTime = 0.05;
 				videoEl.pause();
 			}
 		} catch (e: any) {
-			Log({ error: e, i, src, inView, source: '3 control' }, 'error');
+			Log({ error: e, i, src, inView, source: '2 play' }, 'error');
 		}
-	}
-});
+	},
+	{ atBegin: true }
+);
+
+export const play = debounce(
+	1000,
+	async () => {
+		await tick();
+		if (videoEl?.paused) {
+			if (isiPhone) {
+				videoEl.volume = 0;
+			} else if (videoEl) {
+				videoEl.muted = $playerState.muted;
+			}
+			if (videoEl) {
+				videoEl
+					.play()
+					.then(() => {
+						videoEl.volume = 1;
+						paused = false;
+						checkVideoIsPlaying();
+					})
+					.catch(() => {
+						paused = true;
+					});
+			}
+		}
+	},
+	{ atBegin: true }
+);
 
 async function handleClick() {
 	try {
@@ -114,10 +120,14 @@ async function handleClick() {
 				$playerState.initialized = true;
 			}
 			if (videoEl.paused) {
-				videoEl.play().catch(() => {});
+				videoEl
+					.play()
+					.then(() => {
+						paused = false;
+					})
+					.catch(() => {});
 				$playerState.muted = false;
 				videoEl.muted = false;
-				paused = false;
 			} else if (videoEl) {
 				$playerState.muted = !$playerState.muted;
 				videoEl.muted = $playerState.muted;
@@ -166,12 +176,12 @@ $: if (inView && !videoEl?.paused) {
 $: if (inView && loaded) {
 	dispatch('loaded');
 	if (videoEl?.paused) {
-		control('play');
+		play();
 	}
 }
 
-$: if (!inView && !paused) {
-	control('stop');
+$: if (!inView) {
+	stop();
 }
 
 onMount(() => {
@@ -181,11 +191,14 @@ onMount(() => {
 		hls = new Hls();
 		hls.loadSource(src);
 		hls.attachMedia(videoEl);
-		return () => {
-			hls.destroy();
-		};
 	} else {
 		Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
+	}
+});
+
+onDestroy(() => {
+	if (hls && hls.destroy) {
+		hls.destroy();
 	}
 });
 </script>
@@ -207,7 +220,7 @@ onMount(() => {
 			loaded = true;
 		}}"
 		on:pause="{() => {
-			inView && control('play');
+			inView && play();
 		}}"
 		bind:this="{videoEl}"
 		loop

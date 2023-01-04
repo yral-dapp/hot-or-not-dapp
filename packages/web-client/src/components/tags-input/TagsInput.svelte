@@ -1,7 +1,7 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
-import { onMount } from 'svelte';
+import { onMount, tick } from 'svelte';
 
 export let value = '';
 export let placeholder = '';
@@ -10,8 +10,9 @@ export let tags: string[] = [];
 
 let _tags = new Set<string>();
 
-function createTag() {
-	const val = value.replace('#', '').replace(',', '').replaceAll(' ', '').toLowerCase();
+async function createTag() {
+	await tick();
+	const val = value?.replace('#', '').replace(',', '').replaceAll(' ', '').toLowerCase();
 	value = '';
 	_tags.add(val);
 	tags = Array.from(_tags);
@@ -70,7 +71,7 @@ onMount(() => {
 	{:else}
 		<input
 			type="text"
-			bind:value
+			bind:value="{value}"
 			on:keyup="{handleInput}"
 			placeholder="{placeholder}"
 			style="min-width: 30%;"
