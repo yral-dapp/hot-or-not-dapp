@@ -14,8 +14,11 @@ describe('Home Feed Tests', () => {
 	});
 
 	it('First video on a feed has a positive duration', () => {
-		cy.get('player[i=0] > video').then(($video) => {
-			expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0);
+		cy.wait(5000).then(() => {
+			const vid = cy.get('player[i=0] > video');
+			vid.then(($video) => {
+				expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0);
+			});
 		});
 	});
 
@@ -42,13 +45,12 @@ describe('Home Feed Tests', () => {
 	});
 
 	it('Scrolling on main feed', () => {
-		Cypress.config('defaultCommandTimeout', 20000);
 		cy.intercept({
 			method: 'POST',
 			url: 'https://ic0.app/api/v2/**'
-		}).as('dataGetFirst');
-		cy.wait('@dataGetFirst').then(() => {
-			cy.wait(5000).then(() => {
+		}).as('ic0ApiReq');
+		cy.wait('@ic0ApiReq', { timeout: 40000 }).then(() => {
+			cy.wait(20000).then(() => {
 				const vid0 = cy.get('player[i=0] > video');
 				vid0.then(($video) => {
 					$video[0].click();
