@@ -1,8 +1,15 @@
 import { defineConfig } from 'cypress';
 
 export default defineConfig({
-	e2e: {
-		setupNodeEvents() {}
+	video: false,
+	env: {
+		...process.env
 	},
-	video: false
+	e2e: {
+		setupNodeEvents(on, config) {
+			config.env.TEST_HOST = process.env.TEST_HOST;
+			config.env.IC0_HOST = process.env.IC0_HOST;
+			return config;
+		}
+	}
 });
