@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 
 use candid::{CandidType, Deserialize, Principal};
-use shared_utils::{access_control::UserAccessRole, types::known_principal::KnownPrincipalMapV1};
+use shared_utils::{
+    access_control::UserAccessRole, common::types::known_principal::KnownPrincipalMapV1,
+};
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {

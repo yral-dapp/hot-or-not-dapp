@@ -1,10 +1,12 @@
 use candid::CandidType;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use individual_user_template_lib::{
-    model::profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
-    AccessControlMap, Profile,
+    model::profile::UserProfileUpdateDetailsFromFrontend, AccessControlMap, Profile,
 };
-use shared_utils::access_control::{self, UserAccessRole};
+use shared_utils::{
+    access_control::{self, UserAccessRole},
+    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
+};
 
 #[derive(CandidType)]
 pub enum UpdateProfileDetailsError {

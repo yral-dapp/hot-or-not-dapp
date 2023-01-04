@@ -18,7 +18,7 @@ use individual_user_template_lib::{
     model::{
         // hot_or_not::HotOrNotBetDetailsForPost,
         post::v0::PostViewDetailsFromFrontend,
-        profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
+        profile::UserProfileUpdateDetailsFromFrontend,
         version_details::VersionDetails,
     },
     util::{access_control, known_principal_ids, periodic_update},
@@ -28,6 +28,8 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
+    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
+    common::types::init_args::IndividualUserTemplateInitArgs,
     types::{
         canister_specific::individual_user_template::{
             error_types::{
@@ -35,7 +37,6 @@ use shared_utils::{
             },
             post::PostDetailsForFrontend,
         },
-        init_args::IndividualUserTemplateInitArgs,
         post::PostDetailsFromFrontend,
         utility_token::v1::TokenEventV1,
     },
@@ -94,7 +95,6 @@ fn post_upgrade() {
 
     // * restart periodic update
     periodic_update::share_top_post_scores_with_post_cache_canister_v1();
-    periodic_update::update_post_scores_every_hour_v1();
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

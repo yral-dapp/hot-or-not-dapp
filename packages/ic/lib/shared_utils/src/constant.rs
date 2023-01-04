@@ -2,7 +2,9 @@ use std::time::Duration;
 
 use candid::Principal;
 
-use crate::types::known_principal::{KnownPrincipalMap, KnownPrincipalType};
+use crate::common::types::known_principal::{
+    KnownPrincipalMap, KnownPrincipalMapV1, KnownPrincipalType,
+};
 
 pub const DYNAMIC_CANISTER_DEFAULT_CREATION_BALANCE: u64 = 1_000_000_000_000; // 1T Cycles
 pub const CYCLES_THRESHOLD_TO_INITIATE_RECHARGE: u128 = 500_000_000_000;
@@ -30,6 +32,21 @@ pub fn get_global_super_admin_principal_id(well_known_canisters: KnownPrincipalM
                 .expect("USER ID for global super admin not found")
                 .0
         }
+    }
+}
+
+pub fn get_global_super_admin_principal_id_v1(
+    well_known_canisters: KnownPrincipalMapV1,
+) -> Principal {
+    match option_env!("DFX_NETWORK") {
+        Some("ic") => {
+            Principal::from_text("7gaq2-4kttl-vtbt4-oo47w-igteo-cpk2k-57h3p-yioqe-wkawi-wz45g-jae")
+                .unwrap()
+        }
+        _ => well_known_canisters
+            .get(&KnownPrincipalType::UserIdGlobalSuperAdmin)
+            .expect("USER ID for global super admin not found")
+            .clone(),
     }
 }
 

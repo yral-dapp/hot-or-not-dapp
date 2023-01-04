@@ -1,12 +1,26 @@
+use std::time::Duration;
+
 use ciborium::de;
 use ic_stable_structures::Memory;
 
-use crate::{data::memory_layout, CANISTER_DATA};
+use crate::{
+    api::well_known_principal::update_locally_stored_well_known_principals, data::memory_layout,
+    CANISTER_DATA,
+};
 
 use super::pre_upgrade;
 
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
+    restore_data_from_stable_memory();
+    pre_upgrade::pre_upgrade();
+
+    ic_cdk::timer::set_timer(Duration::from_nanos(1), || {
+        ic_cdk::spawn(update_locally_stored_well_known_principals::update_locally_stored_well_known_principals())
+    });
+}
+
+fn restore_data_from_stable_memory() {
     let heap_data = memory_layout::get_heap_data_memory();
 
     // * Read the length of the heap data state.
@@ -25,6 +39,4 @@ fn post_upgrade() {
     CANISTER_DATA.with(|canister_data_ref_cell| {
         *canister_data_ref_cell.borrow_mut() = canister_data;
     });
-
-    pre_upgrade::pre_upgrade();
 }

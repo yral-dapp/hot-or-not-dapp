@@ -5,7 +5,7 @@ use data::CanisterData;
 use shared_utils::{
     access_control::UserAccessRole,
     canister_specific::configuration::types::args::ConfigurationInitArgs,
-    types::known_principal::KnownPrincipalType,
+    common::types::known_principal::KnownPrincipalType,
 };
 
 use crate::api::well_known_principal::update_list_of_well_known_principals::ErrorUpdateListOfWellKnownPrincipals;

@@ -37,7 +37,7 @@ mod test {
 
     use shared_utils::{
         access_control::UserAccessRole,
-        types::known_principal::{KnownPrincipalMapV1, KnownPrincipalType},
+        common::types::known_principal::{KnownPrincipalMapV1, KnownPrincipalType},
     };
     use test_utils::setup::test_constants::{
         get_global_super_admin_principal_id_v1, get_mock_canister_id_configuration,
