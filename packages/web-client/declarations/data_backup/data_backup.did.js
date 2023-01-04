@@ -30,6 +30,16 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
+    'get_well_known_principal_value' : IDL.Func(
+        [KnownPrincipalType],
+        [IDL.Opt(IDL.Principal)],
+        ['query'],
+      ),
+    'receive_principal_id_to_canister_id_mapping_from_user_index_canister' : IDL.Func(
+        [IDL.Principal, IDL.Principal],
+        [],
+        [],
+      ),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
     'update_user_remove_role' : IDL.Func(
         [UserAccessRole, IDL.Principal],
