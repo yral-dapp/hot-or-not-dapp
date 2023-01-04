@@ -1,5 +1,5 @@
 const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf';
-const IC0_HOST = Cypress.env('IC0_HOST') || 'https://ic0.app';
+const IC0_HOST = 'https://ic0.app';
 
 describe('Home Feed Tests', () => {
 	before(() => {
