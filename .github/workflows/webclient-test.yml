@@ -132,8 +132,6 @@ jobs:
           project: ./packages/web-client
           build: npm run wc:build
           start: npm run wc:preview
-          wait-on: http://0.0.0.0:4173
-          wait-on-timeout: 60
           command: npm run wc:test
           env: TEST_HOST=http://localhost:4173,IC0_HOST=http://localhost:4943
 
