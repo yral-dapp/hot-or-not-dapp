@@ -6,7 +6,7 @@
 		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "",
+		"test": "npx cypress run",
 		"test:vi": "vitest --coverage",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
