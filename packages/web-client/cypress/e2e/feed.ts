@@ -2,12 +2,15 @@ const TEST_HOST = process.env.TEST_HOST || 'https://hotornot.wtf';
 const IC0_HOST = process.env.IC0_HOST || 'https://ic0.app';
 
 describe('Home Feed Tests', () => {
+	before(() => {
+		cy.log('Running tests on host:', TEST_HOST, 'with ic0 host:', IC0_HOST);
+	});
+
 	beforeEach(() => {
 		cy.visit(TEST_HOST);
 	});
 
 	it('First video on feed has a valid source', () => {
-		cy.log('Running tests on host:', TEST_HOST, 'with ic0 host:', IC0_HOST);
 		cy.get('player[i=0] > video').should('have.prop', 'src');
 	});
 
