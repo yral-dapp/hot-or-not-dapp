@@ -1,5 +1,5 @@
-const TEST_HOST = 'https://hotornot.wtf';
-const IC0_API_HOST = 'https://ic0.app';
+const TEST_HOST = process.env.TEST_HOST || 'https://hotornot.wtf';
+const IC0_HOST = process.env.IC0_HOST || 'https://ic0.app';
 
 describe('Home Feed Tests', () => {
 	beforeEach(() => {
@@ -7,6 +7,7 @@ describe('Home Feed Tests', () => {
 	});
 
 	it('First video on feed has a valid source', () => {
+		cy.log('Running tests on host:', TEST_HOST, 'with ic0 host:', IC0_HOST);
 		cy.get('player[i=0] > video').should('have.prop', 'src');
 	});
 
@@ -50,7 +51,7 @@ describe('Home Feed Tests', () => {
 	it('Scrolling on main feed', () => {
 		cy.intercept({
 			method: 'POST',
-			url: IC0_API_HOST + '/api/v2/**'
+			url: IC0_HOST + '/api/v2/**'
 		}).as('ic0ApiReq');
 		cy.wait('@ic0ApiReq', { timeout: 40000 }).then(() => {
 			cy.wait(20000).then(() => {
