@@ -69,7 +69,7 @@ jobs:
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{"text": "PR: \"${{ github.event.pull_request.title }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
 
-  playwright-linux:
+  tests-lighthouse-reports:
     timeout-minutes: 40
     runs-on: ubuntu-latest
     steps:
@@ -81,19 +81,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v3
-        id: playwright-cache
-        with:
-          path: "~/.cache/ms-playwright"
-          key: "${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}"
-
-      - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: |
-          cd packages/web-client
-          npx playwright install
 
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
@@ -138,17 +125,22 @@ jobs:
           set -euxo pipefail
           npm run wc:test:vi
 
-      - name: Run Playwright tests
-        run: |
-          set -euxo pipefail
-          npm run wc:test
+      - name: Run Cypress tests on
+        uses: cypress-io/github-action@v5
+        with:
+          browser: chrome
+          project: ./packages/web-client
+          build: npm run wc:build
+          start: npm run wc:preview
+          command: npm run wc:test
+        env:
+          TEST_HOST: http://localhost:4173
 
       - name: Lighthouse CI check
         run: |
           npm run wc:build
           npm install -g @lhci/cli
-          lhci_host=http://localhost:4173 lhci autorun
-
+          lhci_host=http://localhost:4174 lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -161,13 +153,6 @@ jobs:
         with:
           name: lighthouse-ci-report
           path: lhci_report
-          retention-days: 7
-
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: packages/web-client/playwright-report/
           retention-days: 7
 
       - uses: actions/upload-artifact@v3

@@ -6,7 +6,7 @@
 		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "npx playwright test",
+		"test": "npx cypress run",
 		"test:vi": "vitest --coverage",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
@@ -38,7 +38,6 @@
 		"throttle-debounce": "5.0.0"
 	},
 	"devDependencies": {
-		"@playwright/test": "1.29.1",
 		"@sveltejs/adapter-cloudflare": "1.0.0",
 		"@sveltejs/adapter-static": "1.0.0",
 		"@sveltejs/kit": "1.0.1",
@@ -52,6 +51,7 @@
 		"autoprefixer": "10.4.13",
 		"bip39": "3.0.4",
 		"c8": "7.12.0",
+		"cypress": "12.2.0",
 		"hdkey": "2.0.1",
 		"isomorphic-fetch": "3.0.0",
 		"jsdom": "20.0.3",
