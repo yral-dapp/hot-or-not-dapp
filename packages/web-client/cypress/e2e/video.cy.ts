@@ -61,16 +61,17 @@ describe('Home Feed Tests', () => {
 
 				const SCROLL_COUNT = 10;
 				cy.wrap(Array(SCROLL_COUNT)).each((_, index) => {
-					cy.get(`player[i=${index}] > video`)
-						.and('have.prop', 'paused', false)
-						.and('have.prop', 'muted', false);
-					const nextVideo = cy.get(`player[i=${index + 1}] > video`);
-					nextVideo.and('have.prop', 'paused', true);
-					if (index !== 0) {
-						cy.get(`player[i=${index - 1}] > video`).and('have.prop', 'paused', true);
-					}
-					nextVideo.scrollIntoView();
-					cy.wait(1000);
+					cy.wait(1000).then(() => {
+						cy.get(`player[i=${index}] > video`)
+							.and('have.prop', 'paused', false)
+							.and('have.prop', 'muted', false);
+						const nextVideo = cy.get(`player[i=${index + 1}] > video`);
+						nextVideo.and('have.prop', 'paused', true);
+						if (index !== 0) {
+							cy.get(`player[i=${index - 1}] > video`).and('have.prop', 'paused', true);
+						}
+						nextVideo.scrollIntoView();
+					});
 				});
 			});
 		});
