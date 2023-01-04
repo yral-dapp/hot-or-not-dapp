@@ -1,6 +1,9 @@
+const TEST_HOST = 'https://hotornot.wtf';
+const IC0_API_HOST = 'https://ic0.app';
+
 describe('Home Feed Tests', () => {
 	beforeEach(() => {
-		cy.visit('https://hotornot.wtf');
+		cy.visit(TEST_HOST);
 	});
 
 	it('First video on feed has a valid source', () => {
@@ -47,7 +50,7 @@ describe('Home Feed Tests', () => {
 	it('Scrolling on main feed', () => {
 		cy.intercept({
 			method: 'POST',
-			url: 'https://ic0.app/api/v2/**'
+			url: IC0_API_HOST + '/api/v2/**'
 		}).as('ic0ApiReq');
 		cy.wait('@ic0ApiReq', { timeout: 40000 }).then(() => {
 			cy.wait(20000).then(() => {
