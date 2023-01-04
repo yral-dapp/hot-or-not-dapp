@@ -126,7 +126,7 @@ jobs:
           npm run wc:test:vi
 
       - name: Run Cypress tests on
-      - uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v5
         with:
           browser: chrome
           project: ./packages/web-client
