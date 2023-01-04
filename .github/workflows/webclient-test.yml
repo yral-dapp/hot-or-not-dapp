@@ -69,7 +69,7 @@ jobs:
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{"text": "PR: \"${{ github.event.pull_request.title }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
 
-  playwright-linux:
+  tests-lighthouse-reports:
     timeout-minutes: 40
     runs-on: ubuntu-latest
     steps:
