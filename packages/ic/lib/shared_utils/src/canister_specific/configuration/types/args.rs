@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use candid::{CandidType, Deserialize, Principal};
 
-use crate::{access_control::UserAccessRole, types::known_principal::KnownPrincipalMapV1};
+use crate::{access_control::UserAccessRole, common::types::known_principal::KnownPrincipalMapV1};
 
 #[derive(Deserialize, CandidType, Default)]
 pub struct ConfigurationInitArgs {

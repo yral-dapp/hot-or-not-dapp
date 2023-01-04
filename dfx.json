@@ -46,7 +46,7 @@
 		"user_index": {
 			"type": "rust",
 			"package": "user_index",
-			"candid": "./packages/ic/canister/user_index/api/can.did",
+			"candid": "./packages/ic/canister/user_index/can.did",
 			"declarations": {
 				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/user_index"

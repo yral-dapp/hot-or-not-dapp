@@ -1,9 +1,12 @@
 use candid::{CandidType, Deserialize};
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
-use shared_utils::types::{
-    canister_specific::individual_user_template::post::{PostDetailsForFrontend, PostStatus},
-    post::PostDetailsFromFrontend,
+use shared_utils::{
+    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
+    types::{
+        canister_specific::individual_user_template::post::{PostDetailsForFrontend, PostStatus},
+        post::PostDetailsFromFrontend,
+    },
 };
 use speedy::{Readable, Writable};
 use std::{
@@ -16,7 +19,7 @@ use std::{
 // #[cfg(test)]
 // use shared_utils::date_time::system_time::for_tests::get_current_system_time;
 
-use crate::{model::profile::UserProfileDetailsForFrontend, util::score_ranking};
+use crate::util::score_ranking;
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub enum PostViewDetailsFromFrontend {

@@ -16,7 +16,7 @@ import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
-import { onMount, tick } from 'svelte';
+import { onDestroy, onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
@@ -38,6 +38,7 @@ let loading = false;
 let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
 let isIPhone = isiPhone();
+let isDocumentHidden = false;
 
 type VideoViewReport = {
 	progress: number;
@@ -196,9 +197,17 @@ function recordStats(
 	}
 }
 
+function handleVisibilityChange() {
+	console.log('cehckimng validity');
+	if (document.visibilityState === 'hidden') {
+		isDocumentHidden = true;
+	} else {
+		isDocumentHidden = false;
+	}
+}
+
 onMount(async () => {
 	updateURL();
-
 	$playerState.initialized = false;
 	$playerState.muted = true;
 	if (data.post) {
@@ -206,9 +215,15 @@ onMount(async () => {
 		await recordView(data.post);
 	}
 
+	document.addEventListener('visibilitychange', handleVisibilityChange);
+
 	await tick();
 	await fetchNextVideos();
 	handleParams();
+});
+
+onDestroy(() => {
+	document.removeEventListener('visibilitychange', handleVisibilityChange);
 });
 </script>
 
@@ -226,7 +241,7 @@ onMount(async () => {
 	class="h-full w-full">
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-			{#if currentVideoIndex - 1 < i && currentVideoIndex + keepVideosLoadedCount > i}
+			{#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
 				<VideoPlayer
 					bind:this="{videoPlayers[i]}"
 					on:loaded="{() => hideSplashScreen(500)}"
@@ -251,7 +266,7 @@ onMount(async () => {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
-					inView="{i == currentVideoIndex}"
+					inView="{i == currentVideoIndex && !isDocumentHidden}"
 					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 						video.hot_or_not_feed_ranking_score[0] !== undefined}"
 					thumbnail="{getThumbnailUrl(video.video_uid)}"
