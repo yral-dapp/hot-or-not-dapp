@@ -4,6 +4,7 @@ const IC0_HOST = Cypress.env('IC0_HOST') || 'https://ic0.app';
 describe('Home Feed Tests', () => {
 	before(() => {
 		cy.log('Running tests on host:', TEST_HOST, 'with ic0 host:', IC0_HOST);
+		cy.log('env', Cypress.env());
 	});
 
 	beforeEach(() => {
