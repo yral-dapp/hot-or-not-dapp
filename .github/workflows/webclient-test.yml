@@ -134,13 +134,15 @@ jobs:
           start: npm run wc:preview
           command: npm run wc:test
           env: TEST_HOST=http://localhost:4173,IC0_HOST=http://localhost:4943
+        env:
+          TEST_HOST: http://localhost:4173
+          IC0_HOST: http://localhost:4943
 
       - name: Lighthouse CI check
         run: |
           npm run wc:build
           npm install -g @lhci/cli
           lhci_host=http://localhost:4173 lhci autorun
-
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
