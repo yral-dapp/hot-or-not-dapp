@@ -13,6 +13,11 @@ import { initializeAuthClient } from '$lib/helpers/auth';
 import { page } from '$app/stores';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
+let TawkTo: any = undefined;
+
+async function initializeTawkTo() {
+	TawkTo = (await import('$components/seo/TawkTo.svelte')).default;
+}
 
 async function initSentry() {
 	if ($page.url.host.includes('t:')) return;
@@ -41,6 +46,7 @@ onMount(() => {
 		initSentry();
 		initializeAuthClient();
 		registerServiceWorker();
+		initializeTawkTo();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -78,3 +84,7 @@ beforeNavigate(({ from, to }) => {
 </div>
 
 <GoogleAnalytics />
+
+{#if TawkTo}
+	<svelte:component this="{TawkTo}" />
+{/if}
