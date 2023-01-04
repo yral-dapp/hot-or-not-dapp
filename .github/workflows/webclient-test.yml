@@ -131,7 +131,7 @@ jobs:
           browser: chrome
           project: ./packages/web-client
           build: npm run wc:build
-          start: npm start wc:preview
+          start: npm run wc:preview
           wait-on: "http://localhost:4173"
           wait-on-timeout: 60
           command: npm run wc:test
