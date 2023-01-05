@@ -237,7 +237,7 @@ onDestroy(() => {
 								video.home_feed_ranking_score
 							)}"
 						i="{i}"
-						playFormat="hls"
+						playFormat="mp4"
 						Hls="{Hls}"
 						isiPhone="{isIPhone}"
 						inView="{i == currentVideoIndex && !isDocumentHidden}"
