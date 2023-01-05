@@ -26,14 +26,6 @@ async function refreshTokenBalance() {
 		errorBalance = true;
 	} else {
 		tokenBalance = res.balance;
-		if (loggedIn) {
-			registerEvent('token_balance', {
-				balance: tokenBalance,
-				userId: $userProfile.principal_id,
-				profile_id: $userProfile.principal_id,
-				profile_username: $userProfile.unique_user_name
-			});
-		}
 	}
 	loadBalanced = false;
 }
