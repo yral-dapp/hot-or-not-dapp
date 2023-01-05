@@ -13,6 +13,8 @@ import { page } from '$app/stores';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
 import { isiPhone } from '$lib/utils/isSafari';
+import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
+import Hls from 'hls.js';
 
 export let data: PageData;
 
@@ -22,8 +24,14 @@ const { video, me } = data;
 let videos = [video];
 let noMoreVideos = true;
 let isIPhone = isiPhone();
+let currentVideoIndex = 0;
 
 let individualUser: () => IndividualUserActor;
+
+async function handleChange(e: CustomEvent) {
+	const index = e.detail[0].realIndex;
+	currentVideoIndex = index;
+}
 </script>
 
 <HomeLayout>
@@ -49,14 +57,14 @@ let individualUser: () => IndividualUserActor;
 			<Swiper
 				direction="{'vertical'}"
 				observer
+				on:slideChange="{handleChange}"
 				slidesPerView="{1}"
 				cssMode
 				spaceBetween="{100}"
 				class="h-full w-full">
 				{#each videos as video, i (i)}
-					{@const src = getMp4Url(video.video_uid)}
 					<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-						<VideoPlayer
+						<HomeFeedPlayer
 							i="{i}"
 							id="{video.id}"
 							likeCount="{Number(video.like_count)}"
@@ -64,16 +72,23 @@ let individualUser: () => IndividualUserActor;
 							profileLink="{video.created_by_unique_user_name[0] ??
 								video.created_by_user_principal_id}"
 							liked="{video.liked_by_me}"
+							description="{video.description}"
 							createdById="{video.created_by_user_principal_id}"
 							videoViews="{Number(video.total_view_count)}"
 							publisherCanisterId="{video.publisher_canister_id}"
 							userProfileSrc="{video.created_by_profile_photo_url[0]}"
 							individualUser="{individualUser}"
-							isiPhone="{isIPhone}"
 							enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 								video.hot_or_not_feed_ranking_score[0] !== undefined}"
-							thumbnail="{getThumbnailUrl(video.video_uid)}"
-							src="{src}" />
+							thumbnail="{getThumbnailUrl(video.video_uid)}">
+							<VideoPlayer
+								i="{i}"
+								playFormat="hls"
+								Hls="{Hls}"
+								isiPhone="{isIPhone}"
+								inView="{currentVideoIndex == i}"
+								uid="{video.video_uid}" />
+						</HomeFeedPlayer>
 					</SwiperSlide>
 					{#if noMoreVideos}
 						<SwiperSlide class="flex h-full w-full items-center justify-center">
