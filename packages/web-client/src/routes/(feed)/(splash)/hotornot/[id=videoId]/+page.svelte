@@ -140,7 +140,7 @@ onDestroy(() => {
 						bind:this="{videoPlayers[i]}"
 						on:loaded="{() => hideSplashScreen(500)}"
 						i="{i}"
-						playFormat="hls"
+						playFormat="mp4"
 						Hls="{Hls}"
 						isiPhone="{isIPhone}"
 						inView="{i == currentVideoIndex && !isDocumentHidden}"
