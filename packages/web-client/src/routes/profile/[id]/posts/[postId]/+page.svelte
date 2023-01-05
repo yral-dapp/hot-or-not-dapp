@@ -2,7 +2,7 @@
 import 'swiper/css';
 import type { IndividualUserActor } from '$lib/helpers/backend';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
-import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import type { PageData } from './$types';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
