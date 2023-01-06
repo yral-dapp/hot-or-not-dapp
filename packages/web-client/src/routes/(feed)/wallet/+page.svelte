@@ -5,7 +5,6 @@ import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 
 let loadBalanced = true;
 let loadList = true;
