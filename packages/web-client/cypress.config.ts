@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import plugin from 'cypress-mochawesome-reporter/plugin';
+import { beforeRunHook } from 'cypress-mochawesome-reporter/lib';
 
 export default defineConfig({
 	video: false,
@@ -13,7 +13,7 @@ export default defineConfig({
 		embeddedScreenshots: true,
 		inlineAssets: true,
 		saveAllAttempts: false,
-		saveJson: false,
+		saveJson: true,
 		saveHtml: true,
 		overwrite: true,
 		reportDir: 'cypress/reports/mochawesome-report'
@@ -22,7 +22,16 @@ export default defineConfig({
 		setupNodeEvents(on, config) {
 			config.env.TEST_HOST = process.env.TEST_HOST;
 			config.env.IC0_HOST = process.env.IC0_HOST;
-			plugin(on);
+
+			on('before:run', async (details) => {
+				console.log('override before:run');
+				await beforeRunHook(details);
+			});
+			//TODO: Re add this
+
+			// on('after:run', async () => {
+			// 	// await afterRunHook();
+			// });
 			return config;
 		}
 	}
