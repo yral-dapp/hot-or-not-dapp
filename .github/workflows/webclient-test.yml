@@ -161,3 +161,10 @@ jobs:
           name: coverage-report
           path: packages/web-client/coverage/
           retention-days: 7
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-report
+          path: packages/web-client/cypress/reports/mochawesome-report
+          retention-days: 7
