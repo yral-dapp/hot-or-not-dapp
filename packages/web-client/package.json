@@ -18,7 +18,7 @@
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
 	"dependencies": {
-		"@builder.io/partytown": "0.7.3",
+		"@builder.io/partytown": "0.7.4",
 		"@dfinity/agent": "0.15.1",
 		"@dfinity/auth-client": "0.15.0",
 		"@dfinity/candid": "0.15.1",
@@ -27,8 +27,8 @@
 		"@dfinity/principal": "0.15.1",
 		"@esbuild-plugins/node-globals-polyfill": "0.1.1",
 		"@esbuild-plugins/node-modules-polyfill": "0.1.4",
-		"@sentry/svelte": "7.28.0",
-		"@sentry/tracing": "7.28.0",
+		"@sentry/svelte": "7.29.0",
+		"@sentry/tracing": "7.29.0",
 		"buffer": "6.0.3",
 		"clsx": "1.2.1",
 		"hls.js": "1.2.9",
@@ -40,7 +40,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "1.0.0",
 		"@sveltejs/adapter-static": "1.0.0",
-		"@sveltejs/kit": "1.0.1",
+		"@sveltejs/kit": "1.0.5",
 		"@tailwindcss/forms": "0.5.3",
 		"@types/gtag.js": "0.0.12",
 		"@types/lodash-es": "4.17.6",
@@ -51,7 +51,7 @@
 		"autoprefixer": "10.4.13",
 		"bip39": "3.0.4",
 		"c8": "7.12.0",
-		"cypress": "12.2.0",
+		"cypress": "12.3.0",
 		"hdkey": "2.0.1",
 		"isomorphic-fetch": "3.0.0",
 		"jsdom": "20.0.3",
@@ -64,7 +64,7 @@
 		"ts-node": "10.9.1",
 		"tslib": "2.4.1",
 		"typescript": "4.9.4",
-		"vite": "4.0.2",
+		"vite": "4.0.4",
 		"vite-tsconfig-paths": "4.0.3",
 		"vitest": "0.26.3"
 	}
