@@ -139,7 +139,7 @@ onMount(() => {
 		if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
 			videoEl.src = src + '#t=0.1';
 		} else if (Hls.isSupported()) {
-			hls = new Hls();
+			hls = new Hls({ maxBufferLength: 5 });
 			hls?.loadSource(src);
 			hls?.attachMedia(videoEl);
 		} else {
