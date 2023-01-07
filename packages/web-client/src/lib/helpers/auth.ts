@@ -101,13 +101,12 @@ export async function initializeAuthClient(): Promise<{
 	}
 	const identity = client?.getIdentity();
 	const principal = await identity?.getPrincipal();
-	if ((await client?.isAuthenticated()) || authStateData.t) {
+	if (await client?.isAuthenticated()) {
 		authState.set({
 			userCanisterId: authStateData.userCanisterId,
 			isLoggedIn: true,
 			idString: principal?.toText(),
-			showLogin: authStateData.showLogin,
-			t: authStateData.t
+			showLogin: authStateData.showLogin
 		});
 
 		authHelper.set({
