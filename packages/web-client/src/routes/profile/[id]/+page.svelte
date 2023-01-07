@@ -110,10 +110,7 @@ async function loadPosts() {
 }
 
 onMount(async () => {
-	if (me) {
-		await updateProfile();
-		profile = $userProfile;
-	} else {
+	if (!me) {
 		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
 	registerEvent(me ? 'view_my_profile' : 'view_profile', {

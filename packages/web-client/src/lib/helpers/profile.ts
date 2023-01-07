@@ -12,11 +12,12 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
-import userProfile, { type UserProfile } from '$stores/userProfile';
+import userProfile, { emptyProfileValues, type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
 import { individualUser } from './backend';
 import { getCanisterId } from './canisterId';
+import { setUser } from './sentry';
 
 export interface UserProfileFollows extends UserProfile {
 	i_follow: boolean;
@@ -54,39 +55,43 @@ export function sanitizeProfile(
 }
 
 export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
-	let updateProfile: UserProfileDetailsForFrontend | undefined = undefined;
-	if (profile) {
-		updateProfile = profile;
-	} else {
-		updateProfile = await fetchProfile();
-	}
-	if (updateProfile) {
-		const authStateData = get(authState);
-		userProfile.set({
-			...sanitizeProfile(updateProfile, authStateData.idString || 'random')
-		});
-		if (updateProfile.unique_user_name[0]) {
-			const { canisterIdb } = await import('$lib/utils/idb');
-			canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
+	const authStateData = get(authState);
+	if (authStateData.isLoggedIn) {
+		const updateProfile = profile || (await fetchProfile());
+		if (updateProfile) {
+			userProfile.set({
+				...sanitizeProfile(updateProfile, authStateData.idString || 'random')
+			});
+			if (updateProfile.unique_user_name[0]) {
+				const { canisterIdb } = await import('$lib/utils/idb');
+				canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
+			}
+		} else {
+			Log({ error: 'No profile found', from: '1 updateProfile' }, 'error');
 		}
-		updateUserProperties();
-		Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
 	} else {
-		Log({ error: 'No profile fetched', from: '1 updateProfile' }, 'error');
+		userProfile.set(emptyProfileValues);
 	}
+	updateUserProperties(); // GA
+	setUser(authStateData.idString); //Sentry
+	Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
 }
 
 async function updateUserProperties() {
 	const profile = get(userProfile);
 	const authStateData = get(authState);
-	const res = await fetchTokenBalance();
-	setUserProperties({
-		display_name: profile.display_name,
-		username: profile.unique_user_name,
-		userId: profile.principal_id,
-		user_canister_id: authStateData.userCanisterId,
-		...(!res.error && { wallet_balance: res.balance })
-	});
+	if (authStateData.isLoggedIn) {
+		const res = await fetchTokenBalance();
+		setUserProperties({
+			display_name: profile.display_name,
+			username: profile.unique_user_name,
+			userId: profile.principal_id,
+			user_canister_id: authStateData.userCanisterId,
+			...(!res.error && { wallet_balance: res.balance })
+		});
+	} else {
+		setUserProperties();
+	}
 }
 
 type ProfilePostsResponse =

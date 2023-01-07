@@ -4,6 +4,7 @@ import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
 import { fetchHistory, fetchTokenBalance, type TransactionHistory } from '$lib/helpers/profile';
 import { authState } from '$stores/auth';
+import { loadingAuthStatus } from '$stores/loading';
 import userProfile from '$stores/userProfile';
 
 let loadBalanced = true;
@@ -16,7 +17,7 @@ let endOfList = false;
 let tokenBalance = 0;
 let history: TransactionHistory[] = [];
 
-$: loggedIn = $authState.isLoggedIn;
+$: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus;
 
 async function refreshTokenBalance() {
 	loadBalanced = true;
@@ -65,7 +66,7 @@ $: loggedIn && init();
 	<title>Wallet | Hot or Not</title>
 </svelte:head>
 
-{#if !$authState.isLoggedIn}
+{#if !loggedIn}
 	<div class="flex h-full w-full flex-col items-center justify-center space-y-2">
 		<div class="text-center text-sm opacity-70">Please login to access your wallet</div>
 		<LoginButton />

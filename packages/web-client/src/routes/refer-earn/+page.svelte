@@ -16,6 +16,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
+import { loadingAuthStatus } from '$stores/loading';
 import userProfile from '$stores/userProfile';
 import { onMount } from 'svelte';
 
@@ -86,6 +87,8 @@ onMount(() => {
 		});
 	}
 });
+
+$: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus;
 </script>
 
 <svelte:head>
@@ -112,7 +115,7 @@ onMount(() => {
 					<CoinsStashIcon class="h-36" />
 				</div>
 				<div class="text-center text-2xl font-bold">Invite & Win {INVITE_WIN_TOKENS} tokens</div>
-				{#if $authState.isLoggedIn}
+				{#if loggedIn}
 					<div class="text-center text-sm opacity-70">
 						Send a referral link to your friends via link/whatsapp and win tokens
 					</div>
@@ -159,7 +162,7 @@ onMount(() => {
 						<span class="text-center text-xs">You both win {INVITE_WIN_TOKENS} tokens each</span>
 					</div>
 				</div>
-			{:else if $authState.isLoggedIn}
+			{:else if loggedIn}
 				{#each history as item, i}
 					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
 						.toDateString()
