@@ -35,12 +35,18 @@ function registerServiceWorker() {
 	}
 }
 
+let GoSquared: any;
+async function initializeGoSquared() {
+	GoSquared = (await import('$components/seo/GoSquared.svelte')).default;
+}
+
 onMount(() => {
 	try {
 		$navigateBack = null;
 		initSentry();
 		initializeAuthClient();
 		registerServiceWorker();
+		initializeGoSquared();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -78,3 +84,7 @@ beforeNavigate(({ from, to }) => {
 </div>
 
 <GoogleAnalytics />
+
+{#if GoSquared}
+	<GoSquared />
+{/if}
