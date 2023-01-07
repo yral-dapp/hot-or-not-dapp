@@ -6,6 +6,7 @@ import { getHlsUrl, getMp4Url } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { playerState } from '$stores/playerState';
 import type Hls from 'hls.js';
+import { isIP } from 'net';
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte';
 import { debounce } from 'throttle-debounce';
 
@@ -132,7 +133,8 @@ $: if (!inView) {
 }
 
 onMount(() => {
-	if (playFormat === 'mp4') {
+	if (playFormat === 'mp4' || isiPhone) {
+		//Force mp4 playback on iOS
 		videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`;
 	} else {
 		const src = getHlsUrl(uid);
