@@ -177,7 +177,7 @@ onDestroy(() => {
 	disablepictureinpicture
 	disableremoteplayback
 	playsinline
-	preload="auto"
+	preload="{isiPhone ? 'metadata' : 'auto'}"
 	poster="{thumbnail}"
 	class="object-fit absolute z-[3] h-full w-full"></video>
 
