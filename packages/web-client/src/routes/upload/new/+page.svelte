@@ -171,7 +171,7 @@ async function showShareDialog() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Check out this hot video I just uploaded on hotornot.wtf!',
-			url: 'https://hotornot.wtf/' + videoLink
+			url: 'https://hotornot.wtf' + videoLink
 		});
 	} catch (_) {}
 }
