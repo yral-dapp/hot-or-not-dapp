@@ -16,7 +16,7 @@ export type UserProfile = {
 	updated_at: number;
 };
 
-export default writable<UserProfile>('user-profile', {
+export const emptyProfileValues = {
 	username_set: false,
 	unique_user_name: '',
 	profile_picture_url: '',
@@ -29,4 +29,6 @@ export default writable<UserProfile>('user-profile', {
 		nots_earned_count: 0
 	},
 	updated_at: Date.now()
-});
+};
+
+export default writable<UserProfile>('user-profile', emptyProfileValues);
