@@ -188,6 +188,7 @@ onMount(async () => {
 						disabled="{loading}"
 						bind:value="{values.name}"
 						type="text"
+						maxlength="{40}"
 						placeholder="Enter your name here"
 						class="w-full rounded-md bg-white/10 py-4" />
 				</div>
@@ -198,6 +199,7 @@ onMount(async () => {
 						bind:value="{values.username}"
 						on:keydown="{filterUsernameKeystrokes}"
 						type="text"
+						maxlength="{20}"
 						placeholder="Enter your username here"
 						class="placeholder:norma w-full rounded-md bg-white/10 py-4 lowercase" />
 					{#if usernameSetFirstTime}
