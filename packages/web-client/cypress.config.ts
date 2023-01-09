@@ -27,6 +27,13 @@ export default defineConfig({
 				console.log('override before:run');
 				await beforeRunHook(details);
 			});
+			on('task', {
+				log(message) {
+					console.log(message);
+
+					return null;
+				}
+			});
 			//TODO: Re add this
 
 			// on('after:run', async () => {
