@@ -8,7 +8,7 @@ import { defineConfig } from 'vite';
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
-	const isDev = mode === 'production';
+	const isDev = mode !== 'production';
 
 	console.log('starting vite in', mode, 'mode');
 
