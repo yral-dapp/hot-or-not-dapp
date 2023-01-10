@@ -20,6 +20,7 @@ export let playFormat: 'hls' | 'mp4';
 const dispatch = createEventDispatcher<{
 	watchedPercentage: number;
 	loaded: void;
+	canplaythrough: number;
 }>();
 
 let videoEl: HTMLVideoElement;
@@ -159,6 +160,7 @@ onDestroy(() => {
 </script>
 
 <video
+	data-i="{i}"
 	on:click="{handleClick}"
 	on:waiting="{() => {
 		waiting = true;
@@ -173,7 +175,7 @@ onDestroy(() => {
 	on:pause="{() => {
 		inView && play();
 	}}"
-	on:canplaythrough
+	on:canplaythrough="{() => dispatch('canplaythrough', i)}"
 	bind:this="{videoEl}"
 	loop
 	muted="{$playerState.muted}"
