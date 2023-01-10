@@ -103,7 +103,9 @@ async function handleClick() {
 					.then(() => {
 						paused = false;
 					})
-					.catch(() => {});
+					.catch(() => {
+						paused = true;
+					});
 				$playerState.muted = false;
 				videoEl.muted = false;
 			} else if (videoEl) {
