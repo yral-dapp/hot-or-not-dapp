@@ -235,8 +235,10 @@ $: console.log({ loadNextVideosCount });
 					thumbnail="{getThumbnailUrl(video.video_uid)}">
 					<VideoPlayer
 						bind:this="{videoPlayers[i]}"
-						on:canplaythrough="{() => {
-							loadNextVideosCount = Math.min(loadNextVideosCountMax, loadNextVideosCount + 1);
+						on:canplaythrough="{({ detail }) => {
+							if (detail > currentVideoIndex) {
+								loadNextVideosCount = Math.min(loadNextVideosCountMax, loadNextVideosCount + 1);
+							}
 						}}"
 						on:loaded="{() => hideSplashScreen(500)}"
 						on:watchedPercentage="{({ detail }) =>
