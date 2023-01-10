@@ -14,5 +14,6 @@
 
 	_gs('GSN-686484-W');
 	_gs('set', 'anonymizeIP', true);
+	_gs('set', 'chat', { button: false });
 	</script>
 </svelte:head>
