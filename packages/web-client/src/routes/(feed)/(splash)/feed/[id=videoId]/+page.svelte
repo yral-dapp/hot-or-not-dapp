@@ -31,14 +31,14 @@ export let data: PageData;
 
 const fetchCount = 50;
 const fetchWhenVideosLeft = 10;
-const keepVideosLoadedCount: number = 3;
+let loadNextVideosCount: number = 2;
+const loadNextVideosCountMax: number = 8;
 
 let videos: PostPopulated[] = [];
 let videoPlayers: VideoPlayer[] = [];
 let currentVideoIndex = 0;
 let noMoreVideos = false;
 let loading = false;
-let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
 let isIPhone = isiPhone();
 let isDocumentHidden = false;
@@ -84,12 +84,14 @@ async function handleChange(e: CustomEvent) {
 	const index = e.detail[0].realIndex;
 	currentVideoIndex = index;
 	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
-	updateStats(currentPlayingIndex);
+	updateStats(currentVideoIndex);
 	recordView(videos[currentVideoIndex]);
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
-	currentPlayingIndex = index;
+	if (e.detail[0].realIndex > e.detail[0].previousIndex) {
+		loadNextVideosCount = Math.max(2, loadNextVideosCount - 1);
+	}
 }
 
 function updateURL(post?: PostPopulated) {
@@ -164,11 +166,11 @@ function recordStats(
 	profileId: string,
 	score: bigint
 ) {
-	if (videoStats[currentPlayingIndex]) {
-		videoStats[currentPlayingIndex].progress = progress;
-		if (progress == 0) videoStats[currentPlayingIndex].count++;
+	if (videoStats[currentVideoIndex]) {
+		videoStats[currentVideoIndex].progress = progress;
+		if (progress == 0) videoStats[currentVideoIndex].count++;
 	} else {
-		videoStats[currentPlayingIndex] = {
+		videoStats[currentVideoIndex] = {
 			progress,
 			videoId,
 			canisterId,
@@ -196,6 +198,8 @@ onMount(async () => {
 onDestroy(() => {
 	document.removeEventListener('visibilitychange', handleVisibilityChange);
 });
+
+$: console.log({ loadNextVideosCount });
 </script>
 
 <svelte:head>
@@ -212,7 +216,7 @@ onDestroy(() => {
 	class="h-full w-full">
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
-			{#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
+			{#if currentVideoIndex - 2 < i && currentVideoIndex + loadNextVideosCount > i}
 				<HomeFeedPlayer
 					i="{i}"
 					id="{video.id}"
@@ -231,6 +235,9 @@ onDestroy(() => {
 					thumbnail="{getThumbnailUrl(video.video_uid)}">
 					<VideoPlayer
 						bind:this="{videoPlayers[i]}"
+						on:canplaythrough="{() => {
+							loadNextVideosCount = Math.min(loadNextVideosCountMax, loadNextVideosCount + 1);
+						}}"
 						on:loaded="{() => hideSplashScreen(500)}"
 						on:watchedPercentage="{({ detail }) =>
 							recordStats(
