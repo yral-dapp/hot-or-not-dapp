@@ -173,6 +173,7 @@ onDestroy(() => {
 	on:pause="{() => {
 		inView && play();
 	}}"
+	on:canplaythrough
 	bind:this="{videoEl}"
 	loop
 	muted="{$playerState.muted}"
