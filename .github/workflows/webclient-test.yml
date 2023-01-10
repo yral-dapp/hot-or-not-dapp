@@ -125,7 +125,7 @@ jobs:
           set -euxo pipefail
           npm run wc:test:vi
 
-      - name: Run Cypress tests on
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
@@ -134,6 +134,9 @@ jobs:
           start: npm run wc:preview
           command: npm run wc:test
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
           TEST_HOST: http://localhost:4173
 
       - name: Lighthouse CI check
