@@ -133,6 +133,7 @@ jobs:
           build: npm run wc:build
           start: npm run wc:preview
           command: npm run wc:test
+          record: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
