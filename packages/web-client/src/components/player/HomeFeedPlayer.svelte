@@ -105,7 +105,7 @@ async function handleShare() {
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 flex flex-col space-y-2 left-4 z-[9] pr-20">
-			<div class="pointer-events-auto flex space-x-3">
+			<div aria-roledescription="video-info" class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>

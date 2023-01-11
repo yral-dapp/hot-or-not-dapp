@@ -22,16 +22,15 @@ export const load: PageLoad = async ({ params }) => {
 	const userProfileData = get(userProfile);
 	const authStateData = get(authState);
 
-	const isUserAnon =
-		id === '2vxsx-fae' ||
-		id === 'rajeshmoundekar' ||
-		authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai';
+	const isUserAnon = id === '2vxsx-fae' || id === 'rajeshmoundekar';
+
+	const isLoggedInAsAnon = authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai';
 
 	if (
 		authStateData.isLoggedIn &&
 		(id === userProfileData.unique_user_name || id === userProfileData.principal_id)
 	) {
-		if (isUserAnon) {
+		if (isUserAnon && isLoggedInAsAnon) {
 			// Logged in as an anon user
 			throw redirect(307, '/menu?logout=true');
 		}
