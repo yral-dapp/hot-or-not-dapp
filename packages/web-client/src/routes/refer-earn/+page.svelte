@@ -5,7 +5,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte';
 import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte';
-import DownloadIcon from '$components/icons/DownloadIcon.svelte';
+import DownloadIcon from '$components/icons/DownloadCloudIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
