@@ -33,7 +33,7 @@ mod test {
 
     use shared_utils::access_control::UserAccessRole;
     use test_utils::setup::test_constants::{
-        get_alice_principal_id_v1, get_global_super_admin_principal_id_v1,
+        get_global_super_admin_principal_id_v1, get_mock_user_alice_principal_id,
     };
 
     use crate::data::CanisterData;
@@ -56,7 +56,7 @@ mod test {
         assert_eq!(canister_data.signups_enabled, false);
 
         // non super admin should not be allowed to toggle
-        let non_admin_caller = get_alice_principal_id_v1();
+        let non_admin_caller = get_mock_user_alice_principal_id();
         toggle_signups_enabled_impl(non_admin_caller, &mut canister_data);
         assert_eq!(canister_data.signups_enabled, false);
     }
