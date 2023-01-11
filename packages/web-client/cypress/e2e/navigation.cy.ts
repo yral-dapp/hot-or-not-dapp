@@ -1,5 +1,5 @@
 describe('Navigation test', () => {
-	const TEST_HOST = 'http://localhost:5173';
+	const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf';
 	const IC0_HOST = 'https://ic0.app';
 
 	before(() => {
