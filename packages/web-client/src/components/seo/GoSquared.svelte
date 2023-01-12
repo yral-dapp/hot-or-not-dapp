@@ -23,7 +23,7 @@ export const toggleChatWidgetVisibility = (show?: boolean) => {
 		q.parentNode.insertBefore(d, q);
 	})(window, document, 'script', '_gs');
 
-	_gs('GSN-686484-W');
+	_gs('GSN-745719-F');
 	_gs('set', 'anonymizeIP', true);
 	_gs('set', 'chat', { button: false });
 	</script>
