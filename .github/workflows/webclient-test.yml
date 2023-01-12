@@ -132,7 +132,7 @@ jobs:
           project: ./packages/web-client
           build: npm run wc:build
           start: npm run wc:preview
-          command: npm run wc:test
+          command: npm run wc:test:record
           record: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

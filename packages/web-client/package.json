@@ -7,6 +7,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "npx cypress run",
+		"test:record": "npx cypress run --record",
 		"test:vi": "vitest --coverage",
 		"build:static": "BUILD_MODE=static vite build",
 		"preview:static": "BUILD_MODE=static vite preview",
