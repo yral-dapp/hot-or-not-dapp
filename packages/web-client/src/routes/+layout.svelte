@@ -11,6 +11,7 @@ import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { page } from '$app/stores';
+import { deferredPrompt } from '$stores/deferredPrompt';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
@@ -62,6 +63,9 @@ beforeNavigate(({ from, to }) => {
 			canister_id: $authState.userCanisterId,
 			userId: $userProfile.principal_id
 		});
+	}}"
+	on:beforeinstallprompt="{(e) => {
+		deferredPrompt.set(e);
 	}}" />
 
 <alpha-ribbon
