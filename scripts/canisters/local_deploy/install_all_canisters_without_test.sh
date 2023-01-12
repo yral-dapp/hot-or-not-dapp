@@ -39,12 +39,16 @@ dfx canister install configuration --argument "(record {
       principal \"$(dfx canister id configuration)\";
     };
     record {
-      variant { CanisterIdUserIndex };
-      principal \"$(dfx canister id user_index)\";
+      variant { CanisterIdDataBackup };
+      principal \"$(dfx canister id data_backup)\";
     };
     record {
       variant { CanisterIdPostCache };
       principal \"$(dfx canister id post_cache)\";
+    };
+    record {
+      variant { CanisterIdUserIndex };
+      principal \"$(dfx canister id user_index)\";
     };
   };
   signups_enabled = opt true;
@@ -59,8 +63,24 @@ dfx canister install configuration --argument "(record {
 dfx canister install data_backup --argument "(record {
   known_principal_ids = opt vec {
     record {
+      variant { UserIdGlobalSuperAdmin };
+      principal \"$(dfx identity get-principal)\";
+    };
+    record {
       variant { CanisterIdConfiguration };
       principal \"$(dfx canister id configuration)\";
+    };
+    record {
+      variant { CanisterIdDataBackup };
+      principal \"$(dfx canister id data_backup)\";
+    };
+    record {
+      variant { CanisterIdPostCache };
+      principal \"$(dfx canister id post_cache)\";
+    };
+    record {
+      variant { CanisterIdUserIndex };
+      principal \"$(dfx canister id user_index)\";
     };
   };
   access_control_map = opt vec {
@@ -75,19 +95,23 @@ dfx canister install post_cache --argument "(record {
   known_principal_ids = vec {
     record {
       variant { UserIdGlobalSuperAdmin };
-      principal \"$(dfx identity get-principal)\"
-    };
-    record {
-      variant { CanisterIdUserIndex };
-      principal \"$(dfx canister id user_index)\"
+      principal \"$(dfx identity get-principal)\";
     };
     record {
       variant { CanisterIdConfiguration };
-      principal \"$(dfx canister id configuration)\"
+      principal \"$(dfx canister id configuration)\";
+    };
+    record {
+      variant { CanisterIdDataBackup };
+      principal \"$(dfx canister id data_backup)\";
     };
     record {
       variant { CanisterIdPostCache };
-      principal \"$(dfx canister id post_cache)\"
+      principal \"$(dfx canister id post_cache)\";
+    };
+    record {
+      variant { CanisterIdUserIndex };
+      principal \"$(dfx canister id user_index)\";
     };
   }
 })"
@@ -96,19 +120,23 @@ dfx canister install user_index --argument "(record {
   known_principal_ids = vec {
     record {
       variant { UserIdGlobalSuperAdmin };
-      principal \"$(dfx identity get-principal)\"
-    };
-    record {
-      variant { CanisterIdUserIndex };
-      principal \"$(dfx canister id user_index)\"
+      principal \"$(dfx identity get-principal)\";
     };
     record {
       variant { CanisterIdConfiguration };
-      principal \"$(dfx canister id configuration)\"
+      principal \"$(dfx canister id configuration)\";
+    };
+    record {
+      variant { CanisterIdDataBackup };
+      principal \"$(dfx canister id data_backup)\";
     };
     record {
       variant { CanisterIdPostCache };
-      principal \"$(dfx canister id post_cache)\"
+      principal \"$(dfx canister id post_cache)\";
+    };
+    record {
+      variant { CanisterIdUserIndex };
+      principal \"$(dfx canister id user_index)\";
     };
   }
 })"

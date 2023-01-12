@@ -4,7 +4,9 @@ use candid::{export_service, Principal};
 use data::memory_layout::CanisterData;
 use shared_utils::{
     access_control::UserAccessRole,
-    canister_specific::data_backup::types::args::DataBackupInitArgs,
+    canister_specific::data_backup::types::{
+        args::DataBackupInitArgs, backup_statistics::BackupStatistics,
+    },
     common::types::known_principal::KnownPrincipalType,
 };
 

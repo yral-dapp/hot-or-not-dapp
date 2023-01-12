@@ -95,6 +95,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(UserAccessRole)],
         ['query'],
       ),
+    'get_well_known_principal_value' : IDL.Func(
+        [KnownPrincipalType],
+        [IDL.Opt(IDL.Principal)],
+        ['query'],
+      ),
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],

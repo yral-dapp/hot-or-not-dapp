@@ -19,7 +19,7 @@ pub fn get_alice_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[1])
 }
 
-pub fn get_alice_principal_id_v1() -> Principal {
+pub fn get_mock_user_alice_principal_id() -> Principal {
     PrincipalId::new_self_authenticating(&[1]).0
 }
 
@@ -27,7 +27,7 @@ pub fn get_bob_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[2])
 }
 
-pub fn get_bob_principal_id_v1() -> Principal {
+pub fn get_mock_user_bob_principal_id() -> Principal {
     PrincipalId::new_self_authenticating(&[2]).0
 }
 
@@ -35,7 +35,7 @@ pub fn get_charlie_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[3])
 }
 
-pub fn get_charlie_principal_id_v1() -> Principal {
+pub fn get_mock_user_charlie_principal_id() -> Principal {
     PrincipalId::new_self_authenticating(&[3]).0
 }
 
@@ -43,7 +43,7 @@ pub fn get_dan_principal_id() -> PrincipalId {
     PrincipalId::new_self_authenticating(&[4])
 }
 
-pub fn get_dan_principal_id_v1() -> Principal {
+pub fn get_mock_user_dan_principal_id() -> Principal {
     PrincipalId::new_self_authenticating(&[4]).0
 }
 
@@ -77,6 +77,22 @@ pub fn get_mock_canister_id_configuration() -> Principal {
 
 pub fn get_mock_canister_id_data_backup() -> Principal {
     CanisterId::from_u64(7).get().0
+}
+
+pub fn get_mock_user_alice_canister_id() -> Principal {
+    CanisterId::from_u64(8).get().0
+}
+
+pub fn get_mock_user_bob_canister_id() -> Principal {
+    CanisterId::from_u64(9).get().0
+}
+
+pub fn get_mock_user_charlie_canister_id() -> Principal {
+    CanisterId::from_u64(10).get().0
+}
+
+pub fn get_mock_user_dan_canister_id() -> Principal {
+    CanisterId::from_u64(11).get().0
 }
 
 pub fn get_user_index_canister_wasm() -> Vec<u8> {

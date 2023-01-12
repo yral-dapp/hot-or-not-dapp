@@ -4,8 +4,6 @@ use shared_utils::common::types::known_principal::KnownPrincipalType;
 
 use crate::CANISTER_DATA;
 
-// #[ic_cdk_macros::update]
-// #[candid::candid_method(update)]
 pub async fn update_locally_stored_well_known_principals() {
     // extract the canister ID of the configuration canister from well-known principals
     let config_canister_id = CANISTER_DATA

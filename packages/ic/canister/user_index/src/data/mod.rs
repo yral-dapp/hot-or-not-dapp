@@ -1,12 +1,13 @@
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 use candid::{CandidType, Deserialize, Principal};
 use ic_stable_memory::{collections::hash_map::SHashMap, utils::ic_types::SPrincipal};
 use shared_utils::{
-    access_control::UserAccessRole, common::types::known_principal::KnownPrincipalMap,
+    access_control::UserAccessRole,
+    common::types::known_principal::{KnownPrincipalMap, KnownPrincipalMapV1},
 };
 
-use self::canister_upgrade::upgrade_status::UpgradeStatus;
+use self::canister_upgrade::upgrade_status::{UpgradeStatus, UpgradeStatusV1};
 
 pub mod canister_upgrade;
 
@@ -21,9 +22,9 @@ pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {
-    pub last_run_upgrade_status: UpgradeStatus,
-    pub my_known_principal_ids_map: KnownPrincipalMap,
+    pub last_run_upgrade_status: UpgradeStatusV1,
+    pub known_principal_ids: KnownPrincipalMapV1,
     pub access_control_map: HashMap<Principal, Vec<UserAccessRole>>,
-    pub user_principal_id_to_canister_id_map: HashMap<Principal, Principal>,
-    pub unique_user_name_to_user_principal_id_map: HashMap<String, Principal>,
+    pub user_principal_id_to_canister_id_map: BTreeMap<Principal, Principal>,
+    pub unique_user_name_to_user_principal_id_map: BTreeMap<String, Principal>,
 }
