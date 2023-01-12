@@ -18,11 +18,6 @@ impl IndividualUserTemplateInitArgs {
 }
 
 #[derive(Deserialize, CandidType, Default)]
-pub struct UserIndexInitArgs {
-    pub known_principal_ids: KnownPrincipalMap,
-}
-
-#[derive(Deserialize, CandidType, Default)]
 pub struct PostCacheInitArgs {
     pub known_principal_ids: KnownPrincipalMapV1,
 }

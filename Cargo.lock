@@ -5839,6 +5839,7 @@ dependencies = [
  "serde",
  "shared_utils",
  "speedy",
+ "test_utils",
 ]
 
 [[package]]

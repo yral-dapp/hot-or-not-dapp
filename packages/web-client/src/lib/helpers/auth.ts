@@ -4,7 +4,6 @@ import { get } from 'svelte/store';
 import { authState, authHelper, referralId } from '$stores/auth';
 import { updateProfile } from './profile';
 import { loadingAuthStatus } from '$stores/loading';
-import { setUser } from './sentry';
 import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
 import { checkSignupStatusCanister } from './signup';
@@ -102,13 +101,12 @@ export async function initializeAuthClient(): Promise<{
 	}
 	const identity = client?.getIdentity();
 	const principal = await identity?.getPrincipal();
-	if ((await client?.isAuthenticated()) || authStateData.t) {
+	if (await client?.isAuthenticated()) {
 		authState.set({
 			userCanisterId: authStateData.userCanisterId,
 			isLoggedIn: true,
 			idString: principal?.toText(),
-			showLogin: authStateData.showLogin,
-			t: authStateData.t
+			showLogin: authStateData.showLogin
 		});
 
 		authHelper.set({
@@ -124,7 +122,6 @@ export async function initializeAuthClient(): Promise<{
 			return { error: true, new_user: true };
 		}
 		await updateProfile();
-		setUser(principal?.toText());
 		loadingAuthStatus.set(false);
 
 		return { error: false, new_user: res.new_user, referral: res.referral };
@@ -135,14 +132,13 @@ export async function initializeAuthClient(): Promise<{
 			showLogin: authStateData.showLogin
 		});
 
-		setUser();
-
 		authHelper.set({
 			client,
 			identity,
 			idPrincipal: principal
 		});
 
+		await updateProfile();
 		const res = await updateUserIndexCanister();
 		loadingAuthStatus.set(false);
 		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {

@@ -3,7 +3,8 @@ use std::borrow::Cow;
 use candid::{CandidType, Decode, Deserialize, Encode, Principal};
 use ic_stable_structures::{BoundedStorable, Storable};
 
-const STORABLE_PRINCIPAL_MAX_SIZE: u32 = 32;
+// * KeyTooLarge { given: 38, max: 32 }
+const STORABLE_PRINCIPAL_MAX_SIZE: u32 = 38;
 
 #[derive(CandidType, Deserialize)]
 pub struct StorablePrincipal(pub Principal);

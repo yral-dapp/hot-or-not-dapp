@@ -1,7 +1,7 @@
 name: Web-client tests
 on:
-  pull_request:
-    branches:
+  push:
+    branches-ignore:
       - main
     paths:
       - "packages/web-client/**"
@@ -80,7 +80,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
@@ -125,15 +125,19 @@ jobs:
           set -euxo pipefail
           npm run wc:test:vi
 
-      - name: Run Cypress tests on
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
           browser: chrome
           project: ./packages/web-client
           build: npm run wc:build
           start: npm run wc:preview
-          command: npm run wc:test
+          command: npm run wc:test:record
+          record: true
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_PROJECT_ID: uv7vm5
           TEST_HOST: http://localhost:4173
 
       - name: Lighthouse CI check

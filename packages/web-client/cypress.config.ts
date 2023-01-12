@@ -2,6 +2,7 @@ import { defineConfig } from 'cypress';
 import { beforeRunHook } from 'cypress-mochawesome-reporter/lib';
 
 export default defineConfig({
+	projectId: 'uv7vm5',
 	video: false,
 	env: {
 		...process.env
@@ -26,6 +27,13 @@ export default defineConfig({
 			on('before:run', async (details) => {
 				console.log('override before:run');
 				await beforeRunHook(details);
+			});
+			on('task', {
+				log(message) {
+					console.log(message);
+
+					return null;
+				}
 			});
 			//TODO: Re add this
 

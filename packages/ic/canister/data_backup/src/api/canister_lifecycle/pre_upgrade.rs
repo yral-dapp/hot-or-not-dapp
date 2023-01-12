@@ -6,15 +6,7 @@ use crate::{data::memory_layout, CANISTER_DATA};
 
 #[ic_cdk_macros::pre_upgrade]
 pub fn pre_upgrade() {
-    // TODO: remove this if the below succeeds
-    // CANISTER_DATA.with(|canister_data_ref_cell| {
-    //     let canister_data = canister_data_ref_cell.take();
-
-    //     storage::stable_save((canister_data,)).ok();
-    // });
-
     // * Serialize the state.
-    // * This example is using CBOR, but you can use any data format you like.
     let mut state_bytes = vec![];
     CANISTER_DATA
         .with(|canister_data_ref_cell| {

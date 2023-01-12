@@ -63,6 +63,9 @@ service : (UserIndexInitArgs) -> {
       opt principal,
     ) query;
   get_user_roles : (principal) -> (vec UserAccessRole) query;
+  get_well_known_principal_value : (KnownPrincipalType) -> (
+      opt principal,
+    ) query;
   topup_canisters_that_need_it : () -> ();
   update_index_with_unique_user_name_corresponding_to_user_principal_id : (
       text,

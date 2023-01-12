@@ -28,6 +28,7 @@ export let hideNfid = false;
 
 let error = '';
 let loading = false;
+
 function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
 		case 'ii':
@@ -53,9 +54,6 @@ async function handleLogin(type: LoginType) {
 }
 
 async function handleSuccessfulLogin(type: LoginType) {
-	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
-	$authState.isLoggedIn = true;
-
 	try {
 		const principal = $authHelper.client?.getIdentity()?.getPrincipal();
 		const res = await initializeAuthClient();
@@ -83,6 +81,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 		loading = false;
 		error = 'Something went wrong. Please refresh the page and try login again.';
 	}
+	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
 }
 
 function handleError(type: LoginType, e?: string) {

@@ -8,6 +8,7 @@ export let likes: number;
 </script>
 
 <a
+	aria-roledescription="user-post"
 	href="{`/profile/${$page.params.id}/post/${id}`}"
 	data-sveltekit-preload-data="tap"
 	class="relative aspect-[9/16] w-full cursor-pointer rounded-md overflow-hidden border-[1px] border-white/5 bg-center bg-cover"

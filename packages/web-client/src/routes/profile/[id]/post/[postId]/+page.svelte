@@ -9,6 +9,8 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import { page } from '$app/stores';
 import { individualUser } from '$lib/helpers/backend';
 import { isiPhone } from '$lib/utils/isSafari';
+import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
+import Hls from 'hls.js';
 
 export let data: PageData;
 
@@ -39,23 +41,30 @@ let isIPhone = isiPhone();
 	<svelte:fragment slot="content">
 		<div class="relative h-full w-full text-white">
 			{#if individualUser}
-				<VideoPlayer
+				<HomeFeedPlayer
 					i="{0}"
-					isiPhone="{isIPhone}"
 					id="{video.id}"
+					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
 					liked="{video.liked_by_me}"
-					videoViews="{Number(video.total_view_count)}"
+					description="{video.description}"
 					createdById="{video.created_by_user_principal_id}"
+					videoViews="{Number(video.total_view_count)}"
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
-					inView
 					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 						video.hot_or_not_feed_ranking_score[0] !== undefined}"
-					thumbnail="{getThumbnailUrl(video.video_uid)}"
-					src="{getMp4Url(video.video_uid)}" />
+					thumbnail="{getThumbnailUrl(video.video_uid)}">
+					<VideoPlayer
+						i="{0}"
+						playFormat="hls"
+						Hls="{Hls}"
+						isiPhone="{isIPhone}"
+						inView
+						uid="{video.video_uid}" />
+				</HomeFeedPlayer>
 			{/if}
 		</div>
 	</svelte:fragment>
