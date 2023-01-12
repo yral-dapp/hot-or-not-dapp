@@ -1,10 +1,11 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte';
 import Popup from './Popup.svelte';
-import { authHelper, authState } from '$stores/auth';
+import { authHelper } from '$stores/auth';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import userProfile from '$stores/userProfile';
+import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 
 export let show = false;
 let loading = false;
@@ -16,18 +17,26 @@ async function handleLogout() {
 		userId: $userProfile.principal_id
 	});
 	loading = true;
-	$authState.isLoggedIn = false;
-	loading = false;
-	show = false;
 	await $authHelper.client?.logout();
 	await initializeAuthClient();
+	loading = false;
+	show = false;
 }
 </script>
 
-<Popup showCloseButton bind:show>
+<Popup showCloseButton bind:show="{show}">
 	<div class="flex flex-col space-y-4">
-		<div>Are you sure you want to logout?</div>
-		<Button disabled="{loading}" on:click="{handleLogout}">Yes, I'm sure</Button>
+		<div class="text-black text-md text-center pb-2">Are you sure you want to logout?</div>
+		<Button disabled="{loading}" on:click="{handleLogout}">
+			{#if loading}
+				<div class="flex space-x-2 items-center">
+					<LoadingIcon class="h-4 w-4 animate-spin" />
+					<span>Logging you out</span>
+				</div>
+			{:else}
+				Yes, I'm sure
+			{/if}
+		</Button>
 		<Button
 			on:click="{() => (show = false)}"
 			disabled="{loading}"

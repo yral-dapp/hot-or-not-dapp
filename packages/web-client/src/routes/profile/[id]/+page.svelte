@@ -16,7 +16,7 @@ import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import { doIFollowThisUser, fetchPosts, loveUser, updateProfile } from '$lib/helpers/profile';
+import { doIFollowThisUser, fetchPosts, loveUser } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -110,10 +110,7 @@ async function loadPosts() {
 }
 
 onMount(async () => {
-	if (me) {
-		await updateProfile();
-		profile = $userProfile;
-	} else {
+	if (!me) {
 		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
 	registerEvent(me ? 'view_my_profile' : 'view_profile', {

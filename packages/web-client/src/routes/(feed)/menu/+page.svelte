@@ -20,6 +20,7 @@ import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
 import { onMount } from 'svelte';
 import { handleParams } from '$lib/utils/params';
 import { preloadData } from '$app/navigation';
+import { loadingAuthStatus } from '$stores/loading';
 
 $: links = [
 	{
@@ -86,7 +87,7 @@ onMount(() => {
 <div
 	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
 	<div class="flex w-full shrink-0 flex-col space-y-10">
-		{#if $authState.isLoggedIn}
+		{#if $authState.isLoggedIn && !$loadingAuthStatus}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
 				<img
 					alt="profile"

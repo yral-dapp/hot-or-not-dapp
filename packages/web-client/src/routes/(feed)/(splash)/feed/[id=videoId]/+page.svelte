@@ -9,7 +9,7 @@ import {
 	type PostPopulated,
 	type PostPopulatedHistory
 } from '$lib/helpers/feed';
-import { getHlsUrl, getThumbnailUrl } from '$lib/utils/cloudflare';
+import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
 import { playerState } from '$stores/playerState';
@@ -23,6 +23,9 @@ import type { PageData } from './$types';
 import { isiPhone } from '$lib/utils/isSafari';
 import { page } from '$app/stores';
 import navigateBack from '$stores/navigateBack';
+import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
+import Hls from 'hls.js';
+import { joinArrayUniquely, updateMetadata, type VideoViewReport } from '$lib/utils/video';
 
 export let data: PageData;
 
@@ -39,29 +42,7 @@ let currentPlayingIndex = 0;
 let fetchedVideosCount = 0;
 let isIPhone = isiPhone();
 let isDocumentHidden = false;
-
-type VideoViewReport = {
-	progress: number;
-	videoId: bigint;
-	canisterId: string;
-	profileId: string;
-	count: number;
-	score: bigint;
-};
-
 let videoStats: Record<number, VideoViewReport> = {};
-
-function joinArrayUniquely(a: PostPopulated[], b: PostPopulated[]): PostPopulated[] {
-	b.forEach((o) => {
-		const unique = a.findIndex(
-			(v) => v.post_id === o.post_id && v.publisher_canister_id === o.publisher_canister_id
-		);
-		if (unique < 0) {
-			a.push(o);
-		}
-	});
-	return a;
-}
 
 async function fetchNextVideos() {
 	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
@@ -96,6 +77,33 @@ async function fetchNextVideos() {
 			Log({ error: e, noMoreVideos, source: '1 fetchNextVideos' }, 'error');
 			loading = false;
 		}
+	}
+}
+
+async function handleChange(e: CustomEvent) {
+	const index = e.detail[0].realIndex;
+	currentVideoIndex = index;
+	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
+	updateStats(currentPlayingIndex);
+	recordView(videos[currentVideoIndex]);
+	fetchNextVideos();
+	updateURL(videos[currentVideoIndex]);
+	updateMetadata(videos[currentVideoIndex]);
+	currentPlayingIndex = index;
+}
+
+function updateURL(post?: PostPopulated) {
+	if (!post) return;
+	const url = post.publisher_canister_id + '@' + post.post_id;
+	$navigateBack = $playerState.currentFeedUrl = url;
+	window.history.replaceState('', '', url);
+}
+
+function handleVisibilityChange() {
+	if (document.visibilityState === 'hidden') {
+		isDocumentHidden = true;
+	} else {
+		isDocumentHidden = false;
 	}
 }
 
@@ -142,37 +150,11 @@ async function recordView(post?: PostPopulated) {
 		watched_at: Date.now()
 	};
 	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
-}
-
-async function handleChange(e: CustomEvent) {
-	const index = e.detail[0].realIndex;
-	currentVideoIndex = index;
-	Log({ currentVideoIndex, source: '0 handleChange' }, 'info');
-	updateStats(currentPlayingIndex);
-	recordView(videos[currentVideoIndex]);
-	fetchNextVideos();
-	updateURL(videos[currentVideoIndex]);
-	updateMetadata(videos[currentVideoIndex]);
-	currentPlayingIndex = index;
-}
-
-function updateMetadata(video?: PostPopulated) {
-	if (!video) return;
-	if (!('mediaSession' in navigator)) return;
-	navigator.mediaSession.metadata = new MediaMetadata({
-		title: video.description,
-		artist: video.created_by_display_name[0] || video.created_by_unique_user_name[0] || '',
-		album: 'Hot or Not',
-		artwork: [{ src: getThumbnailUrl(video.video_uid), type: 'image/png' }]
-	});
-}
-
-function updateURL(post?: PostPopulated) {
-	if (!post) return;
-	const url = post.publisher_canister_id + '@' + post.post_id;
-	$navigateBack = $playerState.currentFeedUrl = url;
-	window.history.replaceState('', '', url);
+	try {
+		await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
+	} catch (e) {
+		Log({ error: e, source: '0 recordView' }, 'error');
+	}
 }
 
 function recordStats(
@@ -197,15 +179,6 @@ function recordStats(
 	}
 }
 
-function handleVisibilityChange() {
-	console.log('cehckimng validity');
-	if (document.visibilityState === 'hidden') {
-		isDocumentHidden = true;
-	} else {
-		isDocumentHidden = false;
-	}
-}
-
 onMount(async () => {
 	updateURL();
 	$playerState.initialized = false;
@@ -214,12 +187,10 @@ onMount(async () => {
 		videos = [data.post, ...videos];
 		await recordView(data.post);
 	}
-
-	document.addEventListener('visibilitychange', handleVisibilityChange);
-
 	await tick();
 	await fetchNextVideos();
 	handleParams();
+	document.addEventListener('visibilitychange', handleVisibilityChange);
 });
 
 onDestroy(() => {
@@ -242,20 +213,9 @@ onDestroy(() => {
 	{#each videos as video, i (i)}
 		<SwiperSlide class="flex h-full w-full snap-always items-center justify-center">
 			{#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
-				<VideoPlayer
-					bind:this="{videoPlayers[i]}"
-					on:loaded="{() => hideSplashScreen(500)}"
-					on:watchedPercentage="{({ detail }) =>
-						recordStats(
-							detail,
-							video.publisher_canister_id,
-							video.id,
-							video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
-							video.home_feed_ranking_score
-						)}"
+				<HomeFeedPlayer
 					i="{i}"
 					id="{video.id}"
-					isiPhone="{isIPhone}"
 					likeCount="{Number(video.like_count)}"
 					displayName="{video.created_by_display_name[0]}"
 					profileLink="{video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id}"
@@ -266,11 +226,27 @@ onDestroy(() => {
 					publisherCanisterId="{video.publisher_canister_id}"
 					userProfileSrc="{video.created_by_profile_photo_url[0]}"
 					individualUser="{individualUser}"
-					inView="{i == currentVideoIndex && !isDocumentHidden}"
 					enrolledInHotOrNot="{video.hot_or_not_feed_ranking_score &&
 						video.hot_or_not_feed_ranking_score[0] !== undefined}"
-					thumbnail="{getThumbnailUrl(video.video_uid)}"
-					src="{getHlsUrl(video.video_uid)}" />
+					thumbnail="{getThumbnailUrl(video.video_uid)}">
+					<VideoPlayer
+						bind:this="{videoPlayers[i]}"
+						on:loaded="{() => hideSplashScreen(500)}"
+						on:watchedPercentage="{({ detail }) =>
+							recordStats(
+								detail,
+								video.publisher_canister_id,
+								video.id,
+								video.created_by_unique_user_name[0] ?? video.created_by_user_principal_id,
+								video.home_feed_ranking_score
+							)}"
+						i="{i}"
+						playFormat="hls"
+						Hls="{Hls}"
+						isiPhone="{isIPhone}"
+						inView="{i == currentVideoIndex && !isDocumentHidden}"
+						uid="{video.video_uid}" />
+				</HomeFeedPlayer>
 			{/if}
 		</SwiperSlide>
 	{/each}

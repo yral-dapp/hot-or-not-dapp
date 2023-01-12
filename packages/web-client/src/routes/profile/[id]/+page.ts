@@ -2,7 +2,7 @@ export const ssr = false;
 
 import { individualUser } from '$lib/helpers/backend';
 import { getCanisterId } from '$lib/helpers/canisterId';
-import { sanitizeProfile } from '$lib/helpers/profile';
+import { sanitizeProfile, updateProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
@@ -22,20 +22,26 @@ export const load: PageLoad = async ({ params }) => {
 	const userProfileData = get(userProfile);
 	const authStateData = get(authState);
 
-	const redir =
-		id === '2vxsx-fae' ||
-		id === 'rajeshmoundekar' ||
-		(authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai' && authStateData.isLoggedIn);
+	const isUserAnon = id === '2vxsx-fae' || id === 'rajeshmoundekar';
 
-	if (redir && !authStateData.t) {
-		const logout =
-			authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai' && authStateData.isLoggedIn;
-		throw redirect(307, `/menu${logout ? '?logout=true' : ''}`);
-	}
+	const isLoggedInAsAnon = authStateData.userCanisterId === 'qcdty-nyaaa-aaaao-aaloq-cai';
 
-	if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) {
-		return { me: true, profile: userProfileData };
+	if (
+		authStateData.isLoggedIn &&
+		(id === userProfileData.unique_user_name || id === userProfileData.principal_id)
+	) {
+		if (isUserAnon && isLoggedInAsAnon) {
+			// Logged in as an anon user
+			throw redirect(307, '/menu?logout=true');
+		}
+		await updateProfile();
+		const updatedProfile = get(userProfile);
+		return { me: true, profile: updatedProfile };
 	} else {
+		if (isUserAnon) {
+			// Logged in as an anon user
+			throw redirect(307, '/menu');
+		}
 		const canId = await getCanisterId(id);
 		if (!canId) {
 			Log({ from: '1 noCanId' }, 'warn');
