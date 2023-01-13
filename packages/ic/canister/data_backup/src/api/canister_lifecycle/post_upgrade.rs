@@ -15,9 +15,7 @@ fn post_upgrade() {
     restore_data_from_stable_memory();
     pre_upgrade::pre_upgrade();
 
-    ic_cdk::timer::set_timer(Duration::from_nanos(1), || {
-        ic_cdk::spawn(update_locally_stored_well_known_principals::update_locally_stored_well_known_principals())
-    });
+    refetch_well_known_principals();
 }
 
 fn restore_data_from_stable_memory() {
@@ -38,5 +36,11 @@ fn restore_data_from_stable_memory() {
         de::from_reader(&*canister_data_bytes).expect("Failed to deserialize heap data");
     CANISTER_DATA.with(|canister_data_ref_cell| {
         *canister_data_ref_cell.borrow_mut() = canister_data;
+    });
+}
+
+fn refetch_well_known_principals() {
+    ic_cdk::timer::set_timer(Duration::from_nanos(1), || {
+        ic_cdk::spawn(update_locally_stored_well_known_principals::update_locally_stored_well_known_principals())
     });
 }

@@ -8,7 +8,7 @@ use ic_stable_structures::{
 use serde::Serialize;
 use shared_utils::common::types::storable_principal::StorablePrincipal;
 
-use super::heap_data::HeapData;
+use super::{heap_data::HeapData, stable_types::all_user_data::AllUserData};
 
 thread_local! {
   static MEMORY_MANANGER: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
@@ -19,17 +19,16 @@ pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 #[derive(Deserialize, Serialize)]
 pub struct CanisterData {
     pub heap_data: HeapData,
-    #[serde(skip, default = "init_user_principal_id_to_canister_principal_id_map")]
-    pub user_principal_id_to_canister_principal_id_map:
-        StableBTreeMap<Memory, StorablePrincipal, StorablePrincipal>,
+    #[serde(skip, default = "init_user_principal_id_to_all_user_data_map")]
+    pub user_principal_id_to_all_user_data_map:
+        StableBTreeMap<Memory, StorablePrincipal, AllUserData>,
 }
 
 impl Default for CanisterData {
     fn default() -> Self {
         Self {
             heap_data: HeapData::default(),
-            user_principal_id_to_canister_principal_id_map:
-                init_user_principal_id_to_canister_principal_id_map(),
+            user_principal_id_to_all_user_data_map: init_user_principal_id_to_all_user_data_map(),
         }
     }
 }
@@ -44,16 +43,16 @@ pub fn get_heap_data_memory() -> Memory {
     })
 }
 
-// * User Principal ID to Canister Principal ID map memory.
-const USER_PRINCIPAL_ID_TO_CANISTER_PRINCIPAL_ID_MAP_MEMORY_ID: MemoryId = MemoryId::new(1);
-pub fn get_user_principal_id_to_canister_principal_id_map_memory() -> Memory {
+// * User Principal ID to all user data map memory.
+const USER_PRINCIPAL_ID_TO_ALL_USER_DATA_MAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+pub fn get_user_principal_id_to_all_user_data_map_memory() -> Memory {
     MEMORY_MANANGER.with(|memory_manager_ref_cell| {
         memory_manager_ref_cell
             .borrow_mut()
-            .get(USER_PRINCIPAL_ID_TO_CANISTER_PRINCIPAL_ID_MAP_MEMORY_ID)
+            .get(USER_PRINCIPAL_ID_TO_ALL_USER_DATA_MAP_MEMORY_ID)
     })
 }
-fn init_user_principal_id_to_canister_principal_id_map(
-) -> StableBTreeMap<Memory, StorablePrincipal, StorablePrincipal> {
-    StableBTreeMap::init(get_user_principal_id_to_canister_principal_id_map_memory())
+fn init_user_principal_id_to_all_user_data_map(
+) -> StableBTreeMap<Memory, StorablePrincipal, AllUserData> {
+    StableBTreeMap::init(get_user_principal_id_to_all_user_data_map_memory())
 }

@@ -32,7 +32,8 @@ fn update_user_remove_role_impl(
 mod test {
     use shared_utils::access_control::UserAccessRole;
     use test_utils::setup::test_constants::{
-        get_alice_principal_id_v1, get_bob_principal_id_v1, get_global_super_admin_principal_id_v1,
+        get_global_super_admin_principal_id_v1, get_mock_user_alice_principal_id,
+        get_mock_user_bob_principal_id,
     };
 
     use crate::data::CanisterData;
@@ -48,13 +49,13 @@ mod test {
             ],
         );
         canister_data.access_control_list.insert(
-            get_alice_principal_id_v1(),
+            get_mock_user_alice_principal_id(),
             vec![UserAccessRole::ProfileOwner],
         );
 
         // * removing role as bob from alice should not work
-        let principal_id = get_alice_principal_id_v1();
-        let api_caller = get_bob_principal_id_v1();
+        let principal_id = get_mock_user_alice_principal_id();
+        let api_caller = get_mock_user_bob_principal_id();
         super::update_user_remove_role_impl(
             UserAccessRole::ProfileOwner,
             principal_id,
@@ -67,7 +68,7 @@ mod test {
         );
 
         // * removing role as super admin from alice should work
-        let principal_id = get_alice_principal_id_v1();
+        let principal_id = get_mock_user_alice_principal_id();
         let api_caller = get_global_super_admin_principal_id_v1();
         super::update_user_remove_role_impl(
             UserAccessRole::ProfileOwner,

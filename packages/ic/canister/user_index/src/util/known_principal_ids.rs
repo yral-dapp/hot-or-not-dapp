@@ -1,6 +1,9 @@
 use candid::Principal;
-use ic_stable_memory::s;
-use shared_utils::common::types::init_args::{IndividualUserTemplateInitArgs, UserIndexInitArgs};
+use ic_stable_memory::{s, utils::ic_types::SPrincipal};
+use shared_utils::{
+    canister_specific::user_index::types::args::UserIndexInitArgs,
+    common::types::init_args::IndividualUserTemplateInitArgs,
+};
 
 use crate::MyKnownPrincipalIdsMap;
 
@@ -26,7 +29,7 @@ pub fn save_known_principal_ids_from_user_index_init_args_to_my_known_principal_
     let mut my_known_principal_ids_map: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
 
     for (known_principal_type, principal) in init_args.known_principal_ids {
-        my_known_principal_ids_map.insert(known_principal_type, principal);
+        my_known_principal_ids_map.insert(known_principal_type, SPrincipal(principal));
     }
 
     s! { MyKnownPrincipalIdsMap = my_known_principal_ids_map };

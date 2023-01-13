@@ -201,9 +201,9 @@ pub fn get_roles_for_principal_id_v2(
 mod test {
     use std::collections::HashMap;
     use test_utils::setup::test_constants::{
-        get_alice_principal_id, get_alice_principal_id_v1, get_bob_principal_id,
-        get_bob_principal_id_v1, get_global_super_admin_principal_id,
-        get_global_super_admin_principal_id_v1,
+        get_alice_principal_id, get_bob_principal_id, get_global_super_admin_principal_id,
+        get_global_super_admin_principal_id_v1, get_mock_user_alice_principal_id,
+        get_mock_user_bob_principal_id,
     };
 
     use super::*;
@@ -287,7 +287,7 @@ mod test {
         user_id_access_control_map.insert(super_admin, roles);
 
         // * adds role when called from a canister admin
-        let user_to_add_to = get_alice_principal_id_v1();
+        let user_to_add_to = get_mock_user_alice_principal_id();
         let role_to_add = UserAccessRole::ProfileOwner;
         add_role_to_principal_id_v2(
             &mut user_id_access_control_map,
@@ -300,7 +300,7 @@ mod test {
         assert!(result.contains(&UserAccessRole::ProfileOwner));
 
         // * does not add role when called from a non-canister admin
-        let user_to_add = get_alice_principal_id_v1();
+        let user_to_add = get_mock_user_alice_principal_id();
         let role_to_add = UserAccessRole::CanisterAdmin;
         add_role_to_principal_id_v2(
             &mut user_id_access_control_map,
@@ -366,7 +366,7 @@ mod test {
         user_id_access_control_map.insert(super_admin, roles);
 
         // * removes role when called from a canister admin
-        let user_to_remove_from = get_alice_principal_id_v1();
+        let user_to_remove_from = get_mock_user_alice_principal_id();
         let role_to_remove = UserAccessRole::ProfileOwner;
         let roles = vec![UserAccessRole::ProfileOwner, UserAccessRole::CanisterAdmin];
         user_id_access_control_map.insert(user_to_remove_from, roles);
@@ -383,7 +383,7 @@ mod test {
         assert!(!result.contains(&UserAccessRole::ProfileOwner));
 
         // * does not remove role when called from a non-canister admin
-        let user_to_remove_from = get_alice_principal_id_v1();
+        let user_to_remove_from = get_mock_user_alice_principal_id();
         let role_to_remove = UserAccessRole::ProfileOwner;
         let roles = vec![UserAccessRole::ProfileOwner, UserAccessRole::CanisterAdmin];
         user_id_access_control_map.insert(user_to_remove_from, roles);
@@ -392,7 +392,7 @@ mod test {
             &mut user_id_access_control_map,
             user_to_remove_from,
             role_to_remove,
-            get_bob_principal_id_v1(),
+            get_mock_user_bob_principal_id(),
         );
 
         let result =

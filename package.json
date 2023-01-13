@@ -17,6 +17,7 @@
 		"wc:preview:static": "npm run preview:static --w @hnn/web-client",
 		"wc:dev": "npm run dev --w @hnn/web-client",
 		"wc:test": "npm run test --w @hnn/web-client",
+		"wc:test:record": "npm run test:record --w @hnn/web-client",
 		"wc:test:vi": "npm run test:vi --w @hnn/web-client",
 		"wc:sync": "npm run sync --w @hnn/web-client",
 		"workers:dev": "npm run dev --w @hnn/workers-api",

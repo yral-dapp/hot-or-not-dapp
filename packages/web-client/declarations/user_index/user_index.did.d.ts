@@ -69,6 +69,10 @@ export interface _SERVICE {
     [] | [Principal]
   >,
   'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
+  'get_well_known_principal_value' : ActorMethod<
+    [KnownPrincipalType],
+    [] | [Principal]
+  >,
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],

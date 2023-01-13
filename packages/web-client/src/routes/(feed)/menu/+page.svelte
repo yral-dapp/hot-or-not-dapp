@@ -21,6 +21,7 @@ import { onMount } from 'svelte';
 import { handleParams } from '$lib/utils/params';
 import { preloadData } from '$app/navigation';
 import { loadingAuthStatus } from '$stores/loading';
+import SaveIcon from '$components/icons/SaveIcon.svelte';
 
 $: links = [
 	{
@@ -56,6 +57,12 @@ $: links = [
 		icon: LockIcon,
 		title: 'Privacy Policy',
 		href: '/privacy-policy'
+	},
+	{
+		icon: SaveIcon,
+		title: 'Install App',
+		href: '/faq/install-app',
+		class: 'w-5 h-5 pl-1'
 	},
 	{
 		icon: LogoutIcon,
