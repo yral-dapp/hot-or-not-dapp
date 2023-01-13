@@ -12,6 +12,7 @@ import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { page } from '$app/stores';
 import { deferredPrompt } from '$stores/deferredPrompt';
+import NetworkStatus from '$components/network-status/NetworkStatus.svelte';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
@@ -67,6 +68,8 @@ beforeNavigate(({ from, to }) => {
 	on:beforeinstallprompt="{(e) => {
 		deferredPrompt.set(e);
 	}}" />
+
+<NetworkStatus />
 
 <alpha-ribbon
 	class="pointer-events-none absolute -right-10 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-0.5 px-1 text-[0.5rem] font-bold uppercase text-white opacity-60">
