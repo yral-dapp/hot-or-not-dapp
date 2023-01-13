@@ -20,6 +20,6 @@ export interface _SERVICE {
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
-    undefined,
+    undefined
   >,
 }

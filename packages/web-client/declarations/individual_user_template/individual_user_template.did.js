@@ -1,9 +1,11 @@
 export const idlFactory = ({ IDL }) => {
   const KnownPrincipalType = IDL.Variant({
     'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdConfiguration' : IDL.Null,
     'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
@@ -29,17 +31,24 @@ export const idlFactory = ({ IDL }) => {
     'Transcoding' : IDL.Null,
     'Deleted' : IDL.Null,
   });
+  const SystemTime = IDL.Record({
+    'nanos_since_epoch' : IDL.Nat32,
+    'secs_since_epoch' : IDL.Nat64,
+  });
   const PostDetailsForFrontend = IDL.Record({
     'id' : IDL.Nat64,
     'status' : PostStatus,
+    'home_feed_ranking_score' : IDL.Nat64,
     'hashtags' : IDL.Vec(IDL.Text),
     'like_count' : IDL.Nat64,
     'description' : IDL.Text,
     'total_view_count' : IDL.Nat64,
     'created_by_display_name' : IDL.Opt(IDL.Text),
+    'created_at' : SystemTime,
     'created_by_unique_user_name' : IDL.Opt(IDL.Text),
     'video_uid' : IDL.Text,
     'created_by_user_principal_id' : IDL.Principal,
+    'hot_or_not_feed_ranking_score' : IDL.Opt(IDL.Nat64),
     'liked_by_me' : IDL.Bool,
     'created_by_profile_photo_url' : IDL.Opt(IDL.Text),
   });
@@ -80,10 +89,6 @@ export const idlFactory = ({ IDL }) => {
     'ProfileOwner' : IDL.Null,
     'CanisterAdmin' : IDL.Null,
     'ProjectCanister' : IDL.Null,
-  });
-  const SystemTime = IDL.Record({
-    'nanos_since_epoch' : IDL.Nat32,
-    'secs_since_epoch' : IDL.Nat64,
   });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
@@ -163,11 +168,6 @@ export const idlFactory = ({ IDL }) => {
     'get_individual_post_details_by_id' : IDL.Func(
         [IDL.Nat64],
         [PostDetailsForFrontend],
-        ['query'],
-      ),
-    'get_individual_post_score_by_id' : IDL.Func(
-        [IDL.Nat64],
-        [IDL.Nat64],
         ['query'],
       ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
@@ -260,9 +260,11 @@ export const idlFactory = ({ IDL }) => {
 export const init = ({ IDL }) => {
   const KnownPrincipalType = IDL.Variant({
     'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdConfiguration' : IDL.Null,
     'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,

@@ -33,5 +33,3 @@ export const createActor = (canisterId, options = {}) => {
     ...options.actorOptions,
   });
 };
-
-export const project_member_index = createActor(canisterId);

@@ -2,6 +2,7 @@ import type { PostDetailsForFrontend } from '$canisters/individual_user_template
 import type { PostScoreIndexItem, TopPostsFetchError } from '$canisters/post_cache/post_cache.did';
 import Log from '$lib/utils/Log';
 import { Principal } from '@dfinity/principal';
+import { individualUser, postCache } from './backend';
 
 export interface PostPopulated
 	extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -49,12 +50,11 @@ export async function getTopPosts(
 	filterViewed = false
 ): Promise<FeedResponse> {
 	try {
-		const { postCache } = await import('./backend');
-		const res = await postCache().get_top_posts_aggregated_from_canisters_on_this_network(
-			BigInt(from),
-			BigInt(from + numberOfPosts)
-		);
-		Log({ res, from: '0 getTopPosts' }, 'info');
+		const res =
+			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
+				BigInt(from),
+				BigInt(from + numberOfPosts)
+			);
 		if ('Ok' in res) {
 			const filteredPosts = await filterPosts(res.Ok);
 			const populatedRes = await populatePosts(filterViewed ? filteredPosts : res.Ok);
@@ -85,10 +85,47 @@ export async function getTopPosts(
 	}
 }
 
+export async function getHotOrNotPosts(
+	from: number,
+	numberOfPosts: number = 10
+): Promise<FeedResponse> {
+	try {
+		const res =
+			await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
+				BigInt(from),
+				BigInt(from + numberOfPosts)
+			);
+		if ('Ok' in res) {
+			const populatedRes = await populatePosts(res.Ok);
+			if (populatedRes.error) {
+				throw new Error(`Error while populating, ${JSON.stringify(populatedRes)}`);
+			}
+			return {
+				error: false,
+				from: from + res.Ok.length,
+				posts: populatedRes.posts,
+				noMorePosts: res.Ok.length < numberOfPosts
+			};
+		} else if ('Err' in res) {
+			type UnionKeyOf<U> = U extends U ? keyof U : never;
+			type errors = UnionKeyOf<TopPostsFetchError>;
+			const err = Object.keys(res.Err)[0] as errors;
+			switch (err) {
+				case 'InvalidBoundsPassed':
+				case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
+					return { error: true };
+				case 'ReachedEndOfItemsList':
+					return { error: false, noMorePosts: true, from, posts: [] };
+			}
+		} else throw new Error(`Unknown response, ${JSON.stringify(res)}`);
+	} catch (e) {
+		Log({ error: e, from: '11 getTopPosts' }, 'error');
+		return { error: true };
+	}
+}
+
 async function populatePosts(posts: PostScoreIndexItem[]) {
 	try {
-		const { individualUser } = await import('./backend');
-
 		if (!posts.length) {
 			return { posts: [], error: false };
 		}

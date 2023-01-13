@@ -1,5 +1,5 @@
 use ic_stable_memory::s;
-use shared_utils::shared_types::init_args::IndividualUserTemplateInitArgs;
+use shared_utils::common::types::init_args::IndividualUserTemplateInitArgs;
 
 use crate::MyKnownPrincipalIdsMap;
 

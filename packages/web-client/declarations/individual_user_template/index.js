@@ -33,5 +33,3 @@ export const createActor = (canisterId, options = {}) => {
     ...options.actorOptions,
   });
 };
-
-export const individual_user_template = createActor(canisterId);

@@ -5,6 +5,10 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 </script>
 
+<svelte:head>
+	<title>About Us | Hot or Not</title>
+</svelte:head>
+
 <HomeLayout>
 	<svelte:fragment slot="top">
 		<div class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
@@ -27,8 +31,6 @@ import HomeLayout from '$components/layout/HomeLayout.svelte';
 					creating content, engaging with it or sharing it with their friends and family!
 				</div>
 			</div>
-
-			<Button href="https://hotornot.wtf" class="w-full">Visit the website</Button>
 		</div>
 	</svelte:fragment>
 </HomeLayout>

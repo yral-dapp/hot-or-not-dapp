@@ -11,3 +11,5 @@ internet_identity.wasm
 tsconfig.tsbuildinfo
 todo.md
 packages/web-client/static/~partytown
+packages/web-client/coverage/**
+packages/web-client/cypress/reports

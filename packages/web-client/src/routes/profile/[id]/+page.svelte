@@ -16,7 +16,7 @@ import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import { doIFollowThisUser, fetchPosts, loveUser, updateProfile } from '$lib/helpers/profile';
+import { doIFollowThisUser, fetchPosts, loveUser } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -24,6 +24,7 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { handleParams } from '$lib/utils/params';
+import { authState } from '$stores/auth';
 
 export let data: PageData;
 let { me, profile, canId } = data;
@@ -56,9 +57,11 @@ async function showShareDialog() {
 			url: `https://hotornot.wtf/profile/${userId}`
 		});
 	} catch (_) {}
-	registerEvent('share_profile', {
+	registerEvent(me ? 'share_my_profile' : 'share_profile', {
 		userId: $userProfile.principal_id,
-		profile_id: $page.params.id
+		profile_canister_id: canId,
+		profile_id: profile.principal_id,
+		profile_username: profile.unique_user_name
 	});
 }
 
@@ -66,6 +69,10 @@ let selectedTab: 'posts' | 'trophy' = 'posts';
 
 async function handleLove() {
 	if (!profile.principal_id) return;
+	if (!$authState.isLoggedIn) {
+		$authState.showLogin = true;
+		return;
+	}
 	load.follow = true;
 	const res = await loveUser(profile.principal_id);
 	if (res) {
@@ -103,15 +110,14 @@ async function loadPosts() {
 }
 
 onMount(async () => {
-	if (me) {
-		await updateProfile();
-		profile = $userProfile;
-	} else {
+	if (!me) {
 		doIFollow = await doIFollowThisUser(profile.principal_id, canId);
 	}
-	registerEvent('view_profile', {
+	registerEvent(me ? 'view_my_profile' : 'view_profile', {
 		userId: $userProfile.principal_id,
-		profile_id: $page.params.id
+		profile_id: profile.principal_id,
+		profile_canister_id: canId,
+		profile_username: profile.unique_user_name
 	});
 	load.page = false;
 	loadPosts();
@@ -119,6 +125,10 @@ onMount(async () => {
 	Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info');
 });
 </script>
+
+<svelte:head>
+	<title>{me ? 'Your' : "User's"} Videos | Hot or Not</title>
+</svelte:head>
 
 {#if !load.page}
 	<ProfileLayout>
@@ -229,7 +239,7 @@ onMount(async () => {
 									{/if}
 								</div>
 								{#if me}
-									<Button href="/upload" prefetch class="w-full">Upload your first video</Button>
+									<Button href="/upload" preload class="w-full">Upload your first video</Button>
 								{/if}
 							</div>
 						{/if}

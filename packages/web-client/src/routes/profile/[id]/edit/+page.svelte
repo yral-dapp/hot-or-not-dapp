@@ -15,6 +15,7 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { authState } from '$stores/auth';
 import { goto } from '$app/navigation';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { individualUser, userIndex } from '$lib/helpers/backend';
 
 export let data: PageData;
 
@@ -50,7 +51,6 @@ async function isUsernameTaken() {
 		return false;
 	} else {
 		try {
-			const { userIndex } = await import('$lib/helpers/backend');
 			return await userIndex().get_index_details_is_user_name_taken(newUsername);
 		} catch (e) {
 			return true;
@@ -90,7 +90,6 @@ async function saveChanges() {
 
 	Log({ res: values, from: '0 saveChanges' }, 'info');
 
-	const { individualUser, userIndex } = await import('$lib/helpers/backend');
 	const newUsername = values.username.toLowerCase().trim();
 	if (username !== newUsername) {
 		try {
@@ -134,7 +133,7 @@ async function saveChanges() {
 		loading = false;
 		goto(`/profile/${username_set ? $userProfile.unique_user_name : $userProfile.principal_id}`);
 
-		registerEvent('edit_profile', {
+		registerEvent('edit_my_profile', {
 			userId: $userProfile.principal_id,
 			display_name: displayName,
 			profile_image: imgSrc,
@@ -157,6 +156,10 @@ onMount(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>Edit Profile | Hot or Not</title>
+</svelte:head>
+
 {#if pageLoaded}
 	<ProfileLayout>
 		<svelte:fragment slot="top-left">
@@ -175,13 +178,17 @@ onMount(async () => {
 		<svelte:fragment slot="content">
 			<div
 				class="flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-auto p-8">
-				<ProfileImageSelector bind:src="{values.imageSrc}" bind:error bind:loading />
+				<ProfileImageSelector
+					bind:src="{values.imageSrc}"
+					bind:error="{error}"
+					bind:loading="{loading}" />
 				<div class="flex w-full flex-col space-y-2">
 					<span class="text-white/60">Your name</span>
 					<Input
 						disabled="{loading}"
 						bind:value="{values.name}"
 						type="text"
+						maxlength="{40}"
 						placeholder="Enter your name here"
 						class="w-full rounded-md bg-white/10 py-4" />
 				</div>
@@ -192,6 +199,7 @@ onMount(async () => {
 						bind:value="{values.username}"
 						on:keydown="{filterUsernameKeystrokes}"
 						type="text"
+						maxlength="{20}"
 						placeholder="Enter your username here"
 						class="placeholder:norma w-full rounded-md bg-white/10 py-4 lowercase" />
 					{#if usernameSetFirstTime}
@@ -214,7 +222,7 @@ onMount(async () => {
 						class="w-full flex-1">
 						Reset
 					</Button>
-					<Button disabled="{loading}" on:click="{saveChanges}" prefetch class="w-full flex-1">
+					<Button disabled="{loading}" on:click="{saveChanges}" preload class="w-full flex-1">
 						Save changes
 					</Button>
 				</div>

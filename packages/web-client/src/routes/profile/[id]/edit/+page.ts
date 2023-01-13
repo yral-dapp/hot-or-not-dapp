@@ -1,5 +1,6 @@
 export const ssr = false;
 
+import { individualUser } from '$lib/helpers/backend';
 import { updateProfile } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import { redirect } from '@sveltejs/kit';
@@ -10,7 +11,6 @@ export const load: PageLoad = async ({ params }) => {
 	if (!id) {
 		throw redirect(307, '/404');
 	}
-	const { individualUser } = await import('$lib/helpers/backend');
 	try {
 		const profile = await individualUser().get_profile_details();
 		const me = profile.unique_user_name[0] === id || profile.principal_id.toText() === id;

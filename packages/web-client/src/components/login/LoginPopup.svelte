@@ -19,15 +19,16 @@ import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
-import { getCanisterId } from '$lib/helpers/canisterId';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
+import { goto } from '$app/navigation';
 
 export let hideNfid = false;
 
 let error = '';
 let loading = false;
+
 function getIdentityProviderURL(type: LoginType) {
 	switch (type) {
 		case 'ii':
@@ -53,20 +54,26 @@ async function handleLogin(type: LoginType) {
 }
 
 async function handleSuccessfulLogin(type: LoginType) {
-	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
-	$authState.isLoggedIn = true;
 	try {
-		let canId: string | undefined = undefined;
 		const principal = $authHelper.client?.getIdentity()?.getPrincipal();
-		if (principal) {
-			canId = await getCanisterId(principal.toString());
+		const res = await initializeAuthClient();
+		if (res.error) {
+			Log({ error: 'Signup prevented' }, 'warn');
+			$authState.showLogin = false;
+			registerEvent('sign_up_blocked', {
+				login_method: type,
+				userId: principal?.toText()
+			});
+			goto('/waitlist?logout=true');
+			return;
 		}
-		await initializeAuthClient();
-		registerEvent(canId ? 'login' : 'sign_up', {
+		registerEvent(res.new_user ? 'sign_up' : 'login', {
 			login_method: type,
 			display_name: $userProfile.display_name,
 			username: $userProfile.unique_user_name,
-			userId: $userProfile.principal_id
+			userId: $userProfile.principal_id,
+			referral: !!res.referral,
+			...(!!res.referral && { referee_user_id: res.referral })
 		});
 		loading = false;
 		$authState.showLogin = false;
@@ -74,6 +81,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 		loading = false;
 		error = 'Something went wrong. Please refresh the page and try login again.';
 	}
+	Log({ type, from: '0 handleSuccessfulLogin' }, 'info');
 }
 
 function handleError(type: LoginType, e?: string) {

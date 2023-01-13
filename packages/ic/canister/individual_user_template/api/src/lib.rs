@@ -16,22 +16,27 @@ use ic_stable_memory::{
 };
 use individual_user_template_lib::{
     model::{
-        post::{PostDetailsForFrontend, PostViewDetailsFromFrontend},
-        profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
+        // hot_or_not::HotOrNotBetDetailsForPost,
+        post::v0::PostViewDetailsFromFrontend,
+        profile::UserProfileUpdateDetailsFromFrontend,
         version_details::VersionDetails,
     },
     util::{access_control, known_principal_ids, periodic_update},
-    AccessControlMap, AllCreatedPosts, MyKnownPrincipalIdsMap, MyTokenBalance,
-    PostsIndexSortedByScore, PostsIndexSortedByScoreV1, PrincipalsIFollow, PrincipalsThatFollowMe,
-    Profile, SVersionDetails,
+    AccessControlMap, AllCreatedPosts, AllCreatedPostsV1, MyKnownPrincipalIdsMap, MyTokenBalance,
+    PostsIndexSortedByHomeFeedScore, PostsIndexSortedByHotOrNotFeedScore, PostsIndexSortedByScore,
+    PrincipalsIFollow, PrincipalsThatFollowMe, Profile, SVersionDetails,
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    shared_types::{
-        individual_user_template::error_types::{
-            GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
+    common::types::init_args::IndividualUserTemplateInitArgs,
+    types::{
+        canister_specific::individual_user_template::{
+            error_types::{
+                GetUserUtilityTokenTransactionHistoryError, UpdateProfileSetUniqueUsernameError,
+            },
+            post::PostDetailsForFrontend,
         },
-        init_args::IndividualUserTemplateInitArgs,
         post::PostDetailsFromFrontend,
         utility_token::v1::TokenEventV1,
     },
@@ -58,9 +63,11 @@ fn init(init_args: IndividualUserTemplateInitArgs) {
     s! { AllCreatedPosts = AllCreatedPosts::new() };
     s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
     s! { PostsIndexSortedByScore = PostsIndexSortedByScore::new() };
-    s! { PostsIndexSortedByScoreV1 = PostsIndexSortedByScoreV1::default() };
+    s! { PostsIndexSortedByHomeFeedScore = PostsIndexSortedByHomeFeedScore::default() };
+    s! { PostsIndexSortedByHotOrNotFeedScore = PostsIndexSortedByHotOrNotFeedScore::default() };
     s! { PrincipalsIFollow = PrincipalsIFollow::new() };
     s! { PrincipalsThatFollowMe = PrincipalsThatFollowMe::new() };
+    s! { AllCreatedPostsV1 = AllCreatedPostsV1::new() };
 
     // * initialize access control
     let mut user_id_access_control_map = s!(AccessControlMap);
@@ -68,8 +75,8 @@ fn init(init_args: IndividualUserTemplateInitArgs) {
     s! { AccessControlMap = user_id_access_control_map };
 
     // * initialize periodic update
-    periodic_update::share_top_post_scores_with_post_cache_canister();
-    periodic_update::update_post_scores_every_hour();
+    periodic_update::share_top_post_scores_with_post_cache_canister_v1();
+    periodic_update::update_post_scores_every_hour_v1();
 }
 
 #[ic_cdk_macros::pre_upgrade]
@@ -85,6 +92,9 @@ fn post_upgrade() {
 
     // * set schema version number received from user_index canister
     s! { SVersionDetails = SVersionDetails::get_updated_version_details(call::arg_data::<(u64, )>().0) };
+
+    // * restart periodic update
+    periodic_update::share_top_post_scores_with_post_cache_canister_v1();
 }
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]

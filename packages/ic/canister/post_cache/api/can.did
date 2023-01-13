@@ -1,8 +1,10 @@
 type KnownPrincipalType = variant {
   CanisterIdUserIndex;
+  CanisterIdConfiguration;
   CanisterIdProjectMemberIndex;
   CanisterIdTopicCacheIndex;
   CanisterIdRootCanister;
+  CanisterIdDataBackup;
   CanisterIdPostCache;
   CanisterIdSNSController;
   UserIdGlobalSuperAdmin;
@@ -28,11 +30,21 @@ type UserAccessRole = variant {
   ProjectCanister;
 };
 service : (PostCacheInitArgs) -> {
-  get_top_posts_aggregated_from_canisters_on_this_network : (nat64, nat64) -> (
-      Result,
-    ) query;
+  get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed : (
+      nat64,
+      nat64,
+    ) -> (Result) query;
+  get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed : (
+      nat64,
+      nat64,
+    ) -> (Result) query;
   get_user_roles : (principal) -> (vec UserAccessRole) query;
-  receive_top_posts_from_publishing_canister : (vec PostScoreIndexItem) -> ();
+  receive_top_home_feed_posts_from_publishing_canister : (
+      vec PostScoreIndexItem,
+    ) -> ();
+  receive_top_hot_or_not_feed_posts_from_publishing_canister : (
+      vec PostScoreIndexItem,
+    ) -> ();
   update_user_add_role : (UserAccessRole, principal) -> ();
   update_user_remove_role : (UserAccessRole, principal) -> ();
 }

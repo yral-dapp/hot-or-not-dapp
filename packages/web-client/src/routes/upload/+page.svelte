@@ -13,7 +13,7 @@ import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/utils/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileToUpload } from '$stores/fileUpload';
-import { goto, prefetch } from '$app/navigation';
+import { goto, preloadData } from '$app/navigation';
 import { isiPhone } from '$lib/utils/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
@@ -254,7 +254,7 @@ async function updateCanvas(height: number, width: number) {
 
 function computeFrame() {
 	try {
-		const ctx = canvasEl.getContext('2d');
+		const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
 		if (ctx) {
 			ctx.drawImage(
 				videoEl,
@@ -281,21 +281,26 @@ function startCapturing() {
 	captureInterval = setInterval(computeFrame, 33.34); // 33.34ms is == 30 fps
 }
 
-const checkWhichEl = debounce(500, () => {
-	const captureArea = cameraEl.getBoundingClientRect();
-	for (let i = 0; i < filtersEl.children.length - 1; i++) {
-		const filterEl = filtersEl.children[i].getBoundingClientRect();
-		if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
-			const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
-			selectedFilter = filterElSelected ?? 'clear';
-			break;
+const checkWhichEl = debounce(500, async () => {
+	await tick();
+	if (filtersEl && cameraEl) {
+		const captureArea = cameraEl.getBoundingClientRect();
+		for (let i = 0; i < filtersEl.children.length - 1; i++) {
+			const filterEl = filtersEl.children[i].getBoundingClientRect();
+			if (filterEl.left > captureArea.left && captureArea.right > filterEl.right) {
+				const filterElSelected = filtersEl.children[i].getAttribute('data-filter');
+				selectedFilter = filterElSelected ?? 'clear';
+				break;
+			}
 		}
 	}
 });
 
 async function checkClickAndStartRecording(e: MouseEvent) {
-	const captureArea = cameraEl.getBoundingClientRect();
+	await tick();
+	const captureArea = cameraEl?.getBoundingClientRect();
 	if (
+		captureArea &&
 		e.x > captureArea.left &&
 		e.x < captureArea.right &&
 		e.y > captureArea.top &&
@@ -305,15 +310,9 @@ async function checkClickAndStartRecording(e: MouseEvent) {
 	}
 }
 
-function prefetchLinks() {
-	prefetch('/feed');
-	prefetch('/upload/new');
-}
-
 onMount(async () => {
 	useCanvas = !isiPhone();
 	await requestMediaAccess();
-	prefetchLinks();
 });
 
 onDestroy(async () => {
@@ -330,6 +329,10 @@ onDestroy(async () => {
 });
 </script>
 
+<svelte:head>
+	<title>Create | Hot or Not</title>
+</svelte:head>
+
 <CameraLayout>
 	<svelte:fragment slot="content">
 		<div class="realtive h-full w-full bg-black">
@@ -341,7 +344,7 @@ onDestroy(async () => {
 					{#if initState == 'denied'}
 						<span class="font-semibold">Enable Camera Access</span>
 						<span class="text-center text-white/60">
-							Please provide us access to your camera, whch is required for recording video
+							Please provide us access to your camera, which is required for recording video
 						</span>
 					{/if}
 				</div>
@@ -390,7 +393,7 @@ onDestroy(async () => {
 				</div>
 			</div>
 		{:else}
-			<IconButton href="/feed" prefetch class="h-10 w-10 rounded-full bg-black/50">
+			<IconButton href="/feed" preload class="h-10 w-10 rounded-full bg-black/50">
 				<CloseIcon class="h-6 w-6 text-white" />
 			</IconButton>
 		{/if}

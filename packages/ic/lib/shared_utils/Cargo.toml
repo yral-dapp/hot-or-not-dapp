@@ -6,11 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candid = "0.8.3"
-ic-cdk = "0.6.6"
-ic-stable-memory = "0.2.6"
-serde = "1.0.147"
-speedy = "0.8.5"
+candid = { workspace = true }
+cfg-if = { workspace = true }
+ic-cdk = { workspace = true, features = ["timers"] }
+ic-stable-memory = { workspace = true }
+ic-stable-structures = { workspace = true }
+serde = { workspace = true }
+speedy = { workspace = true }
 
 [dev-dependencies]
 ic-state-machine-tests = { workspace = true }
+mockall = { workspace = true }
+test_utils = { path = "../test_utils" }

@@ -5,16 +5,18 @@ import IconButton from '$components/button/IconButton.svelte';
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
 import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte';
 import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte';
-import DownloadIcon from '$components/icons/DownloadIcon.svelte';
+import DownloadIcon from '$components/icons/DownloadCloudIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
+import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
+import { loadingAuthStatus } from '$stores/loading';
 import userProfile from '$stores/userProfile';
 import { onMount } from 'svelte';
 
@@ -29,6 +31,8 @@ let endOfList = false;
 let loading = true;
 let error = false;
 let history: TransactionHistory[] = [];
+
+const INVITE_WIN_TOKENS = 500;
 
 async function loadHistory() {
 	if (endOfList) {
@@ -75,9 +79,21 @@ function copyLink() {
 onMount(() => {
 	if ($authState.isLoggedIn) {
 		loadHistory();
+		registerEvent('refer_earn_visit', {
+			display_name: $userProfile.display_name,
+			username: $userProfile.unique_user_name,
+			userId: $userProfile.principal_id,
+			user_canister_id: $authState.userCanisterId
+		});
 	}
 });
+
+$: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus;
 </script>
+
+<svelte:head>
+	<title>Refer & Earn | Hot or Not</title>
+</svelte:head>
 
 <HomeLayout>
 	<svelte:fragment slot="top">
@@ -98,8 +114,8 @@ onMount(() => {
 				<div class="shrink-0 py-4">
 					<CoinsStashIcon class="h-36" />
 				</div>
-				<div class="text-center text-2xl font-bold">Invite & Win 500 tokens</div>
-				{#if $authState.isLoggedIn}
+				<div class="text-center text-2xl font-bold">Invite & Win {INVITE_WIN_TOKENS} tokens</div>
+				{#if loggedIn}
 					<div class="text-center text-sm opacity-70">
 						Send a referral link to your friends via link/whatsapp and win tokens
 					</div>
@@ -143,15 +159,15 @@ onMount(() => {
 						<div class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
 							<DollarCoinIcon class="h-5 text-primary" />
 						</div>
-						<span class="text-center text-xs">You both win 1,000 tokens each</span>
+						<span class="text-center text-xs">You both win {INVITE_WIN_TOKENS} tokens each</span>
 					</div>
 				</div>
-			{:else if $authState.isLoggedIn}
+			{:else if loggedIn}
 				{#each history as item, i}
 					{@const date = new Date(Number(item.timestamp.secs_since_epoch))
 						.toDateString()
 						.substring(4)}
-					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : 500}
+					{@const tokenCount = item.details['NewUserSignup'] ? 1000 : { INVITE_WIN_TOKENS }}
 					<div class="flex w-full items-center justify-between py-2 text-white">
 						<div class="flex items-center space-x-8">
 							<img

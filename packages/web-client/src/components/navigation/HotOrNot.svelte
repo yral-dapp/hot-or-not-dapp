@@ -37,14 +37,8 @@ function toggleBet() {
 }
 </script>
 
-<hot-or-not class="flex w-full items-center justify-center space-x-8 px-4 transition-all">
-	<div
-		class="{c(
-			'pointer-events-auto relative flex w-14 flex-col items-center space-y-1 transition-all',
-			{
-				'w-0 opacity-0': betPlaced === 'hot'
-			}
-		)}">
+<hot-or-not class="pointer-events-none flex w-full items-center justify-center space-x-8 px-4">
+	<div class="relative flex flex-col items-center space-y-1">
 		{#if tutorialMode}
 			<div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10"></div>
 		{/if}

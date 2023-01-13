@@ -16,6 +16,12 @@ import { page } from '$app/stores';
 import userProfile from '$stores/userProfile';
 import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
+import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
+import { onMount } from 'svelte';
+import { handleParams } from '$lib/utils/params';
+import { preloadData } from '$app/navigation';
+import { loadingAuthStatus } from '$stores/loading';
+import SaveIcon from '$components/icons/SaveIcon.svelte';
 
 $: links = [
 	{
@@ -36,6 +42,13 @@ $: links = [
 		href: '/faq'
 	},
 	{
+		icon: WhatsappIcon,
+		title: 'Talk to the team',
+		class: 'w-5 h-5 pl-0.5',
+		href: 'https://t.me/+c-LTX0Cp-ENmMzI1'
+	},
+
+	{
 		icon: NotebookIcon,
 		title: 'Terms of Service',
 		href: '/terms-of-service'
@@ -44,6 +57,12 @@ $: links = [
 		icon: LockIcon,
 		title: 'Privacy Policy',
 		href: '/privacy-policy'
+	},
+	{
+		icon: SaveIcon,
+		title: 'Install App',
+		href: '/faq/install-app',
+		class: 'w-5 h-5 pl-1'
 	},
 	{
 		icon: LogoutIcon,
@@ -59,14 +78,23 @@ let showLogoutPopup = false;
 $: userId = $userProfile.username_set
 	? $userProfile.unique_user_name || $authState.idString
 	: $authState.idString;
+
+onMount(() => {
+	handleParams();
+	preloadData('/waitlist');
+});
 </script>
+
+<svelte:head>
+	<title>Menu | Hot or Not</title>
+</svelte:head>
 
 <LogoutPopup bind:show="{showLogoutPopup}" />
 
 <div
 	class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
 	<div class="flex w-full shrink-0 flex-col space-y-10">
-		{#if $authState.isLoggedIn}
+		{#if $authState.isLoggedIn && !$loadingAuthStatus}
 			<div class="sticky flex w-full items-center space-x-4 pb-2">
 				<img
 					alt="profile"
@@ -76,11 +104,14 @@ $: userId = $userProfile.username_set
 					<div class="text-xl">
 						{$userProfile.display_name}
 					</div>
-					<a href="/profile/{userId}" data-sveltekit-prefetch class=" text-primary">View Profile</a>
+					<a href="/profile/{userId}" data-sveltekit-preload-data="tap" class=" text-primary"
+						>View Profile</a>
 				</div>
 			</div>
 		{:else}
-			<LoginButton />
+			<div class="flex items-center justify-center">
+				<LoginButton />
+			</div>
 		{/if}
 		<div class="my-8 h-[1px] w-full bg-white/10"></div>
 		{#each links as link}
@@ -89,8 +120,9 @@ $: userId = $userProfile.username_set
 					this="{link.href ? 'a' : 'button'}"
 					on:keyup
 					on:click="{link.onClick}"
+					target="{link.href?.includes('http') ? '_blank' : ''}"
 					href="{link.href}"
-					data-sveltekit-prefetch
+					data-sveltekit-preload-data="tap"
 					class="flex items-center justify-between">
 					<div class="flex items-center space-x-4 text-white">
 						<svelte:component this="{link.icon}" class="{link.class ?? 'h-6 w-6'}" />
@@ -125,7 +157,7 @@ $: userId = $userProfile.username_set
 			{/if}
 		</div>
 		<div class="pb-2">
-			<OnChainDfinityIcon class="w-full" />
+			<OnChainDfinityIcon class="h-14" />
 		</div>
 	</div>
 </div>

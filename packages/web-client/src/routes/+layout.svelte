@@ -7,32 +7,30 @@ import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
 import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
-import { hideSplashScreen } from '$stores/splashScreen';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
+import { initializeAuthClient } from '$lib/helpers/auth';
+import { page } from '$app/stores';
+import { deferredPrompt } from '$stores/deferredPrompt';
+import NetworkStatus from '$components/network-status/NetworkStatus.svelte';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
-async function initClient() {
-	const { initializeAuthClient } = await import('$lib/helpers/auth');
-	initializeAuthClient();
-}
-
 async function initSentry() {
-	if (import.meta.env.NODE_ENV == 'development') return;
+	if ($page.url.host.includes('t:')) return;
 
 	const Sentry = await import('@sentry/svelte');
 
 	Sentry.init({
 		dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
 		integrations: [new BrowserTracing()],
-		tracesSampleRate: 1.0
+		tracesSampleRate: 0.1
 	});
 	Log('Sentry Initialized', 'info');
 }
 
 function registerServiceWorker() {
-	if (import.meta.env.NODE_ENV == 'development') return;
+	if ($page.url.host.includes('t:')) return;
 
 	if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/service-worker.js');
@@ -41,10 +39,9 @@ function registerServiceWorker() {
 
 onMount(() => {
 	try {
-		hideSplashScreen(5000);
 		$navigateBack = null;
 		initSentry();
-		initClient();
+		initializeAuthClient();
 		registerServiceWorker();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
@@ -64,14 +61,18 @@ beforeNavigate(({ from, to }) => {
 <svelte:window
 	on:appinstalled="{() => {
 		registerEvent('pwa_installed', {
-			display_name: $userProfile.display_name,
-			username: $userProfile.unique_user_name,
+			canister_id: $authState.userCanisterId,
 			userId: $userProfile.principal_id
 		});
+	}}"
+	on:beforeinstallprompt="{(e) => {
+		deferredPrompt.set(e);
 	}}" />
 
+<NetworkStatus />
+
 <alpha-ribbon
-	class="pointer-events-none absolute -right-9 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-1 px-2 text-xs font-bold uppercase text-white opacity-60">
+	class="pointer-events-none absolute -right-10 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-0.5 px-1 text-[0.5rem] font-bold uppercase text-white opacity-60">
 	Alpha
 </alpha-ribbon>
 

@@ -1,9 +1,10 @@
 import { get } from 'svelte/store';
 import { page } from '$app/stores';
-import { authState, referralId } from '$stores/auth';
+import { authState, authHelper, referralId } from '$stores/auth';
 import { isPrincipal } from './isPrincipal';
+import { initializeAuthClient } from '$lib/helpers/auth';
 
-export function handleParams() {
+export async function handleParams() {
 	const pageStore = get(page);
 	if (!pageStore) return;
 
@@ -32,5 +33,12 @@ export function handleParams() {
 				referralId.set({});
 			}
 		}
+	}
+
+	const logout = pageStore.url.searchParams.get('logout');
+	if (logout) {
+		const authHelperState = get(authHelper);
+		await authHelperState.client?.logout();
+		initializeAuthClient();
 	}
 }

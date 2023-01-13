@@ -1,11 +1,30 @@
 {
 	"version": 1,
 	"canisters": {
+		"configuration": {
+			"type": "rust",
+			"package": "configuration",
+			"candid": "./packages/ic/canister/configuration/can.did",
+			"declarations": {
+				"node_compatibility": true,
+				"output": "./packages/web-client/declarations/configuration"
+			}
+		},
+		"data_backup": {
+			"type": "rust",
+			"package": "data_backup",
+			"candid": "./packages/ic/canister/data_backup/can.did",
+			"declarations": {
+				"node_compatibility": true,
+				"output": "./packages/web-client/declarations/data_backup"
+			}
+		},
 		"individual_user_template": {
 			"type": "rust",
 			"package": "individual_user_template",
 			"candid": "./packages/ic/canister/individual_user_template/api/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/individual_user_template"
 			}
 		},
@@ -20,22 +39,16 @@
 			"package": "post_cache",
 			"candid": "./packages/ic/canister/post_cache/api/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/post_cache"
-			}
-		},
-		"project_member_index": {
-			"type": "rust",
-			"package": "project_member_index",
-			"candid": "./packages/ic/canister/project_member_index/api/can.did",
-			"declarations": {
-				"output": "./packages/web-client/declarations/project_member_index"
 			}
 		},
 		"user_index": {
 			"type": "rust",
 			"package": "user_index",
-			"candid": "./packages/ic/canister/user_index/api/can.did",
+			"candid": "./packages/ic/canister/user_index/can.did",
 			"declarations": {
+				"node_compatibility": true,
 				"output": "./packages/web-client/declarations/user_index"
 			}
 		},

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { prefetch } from '$app/navigation';
+import { preloadData } from '$app/navigation';
 import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import HomeIcon from '$components/icons/HomeIcon.svelte';
@@ -12,21 +12,20 @@ import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
 $: showBg = !(path.includes('feed') || path.includes('post'));
-$: feedUrl = $playerState.currentVideoUrl == 'no-videos' ? '' : $playerState.currentVideoUrl;
+$: feedUrl = $playerState.currentFeedUrl == 'no-videos' ? '' : $playerState.currentFeedUrl;
 
-function prefetchLinks() {
-	!path.includes('menu') && prefetch('/menu');
-	!path.includes('upload') && prefetch('/upload');
-	// !path.includes('wallet') && prefetch('/wallet');
-	// !path.includes('leaderboard') && prefetch('/leaderboard');
+function preloadLinks() {
+	!path.includes('menu') && preloadData('/menu');
+	!path.includes('upload') && preloadData('/upload');
 }
 
-onMount(() => prefetchLinks());
+onMount(() => preloadLinks());
 </script>
 
 <bottom-nav
 	class="flex w-full items-center justify-between px-4 {showBg ? 'bg-black shadow-up' : ''}">
 	<IconButton
+		preload
 		ariaLabel="Navigate to home feed"
 		href="{`/feed/${feedUrl}`}"
 		class="relative flex items-center px-2 py-5">
@@ -63,9 +62,9 @@ onMount(() => prefetchLinks());
 		</div>
 	</IconButton>
 	<IconButton
+		preload
 		ariaLabel="Navigate to menu for more options"
 		href="/menu"
-		prefetch
 		class="relative flex items-center px-2 py-5">
 		<MenuIcon class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
 		<div

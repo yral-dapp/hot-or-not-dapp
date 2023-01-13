@@ -1,9 +1,11 @@
 export const idlFactory = ({ IDL }) => {
   const KnownPrincipalType = IDL.Variant({
     'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdConfiguration' : IDL.Null,
     'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
@@ -88,14 +90,14 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
-    'get_user_index_create_if_not_exists_else_return_canister_id_for_embedded_user_principal_id' : IDL.Func(
-        [],
-        [IDL.Principal],
-        [],
-      ),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],
+        ['query'],
+      ),
+    'get_well_known_principal_value' : IDL.Func(
+        [KnownPrincipalType],
+        [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
@@ -120,9 +122,11 @@ export const idlFactory = ({ IDL }) => {
 export const init = ({ IDL }) => {
   const KnownPrincipalType = IDL.Variant({
     'CanisterIdUserIndex' : IDL.Null,
+    'CanisterIdConfiguration' : IDL.Null,
     'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
+    'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,

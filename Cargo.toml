@@ -1,16 +1,27 @@
 [workspace]
 members = [
+  "packages/ic/canister/configuration",
+  "packages/ic/canister/data_backup",
   "packages/ic/canister/individual_user_template/api",
   "packages/ic/canister/individual_user_template/lib",
   "packages/ic/canister/post_cache/api",
   "packages/ic/canister/post_cache/lib",
-  "packages/ic/canister/project_member_index/api",
-  "packages/ic/canister/project_member_index/lib",
-  "packages/ic/canister/user_index/api",
-  "packages/ic/canister/user_index/lib",
+  "packages/ic/canister/user_index/",
+  "packages/ic/lib/integration_tests",
   "packages/ic/lib/shared_utils",
   "packages/ic/lib/test_utils",
 ]
 
 [workspace.dependencies]
-ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "f7e3c96a2be92186718f6a1e67eea37bf3252c00" }
+candid = "0.8.4"
+cfg-if = "1.0.0"
+ciborium = { git = "https://github.com/enarx/ciborium", rev = "e719537c99b564c3674a56defe53713c702c6f46" }
+ic-cdk = { version = "0.6.8" }
+ic-cdk-macros = "0.6.8"
+ic-cron = "0.7.1"
+ic-stable-memory = "0.2.6"
+ic-stable-structures = "0.3.0"
+ic-state-machine-tests = { git = "https://github.com/dfinity/ic", rev = "36f4a1c2903aed012b95b3b073e052c4036aef09" }
+mockall = "0.11.3"
+serde = "1.0.151"
+speedy = "0.8.5"

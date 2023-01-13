@@ -8,7 +8,7 @@ import UploadLayout from '$components/layout/UploadLayout.svelte';
 import { tweened } from 'svelte/motion';
 import { cubicInOut } from 'svelte/easing';
 import UploadStep from '$components/upload/UploadStep.svelte';
-import { onMount, onDestroy } from 'svelte';
+import { onMount, onDestroy, tick } from 'svelte';
 import { fileToUpload } from '$stores/fileUpload';
 import { goto } from '$app/navigation';
 import { authState } from '$stores/auth';
@@ -18,6 +18,9 @@ import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
 import userProfile from '$stores/userProfile';
 import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import Switch from '$components/switch/Switch.svelte';
+import { individualUser } from '$lib/helpers/backend';
+import { debounce } from 'throttle-debounce';
 
 let uploadStatus: UploadStatus = 'to-upload';
 let previewPaused = true;
@@ -40,6 +43,7 @@ const MAX_HASHTAG_LENGTH = 60;
 let videoSrc = '';
 let previewMuted = true;
 let uploadedVideoId = 0;
+let enrollInHotOrNot = true;
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH;
 
@@ -52,7 +56,7 @@ async function nextStep() {
 			descriptionError = 'Description is too short';
 		}
 		if (!hashtags.length) {
-			hashtagError = 'Please add atleast 1 hashtag';
+			hashtagError = 'Please add at least 1 hashtag';
 		}
 		if (hashtagError || descriptionError) return;
 		if (!$authState.isLoggedIn) {
@@ -69,9 +73,13 @@ async function startUploading() {
 	uploadStep = 'uploading';
 	uploadStatus = 'uploading';
 	const uploadRes: any = await uploadVideoToStream($fileToUpload, onProgress);
-	Log({ uploadRes, source: '0 startUploading' }, 'info');
 	if (!uploadRes.success) {
 		Log({ error: uploadRes.error, source: '1 startUploading' }, 'error');
+		registerEvent('video_upload_failed', {
+			at_step: 'uploading_progress',
+			userId: $userProfile.principal_id,
+			user_canister_id: $authState.userCanisterId
+		});
 		hashtagError = 'Uploading failed. Please try again';
 		uploadStatus = 'to-upload';
 		uploadProgress.set(0);
@@ -98,9 +106,15 @@ async function checkVideoProcessingStatus(uid: string) {
 			} else if (videoStatus.result.readyToStream) {
 				handleSuccessfulUpload(uid);
 				clearInterval(videoStatusInterval);
+				await tick();
 			}
 		} catch (e) {
 			Log({ error: 'Processing error', e, source: '1 checkVideoProcessingStatus' }, 'error');
+			registerEvent('video_upload_failed', {
+				at_step: 'processing',
+				userId: $userProfile.principal_id,
+				user_canister_id: $authState.userCanisterId
+			});
 			hashtagError = 'Uploading failed. Please try again';
 			uploadStatus = 'to-upload';
 			uploadStep = 'uploading';
@@ -110,36 +124,46 @@ async function checkVideoProcessingStatus(uid: string) {
 	}, 4000);
 }
 
-async function handleSuccessfulUpload(videoUid: string) {
-	try {
-		Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
-		const individualUser = (await import('$lib/helpers/backend')).individualUser;
-		const postId = await individualUser().add_post({
-			description: videoDescription,
-			hashtags,
-			video_uid: videoUid,
-			creator_consent_for_inclusion_in_hot_or_not: false
-		});
-		uploadedVideoId = Number(postId);
-		registerEvent('video_uploaded', {
-			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
-			userId: $userProfile.principal_id,
-			video_uid: uploadedVideoId
-		});
-		uploadStep = 'verified';
-		uploadStatus = 'uploaded';
-		Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
-	} catch (e) {
-		Log(
-			{ error: 'Couldnt send details to backend', e, source: '1 handleSuccessfulUpload' },
-			'error'
-		);
-		hashtagError = 'Uploading failed. Please try again';
-		uploadStatus = 'to-upload';
-		uploadProgress.set(0);
-		return;
-	}
-}
+const handleSuccessfulUpload = debounce(
+	10000,
+	async (videoUid: string) => {
+		clearInterval(videoStatusInterval);
+		try {
+			Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info');
+			const postId = await individualUser().add_post({
+				description: videoDescription,
+				hashtags,
+				video_uid: videoUid,
+				creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot
+			});
+			uploadedVideoId = Number(postId);
+			registerEvent('video_uploaded', {
+				type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+				userId: $userProfile.principal_id,
+				user_canister_id: $authState.userCanisterId,
+				video_uid: uploadedVideoId
+			});
+			uploadStep = 'verified';
+			uploadStatus = 'uploaded';
+			Log({ postId, source: '0 handleSuccessfulUpload' }, 'info');
+		} catch (e) {
+			Log(
+				{ error: "Couldn't send details to backend", e, source: '1 handleSuccessfulUpload' },
+				'error'
+			);
+			registerEvent('video_upload_failed', {
+				at_step: 'updating_db',
+				userId: $userProfile.principal_id,
+				user_canister_id: $authState.userCanisterId
+			});
+			hashtagError = 'Uploading failed. Please try again';
+			uploadStatus = 'to-upload';
+			uploadProgress.set(0);
+			return;
+		}
+	},
+	{ atBegin: true }
+);
 
 async function showShareDialog() {
 	const videoLink = getVideoLink();
@@ -147,7 +171,7 @@ async function showShareDialog() {
 		await navigator.share({
 			title: 'Hot or Not',
 			text: 'Check out this hot video I just uploaded on hotornot.wtf!',
-			url: 'https://hotornot.wtf/' + videoLink
+			url: 'https://hotornot.wtf' + videoLink
 		});
 	} catch (_) {}
 }
@@ -158,14 +182,14 @@ function getVideoLink() {
 }
 
 onMount(async () => {
-	if ($fileToUpload) {
+	if (!$fileToUpload) {
+		goto('/upload');
+	} else {
 		videoSrc = URL.createObjectURL($fileToUpload);
 		registerEvent('video_to_upload', {
 			type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
 			userId: $userProfile.principal_id
 		});
-	} else {
-		goto('/upload');
 	}
 });
 
@@ -177,9 +201,13 @@ onDestroy(() => {
 });
 </script>
 
+<svelte:head>
+	<title>Upload | Hot or Not</title>
+</svelte:head>
+
 <UploadLayout>
 	<div slot="top-left">
-		<IconButton href="/upload" prefetch>
+		<IconButton href="/upload" preload>
 			<CaretLeftIcon class="h-7 w-7 text-white" />
 		</IconButton>
 	</div>
@@ -200,8 +228,8 @@ onDestroy(() => {
 						previewMuted = false;
 					}}"
 					bind:paused="{previewPaused}"
-					bind:videoHeight
-					bind:videoWidth
+					bind:videoHeight="{videoHeight}"
+					bind:videoWidth="{videoWidth}"
 					src="{videoSrc}"
 					playsinline
 					autoplay
@@ -243,6 +271,12 @@ onDestroy(() => {
 			{#if hashtagError}
 				<div class="text-xs text-red-500">{hashtagError}</div>
 			{/if}
+			<div class="flex w-full items-center justify-between space-x-8">
+				<span class="text-sm text-white/60">
+					Do you want to include this video in hot or not?
+				</span>
+				<Switch bind:checked="{enrollInHotOrNot}" />
+			</div>
 		{:else}
 			<div class="flex w-full flex-col space-y-10">
 				<div class="flex w-full items-start space-x-4">
@@ -296,7 +330,7 @@ onDestroy(() => {
 			{:else if uploadStatus === 'uploaded'}
 				<div class="flex items-center justify-between space-x-4">
 					<Button on:click="{showShareDialog}" type="secondary" class="w-full">Share Video</Button>
-					<Button href="{getVideoLink()}" prefetch class="w-full">View Video</Button>
+					<Button href="{getVideoLink()}" preload class="w-full">View Video</Button>
 				</div>
 			{/if}
 		</div>

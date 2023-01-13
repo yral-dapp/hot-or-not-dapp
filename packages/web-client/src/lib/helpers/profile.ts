@@ -7,21 +7,23 @@ import type {
 	TokenEventV1,
 	UserProfileDetailsForFrontend
 } from '$canisters/individual_user_template/individual_user_template.did';
+import { setUserProperties } from '$components/seo/GoogleAnalytics.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
 import { authState } from '$stores/auth';
-import userProfile, { type UserProfile } from '$stores/userProfile';
+import userProfile, { emptyProfileValues, type UserProfile } from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
+import { individualUser } from './backend';
 import { getCanisterId } from './canisterId';
+import { setUser } from './sentry';
 
 export interface UserProfileFollows extends UserProfile {
 	i_follow: boolean;
 }
 
 async function fetchProfile() {
-	const { individualUser } = await import('./backend');
 	try {
 		return await individualUser().get_profile_details();
 	} catch (e) {
@@ -53,24 +55,42 @@ export function sanitizeProfile(
 }
 
 export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
-	let updateProfile: UserProfileDetailsForFrontend | undefined = undefined;
-	if (profile) {
-		updateProfile = profile;
-	} else {
-		updateProfile = await fetchProfile();
-	}
-	if (updateProfile) {
-		const authStateData = get(authState);
-		userProfile.set({
-			...sanitizeProfile(updateProfile, authStateData.idString || 'random')
-		});
-		if (updateProfile.unique_user_name[0]) {
-			const { canisterIdb } = await import('$lib/utils/idb');
-			canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
+	const authStateData = get(authState);
+	if (authStateData.isLoggedIn) {
+		const updateProfile = profile || (await fetchProfile());
+		if (updateProfile) {
+			userProfile.set({
+				...sanitizeProfile(updateProfile, authStateData.idString || 'random')
+			});
+			if (updateProfile.unique_user_name[0]) {
+				const { canisterIdb } = await import('$lib/utils/idb');
+				canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
+			}
+		} else {
+			Log({ error: 'No profile found', from: '1 updateProfile' }, 'error');
 		}
-		Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
 	} else {
-		Log({ error: 'No profile fetched', from: '1 updateProfile' }, 'error');
+		userProfile.set(emptyProfileValues);
+	}
+	updateUserProperties(); // GA
+	setUser(authStateData.idString); //Sentry
+	Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info');
+}
+
+async function updateUserProperties() {
+	const profile = get(userProfile);
+	const authStateData = get(authState);
+	if (authStateData.isLoggedIn) {
+		const res = await fetchTokenBalance();
+		setUserProperties({
+			display_name: profile.display_name,
+			username: profile.unique_user_name,
+			userId: profile.principal_id,
+			user_canister_id: authStateData.userCanisterId,
+			...(!res.error && { wallet_balance: res.balance })
+		});
+	} else {
+		setUserProperties();
 	}
 }
 
@@ -87,7 +107,7 @@ type ProfilePostsResponse =
 export async function fetchPosts(id: string, from: number): Promise<ProfilePostsResponse> {
 	try {
 		const canId = await getCanisterId(id);
-		const { individualUser } = await import('./backend');
+
 		const res = await individualUser(
 			Principal.from(canId)
 		).get_posts_of_this_user_profile_with_pagination(BigInt(from), BigInt(from + 10));
@@ -118,7 +138,7 @@ export async function fetchPosts(id: string, from: number): Promise<ProfilePosts
 export async function fetchLovers(id: string, from: number) {
 	try {
 		const canId = await getCanisterId(id);
-		const { individualUser } = await import('./backend');
+
 		const res = await individualUser(Principal.from(canId)).get_principals_that_follow_me_paginated(
 			BigInt(from),
 			BigInt(from + 10)
@@ -153,11 +173,11 @@ export async function fetchLovers(id: string, from: number) {
 
 async function populateProfiles(users: Principal[]) {
 	try {
-		const { individualUser } = await import('./backend');
-
 		if (!users.length) {
 			return { posts: [], error: false };
 		}
+
+		const authStateData = get(authState);
 
 		const res = await Promise.all(
 			users.map(async (userId) => {
@@ -167,7 +187,7 @@ async function populateProfiles(users: Principal[]) {
 
 					return {
 						...sanitizeProfile(r, userId.toText()),
-						i_follow: await doIFollowThisUser(userId.toText())
+						i_follow: authStateData.isLoggedIn ? await doIFollowThisUser(userId.toText()) : false
 					};
 				}
 			})
@@ -182,14 +202,13 @@ async function populateProfiles(users: Principal[]) {
 
 export async function doIFollowThisUser(userId?: string, canId?: string | Principal) {
 	if (!userId) return false;
-	const { individualUser } = await import('./backend');
+
 	return await individualUser(canId).get_following_status_do_i_follow_this_user(
 		Principal.from(userId)
 	);
 }
 
 export async function loveUser(userId: string) {
-	const { individualUser } = await import('./backend');
 	try {
 		const res =
 			await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
@@ -253,7 +272,6 @@ export async function fetchHistory(
 	filter?: UnionKeyOf<MintEvent>
 ): Promise<HistoryResponse> {
 	try {
-		const { individualUser } = await import('./backend');
 		const res = await individualUser().get_user_utility_token_transaction_history_with_pagination(
 			BigInt(from),
 			BigInt(from + 10)
@@ -287,7 +305,6 @@ export async function fetchTokenBalance(): Promise<
 	{ error: false; balance: number } | { error: true }
 > {
 	try {
-		const { individualUser } = await import('./backend');
 		const res = await individualUser().get_utility_token_balance();
 		return { error: false, balance: Number(res) };
 	} catch (e) {
