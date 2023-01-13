@@ -198,8 +198,6 @@ onMount(async () => {
 onDestroy(() => {
 	document.removeEventListener('visibilitychange', handleVisibilityChange);
 });
-
-$: console.log({ loadNextVideosCount });
 </script>
 
 <svelte:head>
