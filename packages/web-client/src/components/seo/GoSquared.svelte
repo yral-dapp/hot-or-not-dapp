@@ -1,21 +1,21 @@
 <script lang="ts" context="module">
 export const toggleChatWidgetVisibility = (show?: boolean) => {
 	if (show !== undefined) {
-		(window as any)?._gs('set', 'chat', show ? 'show' : 'hide');
+		(window as any)._gs('set', 'chat', show ? 'show' : 'hide');
 	} else {
 		const shown = (window as any)?._gs('get', 'chat')?.button;
-		(window as any)?._gs('set', 'chat', { button: !shown ? 'show' : 'hide' });
+		(window as any)._gs('set', 'chat', { button: !shown ? 'show' : 'hide' });
 	}
 };
 
 export const identifyUserGS = (params: { id: string; name?: string; username?: string }) => {
-	(window as any)?._gs('identify', {
+	(window as any)._gs?.('identify', {
 		...params
 	});
 };
 
 export const unidentifyUserGS = () => {
-	(window as any)?._gs('unidentify');
+	(window as any)._gs?.('unidentify');
 };
 </script>
 
