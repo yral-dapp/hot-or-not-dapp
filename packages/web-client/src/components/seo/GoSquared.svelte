@@ -7,6 +7,16 @@ export const toggleChatWidgetVisibility = (show?: boolean) => {
 		(window as any)?._gs('set', 'chat', { button: !shown ? 'show' : 'hide' });
 	}
 };
+
+export const identifyUserGS = (params: { id: string; name?: string; username?: string }) => {
+	(window as any)?._gs('identify', {
+		...params
+	});
+};
+
+export const unidentifyUserGS = () => {
+	(window as any)?._gs('unidentify');
+};
 </script>
 
 <svelte:head>
