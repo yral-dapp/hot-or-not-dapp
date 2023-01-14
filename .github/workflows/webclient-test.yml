@@ -64,6 +64,9 @@ jobs:
       - name: Get PR details
         uses: 8BitJonny/gh-get-current-pr@2.2.0
         id: PR
+        with:
+          github-token: ${{ github.token }}
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Send deployment URL to Google Chat
         uses: fjogeleit/http-request-action@v1.12.0
