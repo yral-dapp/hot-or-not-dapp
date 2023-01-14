@@ -6,7 +6,7 @@ import LoginPopup from '$components/login/LoginPopup.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
-import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
@@ -90,8 +90,6 @@ beforeNavigate(({ from, to }) => {
 	<slot />
 </div>
 
-<GoogleAnalytics />
-
 {#if GoSquared}
-	<GoSquared />
+	<svelte:component this="{GoSquared}" />
 {/if}

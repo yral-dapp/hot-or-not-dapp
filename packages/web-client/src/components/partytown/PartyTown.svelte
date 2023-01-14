@@ -1,6 +1,6 @@
 <script lang="ts">
 import { partytownSnippet } from '@builder.io/partytown/integration';
-import GoogleAnalytics from '$components/seo/GoogleAnalytics.svelte';
+import GA from '$components/seo/GA.svelte';
 import { onMount } from 'svelte';
 
 let scriptEl;
@@ -41,4 +41,4 @@ onMount(() => {
 	</script>
 </svelte:head>
 
-<GoogleAnalytics />
+<GA />

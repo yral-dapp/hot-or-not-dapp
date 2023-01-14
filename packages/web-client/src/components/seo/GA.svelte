@@ -41,14 +41,3 @@ afterNavigate(({ to }) => {
 	}
 });
 </script>
-
-<svelte:head>
-	<script async defer src="https://www.googletagmanager.com/gtag/js"></script>
-	<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag() {
-		dataLayer.push(arguments);
-	}
-	gtag('js', new Date());
-	</script>
-</svelte:head>
