@@ -1,7 +1,7 @@
 name: Web-client tests
 on:
-  push:
-    branches-ignore:
+  pull_request:
+    branches:
       - main
     paths:
       - "packages/web-client/**"
@@ -67,7 +67,7 @@ jobs:
           url: "https://chat.googleapis.com/v1/spaces/AAAAAfsrp8U/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=_QvV-c8ZdTVTzGZxXW_PdR_o-0HI8VhO3I9dMAp6zls%3D"
           method: "POST"
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"text": "PR: \"${{ github.event.pull_request.title }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
+          data: '{"text": "PR: \"${{ github.event.pull_request.title  }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
 
   tests-lighthouse-reports:
     timeout-minutes: 40
