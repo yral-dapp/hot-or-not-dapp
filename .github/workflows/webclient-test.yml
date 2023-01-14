@@ -61,13 +61,17 @@ jobs:
     needs: ["deploy-preview"]
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR details
+        uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: PR
+
       - name: Send deployment URL to Google Chat
         uses: fjogeleit/http-request-action@v1.12.0
         with:
           url: "https://chat.googleapis.com/v1/spaces/AAAAAfsrp8U/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=_QvV-c8ZdTVTzGZxXW_PdR_o-0HI8VhO3I9dMAp6zls%3D"
           method: "POST"
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"text": "PR: \"${{ github.event.pull_request.title }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
+          data: '{"text": "PR: \"${{ steps.PR.outputs.pr_title }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
 
   tests-lighthouse-reports:
     timeout-minutes: 40
