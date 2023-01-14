@@ -3,7 +3,8 @@ import { beforeRunHook } from 'cypress-mochawesome-reporter/lib';
 
 export default defineConfig({
 	projectId: 'uv7vm5',
-	video: false,
+	video: true,
+	screenshotOnRunFailure: true,
 	env: {
 		...process.env
 	},
