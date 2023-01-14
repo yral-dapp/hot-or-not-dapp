@@ -9,7 +9,7 @@ import DownloadIcon from '$components/icons/DownloadCloudIcon.svelte';
 import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte';
 import HomeLayout from '$components/layout/HomeLayout.svelte';
 import LoginButton from '$components/login/LoginButton.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import DotTabs from '$components/tabs/DotTabs.svelte';
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';

@@ -4,7 +4,7 @@ import IconButton from '$components/button/IconButton.svelte';
 import EyeIcon from '$components/icons/EyeIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
 import HotOrNot from '$components/navigation/HotOrNot.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { generateRandomName } from '$lib/utils/randomUsername';

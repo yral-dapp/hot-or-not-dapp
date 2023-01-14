@@ -1,6 +1,6 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { individualUser } from '$lib/helpers/backend';
 import {
