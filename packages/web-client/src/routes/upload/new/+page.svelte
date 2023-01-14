@@ -17,7 +17,7 @@ import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream';
 import Log from '$lib/utils/Log';
 import TagsInput from '$components/tags-input/TagsInput.svelte';
 import userProfile from '$stores/userProfile';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import Switch from '$components/switch/Switch.svelte';
 import { individualUser } from '$lib/helpers/backend';
 import { debounce } from 'throttle-debounce';

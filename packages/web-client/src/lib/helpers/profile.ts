@@ -7,7 +7,7 @@ import type {
 	TokenEventV1,
 	UserProfileDetailsForFrontend
 } from '$canisters/individual_user_template/individual_user_template.did';
-import { setUserProperties } from '$components/seo/GoogleAnalytics.svelte';
+import { setUserProperties } from '$components/seo/GA.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
