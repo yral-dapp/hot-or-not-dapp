@@ -8,6 +8,7 @@ on:
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
       - ".github/workflows/webclient-test.yml"
+      - ".github/workflows/webclient-test-deploy.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
