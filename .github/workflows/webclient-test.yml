@@ -87,6 +87,9 @@ jobs:
           set -euxo pipefail
           npm run wc:test:vi
 
+      - name: Echo expression
+        run: echo ${{ github.actor != 'dependabot[bot]' }}
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
@@ -95,7 +98,7 @@ jobs:
           build: npm run wc:build
           start: npm run wc:preview
           command: npm run wc:test:record
-          record: true
+          record: ${{ github.actor != 'dependabot[bot]' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
