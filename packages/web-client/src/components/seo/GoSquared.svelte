@@ -1,4 +1,6 @@
 <script lang="ts" context="module">
+import Log from '$lib/utils/Log';
+
 export const toggleChatWidgetVisibility = (show?: boolean) => {
 	try {
 		if (show !== undefined) {
@@ -8,7 +10,7 @@ export const toggleChatWidgetVisibility = (show?: boolean) => {
 			(window as any)._gs('set', 'chat', { button: !shown ? 'show' : 'hide' });
 		}
 	} catch (_) {
-		console.log('[GSErr] tCWV: Error sending data to GS');
+		Log('[GSErr] tCWV: Error sending data to GS', 'warn');
 	}
 };
 
@@ -18,7 +20,7 @@ export const identifyUserGS = (params: { id: string; name?: string; username?: s
 			...params
 		});
 	} catch (_) {
-		console.log('[GSErr] iUGS: Error sending data to GS');
+		Log('[GSErr] iUGS: Error sending data to GS', 'warn');
 	}
 };
 
@@ -46,7 +48,7 @@ export const unidentifyUserGS = () => {
 		_gs('set', 'anonymizeIP', true);
 		_gs('set', 'chat', { button: false });
 	} catch (_) {
-		console.log('[GSErr] init: Error sending data to GS');
+		console.warn('[GSErr] init: Error sending data to GS');
 	}
 	</script>
 </svelte:head>

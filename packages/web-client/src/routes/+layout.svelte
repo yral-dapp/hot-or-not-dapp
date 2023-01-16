@@ -42,7 +42,7 @@ async function initializeGoSquared() {
 	try {
 		GoSquared = (await import('$components/seo/GoSquared.svelte')).default;
 	} catch (_) {
-		console.log('GS Blocked');
+		Log('GS Blocked', 'warn');
 	}
 }
 
@@ -51,7 +51,7 @@ async function initializeGA() {
 	try {
 		GA = (await import('$components/seo/GA.svelte')).default;
 	} catch (_) {
-		console.log('GA Blocked');
+		Log('GA Blocked', 'warn');
 	}
 }
 
