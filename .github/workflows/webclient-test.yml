@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Echo expression
+        run: echo ${{ (github.actor != 'dependabot[bot]' && 'wc:test:record') || 'wc:test' }}
+
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
 
@@ -87,9 +90,6 @@ jobs:
           set -euxo pipefail
           npm run wc:test:vi
 
-      - name: Echo expression
-        run: echo ${{ github.actor != 'dependabot[bot]' }}
-
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
@@ -97,8 +97,7 @@ jobs:
           project: ./packages/web-client
           build: npm run wc:build
           start: npm run wc:preview
-          command: npm run wc:test:record
-          record: ${{ github.actor != 'dependabot[bot]' }}
+          command: npm run ${{ (github.actor != 'dependabot[bot]' && 'wc:test:record') || 'wc:test' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
