@@ -19,6 +19,7 @@ import { onMount, tick, onDestroy } from 'svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video';
+import { updateURL } from '$lib/utils/feedUrl';
 
 export let data: PageData;
 const fetchCount = 50;
@@ -74,13 +75,6 @@ async function handleChange(e: CustomEvent) {
 	fetchNextVideos();
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
-}
-
-function updateURL(post?: PostPopulated) {
-	if (!post) return;
-	const url = post.publisher_canister_id + '@' + post.post_id;
-	$navigateBack = $playerState.currentHotOrNotUrl = url;
-	window.history.replaceState('', '', url);
 }
 
 function handleVisibilityChange() {

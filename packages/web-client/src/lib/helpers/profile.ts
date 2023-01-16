@@ -8,6 +8,7 @@ import type {
 	UserProfileDetailsForFrontend
 } from '$canisters/individual_user_template/individual_user_template.did';
 import { setUserProperties } from '$components/seo/GA.svelte';
+import { identifyUserGS, unidentifyUserGS } from '$components/seo/GoSquared.svelte';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import Log from '$lib/utils/Log';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -80,17 +81,24 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
 async function updateUserProperties() {
 	const profile = get(userProfile);
 	const authStateData = get(authState);
-	if (authStateData.isLoggedIn) {
+	if (authStateData.isLoggedIn && profile.principal_id) {
 		const res = await fetchTokenBalance();
 		setUserProperties({
 			display_name: profile.display_name,
-			username: profile.unique_user_name,
 			userId: profile.principal_id,
 			user_canister_id: authStateData.userCanisterId,
+			...(profile.username_set && { username: profile.unique_user_name }),
 			...(!res.error && { wallet_balance: res.balance })
+		});
+
+		identifyUserGS({
+			id: profile.principal_id,
+			name: profile.display_name,
+			...(profile.username_set && { username: profile.unique_user_name })
 		});
 	} else {
 		setUserProperties();
+		unidentifyUserGS();
 	}
 }
 

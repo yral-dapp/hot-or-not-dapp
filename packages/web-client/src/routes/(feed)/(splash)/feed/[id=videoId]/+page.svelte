@@ -22,10 +22,10 @@ import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
 import { isiPhone } from '$lib/utils/isSafari';
 import { page } from '$app/stores';
-import navigateBack from '$stores/navigateBack';
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
 import Hls from 'hls.js';
 import { joinArrayUniquely, updateMetadata, type VideoViewReport } from '$lib/utils/video';
+import { updateURL } from '$lib/utils/feedUrl';
 
 export let data: PageData;
 
@@ -90,13 +90,6 @@ async function handleChange(e: CustomEvent) {
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
 	currentPlayingIndex = index;
-}
-
-function updateURL(post?: PostPopulated) {
-	if (!post) return;
-	const url = post.publisher_canister_id + '@' + post.post_id;
-	$navigateBack = $playerState.currentFeedUrl = url;
-	window.history.replaceState('', '', url);
 }
 
 function handleVisibilityChange() {

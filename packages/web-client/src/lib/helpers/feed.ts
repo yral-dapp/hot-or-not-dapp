@@ -132,19 +132,22 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 
 		const res = await Promise.all(
 			posts.map(async (post) => {
-				const r = await individualUser(
-					Principal.from(post.publisher_canister_id)
-				).get_individual_post_details_by_id(post.post_id);
-				return {
-					...r,
-					...post,
-					created_by_user_principal_id: r.created_by_user_principal_id.toText(),
-					publisher_canister_id: post.publisher_canister_id.toText()
-				};
+				try {
+					const r = await individualUser(
+						Principal.from(post.publisher_canister_id)
+					).get_individual_post_details_by_id(post.post_id);
+					return {
+						...r,
+						...post,
+						created_by_user_principal_id: r.created_by_user_principal_id.toText(),
+						publisher_canister_id: post.publisher_canister_id.toText()
+					};
+				} catch (_) {
+					return undefined;
+				}
 			})
 		);
-
-		return { posts: res as PostPopulated[], error: false };
+		return { posts: res.filter((o) => !!o) as PostPopulated[], error: false };
 	} catch (e) {
 		Log({ error: e, from: '11 populatePosts' }, 'error');
 		return { error: true, posts: [] };

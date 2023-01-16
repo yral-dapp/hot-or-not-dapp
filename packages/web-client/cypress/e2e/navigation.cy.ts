@@ -16,7 +16,9 @@ describe('Navigation test', () => {
 
 	it('On a video, navigate to user profile', () => {
 		cy.get('div[aria-roledescription=video-info] > a').and('be.visible').click({ force: true });
-		expect(cy.url().should('contain', 'profile'));
+		cy.wait(1000).then(() => {
+			expect(cy.url().should('contain', 'profile'));
+		});
 	});
 
 	it("Navigate to user profile and then navigate to user's lovers list", () => {
