@@ -3,10 +3,12 @@
 const debugMode = true;
 
 export const registerPageview = (url: URL) => {
-	window.gtag?.('config', import.meta.env.VITE_GA_TRACKING_ID, {
-		page_path: url,
-		...(debugMode && { debug_mode: true })
-	});
+	if (url?.href) {
+		window.gtag?.('config', import.meta.env.VITE_GA_TRACKING_ID, {
+			page_path: url.href,
+			...(debugMode && { debug_mode: true })
+		});
+	}
 };
 
 export const updateConfig = (params?: Gtag.CustomParams) => {
@@ -34,13 +36,12 @@ export const registerEvent = (
 </script>
 
 <script lang="ts">
-import { afterNavigate } from '$app/navigation';
+import { page } from '$app/stores';
 
-afterNavigate(({ to }) => {
-	if (to) {
-		registerPageview(new URL(to.url.href));
-	}
-});
+$: href = $page.url.href;
+$: if (href) {
+	registerPageview(new URL(href));
+}
 </script>
 
 <svelte:head>
