@@ -26,6 +26,7 @@ import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
 import Hls from 'hls.js';
 import { joinArrayUniquely, updateMetadata, type VideoViewReport } from '$lib/utils/video';
 import { updateURL } from '$lib/utils/feedUrl';
+import Button from '$components/button/Button.svelte';
 
 export let data: PageData;
 
@@ -44,17 +45,36 @@ let isIPhone = isiPhone();
 let isDocumentHidden = false;
 let videoStats: Record<number, VideoViewReport> = {};
 
+let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
+let errorCount = 0;
+let showError = false;
+
 async function fetchNextVideos() {
-	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
+	console.log(
+		`to fetch: ${!noMoreVideos} && ${
+			videos.length
+		}-${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
+	);
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 			loading = true;
 			const res = await getTopPosts(fetchedVideosCount, fetchCount, true);
 			if (res.error) {
-				// TODO: Handle error
-				loading = false;
+				if (errorCount < 4) {
+					loadTimeout = setTimeout(() => {
+						errorCount++;
+						fetchNextVideos();
+					}, 5000);
+				} else {
+					clearTimeout(loadTimeout);
+					showError = true;
+					loading = false;
+				}
 				return;
+			} else {
+				errorCount = 0;
+				if (loadTimeout) clearTimeout(loadTimeout);
 			}
 
 			fetchedVideosCount = res.from;
@@ -188,6 +208,9 @@ onMount(async () => {
 
 onDestroy(() => {
 	document.removeEventListener('visibilitychange', handleVisibilityChange);
+	if (loadTimeout) {
+		clearTimeout(loadTimeout);
+	}
 });
 </script>
 
@@ -243,6 +266,15 @@ onDestroy(() => {
 			{/if}
 		</SwiperSlide>
 	{/each}
+	{#if showError}
+		<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+				<div class="text-center text-lg font-bold">Error loading posts</div>
+				<Button type="primary" on:click="{(e) => e.preventDefault()}" href="/"
+					>Clear here to refresh</Button>
+			</div>
+		</SwiperSlide>
+	{/if}
 	{#if loading}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
