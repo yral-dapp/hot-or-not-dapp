@@ -37,12 +37,28 @@ function registerServiceWorker() {
 	}
 }
 
+let GoSquared: any;
+async function initializeGoSquared() {
+	try {
+		GoSquared = (await import('$components/seo/GoSquared.svelte')).default;
+	} catch (_) {}
+}
+
+let GA: any;
+async function initializeGA() {
+	try {
+		GA = (await import('$components/seo/GA.svelte')).default;
+	} catch (_) {}
+}
+
 onMount(() => {
 	try {
 		$navigateBack = null;
 		initSentry();
 		initializeAuthClient();
 		registerServiceWorker();
+		initializeGoSquared();
+		initializeGA();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -83,3 +99,10 @@ beforeNavigate(({ from, to }) => {
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
 	<slot />
 </div>
+
+{#if GoSquared}
+	<svelte:component this="{GoSquared}" />
+{/if}
+{#if GoSquared}
+	<svelte:component this="{GA}" />
+{/if}
