@@ -20,6 +20,7 @@ import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video';
 import { updateURL } from '$lib/utils/feedUrl';
+import Button from '$components/button/Button.svelte';
 
 export let data: PageData;
 const fetchCount = 50;
@@ -35,6 +36,10 @@ let fetchedVideosCount = 0;
 let isIPhone = isiPhone();
 let isDocumentHidden = false;
 
+let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
+let errorCount = 0;
+let showError = false;
+
 async function fetchNextVideos() {
 	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
@@ -43,9 +48,20 @@ async function fetchNextVideos() {
 			loading = true;
 			const res = await getHotOrNotPosts(fetchedVideosCount, fetchCount);
 			if (res.error) {
-				// TODO: Handle error
-				loading = false;
+				if (errorCount < 4) {
+					loadTimeout = setTimeout(() => {
+						errorCount++;
+						fetchNextVideos();
+					}, 5000);
+				} else {
+					clearTimeout(loadTimeout);
+					showError = true;
+					loading = false;
+				}
 				return;
+			} else {
+				errorCount = 0;
+				if (loadTimeout) clearTimeout(loadTimeout);
 			}
 
 			fetchedVideosCount = res.from;
@@ -143,6 +159,18 @@ onDestroy(() => {
 			{/if}
 		</SwiperSlide>
 	{/each}
+	{#if showError}
+		<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+				<div class="text-center text-lg font-bold">
+					Error loading posts. Please, refresh the page.
+				</div>
+				<Button type="primary" on:click="{(e) => e.preventDefault()}" href="/">
+					Clear here to refresh
+				</Button>
+			</div>
+		</SwiperSlide>
+	{/if}
 	{#if loading}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
