@@ -41,14 +41,18 @@ let GoSquared: any;
 async function initializeGoSquared() {
 	try {
 		GoSquared = (await import('$components/seo/GoSquared.svelte')).default;
-	} catch (_) {}
+	} catch (_) {
+		console.log('GS Blocked');
+	}
 }
 
 let GA: any;
 async function initializeGA() {
 	try {
 		GA = (await import('$components/seo/GA.svelte')).default;
-	} catch (_) {}
+	} catch (_) {
+		console.log('GA Blocked');
+	}
 }
 
 onMount(() => {
