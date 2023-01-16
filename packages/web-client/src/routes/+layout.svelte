@@ -107,6 +107,7 @@ beforeNavigate(({ from, to }) => {
 {#if GoSquared}
 	<svelte:component this="{GoSquared}" />
 {/if}
-{#if GoSquared}
+
+{#if GA}
 	<svelte:component this="{GA}" />
 {/if}
