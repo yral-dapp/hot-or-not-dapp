@@ -269,7 +269,9 @@ onDestroy(() => {
 	{#if showError}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-				<div class="text-center text-lg font-bold">Error loading posts</div>
+				<div class="text-center text-lg font-bold">
+					Error loading posts. Please, refresh the page.
+				</div>
 				<Button type="primary" on:click="{(e) => e.preventDefault()}" href="/"
 					>Clear here to refresh</Button>
 			</div>
