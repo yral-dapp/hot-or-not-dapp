@@ -81,11 +81,6 @@ async function fetchNextVideos() {
 
 			videos = joinArrayUniquely(videos, res.posts);
 
-			if (videos.length > 1000) {
-				const { watchHistoryIdb } = await import('$lib/utils/idb');
-				watchHistoryIdb.clear();
-			}
-
 			if (!res.noMorePosts && res.posts.length == 0) {
 				fetchNextVideos();
 			} else if (res.noMorePosts) {
