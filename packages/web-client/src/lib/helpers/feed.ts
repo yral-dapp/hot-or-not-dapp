@@ -33,7 +33,7 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 	const filtered = posts.filter(
 		(o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id)
 	);
-	if (keys.length > 500) {
+	if (keys.length > 100) {
 		watchHistoryIdb.clear();
 	}
 	return filtered;
