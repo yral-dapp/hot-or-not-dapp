@@ -16,13 +16,13 @@ import { onMount } from 'svelte';
 import type { PageData } from './$types';
 import navigateBack from '$stores/navigateBack';
 import { page } from '$app/stores';
-import { doIFollowThisUser, fetchPosts, loveUser, updateProfile } from '$lib/helpers/profile';
+import { doIFollowThisUser, fetchPosts, loveUser } from '$lib/helpers/profile';
 import Log from '$lib/utils/Log';
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import { handleParams } from '$lib/utils/params';
 import { authState } from '$stores/auth';
 

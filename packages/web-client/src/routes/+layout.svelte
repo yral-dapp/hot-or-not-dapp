@@ -6,11 +6,13 @@ import LoginPopup from '$components/login/LoginPopup.svelte';
 import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
-import GoogleAnalytics, { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { page } from '$app/stores';
+import { deferredPrompt } from '$stores/deferredPrompt';
+import NetworkStatus from '$components/network-status/NetworkStatus.svelte';
 
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
@@ -35,12 +37,32 @@ function registerServiceWorker() {
 	}
 }
 
+let GoSquared: any;
+async function initializeGoSquared() {
+	try {
+		GoSquared = (await import('$components/seo/GoSquared.svelte')).default;
+	} catch (_) {
+		Log('GS Blocked', 'warn');
+	}
+}
+
+let GA: any;
+async function initializeGA() {
+	try {
+		GA = (await import('$components/seo/GA.svelte')).default;
+	} catch (_) {
+		Log('GA Blocked', 'warn');
+	}
+}
+
 onMount(() => {
 	try {
 		$navigateBack = null;
 		initSentry();
 		initializeAuthClient();
 		registerServiceWorker();
+		initializeGoSquared();
+		initializeGA();
 	} catch (e) {
 		Log({ error: e, source: '0 layout' }, 'error');
 	}
@@ -62,7 +84,12 @@ beforeNavigate(({ from, to }) => {
 			canister_id: $authState.userCanisterId,
 			userId: $userProfile.principal_id
 		});
+	}}"
+	on:beforeinstallprompt="{(e) => {
+		deferredPrompt.set(e);
 	}}" />
+
+<NetworkStatus />
 
 <alpha-ribbon
 	class="pointer-events-none absolute -right-10 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary py-0.5 px-1 text-[0.5rem] font-bold uppercase text-white opacity-60">
@@ -77,4 +104,10 @@ beforeNavigate(({ from, to }) => {
 	<slot />
 </div>
 
-<GoogleAnalytics />
+{#if GoSquared}
+	<svelte:component this="{GoSquared}" />
+{/if}
+
+{#if GA}
+	<svelte:component this="{GA}" />
+{/if}

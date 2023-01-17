@@ -5,7 +5,7 @@ import EyeIcon from '$components/icons/EyeIcon.svelte';
 import FireIcon from '$components/icons/FireIcon.svelte';
 import HeartIcon from '$components/icons/HeartIcon.svelte';
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import type { IndividualUserActor } from '$lib/helpers/backend';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { generateRandomName } from '$lib/utils/randomUsername';
@@ -105,7 +105,7 @@ async function handleShare() {
 		<div
 			style="-webkit-transform: translate3d(0, 0, 0);"
 			class="absolute bottom-20 flex flex-col space-y-2 left-4 z-[9] pr-20">
-			<div class="pointer-events-auto flex space-x-3">
+			<div aria-roledescription="video-info" class="pointer-events-auto flex space-x-3">
 				<a href="/profile/{profileLink}" class="h-12 w-12 shrink-0">
 					<Avatar class="h-12 w-12" src="{userProfileSrc || getDefaultImageUrl(createdById)}" />
 				</a>

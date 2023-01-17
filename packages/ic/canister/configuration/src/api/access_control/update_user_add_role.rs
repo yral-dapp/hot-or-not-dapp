@@ -32,7 +32,8 @@ fn update_user_add_role_impl(
 mod test {
     use shared_utils::access_control::{self, UserAccessRole};
     use test_utils::setup::test_constants::{
-        get_alice_principal_id_v1, get_bob_principal_id_v1, get_global_super_admin_principal_id_v1,
+        get_global_super_admin_principal_id_v1, get_mock_user_alice_principal_id,
+        get_mock_user_bob_principal_id,
     };
 
     use crate::data::CanisterData;
@@ -49,7 +50,7 @@ mod test {
         );
 
         // * adding role as super admin to alice should work
-        let principal_id = get_alice_principal_id_v1();
+        let principal_id = get_mock_user_alice_principal_id();
         let api_caller = get_global_super_admin_principal_id_v1();
         super::update_user_add_role_impl(
             UserAccessRole::ProfileOwner,
@@ -65,8 +66,8 @@ mod test {
         assert!(user_roles.contains(&UserAccessRole::ProfileOwner));
 
         // * adding role as bob to alice should fail
-        let principal_id = get_alice_principal_id_v1();
-        let api_caller = get_bob_principal_id_v1();
+        let principal_id = get_mock_user_alice_principal_id();
+        let api_caller = get_mock_user_bob_principal_id();
         super::update_user_add_role_impl(
             UserAccessRole::CanisterController,
             principal_id,

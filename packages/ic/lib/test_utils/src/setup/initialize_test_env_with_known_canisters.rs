@@ -1,15 +1,16 @@
+use std::collections::HashMap;
+
 use candid::Principal;
-use ic_stable_memory::utils::ic_types::SPrincipal;
 use ic_state_machine_tests::{
     CanisterId, CanisterInstallMode, CanisterSettingsArgs, Cycles, PrincipalId, StateMachine,
 };
 use shared_utils::{
     canister_specific::{
         configuration::types::args::ConfigurationInitArgs,
-        data_backup::types::args::DataBackupInitArgs,
+        data_backup::types::args::DataBackupInitArgs, user_index::types::args::UserIndexInitArgs,
     },
     common::types::{
-        init_args::{PostCacheInitArgs, UserIndexInitArgs},
+        init_args::PostCacheInitArgs,
         known_principal::{KnownPrincipalMapV1, KnownPrincipalType},
     },
 };
@@ -118,10 +119,7 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
             .clone(),
         get_canister_wasm(KnownPrincipalType::CanisterIdUserIndex),
         candid::encode_one(UserIndexInitArgs {
-            known_principal_ids: known_principal_map_with_all_canisters
-                .iter()
-                .map(|(k, v)| (k.clone(), SPrincipal(v.clone())))
-                .collect(),
+            known_principal_ids: known_principal_map_with_all_canisters.clone(),
         })
         .unwrap(),
     );
@@ -130,7 +128,7 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
 }
 
 pub fn get_canister_id_of_specific_type_from_principal_id_map(
-    principal_id_map: &KnownPrincipalMapV1,
+    principal_id_map: &HashMap<KnownPrincipalType, Principal>,
     canister_type: KnownPrincipalType,
 ) -> CanisterId {
     CanisterId::new(PrincipalId(

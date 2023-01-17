@@ -24,7 +24,13 @@ export const idlFactory = ({ IDL }) => {
       IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(UserAccessRole)))
     ),
   });
+  const BackupStatistics = IDL.Record({ 'number_of_user_entries' : IDL.Nat64 });
   return IDL.Service({
+    'get_current_backup_statistics' : IDL.Func(
+        [],
+        [BackupStatistics],
+        ['query'],
+      ),
     'get_user_roles' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(UserAccessRole)],
@@ -35,8 +41,13 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
-    'receive_principal_id_to_canister_id_mapping_from_user_index_canister' : IDL.Func(
-        [IDL.Principal, IDL.Principal],
+    'receive_unique_user_name_to_user_principal_id_mapping_from_user_index_canister' : IDL.Func(
+        [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Principal))],
+        [],
+        [],
+      ),
+    'receive_user_principal_id_to_canister_id_mapping_from_user_index_canister' : IDL.Func(
+        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal))],
         [],
         [],
       ),

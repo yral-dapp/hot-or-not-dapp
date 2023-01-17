@@ -54,9 +54,9 @@ fn update_list_of_well_known_principals_impl(
 #[cfg(test)]
 mod test {
     use test_utils::setup::test_constants::{
-        get_alice_principal_id_v1, get_global_super_admin_principal_id_v1,
-        get_mock_canister_id_configuration, get_mock_canister_id_post_cache,
-        get_mock_canister_id_user_index,
+        get_global_super_admin_principal_id_v1, get_mock_canister_id_configuration,
+        get_mock_canister_id_post_cache, get_mock_canister_id_user_index,
+        get_mock_user_alice_principal_id,
     };
 
     use super::*;
@@ -94,7 +94,7 @@ mod test {
             .known_principal_ids
             .contains_key(&KnownPrincipalType::CanisterIdPostCache));
 
-        let non_admin_api_caller = get_alice_principal_id_v1();
+        let non_admin_api_caller = get_mock_user_alice_principal_id();
         let principal_type = KnownPrincipalType::CanisterIdUserIndex;
         let principal_value = get_mock_canister_id_user_index();
 
