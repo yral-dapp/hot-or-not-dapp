@@ -50,11 +50,11 @@ let errorCount = 0;
 let showError = false;
 
 async function fetchNextVideos() {
-	console.log(
-		`to fetch: ${!noMoreVideos} && ${
-			videos.length
-		}-${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
-	);
+	// console.log(
+	// 	`to fetch: ${!noMoreVideos} && ${
+	// 		videos.length
+	// 	} - ${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
+	// );
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
@@ -91,7 +91,6 @@ async function fetchNextVideos() {
 			noMoreVideos = res.noMorePosts;
 			await tick();
 			loading = false;
-
 			Log({ res: 'fetched', noMoreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
 			Log({ error: e, noMoreVideos, source: '1 fetchNextVideos' }, 'error');
