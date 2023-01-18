@@ -11,7 +11,6 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
-import navigateBack from '$stores/navigateBack';
 import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
 import Hls from 'hls.js';
@@ -21,6 +20,7 @@ import type { PageData } from './$types';
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video';
 import { updateURL } from '$lib/utils/feedUrl';
 import Button from '$components/button/Button.svelte';
+import { beforeNavigate } from '$app/navigation';
 
 export let data: PageData;
 const fetchCount = 25;
@@ -116,6 +116,10 @@ onMount(async () => {
 
 onDestroy(() => {
 	document.removeEventListener('visibilitychange', handleVisibilityChange);
+});
+
+beforeNavigate(() => {
+	isDocumentHidden = true;
 });
 </script>
 
