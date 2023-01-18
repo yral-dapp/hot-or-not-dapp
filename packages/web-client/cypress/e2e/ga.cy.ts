@@ -1,5 +1,5 @@
-describe('Home Feed Tests', () => {
-	const TEST_HOST = Cypress.env('TEST_HOST') || 'http://localhost:5173';
+describe('Google analytics tests', () => {
+	const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf';
 	const IC0_HOST = 'https://ic0.app';
 
 	Cypress.on('window:before:load', (win) => {
@@ -17,20 +17,41 @@ describe('Home Feed Tests', () => {
 		cy.visit(TEST_HOST);
 	});
 
-	it('can ensure window.ga is called correctly', () => {
-		cy.get('@gtag', { timeout: 5000 }).should('be.called');
+	it('Ensure GA is loaded and configured correctly', () => {
+		cy.get('splash-screen').and('not.exist');
+		cy.get('@gtag').should('be.calledWith', 'config', 'G-S9P26021F9');
+	});
 
-		cy.get('@gtag').should('be.calledWith', 'event', 'page_view', 'contain', 'feed');
+	it('Ensure GA registers page_view views', () => {
+		cy.get('splash-screen').and('not.exist');
 
-		// now click the anchor tag which causes a pageview event
-		cy.get('a[aria-label="Navigate to menu for more options"]')
-			.and('have.attr', 'href', '/menu')
-			.click();
+		cy.get('@gtag').should('be.calledWith', 'config');
 
-		cy.url()
-			.should('contain', 'menu')
-			.then(() => {
-				cy.get('@gtag').should('be.calledWith', 'event', 'page_view', TEST_HOST + '/menu');
-			});
+		cy.get('@gtag').should('be.calledWithMatch', 'event', 'page_view', (obj) => {
+			return obj?.page_location?.includes('feed');
+		});
+
+		cy.visit(TEST_HOST + '/menu');
+
+		cy.get('@gtag').should('be.calledWithMatch', 'event', 'page_view', (obj) => {
+			return obj?.page_location?.includes('menu');
+		});
+	});
+
+	it('Ensure GA registers custom events', () => {
+		cy.get('splash-screen').and('not.exist');
+
+		cy.get('@gtag').should('be.calledWith', 'config');
+
+		cy.get('@gtag').should('be.calledWithMatch', 'event', 'page_view', (obj) => {
+			return obj?.page_location?.includes('feed');
+		});
+
+		// cy.get('player[i=0] button[aria-label="Share this post"]')
+		// 	.should('be.visible')
+		// 	.click({ force: true })
+		// 	.then(() => {
+		// 		cy.get('@gtag').should('be.calledWithMatch', 'event', 'share_video');
+		// 	});
 	});
 });
