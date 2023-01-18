@@ -49,6 +49,8 @@ let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 let errorCount = 0;
 let showError = false;
 
+$: pathname = $page.url.pathname;
+
 async function fetchNextVideos() {
 	// console.log(
 	// 	`to fetch: ${!noMoreVideos} && ${
@@ -259,7 +261,7 @@ onDestroy(() => {
 						playFormat="hls"
 						Hls="{Hls}"
 						isiPhone="{isIPhone}"
-						inView="{i == currentVideoIndex && !isDocumentHidden}"
+						inView="{i == currentVideoIndex && !isDocumentHidden && pathname.includes('feed')}"
 						uid="{video.video_uid}" />
 				</HomeFeedPlayer>
 			{/if}
