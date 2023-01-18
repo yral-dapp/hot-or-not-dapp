@@ -3,7 +3,6 @@
 const debugMode = true;
 
 export const registerPageview = (url: URL) => {
-	console.log('got pageview event', url.href);
 	if (url?.href) {
 		window.gtag?.('event', 'page_view', {
 			page_location: url.href
