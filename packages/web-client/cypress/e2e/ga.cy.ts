@@ -3,9 +3,7 @@ describe('Home Feed Tests', () => {
 	const IC0_HOST = 'https://ic0.app';
 
 	Cypress.on('window:before:load', (win) => {
-		// because this is called before any scripts
-		// have loaded - the ga function is undefined
-		// so we need to create it.
+		//@ts-ignore
 		win.gtag = cy.stub().as('gtag');
 	});
 
@@ -20,27 +18,19 @@ describe('Home Feed Tests', () => {
 	});
 
 	it('can ensure window.ga is called correctly', () => {
-		Cypress.on('window:before:load', (win) => {
-			// because this is called before any scripts
-			// have loaded - the ga function is undefined
-			// so we need to create it.
-			(win as any).gtag = cy.stub().as('gtag');
-		});
-		cy.get('@gtag', { timeout: 5000 })
-			// ensure GA was created with our google analytics ID
-			.should('be.called');
-		// and ensure that the initial pageview was sent
+		cy.get('@gtag', { timeout: 5000 }).should('be.called');
 
-		// now click the anchor tag which causes a hashchange event
-		// cy.find('a')
-		// 	.and('have.attr', 'href', TEST_HOST + '/menu')
-		// 	.click();
+		cy.get('@gtag').should('be.calledWith', 'event', 'page_view', 'contain', 'feed');
 
-		// cy.url().contains('menu');
+		// now click the anchor tag which causes a pageview event
+		cy.get('a[aria-label="Navigate to menu for more options"]')
+			.and('have.attr', 'href', '/menu')
+			.click();
 
-		// // make sure GA was sent this pageview
-		// cy.get('@gtag').should('be.calledWith', 'send', 'pageview', 'menu');
-
-		// and now do it again for page3
+		cy.url()
+			.should('contain', 'menu')
+			.then(() => {
+				cy.get('@gtag').should('be.calledWith', 'event', 'page_view', TEST_HOST + '/menu');
+			});
 	});
 });
