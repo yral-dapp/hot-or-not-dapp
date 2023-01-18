@@ -30,7 +30,7 @@ import Button from '$components/button/Button.svelte';
 
 export let data: PageData;
 
-const fetchCount = 50;
+const fetchCount = 25;
 const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 3;
 
