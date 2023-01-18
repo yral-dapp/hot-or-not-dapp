@@ -1,5 +1,5 @@
 describe('Home Feed Tests', () => {
-	const TEST_HOST = Cypress.env('TEST_HOST') || 'http://localhost:5173';
+	const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf';
 	const IC0_HOST = 'https://ic0.app';
 
 	before(() => {
@@ -10,45 +10,45 @@ describe('Home Feed Tests', () => {
 		cy.visit(TEST_HOST);
 	});
 
-	// it('First video on feed has a valid source', () => {
-	// 	cy.get('player[i=0] > video').and('have.prop', 'src');
-	// });
+	it('First video on feed has a valid source', () => {
+		cy.get('player[i=0] > video').and('have.prop', 'src');
+	});
 
-	// it('First video on the feed starts auto-playing', () => {
-	// 	cy.get('player[i=0] > video')
-	// 		.and('have.prop', 'paused', false)
-	// 		.and('have.prop', 'ended', false);
-	// });
+	it('First video on the feed starts auto-playing', () => {
+		cy.get('player[i=0] > video')
+			.and('have.prop', 'paused', false)
+			.and('have.prop', 'ended', false);
+	});
 
-	// it('First video on a feed has a positive duration', () => {
-	// 	cy.get('player[i=0] > video')
-	// 		.and('have.prop', 'paused', false)
-	// 		.then(($video) => {
-	// 			expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0);
-	// 		});
-	// });
+	it('First video on a feed has a positive duration', () => {
+		cy.get('player[i=0] > video')
+			.and('have.prop', 'paused', false)
+			.then(($video) => {
+				expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0);
+			});
+	});
 
-	// it('Measure first video load and show time on feed', () => {
-	// 	const t0 = performance.now();
-	// 	cy.get('splash-screen').and('not.exist');
-	// 	cy.get('player[i=0] > video')
-	// 		.should('have.prop', 'paused', false)
-	// 		.then(() => {
-	// 			cy.wrap(performance.now()).then((t1) => {
-	// 				cy.log(`Video is visible and started playing at ${t1 - t0} milliseconds.`);
-	// 			});
-	// 		});
-	// });
+	it('Measure first video load and show time on feed', () => {
+		const t0 = performance.now();
+		cy.get('splash-screen').and('not.exist');
+		cy.get('player[i=0] > video')
+			.should('have.prop', 'paused', false)
+			.then(() => {
+				cy.wrap(performance.now()).then((t1) => {
+					cy.log(`Video is visible and started playing at ${t1 - t0} milliseconds.`);
+				});
+			});
+	});
 
-	// it('Click to unmute video', () => {
-	// 	const video = cy
-	// 		.get('player[i=0] > video')
-	// 		.and('have.prop', 'paused', false)
-	// 		.and('have.prop', 'muted', true);
-	// 	video.click().then(() => {
-	// 		video.should('have.prop', 'muted', false);
-	// 	});
-	// });
+	it('Click to unmute video', () => {
+		const video = cy
+			.get('player[i=0] > video')
+			.and('have.prop', 'paused', false)
+			.and('have.prop', 'muted', true);
+		video.click().then(() => {
+			video.should('have.prop', 'muted', false);
+		});
+	});
 
 	it('Scrolling on main feed', () => {
 		cy.task('log', 'Waiting for more videos to load to start scrolling');
