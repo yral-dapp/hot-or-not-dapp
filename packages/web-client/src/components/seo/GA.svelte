@@ -3,19 +3,22 @@
 const debugMode = true;
 
 export const registerPageview = (url: URL) => {
+	console.log('got pageview event', url.href);
 	if (url?.href) {
-		window.gtag?.('config', import.meta.env.VITE_GA_TRACKING_ID, {
-			page_path: url.href,
-			...(debugMode && { debug_mode: true })
+		window.gtag?.('event', 'page_view', {
+			page_location: url.href
 		});
 	}
 };
 
 export const updateConfig = (params?: Gtag.CustomParams) => {
-	window.gtag?.('config', import.meta.env.VITE_GA_TRACKING_ID, {
-		...params,
-		...(debugMode && { debug_mode: true })
-	});
+	if (window.gtag) {
+		window.gtag('config', import.meta.env.VITE_GA_TRACKING_ID, {
+			...params,
+			...(debugMode && { debug_mode: true })
+		});
+		return true;
+	}
 };
 
 export const setUserProperties = (params?: Gtag.CustomParams) => {
@@ -37,9 +40,15 @@ export const registerEvent = (
 
 <script lang="ts">
 import { page } from '$app/stores';
+let configured = false;
 
 $: href = $page.url.href;
+
 $: if (href) {
+	if (!configured) {
+		configured = updateConfig() || false;
+		console.log('configured');
+	}
 	registerPageview(new URL(href));
 }
 </script>
