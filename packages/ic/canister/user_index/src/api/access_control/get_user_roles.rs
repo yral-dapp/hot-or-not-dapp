@@ -1,12 +1,57 @@
 use candid::Principal;
-use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::access_control::{self, UserAccessRole};
 
-use crate::data::AccessControlMap;
+use crate::{data::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
 fn get_user_roles(principal_id: Principal) -> Vec<UserAccessRole> {
-    let user_id_access_control_map: AccessControlMap = s!(AccessControlMap);
-    access_control::get_role_for_principal_id(&user_id_access_control_map, SPrincipal(principal_id))
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        get_user_roles_impl(principal_id, &canister_data_ref_cell.borrow())
+    })
+}
+
+fn get_user_roles_impl(
+    principal_id: Principal,
+    canister_data: &CanisterData,
+) -> Vec<UserAccessRole> {
+    access_control::get_roles_for_principal_id_v2(&canister_data.access_control_map, principal_id)
+}
+
+#[cfg(test)]
+mod test {
+    use shared_utils::access_control::UserAccessRole;
+    use test_utils::setup::test_constants::{
+        get_global_super_admin_principal_id, get_global_super_admin_principal_id_v1,
+        get_mock_user_alice_principal_id,
+    };
+
+    use crate::data::CanisterData;
+
+    #[test]
+    fn test_get_user_roles_impl() {
+        let mut canister_data = CanisterData::default();
+        canister_data.access_control_map.insert(
+            get_global_super_admin_principal_id_v1(),
+            vec![
+                UserAccessRole::CanisterAdmin,
+                UserAccessRole::CanisterController,
+            ],
+        );
+
+        let principal_id = get_mock_user_alice_principal_id();
+        let user_roles = super::get_user_roles_impl(principal_id, &canister_data);
+
+        assert_eq!(user_roles, vec![]);
+
+        let principal_id = get_global_super_admin_principal_id().0;
+        let user_roles = super::get_user_roles_impl(principal_id, &canister_data);
+        assert_eq!(
+            user_roles,
+            vec![
+                UserAccessRole::CanisterAdmin,
+                UserAccessRole::CanisterController
+            ]
+        );
+    }
 }

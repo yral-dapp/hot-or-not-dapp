@@ -6,10 +6,9 @@ use ic_cdk::api::{
         provisional::{CanisterIdRecord, CanisterSettings},
     },
 };
-use ic_stable_memory::s;
-use shared_utils::constant::get_global_super_admin_principal_id;
+use shared_utils::common::types::known_principal::KnownPrincipalType;
 
-use crate::MyKnownPrincipalIdsMap;
+use crate::CANISTER_DATA;
 
 use super::known_principal_ids;
 
@@ -18,8 +17,6 @@ const INDIVIDUAL_USER_TEMPLATE_CANISTER_WASM: &[u8] = include_bytes!(
 );
 
 pub async fn create_users_canister(profile_owner: Principal) -> Principal {
-    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
-
     // * config for provisioning canister
     let arg = CreateCanisterArgument {
         settings: Some(CanisterSettings {
@@ -27,7 +24,14 @@ pub async fn create_users_canister(profile_owner: Principal) -> Principal {
                 // this canister
                 api::id(),
                 // hot or not global owner principal
-                get_global_super_admin_principal_id(known_principal_ids),
+                CANISTER_DATA.with(|canister_data_ref_cell| {
+                    canister_data_ref_cell
+                        .borrow()
+                        .known_principal_ids
+                        .get(&KnownPrincipalType::UserIdGlobalSuperAdmin)
+                        .unwrap()
+                        .clone()
+                }),
             ]),
             compute_allocation: None,
             memory_allocation: None,
@@ -43,8 +47,12 @@ pub async fn create_users_canister(profile_owner: Principal) -> Principal {
         .await
         .unwrap();
 
-    let individual_user_tempalate_init_args =
-        known_principal_ids::get_known_principal_ids_for_individual_user_template(profile_owner);
+    let individual_user_tempalate_init_args = CANISTER_DATA.with(|canister_data_ref_cell| {
+        known_principal_ids::get_known_principal_ids_for_individual_user_template(
+            &canister_data_ref_cell.borrow().known_principal_ids,
+            profile_owner,
+        )
+    });
 
     // * encode argument for user canister init lifecycle method
     let arg = candid::encode_one(individual_user_tempalate_init_args)

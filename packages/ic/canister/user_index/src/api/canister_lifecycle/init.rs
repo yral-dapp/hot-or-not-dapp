@@ -1,34 +1,125 @@
-use std::collections::HashMap;
-
-use ic_stable_memory::{s, stable_memory_init};
 use shared_utils::canister_specific::user_index::types::args::UserIndexInitArgs;
 
-use crate::{
-    data::{
-        AccessControlMap, LastRunUpgradeStatus, MyKnownPrincipalIdsMap,
-        UniqueUserNameToUserPrincipalIdMap, UserPrincipalIdToCanisterIdMap,
-    },
-    util::{access_control, known_principal_ids},
-};
+use crate::{data::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]
 fn init(init_args: UserIndexInitArgs) {
-    // * initialize stable memory
-    stable_memory_init(true, 0);
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        let mut data = canister_data_ref_cell.borrow_mut();
+        init_impl(init_args, &mut data);
+    });
+}
 
-    // * initialize stable variables
-    s! { LastRunUpgradeStatus = LastRunUpgradeStatus::new() }
-    s! { MyKnownPrincipalIdsMap = HashMap::new() }
-    known_principal_ids::save_known_principal_ids_from_user_index_init_args_to_my_known_principal_ids_map(init_args);
+fn init_impl(init_args: UserIndexInitArgs, data: &mut CanisterData) {
+    init_args
+        .known_principal_ids
+        .unwrap_or_default()
+        .iter()
+        .for_each(|(principal_belongs_to, principal_id)| {
+            data.known_principal_ids
+                .insert(principal_belongs_to.clone(), principal_id.clone());
+        });
 
-    // * initialize stable collections
-    s! { UserPrincipalIdToCanisterIdMap = UserPrincipalIdToCanisterIdMap::new_with_capacity(200_000) };
-    s! { UniqueUserNameToUserPrincipalIdMap = UniqueUserNameToUserPrincipalIdMap::new_with_capacity(100_000) };
-    s! { AccessControlMap = AccessControlMap::new_with_capacity(100) };
+    init_args
+        .access_control_map
+        .unwrap_or_default()
+        .iter()
+        .for_each(|(principal, access_roles)| {
+            data.access_control_map
+                .insert(principal.clone(), access_roles.clone());
+        });
+}
 
-    // * initialize access control
-    let mut user_id_access_control_map = s!(AccessControlMap);
-    access_control::setup_initial_access_control(&mut user_id_access_control_map);
-    s! { AccessControlMap = user_id_access_control_map };
+#[cfg(test)]
+mod test {
+    use std::collections::HashMap;
+
+    use shared_utils::{
+        access_control::UserAccessRole,
+        common::types::known_principal::{KnownPrincipalMapV1, KnownPrincipalType},
+    };
+    use test_utils::setup::test_constants::{
+        get_global_super_admin_principal_id_v1, get_mock_canister_id_configuration,
+        get_mock_canister_id_random_project_member, get_mock_canister_id_user_index,
+    };
+
+    use super::*;
+
+    #[test]
+    fn test_init_impl() {
+        // * Add some known principals
+        let mut known_principal_ids = KnownPrincipalMapV1::new();
+        known_principal_ids.insert(
+            KnownPrincipalType::UserIdGlobalSuperAdmin,
+            get_global_super_admin_principal_id_v1(),
+        );
+        known_principal_ids.insert(
+            KnownPrincipalType::CanisterIdConfiguration,
+            get_mock_canister_id_configuration(),
+        );
+        known_principal_ids.insert(
+            KnownPrincipalType::CanisterIdUserIndex,
+            get_mock_canister_id_user_index(),
+        );
+
+        // * Add some access control roles
+        let mut access_control_map = HashMap::new();
+        access_control_map.insert(
+            get_global_super_admin_principal_id_v1(),
+            vec![
+                UserAccessRole::CanisterController,
+                UserAccessRole::CanisterAdmin,
+            ],
+        );
+        access_control_map.insert(
+            get_mock_canister_id_random_project_member(),
+            vec![UserAccessRole::ProjectCanister],
+        );
+
+        // * Create the init args
+        let init_args = UserIndexInitArgs {
+            known_principal_ids: Some(known_principal_ids),
+            access_control_map: Some(access_control_map),
+        };
+        let mut data = CanisterData::default();
+
+        // * Run the init impl
+        init_impl(init_args, &mut data);
+
+        // * Check the data
+        assert_eq!(
+            data.known_principal_ids
+                .get(&KnownPrincipalType::UserIdGlobalSuperAdmin)
+                .unwrap(),
+            &get_global_super_admin_principal_id_v1()
+        );
+        assert_eq!(
+            data.known_principal_ids
+                .get(&KnownPrincipalType::CanisterIdConfiguration)
+                .unwrap(),
+            &get_mock_canister_id_configuration()
+        );
+        assert_eq!(
+            data.known_principal_ids
+                .get(&KnownPrincipalType::CanisterIdUserIndex)
+                .unwrap(),
+            &get_mock_canister_id_user_index()
+        );
+        assert_eq!(
+            data.access_control_map
+                .get(&get_global_super_admin_principal_id_v1())
+                .unwrap(),
+            &vec![
+                UserAccessRole::CanisterController,
+                UserAccessRole::CanisterAdmin
+            ]
+        );
+        assert_eq!(
+            data.access_control_map
+                .get(&get_mock_canister_id_random_project_member())
+                .unwrap(),
+            &vec![UserAccessRole::ProjectCanister]
+        );
+    }
 }

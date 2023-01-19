@@ -12,14 +12,12 @@ gzip -f -1 ./target/wasm32-unknown-unknown/release/user_index.wasm
 dfx build --network=ic post_cache
 gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
 
-# cargo test
+cargo test
 
-dfx canister install configuration --network ic --mode upgrade --argument "(record { known_principal_ids = null; signups_enabled = null; access_control_map = null; })"
-dfx canister install data_backup --network ic --mode upgrade --argument "(record { known_principal_ids = null; access_control_map = null; })"
-dfx canister install user_index --network ic --mode upgrade --argument "(record {
-  known_principal_ids = vec {}
-})"
-dfx canister call user_index update_user_index_upgrade_user_canisters_with_latest_wasm --network ic --async
+dfx canister install configuration --network ic --mode upgrade --argument "(record { })"
+dfx canister install data_backup --network ic --mode upgrade --argument "(record { })"
 dfx canister install post_cache --network ic --mode upgrade --argument "(record {
   known_principal_ids = vec {}
 })"
+dfx canister install user_index --network ic --mode upgrade --argument "(record {})"
+dfx canister call user_index update_user_index_upgrade_user_canisters_with_latest_wasm --network ic --async

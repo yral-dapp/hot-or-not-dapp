@@ -12,6 +12,7 @@ members = [
   "packages/ic/lib/test_utils",
 ]
 
+# TODO: bump dependencies
 [workspace.dependencies]
 candid = "0.8.4"
 cfg-if = "1.0.0"

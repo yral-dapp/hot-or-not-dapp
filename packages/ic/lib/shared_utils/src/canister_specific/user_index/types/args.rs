@@ -1,8 +1,11 @@
-use candid::{CandidType, Deserialize};
+use std::collections::HashMap;
 
-use crate::common::types::known_principal::KnownPrincipalMapV1;
+use candid::{CandidType, Deserialize, Principal};
 
-#[derive(Deserialize, CandidType, Default)]
+use crate::{access_control::UserAccessRole, common::types::known_principal::KnownPrincipalMapV1};
+
+#[derive(Deserialize, CandidType, Default, Clone)]
 pub struct UserIndexInitArgs {
-    pub known_principal_ids: KnownPrincipalMapV1,
+    pub known_principal_ids: Option<KnownPrincipalMapV1>,
+    pub access_control_map: Option<HashMap<Principal, Vec<UserAccessRole>>>,
 }

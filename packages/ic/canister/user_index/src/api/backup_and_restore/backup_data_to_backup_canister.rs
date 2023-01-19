@@ -8,7 +8,7 @@ pub async fn backup_data_to_backup_canister() {
     let data_backup_canister_id = CANISTER_DATA
         .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().known_principal_ids.clone())
         .get(&KnownPrincipalType::CanisterIdDataBackup)
-        .expect("Failed to get the canister id of the data_backup canister")
+        .unwrap()
         .clone();
 
     send_user_principal_id_to_canister_id_mapping(&data_backup_canister_id).await;
