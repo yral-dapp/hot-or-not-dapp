@@ -27,10 +27,11 @@ import Hls from 'hls.js';
 import { joinArrayUniquely, updateMetadata, type VideoViewReport } from '$lib/utils/video';
 import { updateURL } from '$lib/utils/feedUrl';
 import Button from '$components/button/Button.svelte';
+import { beforeNavigate } from '$app/navigation';
 
 export let data: PageData;
 
-const fetchCount = 50;
+const fetchCount = 25;
 const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 3;
 
@@ -48,6 +49,8 @@ let videoStats: Record<number, VideoViewReport> = {};
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 let errorCount = 0;
 let showError = false;
+
+$: pathname = $page.url.pathname;
 
 async function fetchNextVideos() {
 	// console.log(
@@ -211,6 +214,10 @@ onDestroy(() => {
 		clearTimeout(loadTimeout);
 	}
 });
+
+beforeNavigate(() => {
+	isDocumentHidden = true;
+});
 </script>
 
 <svelte:head>
@@ -259,7 +266,7 @@ onDestroy(() => {
 						playFormat="hls"
 						Hls="{Hls}"
 						isiPhone="{isIPhone}"
-						inView="{i == currentVideoIndex && !isDocumentHidden}"
+						inView="{i == currentVideoIndex && !isDocumentHidden && pathname.includes('feed')}"
 						uid="{video.video_uid}" />
 				</HomeFeedPlayer>
 			{/if}
