@@ -7,7 +7,10 @@ use test_utils::setup::{
         get_canister_id_of_specific_type_from_principal_id_map,
         get_initialized_env_with_provisioned_known_canisters,
     },
-    test_constants::{get_alice_principal_id, get_global_super_admin_principal_id},
+    test_constants::{
+        get_alice_principal_id, get_global_super_admin_principal_id,
+        get_global_super_admin_principal_id_v1,
+    },
 };
 
 #[test]
@@ -37,7 +40,7 @@ fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
 
     let alice_starting_cycle_balance = state_machine
         .execute_ingress_as(
-            get_global_super_admin_principal_id(),
+            PrincipalId(get_global_super_admin_principal_id_v1()),
             user_index_canister_id,
             "get_canister_status_from_management_canister",
             candid::encode_one(alice_canister_id).unwrap(),

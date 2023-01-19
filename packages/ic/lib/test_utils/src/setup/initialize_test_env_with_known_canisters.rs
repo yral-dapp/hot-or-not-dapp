@@ -5,6 +5,7 @@ use ic_state_machine_tests::{
     CanisterId, CanisterInstallMode, CanisterSettingsArgs, Cycles, PrincipalId, StateMachine,
 };
 use shared_utils::{
+    access_control::UserAccessRole,
     canister_specific::{
         configuration::types::args::ConfigurationInitArgs,
         data_backup::types::args::DataBackupInitArgs, user_index::types::args::UserIndexInitArgs,
@@ -112,6 +113,16 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
         })
         .unwrap(),
     );
+
+    let mut user_index_access_control_map = HashMap::new();
+    user_index_access_control_map.insert(
+        get_global_super_admin_principal_id_v1(),
+        vec![
+            UserAccessRole::CanisterAdmin,
+            UserAccessRole::CanisterController,
+        ],
+    );
+
     canister_installer(
         known_principal_map_with_all_canisters
             .get(&KnownPrincipalType::CanisterIdUserIndex)
@@ -119,7 +130,9 @@ pub fn get_initialized_env_with_provisioned_known_canisters(
             .clone(),
         get_canister_wasm(KnownPrincipalType::CanisterIdUserIndex),
         candid::encode_one(UserIndexInitArgs {
-            known_principal_ids: known_principal_map_with_all_canisters.clone(),
+            known_principal_ids: Some(known_principal_map_with_all_canisters.clone()),
+            access_control_map: Some(user_index_access_control_map),
+            ..Default::default()
         })
         .unwrap(),
     );

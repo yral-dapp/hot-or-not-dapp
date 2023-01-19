@@ -8,13 +8,9 @@ use crate::{
     CANISTER_DATA,
 };
 
-use super::pre_upgrade;
-
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade() {
     restore_data_from_stable_memory();
-    pre_upgrade::pre_upgrade();
-
     refetch_well_known_principals();
 }
 

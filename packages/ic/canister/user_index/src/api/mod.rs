@@ -1,5 +1,5 @@
 pub mod access_control;
-pub mod backup;
+pub mod backup_and_restore;
 pub mod canister_lifecycle;
 pub mod cycle_management;
 pub mod upgrade_individual_user_template;

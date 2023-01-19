@@ -19,7 +19,6 @@ gzip -f -1 ./target/wasm32-unknown-unknown/release/post_cache.wasm
 #       principal \"$(dfx canister id configuration --network ic)\";
 #     };
 #   };
-#   signups_enabled = opt true;
 #   access_control_map = opt vec {
 #     record {
 #       principal \"$(dfx identity get-principal --network ic)\";

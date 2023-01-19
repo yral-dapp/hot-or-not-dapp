@@ -30,7 +30,7 @@ impl UpgradeStatus {
     }
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Clone)]
 pub struct UpgradeStatusV1 {
     pub version_number: u64,
     pub last_run_on: SystemTime,

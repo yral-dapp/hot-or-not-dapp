@@ -28,8 +28,9 @@ use individual_user_template_lib::{
 };
 use shared_utils::{
     access_control::UserAccessRole,
-    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
-    common::types::init_args::IndividualUserTemplateInitArgs,
+    canister_specific::individual_user_template::types::{
+        args::IndividualUserTemplateInitArgs, profile::UserProfileDetailsForFrontend,
+    },
     types::{
         canister_specific::individual_user_template::{
             error_types::{

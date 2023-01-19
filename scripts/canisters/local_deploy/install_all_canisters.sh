@@ -119,7 +119,7 @@ dfx canister install post_cache --argument "(record {
 })"
 
 dfx canister install user_index --argument "(record {
-  known_principal_ids = vec {
+  known_principal_ids = opt vec {
     record {
       variant { UserIdGlobalSuperAdmin };
       principal \"$(dfx identity get-principal)\";
@@ -140,7 +140,13 @@ dfx canister install user_index --argument "(record {
       variant { CanisterIdUserIndex };
       principal \"$(dfx canister id user_index)\";
     };
-  }
+  };
+  access_control_map = opt vec {
+    record {
+      principal \"$(dfx identity get-principal)\";
+      vec { variant { CanisterAdmin }; variant { CanisterController }; }
+    };
+  };
 })"
 
 dfx generate configuration

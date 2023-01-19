@@ -1,7 +1,7 @@
 use ic_stable_memory::{collections::hash_map::SHashMap, s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::UserAccessRole,
-    common::types::init_args::IndividualUserTemplateInitArgs,
+    canister_specific::individual_user_template::types::args::IndividualUserTemplateInitArgs,
     constant::{
         get_global_super_admin_principal_id, get_post_cache_canister_principal_id,
         get_user_index_canister_principal_id,
