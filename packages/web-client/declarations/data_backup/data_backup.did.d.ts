@@ -34,6 +34,7 @@ export interface _SERVICE {
     [Array<[Principal, Principal]>],
     undefined
   >,
+  'send_restore_data_back_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],

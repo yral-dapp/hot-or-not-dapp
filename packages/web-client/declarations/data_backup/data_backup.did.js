@@ -51,6 +51,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'send_restore_data_back_to_user_index_canister' : IDL.Func([], [], []),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
     'update_user_remove_role' : IDL.Func(
         [UserAccessRole, IDL.Principal],

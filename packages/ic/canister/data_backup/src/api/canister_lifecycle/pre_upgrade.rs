@@ -1,11 +1,10 @@
 use ciborium::ser;
 use ic_stable_structures::writer::Writer;
-// use ic_cdk::storage;
 
 use crate::{data::memory_layout, CANISTER_DATA};
 
 #[ic_cdk_macros::pre_upgrade]
-pub fn pre_upgrade() {
+fn pre_upgrade() {
     // * Serialize the state.
     let mut state_bytes = vec![];
     CANISTER_DATA
