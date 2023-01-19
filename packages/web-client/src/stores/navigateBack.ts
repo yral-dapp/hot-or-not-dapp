@@ -1,3 +1,3 @@
-import { writable } from 'svelte-local-storage-store';
+import { persisted } from 'svelte-local-storage-store';
 
-export default writable<string | null>('go-back', null);
+export default persisted<string | null>('go-back', null);
