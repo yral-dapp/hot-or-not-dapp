@@ -22,7 +22,7 @@ import type { PostDetailsForFrontend } from '$canisters/individual_user_template
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import { handleParams } from '$lib/utils/params';
 import { authState } from '$stores/auth';
 

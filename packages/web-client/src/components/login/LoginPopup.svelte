@@ -17,7 +17,7 @@ import Button from '$components/button/Button.svelte';
 import IconButton from '$components/button/IconButton.svelte';
 import CloseIcon from '$components/icons/CloseIcon.svelte';
 import DfinityIcon from '$components/icons/DfinityIcon.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';

@@ -1,6 +1,6 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import VideoPlayer from '$components/video/VideoPlayer.svelte';
 import { individualUser } from '$lib/helpers/backend';
 import {
@@ -22,14 +22,16 @@ import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
 import { isiPhone } from '$lib/utils/isSafari';
 import { page } from '$app/stores';
-import navigateBack from '$stores/navigateBack';
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
 import Hls from 'hls.js';
 import { joinArrayUniquely, updateMetadata, type VideoViewReport } from '$lib/utils/video';
+import { updateURL } from '$lib/utils/feedUrl';
+import Button from '$components/button/Button.svelte';
+import { beforeNavigate } from '$app/navigation';
 
 export let data: PageData;
 
-const fetchCount = 50;
+const fetchCount = 25;
 const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 3;
 
@@ -44,17 +46,38 @@ let isIPhone = isiPhone();
 let isDocumentHidden = false;
 let videoStats: Record<number, VideoViewReport> = {};
 
+let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
+let errorCount = 0;
+let showError = false;
+
+$: pathname = $page.url.pathname;
+
 async function fetchNextVideos() {
-	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
+	// console.log(
+	// 	`to fetch: ${!noMoreVideos} && ${
+	// 		videos.length
+	// 	} - ${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
+	// );
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 			loading = true;
 			const res = await getTopPosts(fetchedVideosCount, fetchCount, true);
 			if (res.error) {
-				// TODO: Handle error
-				loading = false;
+				if (errorCount < 4) {
+					loadTimeout = setTimeout(() => {
+						errorCount++;
+						fetchNextVideos();
+					}, 5000);
+				} else {
+					clearTimeout(loadTimeout);
+					showError = true;
+					loading = false;
+				}
 				return;
+			} else {
+				errorCount = 0;
+				if (loadTimeout) clearTimeout(loadTimeout);
 			}
 
 			fetchedVideosCount = res.from;
@@ -71,7 +94,6 @@ async function fetchNextVideos() {
 			noMoreVideos = res.noMorePosts;
 			await tick();
 			loading = false;
-
 			Log({ res: 'fetched', noMoreVideos, source: '0 fetchNextVideos' }, 'info');
 		} catch (e) {
 			Log({ error: e, noMoreVideos, source: '1 fetchNextVideos' }, 'error');
@@ -90,13 +112,6 @@ async function handleChange(e: CustomEvent) {
 	updateURL(videos[currentVideoIndex]);
 	updateMetadata(videos[currentVideoIndex]);
 	currentPlayingIndex = index;
-}
-
-function updateURL(post?: PostPopulated) {
-	if (!post) return;
-	const url = post.publisher_canister_id + '@' + post.post_id;
-	$navigateBack = $playerState.currentFeedUrl = url;
-	window.history.replaceState('', '', url);
 }
 
 function handleVisibilityChange() {
@@ -195,6 +210,13 @@ onMount(async () => {
 
 onDestroy(() => {
 	document.removeEventListener('visibilitychange', handleVisibilityChange);
+	if (loadTimeout) {
+		clearTimeout(loadTimeout);
+	}
+});
+
+beforeNavigate(() => {
+	isDocumentHidden = true;
 });
 </script>
 
@@ -244,12 +266,23 @@ onDestroy(() => {
 						playFormat="hls"
 						Hls="{Hls}"
 						isiPhone="{isIPhone}"
-						inView="{i == currentVideoIndex && !isDocumentHidden}"
+						inView="{i == currentVideoIndex && !isDocumentHidden && pathname.includes('feed')}"
 						uid="{video.video_uid}" />
 				</HomeFeedPlayer>
 			{/if}
 		</SwiperSlide>
 	{/each}
+	{#if showError}
+		<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+				<div class="text-center text-lg font-bold">
+					Error loading posts. Please, refresh the page.
+				</div>
+				<Button type="primary" on:click="{(e) => e.preventDefault()}" href="/"
+					>Clear here to refresh</Button>
+			</div>
+		</SwiperSlide>
+	{/if}
 	{#if loading}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">

@@ -14,7 +14,7 @@ import { getCanisterId } from '$lib/helpers/canisterId';
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl';
 import { authState } from '$stores/auth';
 import { goto } from '$app/navigation';
-import { registerEvent } from '$components/seo/GoogleAnalytics.svelte';
+import { registerEvent } from '$components/seo/GA.svelte';
 import { individualUser, userIndex } from '$lib/helpers/backend';
 
 export let data: PageData;

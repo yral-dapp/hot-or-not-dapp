@@ -52,8 +52,8 @@ describe('Home Feed Tests', () => {
 
 	it('Scrolling on main feed', () => {
 		cy.task('log', 'Waiting for more videos to load to start scrolling');
-		cy.get('player[i=1] > video', { timeout: 40000 }).then(() => {
-			const SCROLL_COUNT = 10;
+		cy.get('player[i=2]', { timeout: 40000 }).then(() => {
+			const SCROLL_COUNT = 20;
 			cy.task('log', 'Next videos loaded, now starting to scroll');
 			const t0 = performance.now();
 			cy.get('player[i=0] > video').then(($video) => {
@@ -62,22 +62,35 @@ describe('Home Feed Tests', () => {
 
 			cy.wrap(Array(SCROLL_COUNT))
 				.each((_, index) => {
-					cy.get(`player[i=${index}] > video`)
+					cy.log('index', index);
+
+					cy.get(`player[i=${index}] > video`, { timeout: 10000 })
 						.and('have.prop', 'paused', false)
-						.and('have.prop', 'muted', false);
-					const nextVideo = cy.get(`player[i=${index + 1}] > video`);
-					nextVideo.and('have.prop', 'paused', true);
-					if (index !== 0) {
-						cy.get(`player[i=${index - 1}] > video`).and('have.prop', 'paused', true);
-					}
-					nextVideo.scrollIntoView();
+						.and('have.prop', 'muted', false)
+						.then(() => {
+							const nextVideo = cy.get(`player[i=${index + 1}] > video`);
+							nextVideo.and('have.prop', 'paused', true);
+							if (index !== 0) {
+								cy.get(`player[i=${index - 1}] > video`, { timeout: 10000 }).should(
+									'have.prop',
+									'paused',
+									true
+								);
+							}
+							if (index === 9) {
+								cy.wrap(performance.now()).then((t1) => {
+									cy.task(
+										'log',
+										`Scrolling from 0 to 10 times completed in: ${t1 - t0} milliseconds.`
+									);
+								});
+							}
+							nextVideo.scrollIntoView();
+						});
 				})
 				.then(() => {
 					cy.wrap(performance.now()).then((t1) => {
-						cy.task(
-							'log',
-							`Scrolling ${SCROLL_COUNT} times completed in: ${t1 - t0} milliseconds.`
-						);
+						cy.task('log', `Scrolling from 0 to 20 times completed in: ${t1 - t0} milliseconds.`);
 					});
 				});
 		});

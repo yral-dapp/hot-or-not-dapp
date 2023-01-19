@@ -11,7 +11,6 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
-import navigateBack from '$stores/navigateBack';
 import { playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
 import Hls from 'hls.js';
@@ -19,9 +18,12 @@ import { onMount, tick, onDestroy } from 'svelte';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
 import type { PageData } from './$types';
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video';
+import { updateURL } from '$lib/utils/feedUrl';
+import Button from '$components/button/Button.svelte';
+import { beforeNavigate } from '$app/navigation';
 
 export let data: PageData;
-const fetchCount = 50;
+const fetchCount = 25;
 const fetchWhenVideosLeft = 10;
 const keepVideosLoadedCount: number = 4;
 
@@ -34,6 +36,10 @@ let fetchedVideosCount = 0;
 let isIPhone = isiPhone();
 let isDocumentHidden = false;
 
+let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
+let errorCount = 0;
+let showError = false;
+
 async function fetchNextVideos() {
 	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
@@ -42,9 +48,20 @@ async function fetchNextVideos() {
 			loading = true;
 			const res = await getHotOrNotPosts(fetchedVideosCount, fetchCount);
 			if (res.error) {
-				// TODO: Handle error
-				loading = false;
+				if (errorCount < 4) {
+					loadTimeout = setTimeout(() => {
+						errorCount++;
+						fetchNextVideos();
+					}, 5000);
+				} else {
+					clearTimeout(loadTimeout);
+					showError = true;
+					loading = false;
+				}
 				return;
+			} else {
+				errorCount = 0;
+				if (loadTimeout) clearTimeout(loadTimeout);
 			}
 
 			fetchedVideosCount = res.from;
@@ -76,13 +93,6 @@ async function handleChange(e: CustomEvent) {
 	updateMetadata(videos[currentVideoIndex]);
 }
 
-function updateURL(post?: PostPopulated) {
-	if (!post) return;
-	const url = post.publisher_canister_id + '@' + post.post_id;
-	$navigateBack = $playerState.currentHotOrNotUrl = url;
-	window.history.replaceState('', '', url);
-}
-
 function handleVisibilityChange() {
 	if (document.visibilityState === 'hidden') {
 		isDocumentHidden = true;
@@ -106,6 +116,10 @@ onMount(async () => {
 
 onDestroy(() => {
 	document.removeEventListener('visibilitychange', handleVisibilityChange);
+});
+
+beforeNavigate(() => {
+	isDocumentHidden = true;
 });
 </script>
 
@@ -149,6 +163,18 @@ onDestroy(() => {
 			{/if}
 		</SwiperSlide>
 	{/each}
+	{#if showError}
+		<SwiperSlide class="flex h-full w-full items-center justify-center">
+			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+				<div class="text-center text-lg font-bold">
+					Error loading posts. Please, refresh the page.
+				</div>
+				<Button type="primary" on:click="{(e) => e.preventDefault()}" href="/">
+					Clear here to refresh
+				</Button>
+			</div>
+		</SwiperSlide>
+	{/if}
 	{#if loading}
 		<SwiperSlide class="flex h-full w-full items-center justify-center">
 			<div class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
