@@ -1,4 +1,4 @@
-import { writable } from 'svelte-local-storage-store';
+import { persisted } from 'svelte-local-storage-store';
 
 export type UserProfile = {
 	username_set: boolean;
@@ -31,4 +31,4 @@ export const emptyProfileValues = {
 	updated_at: Date.now()
 };
 
-export default writable<UserProfile>('user-profile', emptyProfileValues);
+export default persisted<UserProfile>('user-profile', emptyProfileValues);
