@@ -1,7 +1,9 @@
 import * as Sentry from '@sentry/svelte';
 
 function replaceErrors(_, value) {
-	if (value instanceof Error) {
+	if (typeof value === 'bigint') {
+		return Number(value);
+	} else if (value instanceof Error) {
 		const error = {};
 
 		Object.getOwnPropertyNames(value).forEach((propName) => {
