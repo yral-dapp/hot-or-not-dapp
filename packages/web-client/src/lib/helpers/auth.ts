@@ -21,9 +21,13 @@ async function updateUserIndexCanister(): Promise<{
 		const authStateData = get(authState);
 		const referralStore = get(referralId);
 
+		console.log({ authStateData, referralStore });
+
 		const res = await userIndex().get_user_canister_id_from_user_principal_id(
 			Principal.from(authStateData.idString)
 		);
+
+		console.log({ res });
 
 		if (res[0]) {
 			//existing user
