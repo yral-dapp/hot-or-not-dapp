@@ -12,7 +12,7 @@ import {
 import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
-import { playerState } from '$stores/playerState';
+import { homeFeedVideos, playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
 import userProfile from '$stores/userProfile';
 import { Principal } from '@dfinity/principal';
@@ -84,7 +84,7 @@ async function fetchNextVideos() {
 
 			videos = joinArrayUniquely(videos, res.posts);
 
-			if (!res.noMorePosts && res.posts.length == 0) {
+			if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
 				fetchNextVideos();
 			} else if (res.noMorePosts) {
 				const watchedVideos = await getWatchedVideosFromCache();
@@ -198,7 +198,10 @@ onMount(async () => {
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
-	if (data.post) {
+	if ($homeFeedVideos.length) {
+		videos = $homeFeedVideos;
+		$homeFeedVideos = [];
+	} else if (data.post) {
 		videos = [data.post, ...videos];
 		await recordView(data.post);
 	}
@@ -216,6 +219,7 @@ onDestroy(() => {
 });
 
 beforeNavigate(() => {
+	videos.length > 2 && homeFeedVideos.set(videos.slice(currentPlayingIndex));
 	isDocumentHidden = true;
 });
 </script>
