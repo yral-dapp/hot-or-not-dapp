@@ -57,6 +57,8 @@ async function handleSuccessfulLogin(type: LoginType) {
 	try {
 		const principal = $authHelper.client?.getIdentity()?.getPrincipal();
 		const res = await initializeAuthClient();
+		if (!res) throw {};
+
 		if (res.error) {
 			Log({ error: 'Signup prevented' }, 'warn');
 			$authState.showLogin = false;
@@ -67,6 +69,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 			goto('/waitlist?logout=true');
 			return;
 		}
+
 		registerEvent(res.new_user ? 'sign_up' : 'login', {
 			login_method: type,
 			display_name: $userProfile.display_name,
@@ -75,6 +78,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 			referral: !!res.referral,
 			...(!!res.referral && { referee_user_id: res.referral })
 		});
+
 		loading = false;
 		$authState.showLogin = false;
 	} catch (_) {
