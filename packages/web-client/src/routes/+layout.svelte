@@ -7,7 +7,6 @@ import Log from '$lib/utils/Log';
 import { beforeNavigate } from '$app/navigation';
 import navigateBack from '$stores/navigateBack';
 import { registerEvent } from '$components/seo/GA.svelte';
-import { BrowserTracing } from '@sentry/tracing';
 import userProfile from '$stores/userProfile';
 import { initializeAuthClient } from '$lib/helpers/auth';
 import { page } from '$app/stores';
@@ -18,10 +17,11 @@ const ignoredPaths = ['edit', 'lovers', 'post'];
 
 async function initSentry() {
 	const Sentry = await import('@sentry/svelte');
+	const BrowserTracing = await (await import('@sentry/tracing')).BrowserTracing;
 
 	Sentry.init({
 		dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-		integrations: [new BrowserTracing()],
+		integrations: [new BrowserTracing(), new Sentry.Replay()],
 		environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
 		beforeSend: $page.url.host.includes('t:')
 			? (event) => {
