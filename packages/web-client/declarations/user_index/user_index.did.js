@@ -63,7 +63,6 @@ export const idlFactory = ({ IDL }) => {
     'Err' : SetUniqueUsernameError,
   });
   return IDL.Service({
-    'backup_data_to_backup_canister' : IDL.Func([], [], []),
     'get_canister_status_from_management_canister' : IDL.Func(
         [IDL.Principal],
         [CanisterStatusResponse],
