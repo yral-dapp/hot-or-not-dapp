@@ -11,7 +11,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
 	const id = params.id;
 
 	if (!id) {
@@ -48,7 +48,7 @@ export const load: PageLoad = async ({ params }) => {
 			throw error(404, "Couldn't find canister Id");
 		}
 		Log({ canId, from: '0 canId' }, 'info');
-		const fetchedProfile = await individualUser(Principal.from(canId)).get_profile_details();
+		const fetchedProfile = await individualUser(Principal.from(canId), fetch).get_profile_details();
 		const profile = sanitizeProfile(fetchedProfile, id);
 		return { me: false, profile, canId };
 	}

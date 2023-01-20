@@ -30,14 +30,14 @@ export type IndividualUserActor = ActorSubclass<_INDIVIDUAL_USER_SERVICE>;
 export type PostCacheActor = ActorSubclass<_POST_CACHE_SERVICE>;
 export type ConfigurationActor = ActorSubclass<_CONFIGURATION_SERVICE>;
 
-export function userIndex(): UserIndexActor {
+export function userIndex(fetch?: any): UserIndexActor {
 	const authHelperData = get(authHelper);
 	return createUserIndexActor(userIndexCanisterId as string, {
-		agentOptions: { identity: authHelperData?.identity, host }
+		agentOptions: { identity: authHelperData?.identity, host, fetch }
 	}) as UserIndexActor;
 }
 
-export function individualUser(principal?: Principal | string): IndividualUserActor {
+export function individualUser(principal?: Principal | string, fetch?: any): IndividualUserActor {
 	const authHelperData = get(authHelper);
 	const authStateData = get(authState);
 	const canisterId = principal
@@ -46,19 +46,19 @@ export function individualUser(principal?: Principal | string): IndividualUserAc
 			: Principal.from(principal)
 		: (authStateData.userCanisterId as string);
 	return createIndividualUserActor(canisterId, {
-		agentOptions: { identity: authHelperData?.identity, host }
+		agentOptions: { identity: authHelperData?.identity, host, fetch }
 	}) as IndividualUserActor;
 }
 
-export function postCache(): PostCacheActor {
+export function postCache(fetch?: any): PostCacheActor {
 	const authHelperData = get(authHelper);
 	return createPostCacheActor(postCacheCanisterId as string, {
-		agentOptions: { identity: authHelperData?.identity, host }
+		agentOptions: { identity: authHelperData?.identity, host, fetch }
 	}) as PostCacheActor;
 }
 
-export function configuration(): ConfigurationActor {
+export function configuration(fetch?: any): ConfigurationActor {
 	return createConfigurationActor(configurationCanisterId, {
-		agentOptions: { host }
+		agentOptions: { host, fetch }
 	}) as ConfigurationActor;
 }
