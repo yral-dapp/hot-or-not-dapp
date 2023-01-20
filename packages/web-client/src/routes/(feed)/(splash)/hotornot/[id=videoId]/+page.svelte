@@ -41,7 +41,11 @@ let errorCount = 0;
 let showError = false;
 
 async function fetchNextVideos() {
-	// console.log(`to fetch: ${!noMoreVideos} && ${videos.length}-${currentVideoIndex}<${fetchCount}`);
+	// console.log(
+	// 	`to fetch: ${!noMoreVideos} && ${
+	// 		videos.length
+	// 	} - ${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
+	// );
 	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');

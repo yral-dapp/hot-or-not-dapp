@@ -25,7 +25,7 @@ async function initSentry() {
 		environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
 		beforeSend: $page.url.host.includes('t:')
 			? (event) => {
-					console.log('sending to sentry', event);
+					console.log('[SENTRY LOG]', event);
 					return event;
 			  }
 			: undefined

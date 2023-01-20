@@ -46,7 +46,6 @@ $: href = $page.url.href;
 $: if (href) {
 	if (!configured) {
 		configured = updateConfig() || false;
-		console.log('configured');
 	}
 	registerPageview(new URL(href));
 }
