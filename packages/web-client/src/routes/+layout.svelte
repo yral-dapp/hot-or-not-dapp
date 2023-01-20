@@ -17,14 +17,18 @@ import NetworkStatus from '$components/network-status/NetworkStatus.svelte';
 const ignoredPaths = ['edit', 'lovers', 'post'];
 
 async function initSentry() {
-	if ($page.url.host.includes('t:')) return;
-
 	const Sentry = await import('@sentry/svelte');
 
 	Sentry.init({
 		dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
 		integrations: [new BrowserTracing()],
-		tracesSampleRate: 0.1
+		environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
+		beforeSend: $page.url.host.includes('t:')
+			? (event) => {
+					console.log('sending to sentry', event);
+					return event;
+			  }
+			: undefined
 	});
 	Log('Sentry Initialized', 'info');
 }
