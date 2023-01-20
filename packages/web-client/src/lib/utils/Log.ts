@@ -27,7 +27,7 @@ const logTypeMap: Record<Logs, string> = {
 
 export default (data: any, type: Logs) => {
 	const dataStr = JSON.stringify(data, replaceErrors) || data;
-	if (import.meta.env.NODE_ENV == 'development' || type == 'error') {
+	if (location.host.includes('localhost') || type == 'error') {
 		console[type](logTypeMap[type], dataStr);
 	}
 	if (type === 'error') {

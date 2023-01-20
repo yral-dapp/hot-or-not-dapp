@@ -30,6 +30,7 @@ async function initSentry() {
 			  }
 			: undefined
 	});
+	Sentry.makeMain(Sentry.getCurrentHub());
 	Log('Sentry Initialized', 'info');
 }
 

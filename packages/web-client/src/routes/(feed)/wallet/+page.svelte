@@ -48,8 +48,6 @@ async function loadHistory() {
 	history.push(...res.history);
 	history = history;
 
-	console.log(history);
-
 	endOfList = res.endOfList;
 	loadList = false;
 }
