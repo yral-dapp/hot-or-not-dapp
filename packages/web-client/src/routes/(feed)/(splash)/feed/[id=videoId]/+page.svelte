@@ -168,7 +168,7 @@ async function recordView(post?: PostPopulated) {
 	try {
 		await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
 	} catch (e) {
-		Log({ error: e, source: '0 recordView' }, 'error');
+		Log({ error: e, source: '1 recordView' }, 'error');
 	}
 }
 
