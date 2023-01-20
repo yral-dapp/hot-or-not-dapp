@@ -69,7 +69,7 @@ onMount(() => {
 		initializeGoSquared();
 		initializeGA();
 	} catch (e) {
-		Log({ error: e, source: '0 layout' }, 'error');
+		Log({ error: e, source: '1 layout' }, 'error');
 	}
 });
 

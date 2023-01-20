@@ -232,7 +232,6 @@ async function startRecording(ignoreTimer = false) {
 }
 
 function handleDataAvailable(event: any) {
-	Log({ res: 'Video recorded, Proceeding...', source: '0 handleDataAvailable' }, 'error');
 	if (event.data.size > 0) {
 		loading = true;
 		recordedChunks.push(event.data);
@@ -241,6 +240,8 @@ function handleDataAvailable(event: any) {
 			type
 		});
 		goto('/upload/new');
+	} else {
+		Log({ res: 'Video recorded, Data not available', source: '1 handleDataAvailable' }, 'error');
 	}
 }
 
