@@ -10,7 +10,7 @@ import { redirect } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const pid = params.postId;
 		const id = params.id;
@@ -29,9 +29,10 @@ export const load: PageLoad = async ({ params }) => {
 
 		if (id === userProfileData.unique_user_name || id === userProfileData.principal_id) me = true;
 
-		const post = await individualUser(Principal.from(canId)).get_individual_post_details_by_id(
-			BigInt(pid)
-		);
+		const post = await individualUser(
+			Principal.from(canId),
+			fetch
+		).get_individual_post_details_by_id(BigInt(pid));
 
 		const video: PostPopulated = {
 			...post,

@@ -5,7 +5,7 @@ import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { postCache } from '$lib/helpers/backend';
 
-export const load: PageLoad = async ({ url }) => {
+export const load: PageLoad = async ({ url, fetch }) => {
 	let searchParams = url.searchParams.toString();
 	if (searchParams) {
 		searchParams = `?${searchParams}`;
@@ -18,11 +18,9 @@ export const load: PageLoad = async ({ url }) => {
 		);
 	}
 
-	const res =
-		await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
-			BigInt(0),
-			BigInt(1)
-		);
+	const res = await postCache(
+		fetch
+	).get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(BigInt(0), BigInt(1));
 
 	if ('Ok' in res && res.Ok[0]) {
 		throw redirect(

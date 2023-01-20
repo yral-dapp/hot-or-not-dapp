@@ -5,11 +5,12 @@ import { redirect } from '@sveltejs/kit';
 import { postCache } from '$lib/helpers/backend';
 
 export const load: PageLoad = async () => {
-	const res =
-		await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
-			BigInt(0),
-			BigInt(1)
-		);
+	const res = await postCache(
+		fetch
+	).get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
+		BigInt(0),
+		BigInt(1)
+	);
 
 	if ('Ok' in res && res.Ok[0]) {
 		throw redirect(

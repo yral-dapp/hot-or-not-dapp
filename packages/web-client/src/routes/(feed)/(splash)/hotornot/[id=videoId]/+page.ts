@@ -4,12 +4,12 @@ import type { PageLoad } from './$types';
 import type { PostPopulated } from '$lib/helpers/feed';
 import { individualUser } from '$lib/helpers/backend';
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
 	const id = params.id.split('@');
 	const postId = BigInt(Number(id[1]));
 	const principal = Principal.from(id[0]);
 
-	const r = await individualUser(principal).get_individual_post_details_by_id(postId);
+	const r = await individualUser(principal, fetch).get_individual_post_details_by_id(postId);
 
 	if (r.video_uid && r.hot_or_not_feed_ranking_score[0] !== undefined) {
 		return {
