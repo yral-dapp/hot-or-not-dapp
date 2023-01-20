@@ -27,8 +27,6 @@ async function updateUserIndexCanister(): Promise<{
 			Principal.from(authStateData.idString)
 		);
 
-		console.log({ res });
-
 		if (res[0]) {
 			//existing user
 			userCanisterPrincipal = res[0];
@@ -88,7 +86,7 @@ export async function initializeAuthClient(): Promise<{
 	error: boolean;
 	new_user: boolean;
 	referral?: string;
-}> {
+} | void> {
 	loadingAuthStatus.set(true);
 	const authStateData = get(authState);
 	const authHelperData = get(authHelper);
@@ -143,12 +141,6 @@ export async function initializeAuthClient(): Promise<{
 		});
 
 		await updateProfile();
-		const res = await updateUserIndexCanister();
 		loadingAuthStatus.set(false);
-		if (res.error && res.error_details === 'SIGNUP_NOT_ALLOWED') {
-			return { error: true, new_user: res.new_user };
-		} else {
-			return { error: false, new_user: res.new_user };
-		}
 	}
 }
