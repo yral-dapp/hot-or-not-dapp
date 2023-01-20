@@ -1,3 +1,4 @@
+import type { PostPopulated } from '$lib/helpers/feed';
 import { writable } from 'svelte/store';
 
 export const playerState = writable<{
@@ -11,3 +12,7 @@ export const playerState = writable<{
 	currentFeedUrl: '',
 	currentHotOrNotUrl: ''
 });
+
+export const homeFeedVideos = writable<PostPopulated[]>([]);
+
+export const hotOrNotFeedVideos = writable<PostPopulated[]>([]);
