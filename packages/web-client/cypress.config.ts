@@ -24,13 +24,11 @@ export default defineConfig({
 			config.env.IC0_HOST = process.env.IC0_HOST;
 
 			on('before:run', async (details) => {
-				console.log('override before:run');
 				await beforeRunHook(details);
 			});
 			on('task', {
 				log(message) {
 					console.log(message);
-
 					return null;
 				}
 			});
