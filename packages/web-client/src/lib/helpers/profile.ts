@@ -190,6 +190,7 @@ async function populateProfiles(users: Principal[]) {
 		const res = await Promise.all(
 			users.map(async (userId) => {
 				const canId = await getCanisterId(userId.toText());
+
 				if (canId) {
 					const r = await individualUser(Principal.from(canId)).get_profile_details();
 
@@ -197,11 +198,19 @@ async function populateProfiles(users: Principal[]) {
 						...sanitizeProfile(r, userId.toText()),
 						i_follow: authStateData.isLoggedIn ? await doIFollowThisUser(userId.toText()) : false
 					};
+				} else {
+					Log(
+						{
+							error: `Could not get canisterId for user: ${userId.toText()}`,
+							from: '11 populatePosts'
+						},
+						'error'
+					);
 				}
 			})
 		);
 
-		return { posts: res as UserProfileFollows[], error: false };
+		return { posts: res.filter((o) => !!o) as UserProfileFollows[], error: false };
 	} catch (e) {
 		Log({ error: e, from: '11 populatePosts' }, 'error');
 		return { error: true, posts: [] };
