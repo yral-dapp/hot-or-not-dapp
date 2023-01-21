@@ -88,25 +88,31 @@ async function handleLove() {
 }
 
 async function loadPosts() {
-	if (noMorePosts) {
-		return;
-	}
+	try {
+		if (noMorePosts) {
+			return;
+		}
 
-	load.posts = true;
-	errorWhileFetching = false;
-	const res = await fetchPosts($page.params.id, fetchedPostsCount);
+		load.posts = true;
+		errorWhileFetching = false;
+		const res = await fetchPosts($page.params.id, fetchedPostsCount);
 
-	if (res.error) {
+		if (res.error) {
+			errorWhileFetching = true;
+			load.posts = false;
+			return;
+		}
+
+		fetchedPosts.push(...res.posts);
+		fetchedPosts = fetchedPosts;
+		noMorePosts = res.noMorePosts;
+		fetchedPostsCount = fetchedPosts.length;
+		load.posts = false;
+	} catch (e) {
 		errorWhileFetching = true;
 		load.posts = false;
-		return;
+		Log({ error: e, from: '1 loadPosts' }, 'error');
 	}
-
-	fetchedPosts.push(...res.posts);
-	fetchedPosts = fetchedPosts;
-	noMorePosts = res.noMorePosts;
-	fetchedPostsCount = fetchedPosts.length;
-	load.posts = false;
 }
 
 onMount(async () => {
@@ -267,10 +273,11 @@ onMount(async () => {
 
 						<IntersectionObserver
 							on:intersected="{loadPosts}"
+							threshold="{0.1}"
 							disabled="{load.posts || errorWhileFetching}"
 							intersect="{!noMorePosts}">
 							<svelte:fragment>
-								<div class="h-2 w-full"></div>
+								<div class="h-4 w-full"></div>
 							</svelte:fragment>
 						</IntersectionObserver>
 					{:else if speculations.length}
