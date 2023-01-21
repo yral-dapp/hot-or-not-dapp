@@ -1,7 +1,7 @@
 <script lang="ts">
 import { createEventDispatcher, onMount } from 'svelte';
 
-export let threshold: number = 1;
+export let threshold: number = 0.5;
 export let intersect: boolean;
 export let disabled: boolean;
 
