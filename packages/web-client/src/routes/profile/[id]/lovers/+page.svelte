@@ -129,6 +129,7 @@ async function handleLove(userIndex: number, userId?: string) {
 			<IntersectionObserver
 				on:intersected="{loadLovers}"
 				disabled="{loading || errorWhileFetching}"
+				threshold="{0.1}"
 				intersect="{!noMoreLovers}">
 				<svelte:fragment>
 					<div class="h-2 w-full"></div>
