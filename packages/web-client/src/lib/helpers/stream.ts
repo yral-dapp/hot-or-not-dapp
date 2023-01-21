@@ -29,7 +29,7 @@ export async function uploadVideoToStream(
 	if (!uploadRes || !uploadRes.uploadURL) {
 		return {
 			success: false,
-			error: "Couldn't generate upload Url"
+			errorMessage: "Couldn't generate upload Url"
 		};
 	}
 
@@ -37,9 +37,15 @@ export async function uploadVideoToStream(
 		const xhr = new XMLHttpRequest();
 		xhr.upload.addEventListener('progress', (e) => onProgress(e.loaded / e.total));
 		xhr.addEventListener('load', () => resolve({ success: true, uid: uploadRes.uid }));
-		xhr.addEventListener('error', () => resolve({ success: false, error: 'Something went wrong' }));
+		xhr.addEventListener('error', (e) =>
+			resolve({
+				success: false,
+				error: e,
+				errorMessage: 'Something went wrong while uploading file'
+			})
+		);
 		xhr.addEventListener('abort', () =>
-			resolve({ success: false, error: 'Upload cancelled by user' })
+			resolve({ success: false, errorMessage: 'Upload cancelled by user' })
 		);
 		xhr.open('POST', uploadRes.uploadURL, true);
 		const formData = new FormData();
@@ -64,7 +70,8 @@ export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {
 	} catch (e) {
 		return {
 			success: false,
-			error: 'Something went wrong while checking status'
+			error: e,
+			errorMessage: 'Something went wrong while checking status for uid: ' + uid
 		};
 	}
 }
@@ -81,7 +88,8 @@ export async function enableMp4Downloads(uid: string) {
 
 type RequestError = {
 	success: false;
-	error: string;
+	errorMessage: string;
+	error?: any;
 };
 
 export type CheckVideoStatusResult = {
