@@ -72,9 +72,9 @@ async function startUploading() {
 	hashtagError = '';
 	uploadStep = 'uploading';
 	uploadStatus = 'uploading';
-	const uploadRes: any = await uploadVideoToStream($fileToUpload, onProgress);
+	const uploadRes = await uploadVideoToStream($fileToUpload, onProgress);
 	if (!uploadRes.success) {
-		Log({ error: uploadRes.error, source: '1 startUploading' }, 'error');
+		Log({ ...uploadRes, source: '1 startUploading' }, 'error');
 		registerEvent('video_upload_failed', {
 			at_step: 'uploading_progress',
 			userId: $userProfile.principal_id,
