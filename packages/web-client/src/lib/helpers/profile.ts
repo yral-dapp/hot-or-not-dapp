@@ -64,8 +64,12 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
 				...sanitizeProfile(updateProfile, authStateData.idString || 'random')
 			});
 			if (updateProfile.unique_user_name[0]) {
-				const { canisterIdb } = await import('$lib/utils/idb');
-				canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
+				try {
+					const { canisterIdb } = await import('$lib/utils/idb');
+					canisterIdb.set(updateProfile.unique_user_name[0], authStateData.userCanisterId);
+				} catch (e) {
+					Log({ error: e, from: '1 updateProfile', type: 'idb' }, 'error');
+				}
 			}
 		} else {
 			Log({ error: 'No profile found', from: '1 updateProfile' }, 'error');
