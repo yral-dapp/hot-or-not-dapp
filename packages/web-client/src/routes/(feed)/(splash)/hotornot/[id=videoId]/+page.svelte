@@ -11,7 +11,7 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare';
 import { isiPhone } from '$lib/utils/isSafari';
 import Log from '$lib/utils/Log';
 import { handleParams } from '$lib/utils/params';
-import { playerState } from '$stores/playerState';
+import { hotOrNotFeedVideos, playerState } from '$stores/playerState';
 import { hideSplashScreen } from '$stores/splashScreen';
 import Hls from 'hls.js';
 import { onMount, tick, onDestroy } from 'svelte';
@@ -72,7 +72,7 @@ async function fetchNextVideos() {
 
 			videos = joinArrayUniquely(videos, res.posts);
 
-			if (!res.noMorePosts && res.posts.length == 0) {
+			if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
 				fetchNextVideos();
 			}
 
@@ -109,7 +109,10 @@ onMount(async () => {
 	updateURL();
 	$playerState.initialized = false;
 	$playerState.muted = true;
-	if (data.post) {
+	if ($hotOrNotFeedVideos.length) {
+		videos = $hotOrNotFeedVideos;
+		$hotOrNotFeedVideos = [];
+	} else if (data.post) {
 		videos = [data.post, ...videos];
 	}
 	await tick();
@@ -123,6 +126,7 @@ onDestroy(() => {
 });
 
 beforeNavigate(() => {
+	videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex));
 	isDocumentHidden = true;
 });
 </script>

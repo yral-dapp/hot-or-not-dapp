@@ -40,7 +40,7 @@ jobs:
           echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
 
   google-chat-webhook:
-    name: Google chat bot
+    name: Send URL to Google chat workspace
     if: github.actor != 'dependabot[bot]'
     needs: ["deploy-preview"]
     runs-on: ubuntu-latest

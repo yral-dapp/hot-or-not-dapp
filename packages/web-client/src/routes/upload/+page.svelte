@@ -13,7 +13,7 @@ import c from 'clsx';
 import { allFilters, getFilterCss } from '$lib/utils/filtersMap';
 import { debounce } from 'throttle-debounce';
 import { fileToUpload } from '$stores/fileUpload';
-import { goto, preloadData } from '$app/navigation';
+import { goto } from '$app/navigation';
 import { isiPhone } from '$lib/utils/isSafari';
 import type { CameraControls } from '$components/upload/UploadTypes';
 import LoadingIcon from '$components/icons/LoadingIcon.svelte';
