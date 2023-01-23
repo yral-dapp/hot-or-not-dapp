@@ -11,22 +11,19 @@ pub struct AllUserData {
 }
 
 impl Storable for AllUserData {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<[u8]> {
         Cow::Owned(Encode!(self).unwrap())
     }
 
-    fn from_bytes(bytes: Vec<u8>) -> Self {
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
         Decode!(&bytes, Self).unwrap()
     }
 }
 
-// * 100 kB = 100_000 B
-const ALL_USER_DATA_MAX_SIZE: u32 = 100_000;
-
 impl BoundedStorable for AllUserData {
-    fn max_size() -> u32 {
-        ALL_USER_DATA_MAX_SIZE
-    }
+    // * 100 kB = 100_000 B
+    const MAX_SIZE: u32 = 100_000;
+    const IS_FIXED_SIZE: bool = false;
 }
 
 #[derive(Deserialize, CandidType, Default)]

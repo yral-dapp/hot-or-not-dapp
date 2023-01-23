@@ -21,7 +21,7 @@ pub struct CanisterData {
     pub heap_data: HeapData,
     #[serde(skip, default = "init_user_principal_id_to_all_user_data_map")]
     pub user_principal_id_to_all_user_data_map:
-        StableBTreeMap<Memory, StorablePrincipal, AllUserData>,
+        StableBTreeMap<StorablePrincipal, AllUserData, Memory>,
 }
 
 impl Default for CanisterData {
@@ -53,6 +53,6 @@ pub fn get_user_principal_id_to_all_user_data_map_memory() -> Memory {
     })
 }
 fn init_user_principal_id_to_all_user_data_map(
-) -> StableBTreeMap<Memory, StorablePrincipal, AllUserData> {
+) -> StableBTreeMap<StorablePrincipal, AllUserData, Memory> {
     StableBTreeMap::init(get_user_principal_id_to_all_user_data_map_memory())
 }

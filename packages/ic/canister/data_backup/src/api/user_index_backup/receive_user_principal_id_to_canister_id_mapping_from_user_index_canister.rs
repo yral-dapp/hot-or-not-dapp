@@ -67,8 +67,7 @@ fn receive_user_principal_id_to_canister_id_mapping_from_user_index_canister_imp
                         canister_data: UserOwnedCanisterData::default(),
                     };
                     user_principal_id_to_all_user_data_map
-                        .insert(StorablePrincipal(*user_principal_id), new_entry)
-                        .unwrap();
+                        .insert(StorablePrincipal(*user_principal_id), new_entry);
                 }
             };
         },
