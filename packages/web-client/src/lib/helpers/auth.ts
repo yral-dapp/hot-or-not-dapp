@@ -69,8 +69,12 @@ async function updateUserIndexCanister(): Promise<{
 			userCanisterId: userCanisterPrincipal?.toText()
 		});
 		if (authStateData.isLoggedIn && authStateData.idString && userCanisterPrincipal) {
-			const { canisterIdb } = await import('$lib/utils/idb');
-			canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
+			try {
+				const { canisterIdb } = await import('$lib/utils/idb');
+				canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText());
+			} catch (e) {
+				Log({ error: e, source: '1 updateUserIndexCanister', type: 'idb' }, 'error');
+			}
 		}
 
 		return { error: false, new_user, referral: referralStore.principalId };

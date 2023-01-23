@@ -164,11 +164,11 @@ async function recordView(post?: PostPopulated) {
 		...post,
 		watched_at: Date.now()
 	};
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
 	try {
+		const { watchHistoryIdb } = await import('$lib/utils/idb');
 		await watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, postHistory);
 	} catch (e) {
-		Log({ error: e, source: '1 recordView' }, 'error');
+		Log({ error: e, source: '1 recordView', type: 'idb' }, 'error');
 	}
 }
 

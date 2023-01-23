@@ -27,24 +27,34 @@ export type FeedResponse =
 	  };
 
 async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexItem[]> {
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	const keys = (await watchHistoryIdb.keys()) as string[];
-	if (!keys.length) return posts;
-	const filtered = posts.filter(
-		(o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id)
-	);
-	if (keys.length > 100) {
-		watchHistoryIdb.clear();
+	try {
+		const { watchHistoryIdb } = await import('$lib/utils/idb');
+		const keys = (await watchHistoryIdb.keys()) as string[];
+		if (!keys.length) return posts;
+		const filtered = posts.filter(
+			(o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id)
+		);
+		if (keys.length > 100) {
+			watchHistoryIdb.clear();
+		}
+		return filtered;
+	} catch (e) {
+		Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error');
+		return posts;
 	}
-	return filtered;
 }
 
 export async function getWatchedVideosFromCache(): Promise<PostPopulatedHistory[]> {
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
-	if (!values.length) return [];
-	const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
-	return sorted;
+	try {
+		const { watchHistoryIdb } = await import('$lib/utils/idb');
+		const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
+		if (!values.length) return [];
+		const sorted = values.sort((a, b) => a.watched_at - b.watched_at);
+		return sorted;
+	} catch (e) {
+		Log({ error: e, from: '1 getWatchedVideosFromCache', type: 'idb' }, 'error');
+		return [];
+	}
 }
 
 export async function getTopPosts(

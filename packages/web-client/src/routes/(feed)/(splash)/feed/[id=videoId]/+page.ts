@@ -5,14 +5,20 @@ import { Principal } from '@dfinity/principal';
 import type { PageLoad } from './$types';
 import type { PostPopulated } from '$lib/helpers/feed';
 import { individualUser } from '$lib/helpers/backend';
+import Log from '$lib/utils/Log';
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	const id = params.id.split('@');
 	const postId = BigInt(Number(id[1]));
 	const principal = Principal.from(id[0]);
+	let cachedPost: PostPopulated | undefined = undefined;
 
-	const { watchHistoryIdb } = await import('$lib/utils/idb');
-	const cachedPost = await watchHistoryIdb.get(params.id);
+	try {
+		const { watchHistoryIdb } = await import('$lib/utils/idb');
+		cachedPost = await watchHistoryIdb.get(params.id);
+	} catch (e) {
+		Log({ error: e, source: '1 videoFeedLoad', type: 'idb' }, 'error');
+	}
 
 	if (cachedPost) {
 		return { post: cachedPost };
