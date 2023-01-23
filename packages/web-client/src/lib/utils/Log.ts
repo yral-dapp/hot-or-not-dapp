@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import * as Sentry from '@sentry/svelte';
 
 function replaceErrors(_, value) {
@@ -27,7 +28,10 @@ const logTypeMap: Record<Logs, string> = {
 
 export default (data: any, type: Logs) => {
 	const dataStr = JSON.stringify(data, replaceErrors) || data;
-	if (location.host.includes('localhost') || type == 'error') {
+	const localhost = browser
+		? location.host.includes('localhost')
+		: import.meta.env.NODE_ENV !== 'production';
+	if (localhost || type == 'error') {
 		console[type](logTypeMap[type], dataStr);
 	}
 	if (type === 'error') {
