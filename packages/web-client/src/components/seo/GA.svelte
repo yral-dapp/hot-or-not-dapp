@@ -52,7 +52,7 @@ $: if (href) {
 }
 
 onMount(() => {
-	registerPageview();
+	setTimeout(() => registerPageview(), 3000);
 });
 </script>
 
