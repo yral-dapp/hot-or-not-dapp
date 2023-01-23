@@ -19,7 +19,6 @@ import LoginButton from '$components/login/LoginButton.svelte';
 import WhatsappIcon from '$components/icons/WhatsappIcon.svelte';
 import { onMount } from 'svelte';
 import { handleParams } from '$lib/utils/params';
-import { preloadData } from '$app/navigation';
 import { loadingAuthStatus } from '$stores/loading';
 import SaveIcon from '$components/icons/SaveIcon.svelte';
 
@@ -81,7 +80,6 @@ $: userId = $userProfile.username_set
 
 onMount(() => {
 	handleParams();
-	preloadData('/waitlist');
 });
 </script>
 

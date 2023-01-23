@@ -2,7 +2,7 @@
 // const debugMode = import.meta.env.NODE_ENV === 'development';
 const debugMode = true;
 
-export const registerPageview = (url: URL) => {
+export const registerPageview = (url: URL = new URL(window.location.href)) => {
 	if (url?.href) {
 		window.gtag?.('event', 'page_view', {
 			page_location: url.href
@@ -39,6 +39,7 @@ export const registerEvent = (
 
 <script lang="ts">
 import { page } from '$app/stores';
+import { onMount } from 'svelte';
 let configured = false;
 
 $: href = $page.url.href;
@@ -49,6 +50,10 @@ $: if (href) {
 	}
 	registerPageview(new URL(href));
 }
+
+onMount(() => {
+	registerPageview();
+});
 </script>
 
 <svelte:head>
