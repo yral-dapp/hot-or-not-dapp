@@ -35,7 +35,25 @@ async function filterPosts(posts: PostScoreIndexItem[]): Promise<PostScoreIndexI
 			(o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id)
 		);
 		if (keys.length > 100) {
-			watchHistoryIdb.clear();
+			Log(
+				{ message: 'More than 100 posts. Keeping only most recent ones', from: 'filterPost' },
+				'info'
+			);
+			const values = await watchHistoryIdb.values();
+			await watchHistoryIdb.clear();
+			if (values) {
+				const sliced = values.sort((a, b) => b.watched_at - a.watched_at).slice(50);
+				sliced.forEach((post) =>
+					watchHistoryIdb.set(post.publisher_canister_id + '@' + post.post_id, post)
+				);
+				Log(
+					{
+						message: 'Cleared cache and restored only most recent watched videos',
+						from: 'filterPost'
+					},
+					'info'
+				);
+			}
 		}
 		return filtered;
 	} catch (e) {
