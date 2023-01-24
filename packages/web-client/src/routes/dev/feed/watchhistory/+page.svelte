@@ -13,9 +13,10 @@ async function getWatchedHistory() {
 			history = values;
 			console.log({ history });
 		}
-	} catch (_) {}
-	error = true;
-	history = [];
+	} catch (_) {
+		error = true;
+		history = [];
+	}
 }
 </script>
 
@@ -25,6 +26,14 @@ async function getWatchedHistory() {
 	{#if error}
 		Error fetching history
 	{:else if history.length}
-		<pre>{JSON.stringify(history, null, 2)}</pre>
+		<pre>{JSON.stringify(
+				history,
+				(_, val) => {
+					if (typeof val === 'bigint') {
+						return Number(val);
+					} else return val;
+				},
+				2
+			)}</pre>
 	{/if}
 </div>
