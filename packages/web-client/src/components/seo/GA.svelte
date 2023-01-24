@@ -2,7 +2,7 @@
 // const debugMode = import.meta.env.NODE_ENV === 'development';
 const debugMode = true;
 
-export const registerPageview = (url: URL = new URL(window.location.href)) => {
+export const registerPageView = (url: URL = new URL(window.location.href)) => {
 	if (url?.href) {
 		window.gtag?.('event', 'page_view', {
 			page_location: url.href
@@ -39,21 +39,18 @@ export const registerEvent = (
 
 <script lang="ts">
 import { page } from '$app/stores';
-import { onMount } from 'svelte';
+import { splashScreen } from '$stores/splashScreen';
+
 let configured = false;
+$: href = $page?.url?.href;
+$: shown = !$splashScreen?.show;
 
-$: href = $page.url.href;
-
-$: if (href) {
+$: if (href || shown) {
 	if (!configured) {
 		configured = updateConfig() || false;
 	}
-	registerPageview(new URL(href));
+	registerPageView();
 }
-
-onMount(() => {
-	setTimeout(() => registerPageview(), 3000);
-});
 </script>
 
 <svelte:head>

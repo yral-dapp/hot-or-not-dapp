@@ -1,4 +1,4 @@
-import { registerPageview } from '$components/seo/GA.svelte';
+import { registerPageView } from '$components/seo/GA.svelte';
 import type { PostPopulated } from '$lib/helpers/feed';
 import navigateBack from '$stores/navigateBack';
 import { playerState } from '$stores/playerState';
@@ -9,5 +9,5 @@ export function updateURL(post?: PostPopulated) {
 	navigateBack.set(url);
 	playerState.update((o) => ({ ...o, currentFeedUrl: url }));
 	window.history.replaceState('', '', url);
-	registerPageview(new URL(window.location.href));
+	registerPageView(new URL(window.location.href));
 }

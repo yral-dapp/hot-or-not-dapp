@@ -8,6 +8,18 @@ import { Principal } from '@dfinity/principal';
 import { userIndex } from './backend';
 import { checkSignupStatusCanister } from './signup';
 
+async function logout() {
+	const authHelperState = get(authHelper);
+	await authHelperState.client?.logout();
+	const identity = authHelperState.client?.getIdentity();
+	const principal = await identity?.getPrincipal();
+	authState.set({
+		isLoggedIn: false,
+		idString: principal?.toText(),
+		showLogin: false
+	});
+}
+
 async function updateUserIndexCanister(): Promise<{
 	error: boolean;
 	new_user: boolean;
@@ -81,8 +93,7 @@ async function updateUserIndexCanister(): Promise<{
 	} catch (e) {
 		const authFailed = (e as any)?.message?.includes?.('Failed to authenticate');
 		if (authFailed) {
-			const authHelperState = get(authHelper);
-			await authHelperState.client?.logout();
+			await logout();
 		} else {
 			Log({ error: e, from: '2 updateUserIndexCanister' }, 'error');
 		}
