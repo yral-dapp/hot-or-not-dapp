@@ -39,15 +39,17 @@ export const registerEvent = (
 
 <script lang="ts">
 import { page } from '$app/stores';
+import { splashScreen } from '$stores/splashScreen';
 
 let configured = false;
-$: href = $page.url.href;
+$: href = $page?.url?.href;
+$: shown = !$splashScreen?.show;
 
-$: if (href) {
+$: if (href || shown) {
 	if (!configured) {
 		configured = updateConfig() || false;
 	}
-	registerPageView(new URL(href));
+	registerPageView();
 }
 </script>
 
