@@ -79,7 +79,13 @@ async function updateUserIndexCanister(): Promise<{
 
 		return { error: false, new_user, referral: referralStore.principalId };
 	} catch (e) {
-		Log({ error: e, from: '1 updateUserIndexCanister' }, 'error');
+		const authFailed = (e as any)?.message?.includes?.('Failed to authenticate');
+		if (authFailed) {
+			const authHelperState = get(authHelper);
+			await authHelperState.client?.logout();
+		} else {
+			Log({ error: e, from: '2 updateUserIndexCanister' }, 'error');
+		}
 		return { error: true, error_details: 'OTHER', new_user: false };
 	}
 }
