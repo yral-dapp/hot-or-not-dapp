@@ -23,6 +23,7 @@ import Log from '$lib/utils/Log';
 import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 import { goto } from '$app/navigation';
+import { tick } from 'svelte';
 
 export let hideNfid = false;
 
@@ -57,6 +58,7 @@ async function handleSuccessfulLogin(type: LoginType) {
 	try {
 		const principal = $authHelper.client?.getIdentity()?.getPrincipal();
 		const res = await initializeAuthClient();
+		await tick();
 		if (!res) throw {};
 
 		if (res.error) {
