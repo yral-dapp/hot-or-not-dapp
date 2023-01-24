@@ -11,7 +11,6 @@ async function getHistory() {
 		const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[];
 		if (values.length) {
 			history = values;
-			console.log({ history });
 		}
 	} catch (_) {
 		error = true;
