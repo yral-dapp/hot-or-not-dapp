@@ -39,6 +39,18 @@ jobs:
         run: |
           echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
 
+  comment-on-pr:
+    name: Add a comment with the deployment link on the PR
+    if: github.actor != 'dependabot[bot]'
+    needs: ["deploy-preview"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment action
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Deployed on Cloudflare pages: ${{ needs.deploy-preview.outputs.previewUrl }}
+
   google-chat-webhook:
     name: Send URL to Google chat workspace
     if: github.actor != 'dependabot[bot]'
