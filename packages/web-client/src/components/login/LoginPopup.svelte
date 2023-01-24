@@ -24,6 +24,7 @@ import { authHelper, authState } from '$stores/auth';
 import userProfile from '$stores/userProfile';
 import { goto } from '$app/navigation';
 import { tick } from 'svelte';
+import { get } from 'svelte/store';
 
 export let hideNfid = false;
 
@@ -72,11 +73,13 @@ async function handleSuccessfulLogin(type: LoginType) {
 			return;
 		}
 
+		const userProfileData = get(userProfile);
+
 		registerEvent(res.new_user ? 'sign_up' : 'login', {
 			login_method: type,
-			display_name: $userProfile.display_name,
-			username: $userProfile.unique_user_name,
-			userId: $userProfile.principal_id,
+			display_name: userProfileData.display_name,
+			username: userProfileData.unique_user_name,
+			userId: userProfileData.principal_id,
 			referral: !!res.referral,
 			...(!!res.referral && { referee_user_id: res.referral })
 		});
