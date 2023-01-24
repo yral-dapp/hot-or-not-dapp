@@ -4,14 +4,14 @@
 		"composite": true,
 		"noImplicitAny": false,
 		"paths": {
-			"$lib": ["src/lib"],
-			"$lib/*": ["src/lib/*"],
-			"$canisters/*": ["declarations/*"],
-			"$components/*": ["src/components/*"],
-			"$routes/*": ["src/routes/*"],
-			"$icons/*": ["src/icons/*"],
-			"$stores/*": ["src/stores/*"],
-			"$assets/*": ["src/assets/*"]
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"],
+			"$canisters/*": ["./declarations/*"],
+			"$components/*": ["./src/components/*"],
+			"$routes/*": ["./src/routes/*"],
+			"$icons/*": ["./src/icons/*"],
+			"$stores/*": ["./src/stores/*"],
+			"$assets/*": ["./src/assets/*"]
 		},
 		"allowJs": false,
 		"esModuleInterop": true,
