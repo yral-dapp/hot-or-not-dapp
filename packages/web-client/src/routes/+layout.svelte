@@ -23,6 +23,7 @@ async function initSentry() {
 		dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
 		integrations: [new BrowserTracing(), new Sentry.Replay()],
 		environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
+		ignoreErrors: [/Adding invalid event/i, /Error in compression worker/i], //Replay errors
 		beforeSend: $page.url.host.includes('t:')
 			? (event) => {
 					console.log('[SENTRY LOG]', event);
