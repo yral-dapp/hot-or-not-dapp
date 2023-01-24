@@ -1,5 +1,4 @@
 <script lang="ts">
-import { preloadData } from '$app/navigation';
 import { page } from '$app/stores';
 import IconButton from '$components/button/IconButton.svelte';
 import HomeIcon from '$components/icons/HomeIcon.svelte';
@@ -8,18 +7,10 @@ import PlusIcon from '$components/icons/PlusIcon.svelte';
 import TrophyIcon from '$components/icons/TrophyIcon.svelte';
 import WalletIcon from '$components/icons/WalletIcon.svelte';
 import { playerState } from '$stores/playerState';
-import { onMount } from 'svelte';
 
 $: path = $page.url.pathname;
 $: showBg = !(path.includes('feed') || path.includes('post'));
 $: feedUrl = $playerState.currentFeedUrl == 'no-videos' ? '' : $playerState.currentFeedUrl;
-
-function preloadLinks() {
-	!path.includes('menu') && preloadData('/menu');
-	!path.includes('upload') && preloadData('/upload');
-}
-
-onMount(() => preloadLinks());
 </script>
 
 <bottom-nav

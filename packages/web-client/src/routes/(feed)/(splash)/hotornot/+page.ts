@@ -1,10 +1,10 @@
-export const ssr = false;
+export const ssr = true;
 
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { postCache } from '$lib/helpers/backend';
 
-export const load: PageLoad = async () => {
+export const load: PageLoad = async ({ fetch }) => {
 	const res = await postCache(
 		fetch
 	).get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(

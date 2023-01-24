@@ -19,17 +19,14 @@ import { Principal } from '@dfinity/principal';
 import { onDestroy, onMount, tick } from 'svelte';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/svelte';
-import type { PageData } from './$types';
 import { isiPhone } from '$lib/utils/isSafari';
 import { page } from '$app/stores';
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte';
-import Hls from 'hls.js';
 import { joinArrayUniquely, updateMetadata, type VideoViewReport } from '$lib/utils/video';
 import { updateURL } from '$lib/utils/feedUrl';
 import Button from '$components/button/Button.svelte';
 import { beforeNavigate } from '$app/navigation';
-
-export let data: PageData;
+import { browser } from '$app/environment';
 
 const fetchCount = 25;
 const fetchWhenVideosLeft = 10;
@@ -201,22 +198,13 @@ onMount(async () => {
 	if ($homeFeedVideos.length) {
 		videos = $homeFeedVideos;
 		$homeFeedVideos = [];
-	} else if (data.post) {
-		videos = [data.post, ...videos];
-		await recordView(data.post);
 	}
 	await tick();
 	await fetchNextVideos();
 	handleParams();
-	document.addEventListener('visibilitychange', handleVisibilityChange);
 });
 
-onDestroy(() => {
-	document.removeEventListener('visibilitychange', handleVisibilityChange);
-	if (loadTimeout) {
-		clearTimeout(loadTimeout);
-	}
-});
+onDestroy(() => {});
 
 beforeNavigate(() => {
 	videos.length > 2 && homeFeedVideos.set(videos.slice(currentPlayingIndex));
@@ -268,7 +256,6 @@ beforeNavigate(() => {
 							)}"
 						i="{i}"
 						playFormat="hls"
-						Hls="{Hls}"
 						isiPhone="{isIPhone}"
 						inView="{i == currentVideoIndex && !isDocumentHidden && pathname.includes('feed')}"
 						uid="{video.video_uid}" />

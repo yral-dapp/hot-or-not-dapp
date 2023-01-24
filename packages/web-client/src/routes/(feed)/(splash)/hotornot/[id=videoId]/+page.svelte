@@ -118,12 +118,9 @@ onMount(async () => {
 	await tick();
 	await fetchNextVideos();
 	handleParams();
-	document.addEventListener('visibilitychange', handleVisibilityChange);
 });
 
-onDestroy(() => {
-	document.removeEventListener('visibilitychange', handleVisibilityChange);
-});
+onDestroy(() => {});
 
 beforeNavigate(() => {
 	videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex));
