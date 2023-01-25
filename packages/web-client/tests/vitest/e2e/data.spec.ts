@@ -23,7 +23,7 @@ const cloudflareVideoUid = [
 // The two tests marked with concurrent will be run in parallel
 describe('e2e test suite', () => {
 	it('serial test', async () => {
-		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch });
+		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch, identity });
 		await agent.fetchRootKey();
 		const userIndexActor = createUserIndexActor(canisterIds.user_index.local, { agent });
 		const anonPrincipalId =
@@ -33,7 +33,7 @@ describe('e2e test suite', () => {
 		expect(anonPrincipalId.toText()).toBeTruthy();
 	});
 	it('Setup initial data', async () => {
-		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch });
+		const agent = new HttpAgent({ host: 'http://0.0.0.0:4943', fetch, identity });
 		await agent.fetchRootKey();
 
 		const userIndexActor = createUserIndexActor(canisterIds.user_index.local, { agent });
