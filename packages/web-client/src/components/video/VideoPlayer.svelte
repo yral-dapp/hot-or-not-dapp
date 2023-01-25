@@ -146,7 +146,9 @@ onMount(() => {
 			hls?.loadSource(src);
 			hls?.attachMedia(videoEl);
 		} else {
-			Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'error');
+			// Fallback to mp4
+			videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`;
+			Log({ error: 'Hls not supported', i, src, source: '1 videoPlayer' }, 'warn');
 		}
 	}
 });
