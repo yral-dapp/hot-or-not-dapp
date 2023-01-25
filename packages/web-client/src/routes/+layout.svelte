@@ -8,16 +8,18 @@ import userProfile from '$stores/userProfile';
 import { deferredPrompt } from '$stores/deferredPrompt';
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte';
 
-onMount(() => ($navigateBack = null));
+const ignoredPaths = ['edit', 'lovers', 'post'];
 
-// beforeNavigate(({ from, to }) => {
-// 	if (
-// 		ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
-// 		ignoredPaths.some((path) => to?.url.pathname.includes(path))
-// 	)
-// 		return;
-// 	$navigateBack = from?.url.pathname ?? null;
-// });
+beforeNavigate(({ from, to }) => {
+	if (
+		ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
+		ignoredPaths.some((path) => to?.url.pathname.includes(path))
+	)
+		return;
+	$navigateBack = from?.url.pathname ?? null;
+});
+
+onMount(() => ($navigateBack = null));
 </script>
 
 <svelte:window
