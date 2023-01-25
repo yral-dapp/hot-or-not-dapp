@@ -26,7 +26,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			userPrincipal: profile.principal_id
 		};
 	} catch (e) {
-		Log({ error: e, from: '1 fetchProfile' }, 'error');
+		Log({ error: e, from: '1 fetchProfile' }, 'warn');
 		throw redirect(307, `/profile/${params.id}`);
 	}
 };
