@@ -74,17 +74,17 @@ async function saveChanges() {
 	if (!values.name) {
 		error = 'Name is required';
 		loading = false;
-		Log({ error }, 'error');
+		Log({ error }, 'warn');
 		return;
 	} else if (!values.username) {
 		error = 'Username is required';
 		loading = false;
-		Log({ error }, 'error');
+		Log({ error }, 'warn');
 		return;
 	} else if (!username_set && (await isUsernameTaken())) {
 		error = 'This username is already taken';
 		loading = false;
-		Log({ error }, 'error');
+		Log({ error }, 'warn');
 		return;
 	}
 
