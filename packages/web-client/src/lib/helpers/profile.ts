@@ -193,6 +193,7 @@ async function populateProfiles(users: Principal[]) {
 
 		const res = await Promise.all(
 			users.map(async (userId) => {
+				if (userId?.toText() === '2vxsx-fae') return;
 				const canId = await getCanisterId(userId.toText());
 
 				if (canId) {
@@ -206,7 +207,7 @@ async function populateProfiles(users: Principal[]) {
 					Log(
 						{
 							error: `Could not get canisterId for user: ${userId.toText()}`,
-							from: '11 populatePosts'
+							from: '12 populatePosts.profile'
 						},
 						'error'
 					);
@@ -216,7 +217,7 @@ async function populateProfiles(users: Principal[]) {
 
 		return { posts: res.filter((o) => !!o) as UserProfileFollows[], error: false };
 	} catch (e) {
-		Log({ error: e, from: '11 populatePosts' }, 'error');
+		Log({ error: e, from: '11 populatePosts.profile' }, 'error');
 		return { error: true, posts: [] };
 	}
 }
