@@ -180,7 +180,7 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 		);
 		return { posts: res.filter((o) => !!o) as PostPopulated[], error: false };
 	} catch (e) {
-		Log({ error: e, from: '11 populatePosts' }, 'error');
+		Log({ error: e, from: '11 populatePosts.feed' }, 'error');
 		return { error: true, posts: [] };
 	}
 }
