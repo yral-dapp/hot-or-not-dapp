@@ -40,13 +40,13 @@ let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 let errorCount = 0;
 let showError = false;
 
-async function fetchNextVideos() {
+async function fetchNextVideos(force = false) {
 	// console.log(
 	// 	`to fetch: ${!noMoreVideos} && ${
 	// 		videos.length
 	// 	} - ${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
 	// );
-	if (!noMoreVideos && videos.length - currentVideoIndex < fetchWhenVideosLeft) {
+	if (!noMoreVideos && (force || videos.length - currentVideoIndex < fetchWhenVideosLeft)) {
 		try {
 			Log({ res: 'fetching from ' + fetchedVideosCount, source: '0 fetchNextVideos' }, 'info');
 			loading = true;
@@ -73,7 +73,7 @@ async function fetchNextVideos() {
 			videos = joinArrayUniquely(videos, res.posts);
 
 			if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
-				fetchNextVideos();
+				fetchNextVideos(true);
 			}
 
 			noMoreVideos = res.noMorePosts;
