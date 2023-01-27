@@ -1,37 +1,37 @@
 {
-	"name": "hnn",
-	"version": "0.0.0",
-	"type": "module",
-	"workspaces": [
-		"./packages/web-client",
-		"./packages/workers"
-	],
-	"scripts": {
-		"build": "npm run wc:build",
-		"wc:check": "npm run check --w @hnn/web-client",
-		"wc:tsc": "npm run tsc --w @hnn/web-client",
-		"wc:build": "npm run build --w @hnn/web-client",
-		"wc:build:static": "npm run build:static --w @hnn/web-client",
-		"wc:preview": "npm run preview --w @hnn/web-client",
-		"serve:lhci": "npm run wc:preview",
-		"wc:preview:static": "npm run preview:static --w @hnn/web-client",
-		"wc:dev": "npm run dev --w @hnn/web-client",
-		"wc:test": "npm run test --w @hnn/web-client",
-		"wc:test:record": "npm run test:record --w @hnn/web-client",
-		"wc:test:vi": "npm run test:vi --w @hnn/web-client",
-		"wc:sync": "npm run sync --w @hnn/web-client",
-		"workers:dev": "npm run dev --w @hnn/workers-api",
-		"workers:publish": "npm run publish --w @hnn/workers-api"
-	},
-	"devDependencies": {
-		"@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
-		"@types/node": "18.11.18",
-		"@typescript-eslint/eslint-plugin": "5.49.0",
-		"@typescript-eslint/parser": "5.48.2",
-		"eslint": "8.32.0",
-		"eslint-config-prettier": "8.6.0",
-		"eslint-plugin-svelte3": "4.0.0",
-		"prettier": "2.8.3",
-		"prettier-plugin-tailwindcss": "0.2.1"
-	}
+  "name": "hnn",
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": [
+    "./packages/web-client",
+    "./packages/workers"
+  ],
+  "scripts": {
+    "build": "npm run wc:build",
+    "wc:check": "npm run check --w @hnn/web-client",
+    "wc:tsc": "npm run tsc --w @hnn/web-client",
+    "wc:build": "npm run build --w @hnn/web-client",
+    "wc:build:static": "npm run build:static --w @hnn/web-client",
+    "wc:preview": "npm run preview --w @hnn/web-client",
+    "serve:lhci": "npm run wc:preview",
+    "wc:preview:static": "npm run preview:static --w @hnn/web-client",
+    "wc:dev": "npm run dev --w @hnn/web-client",
+    "wc:test": "npm run test --w @hnn/web-client",
+    "wc:test:record": "npm run test:record --w @hnn/web-client",
+    "wc:test:vi": "npm run test:vi --w @hnn/web-client",
+    "wc:sync": "npm run sync --w @hnn/web-client",
+    "workers:dev": "npm run dev --w @hnn/workers-api",
+    "workers:publish": "npm run publish --w @hnn/workers-api"
+  },
+  "devDependencies": {
+    "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
+    "@types/node": "18.11.18",
+    "@typescript-eslint/eslint-plugin": "5.49.0",
+    "@typescript-eslint/parser": "5.49.0",
+    "eslint": "8.32.0",
+    "eslint-plugin-svelte3": "4.0.0",
+    "prettier": "2.8.3",
+    "prettier-plugin-svelte": "2.9.0",
+    "prettier-plugin-tailwindcss": "0.2.2"
+  }
 }
