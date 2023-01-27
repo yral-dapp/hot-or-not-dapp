@@ -14,7 +14,6 @@ import { Swiper, SwiperSlide } from 'swiper/svelte'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
 import { isiPhone } from '$lib/utils/isSafari'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js'
 
 export let data: PageData
 
@@ -87,7 +86,6 @@ async function handleChange(e: CustomEvent) {
               <VideoPlayer
                 {i}
                 playFormat="hls"
-                {Hls}
                 isiPhone={isIPhone}
                 inView={currentVideoIndex == i}
                 uid={video.video_uid} />
