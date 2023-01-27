@@ -26,7 +26,7 @@ let noMoreVideos = true
 let isIPhone = isiPhone()
 let currentVideoIndex = 0
 
-let individualUser: () => IndividualUserActor
+let individualUser: undefined | (() => IndividualUserActor) = undefined
 
 async function handleChange(e: CustomEvent) {
   const index = e.detail[0].realIndex
@@ -55,7 +55,7 @@ async function handleChange(e: CustomEvent) {
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
-    {#if individualUser}
+    {#if individualUser != undefined}
       <Swiper
         direction={'vertical'}
         observer

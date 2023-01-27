@@ -40,33 +40,31 @@ let isIPhone = isiPhone()
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
-      {#if individualUser}
-        <HomeFeedPlayer
+      <HomeFeedPlayer
+        i={0}
+        id={video.id}
+        likeCount={Number(video.like_count)}
+        displayName={video.created_by_display_name[0]}
+        profileLink={video.created_by_unique_user_name[0] ??
+          video.created_by_user_principal_id}
+        liked={video.liked_by_me}
+        description={video.description}
+        createdById={video.created_by_user_principal_id}
+        videoViews={Number(video.total_view_count)}
+        publisherCanisterId={video.publisher_canister_id}
+        userProfileSrc={video.created_by_profile_photo_url[0]}
+        {individualUser}
+        enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
+          video.hot_or_not_feed_ranking_score[0] !== undefined}
+        thumbnail={getThumbnailUrl(video.video_uid)}>
+        <VideoPlayer
           i={0}
-          id={video.id}
-          likeCount={Number(video.like_count)}
-          displayName={video.created_by_display_name[0]}
-          profileLink={video.created_by_unique_user_name[0] ??
-            video.created_by_user_principal_id}
-          liked={video.liked_by_me}
-          description={video.description}
-          createdById={video.created_by_user_principal_id}
-          videoViews={Number(video.total_view_count)}
-          publisherCanisterId={video.publisher_canister_id}
-          userProfileSrc={video.created_by_profile_photo_url[0]}
-          {individualUser}
-          enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
-            video.hot_or_not_feed_ranking_score[0] !== undefined}
-          thumbnail={getThumbnailUrl(video.video_uid)}>
-          <VideoPlayer
-            i={0}
-            playFormat="hls"
-            {Hls}
-            isiPhone={isIPhone}
-            inView
-            uid={video.video_uid} />
-        </HomeFeedPlayer>
-      {/if}
+          playFormat="hls"
+          {Hls}
+          isiPhone={isIPhone}
+          inView
+          uid={video.video_uid} />
+      </HomeFeedPlayer>
     </div>
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
