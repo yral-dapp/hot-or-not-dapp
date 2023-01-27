@@ -1,25 +1,27 @@
 <script lang="ts">
-import HomeLayout from '$components/layout/HomeLayout.svelte';
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte';
-import IconButton from '$components/button/IconButton.svelte';
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte';
+import HomeLayout from '$components/layout/HomeLayout.svelte'
+import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
+import IconButton from '$components/button/IconButton.svelte'
+import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 </script>
 
 <svelte:head>
-	<title>User's Videos | Hot or Not</title>
+  <title>User's Videos | Hot or Not</title>
 </svelte:head>
 
 <HomeLayout>
-	<svelte:fragment slot="top">
-		<div class="flex items-center rounded-full bg-black/10 py-2 px-4">User's Videos</div>
-		<div class="absolute top-4 left-4">
-			<IconButton>
-				<CaretLeftIcon class="h-5 w-5" />
-			</IconButton>
-		</div>
-	</svelte:fragment>
-	<svelte:fragment slot="content">content</svelte:fragment>
-	<div class="w-full" slot="bottom-navigation">
-		<BottomNavigation />
-	</div>
+  <svelte:fragment slot="top">
+    <div class="flex items-center rounded-full bg-black/10 py-2 px-4">
+      User's Videos
+    </div>
+    <div class="absolute top-4 left-4">
+      <IconButton>
+        <CaretLeftIcon class="h-5 w-5" />
+      </IconButton>
+    </div>
+  </svelte:fragment>
+  <svelte:fragment slot="content">content</svelte:fragment>
+  <div class="w-full" slot="bottom-navigation">
+    <BottomNavigation />
+  </div>
 </HomeLayout>

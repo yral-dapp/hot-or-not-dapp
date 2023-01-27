@@ -1,6 +1,6 @@
-import * as canisterIdb from './canisterIdb';
-import * as watchHistoryIdb from './watchHistoryIdb';
+import * as canisterIdb from './canisterIdb'
+import * as watchHistoryIdb from './watchHistoryIdb'
 
-export type CanisterIdb = typeof canisterIdb;
+export type CanisterIdb = typeof canisterIdb
 
-export { canisterIdb, watchHistoryIdb };
+export { canisterIdb, watchHistoryIdb }
