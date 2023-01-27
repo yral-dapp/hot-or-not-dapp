@@ -1,36 +1,36 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
-	"compilerOptions": {
-		"composite": true,
-		"noImplicitAny": false,
-		"paths": {
-			"$lib": ["src/lib"],
-			"$lib/*": ["src/lib/*"],
-			"$canisters/*": ["declarations/*"],
-			"$components/*": ["src/components/*"],
-			"$routes/*": ["src/routes/*"],
-			"$icons/*": ["src/icons/*"],
-			"$stores/*": ["src/stores/*"],
-			"$assets/*": ["src/assets/*"]
-		},
-		"allowJs": false,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"importsNotUsedAsValues": "error",
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"sourceMap": true,
-		"outDir": "./",
-		"strict": true,
-		"types": ["gtag.js", "w3c-image-capture"]
-	},
-	"include": [
-		"src/**/*.d.ts",
-		"src/**/*.ts",
-		"src/**/*.js",
-		"src/**/*.svelte",
-		"declarations",
-		"tests/**/*.ts"
-	],
-	"exclude": ["node_modules", "build"]
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noImplicitAny": false,
+    "paths": {
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"],
+      "$canisters/*": ["./declarations/*"],
+      "$components/*": ["./src/components/*"],
+      "$routes/*": ["./src/routes/*"],
+      "$icons/*": ["./src/icons/*"],
+      "$stores/*": ["./src/stores/*"],
+      "$assets/*": ["./src/assets/*"]
+    },
+    "allowJs": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "error",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "outDir": "./",
+    "strict": true,
+    "types": ["gtag.js", "w3c-image-capture"]
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "declarations",
+    "tests/**/*.ts"
+  ],
+  "exclude": ["node_modules", "build"]
 }
