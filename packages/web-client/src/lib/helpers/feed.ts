@@ -223,28 +223,25 @@ export async function getSinglePostById(id: string) {
     }
 
     if (cachedPost) {
-      return { post: cachedPost }
+      return cachedPost
     } else {
       const r = await individualUser(
         principal,
       ).get_individual_post_details_by_id(postId)
       if (r.video_uid) {
         return {
-          post: {
-            ...r,
-            publisher_canister_id: split[0],
-            created_by_user_principal_id:
-              r.created_by_user_principal_id.toText(),
-            post_id: postId,
-            score: BigInt(0),
-          } as PostPopulated,
-        }
+          ...r,
+          publisher_canister_id: split[0],
+          created_by_user_principal_id: r.created_by_user_principal_id.toText(),
+          post_id: postId,
+          score: BigInt(0),
+        } as PostPopulated
       } else {
         return
       }
     }
   } catch (e) {
     Log({ error: e, from: '1 getSinglePostById' }, 'error')
-    return e
+    return
   }
 }
