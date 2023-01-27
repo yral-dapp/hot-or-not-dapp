@@ -209,36 +209,42 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
 }
 
 export async function getSinglePostById(id: string) {
-  const split = id.split('@')
-  const postId = BigInt(Number(split[1]))
-  const principal = Principal.from(split[0])
-  let cachedPost: PostPopulated | undefined = undefined
-
   try {
-    const { watchHistoryIdb } = await import('$lib/utils/idb')
-    cachedPost = await watchHistoryIdb.get(id)
-  } catch (e) {
-    Log({ error: e, source: '1 videoFeedLoad', type: 'idb' }, 'error')
-  }
+    const split = id.split('@')
+    const postId = BigInt(Number(split[1]))
+    const principal = Principal.from(split[0])
+    let cachedPost: PostPopulated | undefined = undefined
 
-  if (cachedPost) {
-    return { post: cachedPost }
-  } else {
-    const r = await individualUser(principal).get_individual_post_details_by_id(
-      postId,
-    )
-    if (r.video_uid) {
-      return {
-        post: {
-          ...r,
-          publisher_canister_id: split[0],
-          created_by_user_principal_id: r.created_by_user_principal_id.toText(),
-          post_id: postId,
-          score: BigInt(0),
-        } as PostPopulated,
-      }
-    } else {
-      return
+    try {
+      const { watchHistoryIdb } = await import('$lib/utils/idb')
+      cachedPost = await watchHistoryIdb.get(id)
+    } catch (e) {
+      Log({ error: e, source: '1 videoFeedLoad', type: 'idb' }, 'error')
     }
+
+    if (cachedPost) {
+      return { post: cachedPost }
+    } else {
+      const r = await individualUser(
+        principal,
+      ).get_individual_post_details_by_id(postId)
+      if (r.video_uid) {
+        return {
+          post: {
+            ...r,
+            publisher_canister_id: split[0],
+            created_by_user_principal_id:
+              r.created_by_user_principal_id.toText(),
+            post_id: postId,
+            score: BigInt(0),
+          } as PostPopulated,
+        }
+      } else {
+        return
+      }
+    }
+  } catch (e) {
+    Log({ error: e, from: '1 getSinglePostById' }, 'error')
+    return e
   }
 }
