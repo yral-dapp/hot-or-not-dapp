@@ -218,8 +218,8 @@ onMount(async () => {
     updateURL()
   } else {
     const post = await getSinglePostById($page.params.id)
-    if (post?.post) {
-      videos = [post.post, ...videos]
+    if (post) {
+      videos = [post, ...videos]
       updateURL()
     }
   }
