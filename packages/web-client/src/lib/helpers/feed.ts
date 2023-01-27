@@ -39,36 +39,6 @@ async function filterPosts(
     const filtered = posts.filter(
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
     )
-    if (keys.length > 100) {
-      Log(
-        {
-          message: 'More than 100 posts. Keeping only most recent ones',
-          from: 'filterPost',
-        },
-        'info',
-      )
-      const values = await watchHistoryIdb.values()
-      await watchHistoryIdb.clear()
-      if (values) {
-        const sliced = values
-          .sort((a, b) => b.watched_at - a.watched_at)
-          .slice(50)
-        sliced.forEach((post) =>
-          watchHistoryIdb.set(
-            post.publisher_canister_id + '@' + post.post_id,
-            post,
-          ),
-        )
-        Log(
-          {
-            message:
-              'Cleared cache and restored only most recent watched videos',
-            from: 'filterPost',
-          },
-          'info',
-        )
-      }
-    }
     return filtered
   } catch (e) {
     Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
@@ -81,7 +51,9 @@ export async function getWatchedVideosFromCache(): Promise<
 > {
   try {
     const { watchHistoryIdb } = await import('$lib/utils/idb')
-    const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[]
+    const values = ((await watchHistoryIdb.values()) || []).slice(
+      50,
+    ) as PostPopulatedHistory[]
     if (!values.length) return []
     const sorted = values.sort((a, b) => a.watched_at - b.watched_at)
     return sorted
