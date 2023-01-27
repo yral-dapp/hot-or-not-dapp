@@ -4,7 +4,7 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import {
-  getFirstPost,
+  getSinglePostById,
   getTopPosts,
   getWatchedVideosFromCache,
   type PostPopulated,
@@ -217,7 +217,7 @@ onMount(async () => {
     $homeFeedVideos = []
     updateURL()
   } else {
-    const post = await getFirstPost($page.params.id)
+    const post = await getSinglePostById($page.params.id)
     if (post?.post) {
       videos = [post.post, ...videos]
       updateURL()

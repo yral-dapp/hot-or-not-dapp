@@ -6,7 +6,11 @@ import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import HotOrNotPlayer from '$components/player/HotOrNotPlayer.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { individualUser } from '$lib/helpers/backend'
-import { getHotOrNotPosts, type PostPopulated } from '$lib/helpers/feed'
+import {
+  getHotOrNotPosts,
+  getSinglePostById,
+  type PostPopulated,
+} from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
@@ -20,6 +24,8 @@ import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { updateURL } from '$lib/utils/feedUrl'
 import Button from '$components/button/Button.svelte'
 import { beforeNavigate } from '$app/navigation'
+import { page } from '$app/stores'
+import { browser } from '$app/environment'
 
 export let data: PageData
 const fetchCount = 25
@@ -114,21 +120,30 @@ function handleVisibilityChange() {
 }
 
 onMount(async () => {
-  updateURL()
   $playerState.initialized = false
   $playerState.muted = true
   if ($hotOrNotFeedVideos.length) {
     videos = $hotOrNotFeedVideos
     $hotOrNotFeedVideos = []
-  } else if (data.post) {
-    videos = [data.post, ...videos]
+    updateURL()
+  } else {
+    const post = await getSinglePostById($page.params.id)
+    if (post?.post) {
+      videos = [post.post, ...videos]
+      updateURL()
+    }
   }
   await tick()
   await fetchNextVideos()
   handleParams()
+  browser &&
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
-onDestroy(() => {})
+onDestroy(() => {
+  browser &&
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+})
 
 beforeNavigate(() => {
   videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex))
