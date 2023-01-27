@@ -8,7 +8,7 @@ import { getCroppedImg } from '$lib/utils/canvas'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
-import Cropper from 'svelte-easy-crop/src/index.svelte'
+import Cropper from 'svelte-easy-crop'
 
 export let src = ''
 export let error = ''

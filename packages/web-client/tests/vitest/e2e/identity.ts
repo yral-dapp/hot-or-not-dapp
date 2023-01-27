@@ -5,7 +5,7 @@ const seed =
   'harsh harsh harsh harsh harsh harsh harsh harsh harsh harsh harsh harsh'
 
 export const identityFromSeed = async (phrase) => {
-  return Secp256k1KeyIdentity.fromSeedPhrase(phrase)
+  return Secp256k1KeyIdentity.fromSeedPhrase(phrase) as any
 }
 
 export const identity = identityFromSeed(seed)
