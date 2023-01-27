@@ -1,4 +1,4 @@
-export const ssr = true
+export const ssr = false
 
 import { getWatchedVideosFromCache } from '$lib/helpers/feed'
 import type { PageLoad } from './$types'

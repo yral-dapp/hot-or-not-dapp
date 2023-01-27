@@ -1,4 +1,4 @@
-export const ssr = true
+export const ssr = false
 
 import type { PageLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
