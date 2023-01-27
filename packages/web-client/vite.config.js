@@ -1,8 +1,9 @@
-import { resolve } from 'path'
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
-import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
+
+import { resolve } from 'path'
+import { createRequire } from 'module'
 import { sveltekit } from '@sveltejs/kit/vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 // import { partytownVite } from '@builder.io/partytown/utils';
 
@@ -78,9 +79,14 @@ export default ({ mode }) => {
     },
     plugins: [
       sveltekit(),
+      // https://github.com/vitejs/vite/discussions/2785#discussioncomment-4738116
+      nodePolyfills({
+        // Whether to polyfill `node:` protocol imports.
+        protocolImports: true,
+      }),
       // partytownVite({
       // 	dest: join(process.cwd(), 'static', '~partytown')
-      // })
+      // }),
     ],
     optimizeDeps: {
       esbuildOptions: {
@@ -88,11 +94,6 @@ export default ({ mode }) => {
         define: {
           global: 'globalThis',
         },
-        plugins: [
-          NodeGlobalsPolyfillPlugin({
-            buffer: true,
-          }),
-        ],
       },
     },
   })
