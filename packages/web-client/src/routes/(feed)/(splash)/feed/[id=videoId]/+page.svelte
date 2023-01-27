@@ -4,6 +4,7 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import {
+  getFirstPost,
   getTopPosts,
   getWatchedVideosFromCache,
   type PostPopulated,
@@ -30,6 +31,7 @@ import {
 import { updateURL } from '$lib/utils/feedUrl'
 import Button from '$components/button/Button.svelte'
 import { beforeNavigate } from '$app/navigation'
+import { browser } from '$app/environment'
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -208,21 +210,29 @@ function recordStats(
 }
 
 onMount(async () => {
-  updateURL()
   $playerState.initialized = false
   $playerState.muted = true
   if ($homeFeedVideos.length) {
     videos = $homeFeedVideos
     $homeFeedVideos = []
+    updateURL()
+  } else {
+    const post = await getFirstPost($page.params.id)
+    if (post?.post) {
+      videos = [post.post, ...videos]
+      updateURL()
+    }
   }
   await tick()
   await fetchNextVideos()
   handleParams()
-  document.addEventListener('visibilitychange', handleVisibilityChange)
+  browser &&
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onDestroy(() => {
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  browser &&
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 
 beforeNavigate(() => {
