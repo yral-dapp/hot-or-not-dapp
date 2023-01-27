@@ -51,9 +51,9 @@ export async function getWatchedVideosFromCache(): Promise<
 > {
   try {
     const { watchHistoryIdb } = await import('$lib/utils/idb')
-    const values = (await watchHistoryIdb
-      .values()
-      .slice(50)) as PostPopulatedHistory[]
+    const values = ((await watchHistoryIdb.values()) || []).slice(
+      50,
+    ) as PostPopulatedHistory[]
     if (!values.length) return []
     const sorted = values.sort((a, b) => a.watched_at - b.watched_at)
     return sorted
