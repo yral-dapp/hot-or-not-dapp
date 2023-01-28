@@ -77,13 +77,15 @@ async function handleSuccessfulLogin(type: LoginType) {
 
     const userProfileData = get(userProfile)
 
+    const referral = res.new_user && res.referral !== 'undefined'
+
     registerEvent(res.new_user ? 'sign_up' : 'login', {
       login_method: type,
       display_name: userProfileData.display_name,
       username: userProfileData.unique_user_name,
       userId: userProfileData.principal_id,
-      referral: !!res.referral,
-      ...(!!res.referral && { referee_user_id: res.referral }),
+      referral,
+      ...(referral && { referee_user_id: res.referral }),
     })
 
     loading = false
