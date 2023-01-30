@@ -19,7 +19,6 @@ import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
 import { onMount, tick, onDestroy } from 'svelte'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
-import type { PageData } from './$types'
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { updateURL } from '$lib/utils/feedUrl'
 import Button from '$components/button/Button.svelte'
@@ -27,7 +26,6 @@ import { beforeNavigate } from '$app/navigation'
 import { page } from '$app/stores'
 import { browser } from '$app/environment'
 
-export let data: PageData
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
 const keepVideosLoadedCount: number = 4
@@ -35,7 +33,7 @@ const keepVideosLoadedCount: number = 4
 let videos: PostPopulated[] = []
 let currentVideoIndex = 0
 let noMoreVideos = false
-let loading = false
+let loading = true
 let videoPlayers: VideoPlayer[] = []
 let fetchedVideosCount = 0
 let isIPhone = isiPhone()
@@ -127,7 +125,7 @@ onMount(async () => {
     $hotOrNotFeedVideos = []
     updateURL()
   } else {
-    const post = await getSinglePostById($page.params.id)
+    const post = await getSinglePostById($page.params.id, true)
     if (post) {
       videos = [post, ...videos]
       updateURL()
@@ -136,13 +134,18 @@ onMount(async () => {
   await tick()
   await fetchNextVideos()
   handleParams()
-  browser &&
+  if (browser) {
     document.addEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 onDestroy(() => {
-  browser &&
+  if (browser) {
     document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
+  if (loadTimeout) {
+    clearTimeout(loadTimeout)
+  }
 })
 
 beforeNavigate(() => {

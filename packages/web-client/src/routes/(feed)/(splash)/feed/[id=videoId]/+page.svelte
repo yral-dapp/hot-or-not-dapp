@@ -41,7 +41,7 @@ let videos: PostPopulated[] = []
 let videoPlayers: VideoPlayer[] = []
 let currentVideoIndex = 0
 let noMoreVideos = false
-let loading = false
+let loading = true
 let currentPlayingIndex = 0
 let fetchedVideosCount = 0
 let isIPhone = isiPhone()
@@ -226,13 +226,18 @@ onMount(async () => {
   await tick()
   await fetchNextVideos()
   handleParams()
-  browser &&
+  if (browser) {
     document.addEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 onDestroy(() => {
-  browser &&
+  if (browser) {
     document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
+  if (loadTimeout) {
+    clearTimeout(loadTimeout)
+  }
 })
 
 beforeNavigate(() => {
