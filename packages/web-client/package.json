@@ -27,7 +27,7 @@
     "@dfinity/candid": "0.15.2",
     "@dfinity/identity": "0.15.1",
     "@dfinity/identity-secp256k1": "0.15.2",
-    "@dfinity/principal": "0.15.2",
+    "@dfinity/principal": "0.15.3",
     "@sentry/svelte": "7.34.0",
     "@sentry/tracing": "7.34.0",
     "buffer": "6.0.3",
