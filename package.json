@@ -28,7 +28,7 @@
     "@types/node": "18.11.18",
     "@typescript-eslint/eslint-plugin": "5.49.0",
     "@typescript-eslint/parser": "5.49.0",
-    "eslint": "8.32.0",
+    "eslint": "8.33.0",
     "eslint-plugin-svelte3": "4.0.0",
     "prettier": "2.8.3",
     "prettier-plugin-svelte": "2.9.0",
