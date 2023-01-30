@@ -73,6 +73,7 @@ async function fetchNextVideos(force = false) {
         'info',
       )
       loading = true
+      await tick()
       const res = await getTopPosts(fetchedVideosCount, fetchCount, true)
       if (res.error) {
         if (errorCount < 4) {
@@ -223,7 +224,6 @@ onMount(async () => {
       updateURL()
     }
   }
-  await tick()
   await fetchNextVideos()
   handleParams()
   if (browser) {
