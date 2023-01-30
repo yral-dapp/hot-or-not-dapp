@@ -3,11 +3,15 @@ import '../css/app.css'
 import { onMount } from 'svelte'
 import { authState } from '$stores/auth'
 import navigateBack from '$stores/navigateBack'
-import { registerEvent } from '$components/seo/GA.svelte'
+import Ga, { registerEvent } from '$components/seo/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { deferredPrompt } from '$stores/deferredPrompt'
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { beforeNavigate } from '$app/navigation'
+import { init } from '$lib/utils/sentry'
+import { page } from '$app/stores'
+import LoginPopup from '$components/login/LoginPopup.svelte'
+import GoSquared from '$components/seo/GoSquared.svelte'
 
 const ignoredPaths = ['edit', 'lovers', 'post']
 
@@ -20,7 +24,19 @@ beforeNavigate(({ from, to }) => {
   $navigateBack = from?.url.pathname ?? null
 })
 
-onMount(() => ($navigateBack = null))
+function registerServiceWorker(environment: 'localDev' | 'production') {
+  if (environment === 'localDev') return
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+  }
+}
+
+onMount(() => {
+  $navigateBack = null
+  const env = $page.url.host.includes('t:') ? 'localDev' : 'production'
+  init(env)
+  registerServiceWorker(env)
+})
 </script>
 
 <svelte:window
@@ -34,6 +50,10 @@ onMount(() => ($navigateBack = null))
     deferredPrompt.set(e)
   }} />
 
+<div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
+  <slot />
+</div>
+
 <NetworkStatus />
 
 <alpha-ribbon
@@ -41,6 +61,10 @@ onMount(() => ($navigateBack = null))
   Alpha
 </alpha-ribbon>
 
-<div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
-  <slot />
-</div>
+<Ga />
+
+<GoSquared />
+
+{#if $authState.showLogin}
+  <LoginPopup />
+{/if}
