@@ -30,8 +30,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
     if (
       id === userProfileData.unique_user_name ||
       id === userProfileData.principal_id
-    )
+    ) {
       me = true
+    }
 
     const post = await individualUser(
       Principal.from(canId),
