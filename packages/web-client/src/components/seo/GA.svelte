@@ -1,8 +1,13 @@
 <script lang="ts" context="module">
+import { browser } from '$app/environment'
+
 // const debugMode = import.meta.env.NODE_ENV === 'development';
 const debugMode = true
 
-export const registerPageView = (url: URL = new URL(window.location.href)) => {
+export const registerPageView = (
+  url: URL | undefined = browser ? new URL(window.location.href) : undefined,
+) => {
+  if (!browser) return
   if (url?.href) {
     window.gtag?.('event', 'page_view', {
       page_location: url.href,
@@ -11,6 +16,7 @@ export const registerPageView = (url: URL = new URL(window.location.href)) => {
 }
 
 export const updateConfig = (params?: Gtag.CustomParams) => {
+  if (!browser) return
   if (window.gtag) {
     window.gtag('config', import.meta.env.VITE_GA_TRACKING_ID, {
       ...params,
@@ -21,6 +27,7 @@ export const updateConfig = (params?: Gtag.CustomParams) => {
 }
 
 export const setUserProperties = (params?: Gtag.CustomParams) => {
+  if (!browser) return
   window.gtag?.('set', 'user_properties', {
     ...params,
   })
@@ -30,6 +37,7 @@ export const registerEvent = (
   eventName: Gtag.EventNames | string,
   eventParams?: Gtag.ControlParams | Gtag.EventParams | Gtag.CustomParams,
 ) => {
+  if (!browser) return
   window.gtag?.('event', eventName, {
     ...eventParams,
     ...(debugMode && { debug_mode: true }),
