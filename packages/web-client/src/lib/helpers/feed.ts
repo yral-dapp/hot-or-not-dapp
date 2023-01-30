@@ -208,7 +208,7 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
   }
 }
 
-export async function getSinglePostById(id: string) {
+export async function getSinglePostById(id: string, hotOrNot = false) {
   try {
     const split = id.split('@')
     const postId = BigInt(Number(split[1]))
@@ -228,7 +228,10 @@ export async function getSinglePostById(id: string) {
       const r = await individualUser(
         principal,
       ).get_individual_post_details_by_id(postId)
-      if (r.video_uid) {
+      const hON = hotOrNot
+        ? r.hot_or_not_feed_ranking_score[0] !== undefined
+        : true
+      if (r.video_uid && hON) {
         return {
           ...r,
           publisher_canister_id: split[0],
