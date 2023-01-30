@@ -47,17 +47,19 @@ async function filterPosts(
   }
 }
 
-export async function getWatchedVideosFromCache(): Promise<
-  PostPopulatedHistory[]
-> {
+export async function getWatchedVideosFromCache(
+  sort = false,
+): Promise<PostPopulatedHistory[]> {
   try {
     const { watchHistoryIdb } = await import('$lib/utils/idb')
     const values = ((await watchHistoryIdb.values()) || []).slice(
       50,
     ) as PostPopulatedHistory[]
     if (!values.length) return []
-    const sorted = values.sort((a, b) => a.watched_at - b.watched_at)
-    return sorted
+    if (sort) {
+      const sorted = values.sort((a, b) => a.watched_at - b.watched_at)
+      return sorted
+    } else return values
   } catch (e) {
     Log({ error: e, from: '1 getWatchedVideosFromCache', type: 'idb' }, 'error')
     return []
