@@ -34,11 +34,12 @@ async function filterPosts(
 ): Promise<PostScoreIndexItem[]> {
   try {
     const { watchHistoryIdb } = await import('$lib/utils/idb')
-    const keys = (await watchHistoryIdb.keys()) as string[]
-    if (!keys.length) return posts
-    const filtered = posts.filter(
-      (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
-    )
+    const keysArr = (await watchHistoryIdb.keys()) as string[]
+    if (!keysArr.length) return posts
+    const keysSet = new Set(keysArr)
+    const filtered = posts.filter((o) => {
+      return !keysSet.has(o.publisher_canister_id.toText() + '@' + o.post_id)
+    })
     return filtered
   } catch (e) {
     Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
