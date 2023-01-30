@@ -1,3 +1,5 @@
-import { writable } from 'svelte/store';
+import { writable } from 'svelte/store'
 
-export const deferredPrompt = writable<BeforeInstallPromptEvent | undefined>(undefined);
+export const deferredPrompt = writable<BeforeInstallPromptEvent | undefined>(
+  undefined,
+)

@@ -14,6 +14,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
@@ -39,8 +44,24 @@ jobs:
         run: |
           echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
 
+  comment-on-pr:
+    name: Add a comment with the deployment link on the PR
+    if: github.actor != 'dependabot[bot]'
+    needs: ["deploy-preview"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Deployed on Cloudflare pages: ${{ needs.deploy-preview.outputs.previewUrl }}'
+            })
+
   google-chat-webhook:
-    name: Google chat bot
+    name: Send URL to Google chat workspace
     if: github.actor != 'dependabot[bot]'
     needs: ["deploy-preview"]
     runs-on: ubuntu-latest
