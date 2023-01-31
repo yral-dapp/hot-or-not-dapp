@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   svelte-check:
+    if: github.event.pull_request.draft == false
     timeout-minutes: 2
     runs-on: ubuntu-latest
     steps:
@@ -32,6 +33,7 @@ jobs:
         run: npm run wc:check
 
   tests-lighthouse-reports:
+    if: github.event.pull_request.draft == false
     timeout-minutes: 40
     runs-on: ubuntu-latest
     steps:
