@@ -436,12 +436,29 @@ dependencies = [
 [[package]]
 name = "ciborium"
 version = "0.2.0"
-source = "git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46#e719537c99b564c3674a56defe53713c702c6f46"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0c137568cc60b904a7724001b35ce2630fd00d5d84805fbb608ab89509d788f"
 dependencies = [
- "ciborium-io",
- "ciborium-ll",
+ "ciborium-io 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ciborium-ll 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
 ]
+
+[[package]]
+name = "ciborium"
+version = "0.2.0"
+source = "git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46#e719537c99b564c3674a56defe53713c702c6f46"
+dependencies = [
+ "ciborium-io 0.2.0 (git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46)",
+ "ciborium-ll 0.2.0 (git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46)",
+ "serde",
+]
+
+[[package]]
+name = "ciborium-io"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "346de753af073cc87b52b2083a506b38ac176a44cfb05497b622e27be899b369"
 
 [[package]]
 name = "ciborium-io"
@@ -451,9 +468,19 @@ source = "git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53
 [[package]]
 name = "ciborium-ll"
 version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "213030a2b5a4e0c0892b6652260cf6ccac84827b83a85a534e178e3906c4cf1b"
+dependencies = [
+ "ciborium-io 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "half",
+]
+
+[[package]]
+name = "ciborium-ll"
+version = "0.2.0"
 source = "git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46#e719537c99b564c3674a56defe53713c702c6f46"
 dependencies = [
- "ciborium-io",
+ "ciborium-io 0.2.0 (git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46)",
  "half",
 ]
 
@@ -921,7 +948,7 @@ name = "data_backup"
 version = "0.1.0"
 dependencies = [
  "candid",
- "ciborium",
+ "ciborium 0.2.0 (git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46)",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-stable-structures 0.4.1",
@@ -3170,6 +3197,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "ic-test-state-machine-client"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9ae4ddf50287c60610fcdfe5514dba46a9a9ecc165bec07af6ac1c88b8b85b81"
+dependencies = [
+ "candid",
+ "ciborium 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
 name = "ic-test-utilities-metrics"
 version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=36f4a1c2903aed012b95b3b073e052c4036aef09#36f4a1c2903aed012b95b3b073e052c4036aef09"
@@ -5318,6 +5358,7 @@ dependencies = [
  "ic-cdk",
  "ic-stable-memory",
  "ic-state-machine-tests",
+ "ic-test-state-machine-client",
  "shared_utils",
 ]
 

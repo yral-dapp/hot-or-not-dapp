@@ -3,7 +3,7 @@ use ic_cdk::api::management_canister::main::CanisterStatusResponse;
 use ic_state_machine_tests::{CanisterId, PrincipalId, StateMachine, WasmResult};
 use shared_utils::common::types::known_principal::KnownPrincipalType;
 use test_utils::setup::{
-    initialize_test_env_with_known_canisters::{
+    env_v0::{
         get_canister_id_of_specific_type_from_principal_id_map,
         get_initialized_env_with_provisioned_known_canisters,
     },
@@ -14,7 +14,8 @@ use test_utils::setup::{
 };
 
 #[test]
-fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
+fn when_canister_cycle_balance_is_below_the_configured_or_freezing_threshold_then_running_topup_function_in_user_index_canister_tops_up_the_canisters_that_need_it(
+) {
     // * Arrange
     let state_machine = StateMachine::new();
     let known_principal_map = get_initialized_env_with_provisioned_known_canisters(&state_machine);
@@ -130,4 +131,12 @@ fn every_day_check_individual_canister_cycle_balances_and_topup_as_necessary() {
     // * Assert
     assert!(alice_starting_cycle_balance > alice_reduced_cycle_balance);
     assert!(alice_reduced_cycle_balance < alice_topped_up_cycle_balance);
+
+    // let state_machine = get_new_state_machine();
+    // let known_principal_map = get_initialized_env_with_provisioned_known_canisters(&state_machine);
+    // let user_index_canister_id = get_canister_id_of_specific_type_from_principal_id_map(
+    //     &known_principal_map,
+    //     KnownPrincipalType::CanisterIdUserIndex,
+    // );
+    // let alice_principal_id = get_alice_principal_id();
 }
