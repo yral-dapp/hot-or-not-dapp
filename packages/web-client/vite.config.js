@@ -1,11 +1,18 @@
 const require = createRequire(import.meta.url)
 
 import { resolve } from 'path'
+import path from 'node:path'
 import { createRequire } from 'module'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
-// import { partytownVite } from '@builder.io/partytown/utils';
+import { partytownVite } from '@builder.io/partytown/utils'
+
+const outputFolderPath = Object.keys(process.env).some((key) =>
+  key.includes('CLOUDFLARE'),
+)
+  ? '.svelte-kit/cloudflare'
+  : 'static'
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
@@ -84,9 +91,9 @@ export default ({ mode }) => {
         // Whether to polyfill `node:` protocol imports.
         protocolImports: true,
       }),
-      // partytownVite({
-      // 	dest: join(process.cwd(), 'static', '~partytown')
-      // }),
+      partytownVite({
+        dest: path.join(__dirname, outputFolderPath, '~partytown'),
+      }),
     ],
     optimizeDeps: {
       esbuildOptions: {
