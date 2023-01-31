@@ -8,11 +8,10 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 import { partytownVite } from '@builder.io/partytown/utils'
 
-const outputFolderPath = Object.keys(process.env).some((key) =>
-  key.includes('CLOUDFLARE'),
-)
-  ? '.svelte-kit/cloudflare'
-  : 'static'
+const outputFolderPath =
+  process.env.npm_lifecycle_event === 'build'
+    ? '.svelte-kit/cloudflare'
+    : 'static'
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
@@ -78,9 +77,6 @@ export default ({ mode }) => {
         // This proxies all http requests made to /api to our running dfx instance
         '/api': {
           target: `http://0.0.0.0:${DFX_PORT}`,
-        },
-        '/proxytown/gtm': {
-          target: 'https://www.googletagmanager.com/gtag/js',
         },
       },
     },
