@@ -4,6 +4,7 @@ import preprocess from 'svelte-preprocess'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
+
 console.log(
   'svelte in',
   isSSR ? 'ssr' : 'static',

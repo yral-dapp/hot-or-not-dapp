@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   deploy-preview:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       previewUrl: ${{ steps.preview-url.outputs.url }}
