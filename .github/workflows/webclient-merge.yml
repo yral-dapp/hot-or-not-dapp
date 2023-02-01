@@ -1,8 +1,9 @@
 name: Web-client changelog
+
 on:
   pull_request:
-    types:
-      - closed
+    types: [closed]
+  push:
     branches:
       - main
     paths:
@@ -14,10 +15,14 @@ on:
 jobs:
   google-chat-webhook:
     name: Google chat bot
-    if: github.actor != 'dependabot[bot]' && github.event.pull_request.merged == true
+    if: github.event.name == 'pull_requests'
     needs: ["deploy-preview"]
     runs-on: ubuntu-latest
     steps:
+      - name: Echo details
+        run: |
+          echo ${{ github.head_ref }}
+          echo ${{ github.actor }}
       - name: Send deployment URL to Google Chat
         uses: fjogeleit/http-request-action@v1.12.0
         with:
