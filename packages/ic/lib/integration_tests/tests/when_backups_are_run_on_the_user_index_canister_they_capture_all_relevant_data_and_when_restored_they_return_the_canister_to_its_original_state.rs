@@ -1,4 +1,4 @@
-use std::{collections::HashMap, time::Duration};
+use std::collections::HashMap;
 
 use candid::Principal;
 use ic_state_machine_tests::{
@@ -107,7 +107,14 @@ fn when_backups_are_run_on_the_user_index_canister_they_capture_all_relevant_dat
         returned_principal.unwrap().to_text()
     );
 
-    // state_machine.tick();
+    state_machine
+        .execute_ingress_as(
+            PrincipalId(get_global_super_admin_principal_id_v1()),
+            user_index_canister_id,
+            "backup_data_to_backup_canister",
+            candid::encode_one(()).unwrap(),
+        )
+        .unwrap();
 
     state_machine
         .install_wasm_in_mode(
@@ -118,9 +125,6 @@ fn when_backups_are_run_on_the_user_index_canister_they_capture_all_relevant_dat
         )
         .unwrap();
     println!("🧪 Installing WASM");
-
-    state_machine.advance_time(Duration::from_secs(60 * 60));
-    state_machine.tick();
 
     println!("🧪 Data backup canister ID: {:?}", data_backup_canister_id);
 

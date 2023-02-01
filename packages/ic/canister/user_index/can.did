@@ -51,6 +51,7 @@ type UserIndexInitArgs = record {
   access_control_map : opt vec record { principal; vec UserAccessRole };
 };
 service : (UserIndexInitArgs) -> {
+  backup_data_to_backup_canister : () -> ();
   get_canister_status_from_management_canister : (principal) -> (
       CanisterStatusResponse,
     );
