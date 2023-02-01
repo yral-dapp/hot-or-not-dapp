@@ -60,17 +60,22 @@ async function loadHistory() {
 
 async function shareLink() {
   try {
-    await navigator.share({
+    await navigator.share?.({
       url: link,
     })
   } catch (e) {
-    Log({ error: e, from: '1 copyLink' }, 'error')
+    Log({ error: e, from: '1 shareLink' }, 'warn')
+    copyLink()
   }
 }
 
-function copyLink() {
+let copied = false
+
+async function copyLink() {
   try {
-    navigator.clipboard.writeText(link)
+    copied = false
+    await navigator.clipboard.writeText(link)
+    copied = true
   } catch (e) {
     Log({ error: e, from: '1 copyLink' }, 'error')
   }
@@ -117,17 +122,17 @@ $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
         <div class="shrink-0 py-4">
           <CoinsStashIcon class="h-36" />
         </div>
-        <div class="text-center text-2xl font-bold">
+        <div class="shrink-0  text-center text-2xl font-bold">
           Invite & Win {INVITE_WIN_TOKENS} tokens
         </div>
-        {#if loggedIn}
-          <div class="text-center text-sm opacity-70">
+        {#if true}
+          <div class="shrink-0 text-center text-sm opacity-70">
             Send a referral link to your friends via link/whatsapp and win
             tokens
           </div>
           <div class="pt-8 text-sm uppercase">referral link</div>
           <div
-            class="relative flex w-full items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary py-5 px-6 pr-10">
+            class="relative flex w-full shrink-0 items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary py-5 px-6 pr-10">
             <span
               role="presentation"
               on:click={copyLink}
@@ -141,6 +146,9 @@ $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
               </IconButton>
             </div>
           </div>
+          {#if copied}
+            <div class="text-xs text-primary">Link copied</div>
+          {/if}
         {:else}
           <div class="text-center text-sm opacity-70">
             Please login to see your referral link
