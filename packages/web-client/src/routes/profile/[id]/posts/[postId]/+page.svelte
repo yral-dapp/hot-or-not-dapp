@@ -1,5 +1,4 @@
 <script lang="ts">
-import 'swiper/css'
 import type { IndividualUserActor } from '$lib/helpers/backend'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'

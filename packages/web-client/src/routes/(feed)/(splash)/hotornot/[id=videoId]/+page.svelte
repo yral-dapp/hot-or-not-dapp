@@ -1,6 +1,4 @@
 <script lang="ts">
-import 'swiper/css'
-
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
 import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import HotOrNotPlayer from '$components/player/HotOrNotPlayer.svelte'
