@@ -1,6 +1,6 @@
 use shared_utils::canister_specific::user_index::types::args::UserIndexInitArgs;
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data_model::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::init]
 #[candid::candid_method(init)]

@@ -34,7 +34,7 @@ mod test {
         get_mock_user_alice_canister_id, get_mock_user_alice_principal_id,
     };
 
-    use crate::data::CanisterData;
+    use crate::data_model::CanisterData;
 
     use super::*;
 

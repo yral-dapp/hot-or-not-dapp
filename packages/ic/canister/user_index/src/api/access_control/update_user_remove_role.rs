@@ -1,7 +1,7 @@
 use candid::Principal;
 use shared_utils::access_control::{self, UserAccessRole};
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data_model::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
@@ -36,7 +36,7 @@ mod test {
         get_mock_user_bob_principal_id,
     };
 
-    use crate::data::CanisterData;
+    use crate::data_model::CanisterData;
 
     #[test]
     fn test_update_user_add_role_impl() {

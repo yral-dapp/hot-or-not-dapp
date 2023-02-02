@@ -28,7 +28,7 @@ mod test {
         get_mock_canister_id_user_index,
     };
 
-    use crate::data::CanisterData;
+    use crate::data_model::CanisterData;
 
     use super::*;
 

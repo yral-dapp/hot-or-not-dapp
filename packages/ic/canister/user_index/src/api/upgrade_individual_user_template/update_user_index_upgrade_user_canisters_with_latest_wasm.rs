@@ -5,7 +5,7 @@ use shared_utils::{
 };
 
 use crate::{
-    data::canister_upgrade::upgrade_status::UpgradeStatusV1, util::canister_management,
+    data_model::canister_upgrade::upgrade_status::UpgradeStatusV1, util::canister_management,
     CANISTER_DATA,
 };
 
