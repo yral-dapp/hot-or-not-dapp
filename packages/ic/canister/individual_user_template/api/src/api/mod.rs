@@ -1,4 +1,5 @@
 pub mod access_control;
+pub mod canister_lifecycle;
 pub mod cycle_management;
 pub mod follow;
 pub mod hot_or_not_bet;
