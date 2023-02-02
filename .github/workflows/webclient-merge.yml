@@ -15,11 +15,11 @@ on:
 jobs:
   google-chat-webhook:
     name: Google chat bot
-    if: github.event.name == 'pull_requests'
     runs-on: ubuntu-latest
     steps:
       - name: Echo details
         run: |
+          echo ${{ github.event.name }}
           echo ${{ github.head_ref }}
           echo ${{ github.actor }}
       - name: Send deployment URL to Google Chat
