@@ -16,7 +16,6 @@ jobs:
   google-chat-webhook:
     name: Google chat bot
     if: github.event.name == 'pull_requests'
-    needs: ["deploy-preview"]
     runs-on: ubuntu-latest
     steps:
       - name: Echo details
