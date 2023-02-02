@@ -10,11 +10,12 @@ import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import { goto } from '$app/navigation'
 import { page } from '$app/stores'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
+import { register as initSwiper } from 'swiper/element/bundle'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
 import { isiPhone } from '$lib/utils/isSafari'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
 import Hls from 'hls.js'
+import { onMount } from 'svelte'
 
 export let data: PageData
 
@@ -32,6 +33,8 @@ async function handleChange(e: CustomEvent) {
   const index = e.detail[0].realIndex
   currentVideoIndex = index
 }
+
+onMount(() => initSwiper())
 </script>
 
 <HomeLayout>
@@ -56,16 +59,15 @@ async function handleChange(e: CustomEvent) {
   </svelte:fragment>
   <svelte:fragment slot="content">
     {#if individualUser != undefined}
-      <Swiper
-        direction={'vertical'}
-        observer
-        on:slideChange={handleChange}
-        slidesPerView={1}
-        cssMode
-        spaceBetween={100}
-        class="h-full w-full">
+      <swiper-container
+        direction="vertical"
+        observer="true"
+        css-mode="true"
+        slides-per-view="1"
+        class="h-full w-full"
+        on:slidechange={(e) => handleChange(e)}>
         {#each videos as video, i (i)}
-          <SwiperSlide
+          <swiper-slide
             class="flex h-full w-full snap-always items-center justify-center">
             <HomeFeedPlayer
               {i}
@@ -92,18 +94,19 @@ async function handleChange(e: CustomEvent) {
                 inView={currentVideoIndex == i}
                 uid={video.video_uid} />
             </HomeFeedPlayer>
-          </SwiperSlide>
+          </swiper-slide>
           {#if noMoreVideos}
-            <SwiperSlide class="flex h-full w-full items-center justify-center">
+            <swiper-slide
+              class="flex h-full w-full items-center justify-center">
               <div
                 class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
                 <NoVideosIcon class="w-56" />
                 <div class="text-center text-lg font-bold">Reached the end</div>
               </div>
-            </SwiperSlide>
+            </swiper-slide>
           {/if}
         {/each}
-      </Swiper>
+      </swiper-container>
     {/if}
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
