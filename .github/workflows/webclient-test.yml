@@ -1,7 +1,7 @@
 name: Web-client tests
 on:
-  push:
-    branches-ignore:
+  pull_request:
+    branches:
       - main
     paths:
       - "packages/web-client/**"
@@ -14,8 +14,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   svelte-check:
+    if: github.event.pull_request.draft == false
     timeout-minutes: 2
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +37,65 @@ jobs:
       - name: Run svelte-check
         run: npm run wc:check
 
+  deploy-preview:
+    needs: ["svelte-check"]
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    outputs:
+      previewUrl: ${{ steps.preview-url.outputs.url }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set-up env
+        uses: ./.github/workflows/webclient-setup
+      - run: npm run wc:build
+
+      - name: Deploy preview build
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+          workingDirectory: "packages/web-client/"
+          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true | tee url.txt
+        env:
+          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+      - name: Get preview deployment URL
+        id: preview-url
+        working-directory: "packages/web-client/"
+        run: |
+          echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
+
+  comment-on-pr:
+    name: Add a comment with the deployment link on the PR
+    if: github.actor != 'dependabot[bot]'
+    needs: ["deploy-preview"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Deployed on Cloudflare pages: ${{ needs.deploy-preview.outputs.previewUrl }}'
+            })
+
+  google-chat-webhook:
+    name: Send URL to Google chat workspace
+    if: github.actor != 'dependabot[bot]'
+    needs: ["deploy-preview"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send deployment URL to Google Chat
+        uses: fjogeleit/http-request-action@v1.12.0
+        with:
+          url: "https://chat.googleapis.com/v1/spaces/AAAAAfsrp8U/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=_QvV-c8ZdTVTzGZxXW_PdR_o-0HI8VhO3I9dMAp6zls%3D"
+          method: "POST"
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"text": "PR: \"${{ github.event.pull_request.title  }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
+
   tests-lighthouse-reports:
+    needs: ["svelte-check"]
+    if: github.event.pull_request.draft == false
     timeout-minutes: 40
     runs-on: ubuntu-latest
     steps:

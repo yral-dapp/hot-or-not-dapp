@@ -84,11 +84,12 @@ async function fetchNextVideos(force = false) {
 
       videos = joinArrayUniquely(videos, res.posts)
 
-      if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
+      if (res.noMorePosts) {
+        noMoreVideos = res.noMorePosts
+      } else if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
         fetchNextVideos(true)
       }
 
-      noMoreVideos = res.noMorePosts
       await tick()
       loading = false
 
