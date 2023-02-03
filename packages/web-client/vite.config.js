@@ -6,7 +6,7 @@ import { createRequire } from 'module'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
-import { partytownVite } from '@builder.io/partytown/utils'
+// import { partytownVite } from '@builder.io/partytown/utils'
 
 const outputFolderPath =
   process.env.npm_lifecycle_event === 'build'
@@ -80,6 +80,7 @@ export default ({ mode }) => {
         },
       },
     },
+
     plugins: [
       sveltekit(),
       // https://github.com/vitejs/vite/discussions/2785#discussioncomment-4738116
@@ -87,9 +88,10 @@ export default ({ mode }) => {
         // Whether to polyfill `node:` protocol imports.
         protocolImports: true,
       }),
-      partytownVite({
-        dest: path.join(__dirname, outputFolderPath, '~partytown'),
-      }),
+      // partytownVite({
+      //   debug: false,
+      //   dest: path.join(__dirname, 'static', '~partytown'),
+      // }),
     ],
     optimizeDeps: {
       esbuildOptions: {
