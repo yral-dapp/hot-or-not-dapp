@@ -7,7 +7,6 @@ import Log from '$lib/utils/Log'
 import { playerState } from '$stores/playerState'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
-import type Hls from 'hls.js'
 
 export let uid: string
 export let i: number
@@ -15,19 +14,16 @@ export let inView = false
 export let thumbnail = ''
 export let isiPhone: boolean
 export let playFormat: 'hls' | 'mp4'
-
-let Hls: any
-
 const dispatch = createEventDispatcher<{
   watchedPercentage: number
   loaded: void
 }>()
 
 let videoEl: HTMLVideoElement
+let hls: any = null
 let currentTime = 0
 let duration = 0
 let loaded = false
-let hls: Hls | null = null
 let waiting = false
 let paused = false
 
@@ -138,7 +134,6 @@ $: if (!inView) {
 }
 
 onMount(async () => {
-  Hls = (await import('hls.js')).default
   if (playFormat === 'mp4' || isiPhone) {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
