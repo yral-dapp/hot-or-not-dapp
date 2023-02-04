@@ -3,6 +3,8 @@ import getVideoUploadURL from './video/getVideoUploadURL'
 import getImageUploadURL from './image/getImageUploadURL'
 import getVideoProcessingStatus from './video/getVideoProcessingStatus'
 import enableMp4Download from './video/enableMp4Download'
+import gaProxy from './proxy/ga'
+import gsProxy from './proxy/gs'
 import signupStatus from './backend/signup'
 
 const router = Router()
@@ -41,6 +43,8 @@ router.get(
 router.get('/video/:cloudflareVideoUid/enableMp4Download', enableMp4Download)
 router.post('/image/getImageUploadURL', getImageUploadURL)
 router.get('/backend/signupStatus', signupStatus)
+router.get('/proxy/ga', gaProxy)
+router.get('/proxy/gs', gsProxy)
 
 // 404 for everything else
 router.all('*', () => new Response('Not Found.', { status: 404 }))
