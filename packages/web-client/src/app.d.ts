@@ -10,7 +10,10 @@ declare namespace App {
   // interface Stuff {}
 }
 
-namespace svelte.JSX {
+declare let Hls: typeof import('hls.js').default
+declare const Sentry: typeof import('@sentry/browser')
+
+namespace svelteHTML {
   interface SvelteWindowProps {
     onbeforeinstallprompt?:
       | EventHandler<BeforeInstallPromptEvent, Window>
