@@ -6,12 +6,7 @@ import { createRequire } from 'module'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
-// import { partytownVite } from '@builder.io/partytown/utils'
-
-const outputFolderPath =
-  process.env.npm_lifecycle_event === 'build'
-    ? '.svelte-kit/cloudflare'
-    : 'static'
+import { partytownVite } from '@builder.io/partytown/utils'
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
@@ -88,10 +83,10 @@ export default ({ mode }) => {
         // Whether to polyfill `node:` protocol imports.
         protocolImports: true,
       }),
-      // partytownVite({
-      //   debug: false,
-      //   dest: path.join(__dirname, 'static', '~partytown'),
-      // }),
+      partytownVite({
+        debug: true,
+        dest: path.join(__dirname, 'static', '~partytown'),
+      }),
     ],
     optimizeDeps: {
       esbuildOptions: {
