@@ -3,7 +3,7 @@ import '../css/app.css'
 import { onMount } from 'svelte'
 import { authState } from '$stores/auth'
 import navigateBack from '$stores/navigateBack'
-import { registerEvent } from '$components/seo/GA.svelte'
+import Ga, { registerEvent } from '$components/seo/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { deferredPrompt } from '$stores/deferredPrompt'
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
@@ -13,6 +13,7 @@ import { page } from '$app/stores'
 import LoginPopup from '$components/login/LoginPopup.svelte'
 import PartyTown from '$components/partytown/PartyTown.svelte'
 import { browser } from '$app/environment'
+import GoSquared from '$components/seo/GoSquared.svelte'
 
 const ignoredPaths = ['edit', 'lovers', 'post']
 
@@ -73,3 +74,7 @@ onMount(() => {
 {/if}
 
 <PartyTown />
+
+<Ga />
+
+<GoSquared />
