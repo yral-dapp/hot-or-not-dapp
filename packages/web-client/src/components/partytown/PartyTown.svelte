@@ -14,6 +14,7 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
     forward: [
       '_gs', //gosquared
       'dataLayer.push', //google analytics
+      'gtag', //google analytics
     ],
   }
   </script>
@@ -30,24 +31,6 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
     dataLayer.push(arguments)
   }
   gtag('js', new Date())
-  </script>
-  <script
-    type="text/partytown"
-    async
-    defer
-    src="https://hot-or-not-upload-api-main.go-bazzinga.workers.dev/proxy/gs"></script>
-  <script type="text/partytown">
-  try {
-    _gs = window['_gs'] = window['_gs'] || function () {
-      (_gs['script'] = _gs.['script'] || []).push(arguments)
-    }
-
-    _gs('GSN-745719-F')
-    _gs('set', 'anonymizeIP', true)
-    _gs('set', 'chat', { button: false })
-  } catch (_) {
-    console.warn('[GSErr] init: Error sending data to GS')
-  }
   </script>
 </svelte:head>
 
