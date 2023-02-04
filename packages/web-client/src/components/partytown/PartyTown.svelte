@@ -1,6 +1,4 @@
 <script lang="ts">
-import Ga from '$components/seo/GA.svelte'
-import GoSquared from '$components/seo/GoSquared.svelte'
 import { partytownSnippet } from '@builder.io/partytown/integration'
 import { onMount } from 'svelte'
 
@@ -11,6 +9,7 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
 <svelte:head>
   <script>
   partytown = {
+    debug: true,
     forward: [
       '_gs', //gosquared
       'dataLayer.push', //google analytics
@@ -22,18 +21,14 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
 
   <script
     type="text/partytown"
-    async
-    defer
-    src="https://hot-or-not-upload-api-main.go-bazzinga.workers.dev/proxy/ga"></script>
+    src="https://www.googletagmanager.com/gtag/js"></script>
+
   <script type="text/partytown">
   window.dataLayer = window.dataLayer || []
   function gtag() {
     dataLayer.push(arguments)
   }
   gtag('js', new Date())
+  window.gtag = gtag
   </script>
 </svelte:head>
-
-<Ga />
-
-<GoSquared />
