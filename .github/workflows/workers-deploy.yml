@@ -1,6 +1,6 @@
 name: Deploy Cloudflare workers
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
