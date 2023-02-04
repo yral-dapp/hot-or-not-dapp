@@ -8,6 +8,7 @@ export async function init(environment: 'localDev' | 'production') {
     integrations: [new BrowserTracing(), new Sentry.Replay()],
     environment,
     ignoreErrors: [
+      /(reading 'apply')/i, // Party-town
       /Adding invalid event/i, // Replay Error
       /Error in compression worker/i, // Replay Error
       /e.getLastBreadcrumb/i, // Sentry error
