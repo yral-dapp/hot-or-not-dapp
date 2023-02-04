@@ -12,6 +12,7 @@ import { init } from '$lib/utils/sentry'
 import { page } from '$app/stores'
 import LoginPopup from '$components/login/LoginPopup.svelte'
 import PartyTown from '$components/partytown/PartyTown.svelte'
+import { browser } from '$app/environment'
 
 const ignoredPaths = ['edit', 'lovers', 'post']
 
@@ -31,11 +32,17 @@ function registerServiceWorker(environment: 'localDev' | 'production') {
   }
 }
 
+async function initAuthClient() {
+  const { initializeAuthClient } = await import('$lib/helpers/auth')
+  initializeAuthClient()
+}
+
 onMount(() => {
   $navigateBack = null
   const env = $page.url.host.includes('t:') ? 'localDev' : 'production'
   init(env)
   registerServiceWorker(env)
+  browser && initAuthClient()
 })
 </script>
 
