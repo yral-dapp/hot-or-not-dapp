@@ -6,20 +6,18 @@ const handler = async (request) => {
     const requestProxy = new Request(path, request)
 
     // Fetch script using the request proxy
-    let response = await fetch(requestProxy)
+    const response = await fetch(requestProxy)
 
     // Make the response mutable
     const fileContents = await response.text()
 
-    // Prepare response
-    response = new Response(response.body)
-    response.headers.set(
-      'Access-Control-Allow-Origin',
-      request.headers.get('origin') || '',
-    )
-    response.headers.set('Access-Control-Allow-Credentials', 'true')
-
-    return new Response(fileContents, response)
+    return new Response(fileContents, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': request.headers.get('origin') || '',
+        'Access-Control-Allow-Credentials': 'true',
+      },
+    })
   } catch (error) {
     console.error(error)
     return new Response(JSON.stringify({ error }), {
