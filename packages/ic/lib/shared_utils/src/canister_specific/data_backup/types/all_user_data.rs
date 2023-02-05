@@ -1,7 +1,14 @@
-use std::borrow::Cow;
+use std::{
+    borrow::Cow,
+    collections::{BTreeMap, BTreeSet},
+};
 
 use candid::{CandidType, Decode, Deserialize, Encode, Principal};
 use ic_stable_structures::{BoundedStorable, Storable};
+
+use crate::canister_specific::individual_user_template::types::{
+    post::v1::Post, token::TokenBalance,
+};
 
 #[derive(CandidType, Deserialize)]
 pub struct AllUserData {
@@ -29,4 +36,15 @@ impl BoundedStorable for AllUserData {
 #[derive(Deserialize, CandidType, Default)]
 pub struct UserOwnedCanisterData {
     pub unique_user_name: String,
+    pub all_created_posts: BTreeMap<u64, Post>,
+    pub principals_i_follow: BTreeSet<Principal>,
+    pub principals_that_follow_me: BTreeSet<Principal>,
+    pub profile: ProfileDetails,
+    pub token_data: TokenBalance,
+}
+
+#[derive(Deserialize, CandidType, Default)]
+pub struct ProfileDetails {
+    pub display_name: Option<String>,
+    pub profile_picture_url: Option<String>,
 }

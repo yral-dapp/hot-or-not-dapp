@@ -1,35 +1,35 @@
+use candid::{CandidType, Deserialize};
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use shared_utils::{
-    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
-    types::{
-        canister_specific::individual_user_template::post::{PostDetailsForFrontend, PostStatus},
-        post::PostDetailsFromFrontend,
-    },
-};
 use speedy::{Readable, Writable};
 use std::{
     collections::HashSet,
     time::{Duration, SystemTime},
 };
 
-use crate::util::score_ranking;
+use crate::{
+    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
+    types::{
+        canister_specific::individual_user_template::post::{PostDetailsForFrontend, PostStatus},
+        post::PostDetailsFromFrontend,
+    },
+};
 
 use super::v0::{self, HotOrNotFeedDetails, PostViewDetailsFromFrontend, PostViewStatistics};
 
-#[derive(Readable, Writable)]
+#[derive(Readable, Writable, CandidType, Clone, Deserialize, Debug)]
 pub struct Post {
-    id: u64,
-    description: String,
-    hashtags: Vec<String>,
-    video_uid: String,
-    status: PostStatus,
-    created_at: SystemTime,
-    likes: HashSet<SPrincipal>,
-    share_count: u64,
-    view_stats: PostViewStatistics,
-    homefeed_ranking_score: u64,
-    creator_consent_for_inclusion_in_hot_or_not: bool,
-    hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
+    pub id: u64,
+    pub description: String,
+    pub hashtags: Vec<String>,
+    pub video_uid: String,
+    pub status: PostStatus,
+    pub created_at: SystemTime,
+    pub likes: HashSet<SPrincipal>,
+    pub share_count: u64,
+    pub view_stats: PostViewStatistics,
+    pub homefeed_ranking_score: u64,
+    pub creator_consent_for_inclusion_in_hot_or_not: bool,
+    pub hot_or_not_feed_details: Option<HotOrNotFeedDetails>,
 }
 
 impl From<v0::Post> for Post {
@@ -168,10 +168,11 @@ impl Post {
             + age_of_video_component;
 
         // * update score index for top posts of this user
-        score_ranking::update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
-            self.id,
-            self.homefeed_ranking_score,
-        );
+        // TODO: these index scores need to be recalculated on every update
+        // score_ranking::update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
+        //     self.id,
+        //     self.homefeed_ranking_score,
+        // );
     }
 
     pub fn recalculate_hot_or_not_feed_score(&mut self, time_provider: &impl Fn() -> SystemTime) {
@@ -228,10 +229,11 @@ impl Post {
                 + age_of_video_component;
 
             // * update score index for top posts of this user
-            score_ranking::update_post_score_index_on_hot_or_not_feed_post_score_recalculation(
-                self.id,
-                self.hot_or_not_feed_details.as_ref().unwrap().score,
-            );
+            // TODO: needs an alternative
+            // score_ranking::update_post_score_index_on_hot_or_not_feed_post_score_recalculation(
+            //     self.id,
+            //     self.hot_or_not_feed_details.as_ref().unwrap().score,
+            // );
         }
     }
 

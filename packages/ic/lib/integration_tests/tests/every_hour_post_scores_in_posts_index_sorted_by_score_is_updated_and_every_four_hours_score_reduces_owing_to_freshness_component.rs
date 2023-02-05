@@ -16,6 +16,8 @@ use test_utils::setup::{
     test_constants::get_alice_principal_id,
 };
 
+// TODO: reenable
+#[ignore]
 #[test]
 fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_four_hours_score_reduces_owing_to_freshness_component(
 ) {

@@ -6,9 +6,12 @@ use ic_stable_structures::{
     DefaultMemoryImpl, StableBTreeMap,
 };
 use serde::Serialize;
-use shared_utils::common::types::storable_principal::StorablePrincipal;
+use shared_utils::{
+    canister_specific::data_backup::types::all_user_data::AllUserData,
+    common::types::storable_principal::StorablePrincipal,
+};
 
-use super::{heap_data::HeapData, stable_types::all_user_data::AllUserData};
+use super::heap_data::HeapData;
 
 thread_local! {
   static MEMORY_MANANGER: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));

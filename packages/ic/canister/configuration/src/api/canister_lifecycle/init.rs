@@ -44,7 +44,7 @@ mod test {
     };
     use test_utils::setup::test_constants::{
         get_global_super_admin_principal_id_v1, get_mock_canister_id_configuration,
-        get_mock_canister_id_random_project_member, get_mock_canister_id_user_index,
+        get_mock_canister_id_user_index, get_mock_user_alice_canister_id,
     };
 
     use super::*;
@@ -76,7 +76,7 @@ mod test {
             ],
         );
         access_control_map.insert(
-            get_mock_canister_id_random_project_member(),
+            get_mock_user_alice_canister_id(),
             vec![UserAccessRole::ProjectCanister],
         );
 
@@ -121,7 +121,7 @@ mod test {
         );
         assert_eq!(
             data.access_control_list
-                .get(&get_mock_canister_id_random_project_member())
+                .get(&get_mock_user_alice_canister_id())
                 .unwrap(),
             &vec![UserAccessRole::ProjectCanister]
         );

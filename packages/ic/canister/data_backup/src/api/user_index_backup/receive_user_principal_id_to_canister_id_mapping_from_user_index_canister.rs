@@ -1,15 +1,10 @@
 use candid::Principal;
-use shared_utils::common::types::{
-    known_principal::KnownPrincipalType, storable_principal::StorablePrincipal,
+use shared_utils::{
+    canister_specific::data_backup::types::all_user_data::{AllUserData, UserOwnedCanisterData},
+    common::types::{known_principal::KnownPrincipalType, storable_principal::StorablePrincipal},
 };
 
-use crate::{
-    data::{
-        memory_layout::CanisterData,
-        stable_types::all_user_data::{AllUserData, UserOwnedCanisterData},
-    },
-    CANISTER_DATA,
-};
+use crate::{data::memory_layout::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

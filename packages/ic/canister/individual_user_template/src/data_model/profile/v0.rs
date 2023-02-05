@@ -1,7 +1,7 @@
-use candid::{CandidType, Deserialize, Principal};
+use candid::{CandidType, Principal};
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::canister_specific::individual_user_template::types::profile::{
-    UserProfileDetailsForFrontend, UserProfileGlobalStats,
+    UserProfileDetailsForFrontend, UserProfileGlobalStats, UserProfileUpdateDetailsFromFrontend,
 };
 use speedy::{Readable, Writable};
 
@@ -9,11 +9,11 @@ use crate::data_model::{PrincipalsIFollow, PrincipalsThatFollowMe};
 
 #[derive(Readable, Writable, CandidType)]
 pub struct UserProfile {
-    display_name: Option<String>,
-    unique_user_name: Option<String>,
-    principal_id: SPrincipal,
-    profile_picture_url: Option<String>,
-    profile_stats: UserProfileGlobalStats,
+    pub display_name: Option<String>,
+    pub unique_user_name: Option<String>,
+    pub principal_id: SPrincipal,
+    pub profile_picture_url: Option<String>,
+    pub profile_stats: UserProfileGlobalStats,
 }
 
 impl UserProfile {
@@ -59,10 +59,4 @@ impl UserProfile {
     pub fn set_unique_user_name(&mut self, unique_user_name: String) {
         self.unique_user_name = Some(unique_user_name);
     }
-}
-
-#[derive(Deserialize, CandidType)]
-pub struct UserProfileUpdateDetailsFromFrontend {
-    pub display_name: Option<String>,
-    pub profile_picture_url: Option<String>,
 }

@@ -1,7 +1,10 @@
 use ic_stable_memory::s;
-use shared_utils::date_time::system_time;
+use shared_utils::{
+    canister_specific::individual_user_template::types::post::v0::PostViewDetailsFromFrontend,
+    date_time::system_time,
+};
 
-use crate::data_model::{post::v0::PostViewDetailsFromFrontend, AllCreatedPostsV1};
+use crate::data_model::AllCreatedPostsV1;
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

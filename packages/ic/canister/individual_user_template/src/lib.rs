@@ -1,8 +1,5 @@
-use crate::data_model::{
-    // hot_or_not::HotOrNotBetDetailsForPost,
-    post::v0::PostViewDetailsFromFrontend,
-    profile::UserProfileUpdateDetailsFromFrontend,
-};
+use std::cell::RefCell;
+
 use api::{
     follow::{
         get_principals_i_follow_paginated::GetFollowerOrFollowingError,
@@ -13,11 +10,15 @@ use api::{
     profile::update_profile_display_details::UpdateProfileDetailsError,
 };
 use candid::{export_service, Principal};
+use data_model::CanisterData;
 use shared_utils::{
     access_control::UserAccessRole,
     canister_specific::individual_user_template::types::{
-        args::IndividualUserTemplateInitArgs, profile::UserProfileDetailsForFrontend,
+        args::IndividualUserTemplateInitArgs,
+        post::v0::PostViewDetailsFromFrontend,
+        profile::{UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend},
     },
+    common::types::known_principal::KnownPrincipalType,
     types::{
         canister_specific::individual_user_template::{
             error_types::{
@@ -35,6 +36,10 @@ mod data_model;
 #[cfg(test)]
 mod test;
 mod util;
+
+thread_local! {
+    static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
+}
 
 #[ic_cdk_macros::query(name = "__get_candid_interface_tmp_hack")]
 fn export_candid() -> String {

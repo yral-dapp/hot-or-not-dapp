@@ -1,9 +1,11 @@
-use crate::data_model::{profile::UserProfileUpdateDetailsFromFrontend, AccessControlMap, Profile};
+use crate::data_model::{AccessControlMap, Profile};
 use candid::CandidType;
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::{self, UserAccessRole},
-    canister_specific::individual_user_template::types::profile::UserProfileDetailsForFrontend,
+    canister_specific::individual_user_template::types::profile::{
+        UserProfileDetailsForFrontend, UserProfileUpdateDetailsFromFrontend,
+    },
 };
 
 #[derive(CandidType)]

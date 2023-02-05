@@ -1,11 +1,12 @@
 use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::{
     access_control::{self, UserAccessRole},
+    canister_specific::individual_user_template::types::post::v1::Post,
     date_time::system_time,
     types::post::PostDetailsFromFrontend,
 };
 
-use crate::data_model::{post::v1::Post, AccessControlMap, AllCreatedPostsV1};
+use crate::data_model::{AccessControlMap, AllCreatedPostsV1};
 
 /// # Access Control
 /// Only the user whose profile details are stored in this canister can create a post.

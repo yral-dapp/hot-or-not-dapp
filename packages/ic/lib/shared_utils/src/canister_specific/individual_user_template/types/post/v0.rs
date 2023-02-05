@@ -1,9 +1,10 @@
 use candid::{CandidType, Deserialize};
 use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
-use shared_utils::types::canister_specific::individual_user_template::post::PostStatus;
 use speedy::{Readable, Writable};
 use std::{collections::HashSet, time::SystemTime};
+
+use crate::types::canister_specific::individual_user_template::post::PostStatus;
 
 // #[cfg(not(test))]
 // use shared_utils::date_time::system_time::for_prod::get_current_system_time;
@@ -21,14 +22,14 @@ pub enum PostViewDetailsFromFrontend {
     },
 }
 
-#[derive(Readable, Writable)]
+#[derive(Readable, Writable, CandidType, Clone, Deserialize, Debug)]
 pub struct PostViewStatistics {
     pub total_view_count: u64,
     pub threshold_view_count: u64,
     pub average_watch_percentage: u8,
 }
 
-#[derive(Readable, Writable)]
+#[derive(Readable, Writable, CandidType, Clone, Deserialize, Debug)]
 pub struct HotOrNotFeedDetails {
     pub score: u64,
     pub upvotes: HashSet<SPrincipal>,
@@ -36,7 +37,6 @@ pub struct HotOrNotFeedDetails {
     // TODO: consider video age, remove after 48 hours
 }
 
-// TODO: remove pub field modifiers
 #[derive(Readable, Writable)]
 pub struct Post {
     pub id: u64,

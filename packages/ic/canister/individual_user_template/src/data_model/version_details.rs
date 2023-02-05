@@ -1,6 +1,6 @@
 use speedy::{Readable, Writable};
 
-#[derive(Readable, Writable)]
+#[derive(Readable, Writable, Default)]
 pub struct VersionDetails {
     version_number: u64,
 }

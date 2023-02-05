@@ -12,7 +12,7 @@ use crate::data_model::MyKnownPrincipalIdsMap;
 
 pub fn setup_initial_access_control(
     user_id_access_control_map: &mut SHashMap<SPrincipal, Vec<UserAccessRole>>,
-    init_args: IndividualUserTemplateInitArgs,
+    init_args: &IndividualUserTemplateInitArgs,
 ) {
     let known_principal_ids = s!(MyKnownPrincipalIdsMap);
     // * add global owner
@@ -39,10 +39,12 @@ pub fn setup_initial_access_control(
     );
 
     // * add user whose profile details are stored in this canister
-    user_id_access_control_map.insert(
-        SPrincipal(init_args.profile_owner),
-        &vec![UserAccessRole::ProfileOwner],
-    );
+    if init_args.profile_owner.is_some() {
+        user_id_access_control_map.insert(
+            SPrincipal(init_args.profile_owner.unwrap()),
+            &vec![UserAccessRole::ProfileOwner],
+        );
+    }
 
     // * add post_cache canister as a project sibling canister
     user_id_access_control_map.insert(

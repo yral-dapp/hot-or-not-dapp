@@ -951,6 +951,7 @@ dependencies = [
  "ciborium 0.2.0 (git+https://github.com/enarx/ciborium?rev=e719537c99b564c3674a56defe53713c702c6f46)",
  "ic-cdk",
  "ic-cdk-macros",
+ "ic-stable-memory",
  "ic-stable-structures 0.4.1",
  "serde",
  "shared_utils",
@@ -3378,6 +3379,7 @@ dependencies = [
  "serde",
  "shared_utils",
  "speedy",
+ "test_utils",
 ]
 
 [[package]]

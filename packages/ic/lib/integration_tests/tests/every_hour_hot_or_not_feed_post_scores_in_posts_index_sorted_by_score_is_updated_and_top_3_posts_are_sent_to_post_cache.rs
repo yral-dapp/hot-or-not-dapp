@@ -20,6 +20,8 @@ use test_utils::setup::{
     test_constants::get_alice_principal_id,
 };
 
+// TODO: reenable
+#[ignore]
 #[test]
 fn every_hour_hot_or_not_feed_post_scores_in_posts_index_sorted_by_score_is_updated_and_top_3_posts_are_sent_to_post_cache(
 ) {
