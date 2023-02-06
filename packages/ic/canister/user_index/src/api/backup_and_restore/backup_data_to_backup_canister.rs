@@ -32,7 +32,7 @@ async fn backup_data_to_backup_canister() {
     send_unique_user_name_to_user_principal_id_mapping(&data_backup_canister_id).await;
 }
 
-const CHUNK_SIZE: usize = 1_000;
+const CHUNK_SIZE: usize = 100;
 
 async fn send_user_principal_id_to_canister_id_mapping(data_backup_canister_id: &Principal) {
     let kv_pair_vec_of_user_principal_id_to_canister_id =

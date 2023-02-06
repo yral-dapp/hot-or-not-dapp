@@ -18,7 +18,18 @@ async fn backup_data_to_backup_canister() {
             .unwrap()
     });
 
-    if api_caller != user_index_canister_principal_id {
+    let global_super_admin_principal_id = CANISTER_DATA.with(|canister_data_ref_cell| {
+        canister_data_ref_cell
+            .borrow()
+            .known_principal_ids
+            .get(&KnownPrincipalType::UserIdGlobalSuperAdmin)
+            .cloned()
+            .unwrap()
+    });
+
+    if api_caller != user_index_canister_principal_id
+        && api_caller != global_super_admin_principal_id
+    {
         return;
     }
 
@@ -57,7 +68,7 @@ async fn backup_data_to_backup_canister() {
     .await;
 }
 
-const CHUNK_SIZE: usize = 1_000;
+const CHUNK_SIZE: usize = 10;
 
 async fn send_all_created_posts(
     data_backup_canister_id: &Principal,

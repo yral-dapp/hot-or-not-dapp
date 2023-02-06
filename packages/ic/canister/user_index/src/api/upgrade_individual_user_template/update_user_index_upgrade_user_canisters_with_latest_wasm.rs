@@ -1,9 +1,13 @@
 use ic_cdk::api::{
     call::{self, CallResult},
-    management_canister::main::CanisterInstallMode,
+    management_canister::{
+        main::{self, CanisterInstallMode},
+        provisional::CanisterIdRecord,
+    },
 };
 use shared_utils::{
     access_control::{self, UserAccessRole},
+    constant::RECHARGE_CYCLES_AMOUNT,
     date_time::system_time,
 };
 
@@ -47,6 +51,24 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() {
     });
 
     for (user_principal_id, user_canister_id) in user_principal_id_to_canister_id_map.iter() {
+        let upgrade_response: CallResult<()> = call::call(
+            user_canister_id.clone(),
+            "backup_data_to_backup_canister",
+            (),
+        )
+        .await;
+
+        if upgrade_response.is_err() {
+            main::deposit_cycles(
+                CanisterIdRecord {
+                    canister_id: user_canister_id.clone(),
+                },
+                RECHARGE_CYCLES_AMOUNT,
+            )
+            .await
+            .unwrap();
+        }
+
         let upgrade_response: CallResult<()> = call::call(
             user_canister_id.clone(),
             "backup_data_to_backup_canister",
