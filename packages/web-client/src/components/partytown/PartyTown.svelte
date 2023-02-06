@@ -47,7 +47,7 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
   <script type="text/partytown">
   Sentry.init({
     dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-    integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+    integrations: [],
     environment: 'local',
     replaysSessionSampleRate: 0.3,
     replaysOnErrorSampleRate: 1.0,
