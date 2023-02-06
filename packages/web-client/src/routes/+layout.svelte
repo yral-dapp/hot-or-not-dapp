@@ -8,7 +8,6 @@ import userProfile from '$stores/userProfile'
 import { deferredPrompt } from '$stores/deferredPrompt'
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { beforeNavigate } from '$app/navigation'
-import { init } from '$lib/utils/sentry'
 import { page } from '$app/stores'
 import LoginPopup from '$components/login/LoginPopup.svelte'
 import PartyTown from '$components/partytown/PartyTown.svelte'
@@ -41,7 +40,6 @@ async function initAuthClient() {
 onMount(() => {
   $navigateBack = null
   const env = $page.url.host.includes('t:') ? 'localDev' : 'production'
-  init(env)
   registerServiceWorker(env)
   browser && initAuthClient()
 })

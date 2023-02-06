@@ -1,5 +1,4 @@
 import { browser } from '$app/environment'
-import * as Sentry from '@sentry/svelte'
 
 function replaceErrors(_, value) {
   if (typeof value === 'bigint') {
