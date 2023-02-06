@@ -12,9 +12,15 @@ pub struct UserProfileDetailsForFrontend {
     pub following_count: u64,
 }
 
-#[derive(Readable, Writable, CandidType, Deserialize, Clone, Copy, Debug)]
+#[derive(Readable, Writable, CandidType, Deserialize, Clone, Copy, Debug, Default)]
 pub struct UserProfileGlobalStats {
     pub lifetime_earnings: u64,
     pub hots_earned_count: u64,
     pub nots_earned_count: u64,
+}
+
+#[derive(Deserialize, CandidType)]
+pub struct UserProfileUpdateDetailsFromFrontend {
+    pub display_name: Option<String>,
+    pub profile_picture_url: Option<String>,
 }

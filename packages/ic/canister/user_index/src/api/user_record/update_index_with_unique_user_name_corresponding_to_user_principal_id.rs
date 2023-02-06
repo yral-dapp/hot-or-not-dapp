@@ -1,7 +1,7 @@
 use candid::Principal;
 use shared_utils::types::canister_specific::user_index::error_types::SetUniqueUsernameError;
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data_model::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]

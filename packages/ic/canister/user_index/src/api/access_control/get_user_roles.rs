@@ -1,7 +1,7 @@
 use candid::Principal;
 use shared_utils::access_control::{self, UserAccessRole};
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data_model::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]
@@ -26,7 +26,7 @@ mod test {
         get_mock_user_alice_principal_id,
     };
 
-    use crate::data::CanisterData;
+    use crate::data_model::CanisterData;
 
     #[test]
     fn test_get_user_roles_impl() {

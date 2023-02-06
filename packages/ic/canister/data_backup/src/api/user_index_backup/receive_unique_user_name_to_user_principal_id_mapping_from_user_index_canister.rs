@@ -61,13 +61,14 @@ fn receive_unique_user_name_to_user_principal_id_mapping_from_user_index_caniste
 
 #[cfg(test)]
 mod test {
+    use shared_utils::canister_specific::data_backup::types::all_user_data::{
+        AllUserData, UserOwnedCanisterData,
+    };
     use test_utils::setup::test_constants::{
         get_mock_canister_id_user_index, get_mock_user_alice_canister_id,
         get_mock_user_alice_principal_id, get_mock_user_bob_canister_id,
         get_mock_user_bob_principal_id,
     };
-
-    use crate::data::stable_types::all_user_data::{AllUserData, UserOwnedCanisterData};
 
     use super::*;
 
@@ -119,19 +120,16 @@ mod test {
             0
         );
 
-        canister_data
-            .user_principal_id_to_all_user_data_map
-            .insert(
-                StorablePrincipal(get_mock_user_alice_principal_id()),
-                AllUserData {
-                    user_principal_id: get_mock_user_alice_principal_id(),
-                    user_canister_id: get_mock_user_alice_canister_id(),
-                    canister_data: UserOwnedCanisterData {
-                        ..Default::default()
-                    },
+        canister_data.user_principal_id_to_all_user_data_map.insert(
+            StorablePrincipal(get_mock_user_alice_principal_id()),
+            AllUserData {
+                user_principal_id: get_mock_user_alice_principal_id(),
+                user_canister_id: get_mock_user_alice_canister_id(),
+                canister_data: UserOwnedCanisterData {
+                    ..Default::default()
                 },
-            )
-            .unwrap();
+            },
+        );
         assert!(canister_data
             .user_principal_id_to_all_user_data_map
             .contains_key(&StorablePrincipal(get_mock_user_alice_principal_id())));
@@ -182,19 +180,16 @@ mod test {
             alice_unique_user_name_1.to_string()
         );
 
-        canister_data
-            .user_principal_id_to_all_user_data_map
-            .insert(
-                StorablePrincipal(get_mock_user_bob_principal_id()),
-                AllUserData {
-                    user_principal_id: get_mock_user_bob_principal_id(),
-                    user_canister_id: get_mock_user_bob_canister_id(),
-                    canister_data: UserOwnedCanisterData {
-                        ..Default::default()
-                    },
+        canister_data.user_principal_id_to_all_user_data_map.insert(
+            StorablePrincipal(get_mock_user_bob_principal_id()),
+            AllUserData {
+                user_principal_id: get_mock_user_bob_principal_id(),
+                user_canister_id: get_mock_user_bob_canister_id(),
+                canister_data: UserOwnedCanisterData {
+                    ..Default::default()
                 },
-            )
-            .unwrap();
+            },
+        );
 
         receive_unique_user_name_to_user_principal_id_mapping_from_user_index_canister_impl(
             &mut canister_data,

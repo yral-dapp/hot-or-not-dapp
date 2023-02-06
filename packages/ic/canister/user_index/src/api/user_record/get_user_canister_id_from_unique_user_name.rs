@@ -1,6 +1,6 @@
 use candid::Principal;
 
-use crate::{data::CanisterData, CANISTER_DATA};
+use crate::{data_model::CanisterData, CANISTER_DATA};
 
 #[ic_cdk_macros::query]
 #[candid::candid_method(query)]

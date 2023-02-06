@@ -1,11 +1,14 @@
-use ic_cdk::api::management_canister::main::CanisterInstallMode;
+use ic_cdk::api::{
+    call::{self, CallResult},
+    management_canister::main::CanisterInstallMode,
+};
 use shared_utils::{
     access_control::{self, UserAccessRole},
     date_time::system_time,
 };
 
 use crate::{
-    data::canister_upgrade::upgrade_status::UpgradeStatusV1, util::canister_management,
+    data_model::canister_upgrade::upgrade_status::UpgradeStatusV1, util::canister_management,
     CANISTER_DATA,
 };
 
@@ -44,6 +47,14 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() {
     });
 
     for (user_principal_id, user_canister_id) in user_principal_id_to_canister_id_map.iter() {
+        let upgrade_response: CallResult<()> = call::call(
+            user_canister_id.clone(),
+            "backup_data_to_backup_canister",
+            (),
+        )
+        .await;
+        upgrade_response.ok();
+
         match canister_management::upgrade_individual_user_canister(
             user_canister_id.clone(),
             CanisterInstallMode::Upgrade,
@@ -52,20 +63,16 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() {
         .await
         {
             Ok(_) => {
-                ic_cdk::print(format!(
-                    "🥫 Upgrade canister {:?} successfully belonging to user {:?}",
-                    user_canister_id.to_text(),
-                    user_principal_id.to_text()
-                ));
-
                 upgrade_count += 1;
             }
-            Err(_) => {
+            Err(e) => {
                 ic_cdk::print(format!(
-                    "🥫 Failed to upgrade canister {:?} belonging to user {:?}",
+                    "🥫 Failed to upgrade canister {:?} belonging to user {:?} with error: {:?}",
                     user_canister_id.to_text(),
-                    user_principal_id.to_text()
+                    user_principal_id.to_text(),
+                    e
                 ));
+                // TODO: update schema to accept failure reason
                 failed_canister_ids.push((user_principal_id.clone(), user_canister_id.clone()));
             }
         }
