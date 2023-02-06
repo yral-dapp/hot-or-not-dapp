@@ -9,7 +9,7 @@ export const registerPageView = (
 ) => {
   if (!browser) return
   if (url?.href) {
-    gtag?.('event', 'page_view', {
+    window.gtag?.('event', 'page_view', {
       page_location: url.href,
     })
   }
@@ -17,7 +17,7 @@ export const registerPageView = (
 
 export const updateConfig = (params?: Gtag.CustomParams) => {
   if (!browser) return
-  gtag?.('config', import.meta.env.VITE_GA_TRACKING_ID, {
+  window.gtag?.('config', import.meta.env.VITE_GA_TRACKING_ID, {
     ...params,
     ...(debugMode && { debug_mode: true }),
   })
@@ -26,7 +26,7 @@ export const updateConfig = (params?: Gtag.CustomParams) => {
 
 export const setUserProperties = (params?: Gtag.CustomParams) => {
   if (!browser) return
-  gtag?.('set', 'user_properties', {
+  window.gtag?.('set', 'user_properties', {
     ...params,
   })
 }
@@ -36,7 +36,7 @@ export const registerEvent = (
   eventParams?: Gtag.ControlParams | Gtag.EventParams | Gtag.CustomParams,
 ) => {
   if (!browser) return
-  gtag?.('event', eventName, {
+  window.gtag?.('event', eventName, {
     ...eventParams,
     ...(debugMode && { debug_mode: true }),
   })
