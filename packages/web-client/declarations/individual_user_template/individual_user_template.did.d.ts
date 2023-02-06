@@ -26,8 +26,8 @@ export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export interface IndividualUserTemplateInitArgs {
-  'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
-  'profile_owner' : [] | [Principal],
+  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
+  'profile_owner' : Principal,
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdConfiguration' : null } |
@@ -138,7 +138,6 @@ export interface UserProfileUpdateDetailsFromFrontend {
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
-  'backup_data_to_backup_canister' : ActorMethod<[], undefined>,
   'get_following_status_do_i_follow_this_user' : ActorMethod<
     [Principal],
     boolean
@@ -165,10 +164,6 @@ export interface _SERVICE {
     Result_2
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
-  'get_well_known_principal_value' : ActorMethod<
-    [KnownPrincipalType],
-    [] | [Principal]
-  >,
   'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
