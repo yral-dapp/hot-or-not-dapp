@@ -32,6 +32,11 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
   window.gtag = gtag
   </script>
 
+  <!-- prettier-ignore -->
+  <script type="text/partytown">
+    if("Proxy"in window){var n={get:function(e,r){return new Proxy(function(n){return"flush"===r||"close"===r?Promise.resolve():"function"==typeof n?n(window.Sentry):window.Sentry},n)}};window.Sentry=new Proxy({},n)}
+  </script>
+
   <script
     src="https://browser.sentry-cdn.com/7.36.0/bundle.tracing.replay.min.js"
     integrity="sha384-7tfJTi5j94hjodX3ESndyn59/88CYVw9kwwqXDzVHJH1FOT9KB/FAie508nQlJXJ"
