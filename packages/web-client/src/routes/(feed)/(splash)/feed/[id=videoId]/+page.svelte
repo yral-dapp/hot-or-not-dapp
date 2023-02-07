@@ -96,11 +96,11 @@ async function fetchNextVideos(force = false) {
 
       videos = joinArrayUniquely(videos, res.posts)
 
-      if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
-        fetchNextVideos(true)
-      } else if (res.noMorePosts) {
+      if (res.noMorePosts) {
         const watchedVideos = await getWatchedVideosFromCache()
         videos = joinArrayUniquely(videos, watchedVideos)
+      } else if (res.posts.length < fetchCount - 10) {
+        fetchNextVideos(true)
       }
 
       noMoreVideos = res.noMorePosts

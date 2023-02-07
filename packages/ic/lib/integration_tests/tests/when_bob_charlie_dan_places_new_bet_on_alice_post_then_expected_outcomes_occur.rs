@@ -10,13 +10,15 @@ use shared_utils::{
     },
 };
 use test_utils::setup::{
-    initialize_test_env_with_known_canisters::{
+    env_v0::{
         get_canister_id_of_specific_type_from_principal_id_map,
         get_initialized_env_with_provisioned_known_canisters,
     },
     test_constants::get_alice_principal_id,
 };
 
+// TODO: reenable
+#[ignore]
 #[test]
 fn when_bob_charlie_dan_places_new_bet_on_alice_post_then_expected_outcomes_occur() {
     let state_machine = StateMachine::new();

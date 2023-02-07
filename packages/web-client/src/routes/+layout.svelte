@@ -27,6 +27,7 @@ async function initSentry() {
       /Adding invalid event/i, // Replay Error
       /Error in compression worker/i, // Replay Error
       /e.getLastBreadcrumb/i, // Sentry error
+      /chrome-extension/i, // Chrome extensions error
     ],
     beforeSend: $page.url.host.includes('t:')
       ? (event) => {

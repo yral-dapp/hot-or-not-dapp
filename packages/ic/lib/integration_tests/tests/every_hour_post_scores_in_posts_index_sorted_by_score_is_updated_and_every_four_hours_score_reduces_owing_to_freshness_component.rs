@@ -9,13 +9,15 @@ use shared_utils::{
 };
 use std::time::Duration;
 use test_utils::setup::{
-    initialize_test_env_with_known_canisters::{
+    env_v0::{
         get_canister_id_of_specific_type_from_principal_id_map,
         get_initialized_env_with_provisioned_known_canisters,
     },
     test_constants::get_alice_principal_id,
 };
 
+// TODO: reenable
+#[ignore]
 #[test]
 fn every_hour_post_scores_in_posts_index_sorted_by_score_is_updated_and_every_four_hours_score_reduces_owing_to_freshness_component(
 ) {

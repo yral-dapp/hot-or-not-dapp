@@ -1,8 +1,9 @@
 name: Web-client changelog
+
 on:
   pull_request:
-    types:
-      - closed
+    types: [closed]
+  push:
     branches:
       - main
     paths:
@@ -14,8 +15,7 @@ on:
 jobs:
   google-chat-webhook:
     name: Google chat bot
-    if: github.actor != 'dependabot[bot]' && github.event.pull_request.merged == true
-    needs: ["deploy-preview"]
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Send deployment URL to Google Chat
@@ -24,4 +24,4 @@ jobs:
           url: "https://chat.googleapis.com/v1/spaces/AAAA99Zbi-8/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=sNxMSYeF-n104F0zcTbVaJOM5vTd88c4NffRQyskowI%3D"
           method: "POST"
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"text": "PR: \"${{ github.event.pull_request.title  }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
+          data: '{"text": "Feature: \"${{ github.event.pull_request.title  }}\" merged into main at ${{ github.event.repository.updated_at}}"}'

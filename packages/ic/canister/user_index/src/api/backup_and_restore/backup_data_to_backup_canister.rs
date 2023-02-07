@@ -4,7 +4,24 @@ use shared_utils::common::types::known_principal::KnownPrincipalType;
 
 use crate::CANISTER_DATA;
 
-pub async fn backup_data_to_backup_canister() {
+#[ic_cdk_macros::update]
+#[candid::candid_method(update)]
+async fn backup_data_to_backup_canister() {
+    let api_caller = ic_cdk::caller();
+
+    let global_controller_principal_id = CANISTER_DATA.with(|canister_data_ref_cell| {
+        canister_data_ref_cell
+            .borrow()
+            .known_principal_ids
+            .get(&KnownPrincipalType::UserIdGlobalSuperAdmin)
+            .cloned()
+            .unwrap()
+    });
+
+    if api_caller != global_controller_principal_id {
+        return;
+    }
+
     let data_backup_canister_id = CANISTER_DATA
         .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().known_principal_ids.clone())
         .get(&KnownPrincipalType::CanisterIdDataBackup)

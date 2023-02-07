@@ -1,5 +1,3 @@
-#!/home/saikat/bin/ic-repl
-
 import user_index_canister = "renrk-eyaaa-aaaaa-aaada-cai";
 identity default "~/.config/dfx/identity/default/identity.pem";
 

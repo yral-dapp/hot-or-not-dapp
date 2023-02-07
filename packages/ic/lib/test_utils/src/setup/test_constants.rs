@@ -51,10 +51,6 @@ pub fn get_mock_canister_id_post_cache() -> Principal {
     CanisterId::from_u64(0).get().0
 }
 
-pub fn get_mock_canister_id_random_project_member() -> Principal {
-    CanisterId::from_u64(1).get().0
-}
-
 pub fn get_mock_canister_id_root() -> Principal {
     CanisterId::from_u64(2).get().0
 }
