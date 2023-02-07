@@ -12,7 +12,6 @@ use api::{
 use candid::{export_service, Principal};
 use data_model::CanisterData;
 use shared_utils::{
-    access_control::UserAccessRole,
     canister_specific::individual_user_template::types::{
         args::IndividualUserTemplateInitArgs,
         post::v0::PostViewDetailsFromFrontend,

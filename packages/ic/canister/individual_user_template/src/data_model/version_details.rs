@@ -1,6 +1,7 @@
+use candid::CandidType;
 use speedy::{Readable, Writable};
 
-#[derive(Readable, Writable, Default)]
+#[derive(Readable, Writable, Default, CandidType)]
 pub struct VersionDetails {
     version_number: u64,
 }

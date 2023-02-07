@@ -1,5 +1,4 @@
-use crate::data_model::MyTokenBalance;
-use ic_stable_memory::s;
+use crate::CANISTER_DATA;
 use shared_utils::{
     pagination::{self, PaginationError},
     types::{
@@ -14,14 +13,16 @@ fn get_user_utility_token_transaction_history_with_pagination(
     from_inclusive_id: u64,
     to_exclusive_id: u64,
 ) -> Result<Vec<(u64, TokenEventV1)>, GetUserUtilityTokenTransactionHistoryError> {
-    let my_token_balance = s!(MyTokenBalance);
-
     let (from_inclusive_id, to_exclusive_id) = pagination::get_pagination_bounds(
         from_inclusive_id,
         to_exclusive_id,
-        my_token_balance
-            .get_utility_token_transaction_history()
-            .len() as u64,
+        CANISTER_DATA.with(|canister_data_ref_cell| {
+            canister_data_ref_cell
+                .borrow()
+                .my_token_balance
+                .utility_token_transaction_history_v1
+                .len()
+        }) as u64,
     )
     .map_err(|e| match e {
         PaginationError::InvalidBoundsPassed => {
@@ -35,11 +36,15 @@ fn get_user_utility_token_transaction_history_with_pagination(
         }
     })?;
 
-    Ok(my_token_balance
-        .get_utility_token_transaction_history()
-        .iter()
-        .skip(from_inclusive_id as usize)
-        .take((to_exclusive_id - from_inclusive_id) as usize)
-        .map(|(time, token_event)| (*time, token_event.clone()))
-        .collect())
+    Ok(CANISTER_DATA.with(|canister_data_ref_cell| {
+        canister_data_ref_cell
+            .borrow()
+            .my_token_balance
+            .utility_token_transaction_history_v1
+            .iter()
+            .skip(from_inclusive_id as usize)
+            .take((to_exclusive_id - from_inclusive_id) as usize)
+            .map(|(time, token_event)| (*time, token_event.clone()))
+            .collect()
+    }))
 }

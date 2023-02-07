@@ -1,9 +1,9 @@
-use candid::Principal;
+use candid::{CandidType, Principal};
 use shared_utils::canister_specific::individual_user_template::types::profile::UserProfileGlobalStats;
 
 use super::v0;
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, CandidType)]
 pub struct UserProfile {
     pub display_name: Option<String>,
     pub unique_user_name: Option<String>,
