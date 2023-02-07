@@ -14,7 +14,6 @@ onMount(() => scriptEl && (scriptEl.textContent = partytownSnippet()))
       '_gs', //gosquared
       'dataLayer.push', //google analytics
       'gtag', //google analytics
-      'Sentry', //sentry
     ],
   }
   </script>
