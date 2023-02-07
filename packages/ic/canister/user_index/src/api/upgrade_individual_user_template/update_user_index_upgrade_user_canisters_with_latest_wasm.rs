@@ -97,10 +97,11 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() {
                 .ok();
             }
         }
+
         let upgrade_response: CallResult<()> = call::call(
             user_canister_id.clone(),
             "backup_data_to_backup_canister",
-            (),
+            (user_principal_id.clone(), user_canister_id.clone()),
         )
         .await;
         upgrade_response.ok();

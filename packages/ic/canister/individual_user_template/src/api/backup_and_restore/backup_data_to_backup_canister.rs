@@ -5,8 +5,11 @@ use shared_utils::common::types::known_principal::KnownPrincipalType;
 use crate::CANISTER_DATA;
 
 #[ic_cdk_macros::update]
-#[candid::candid_method(update)]
-async fn backup_data_to_backup_canister() {
+// #[candid::candid_method(update)]
+async fn backup_data_to_backup_canister(
+    canister_owner_principal_id: Principal,
+    canister_id: Principal,
+) {
     let api_caller = ic_cdk::caller();
 
     let user_index_canister_principal_id = CANISTER_DATA.with(|canister_data_ref_cell| {
@@ -33,42 +36,45 @@ async fn backup_data_to_backup_canister() {
         return;
     }
 
-    let canister_owner_principal_id = CANISTER_DATA
-        .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().profile.principal_id);
-
-    if canister_owner_principal_id.is_none() {
-        return;
-    }
-
     let data_backup_canister_id = CANISTER_DATA
         .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().known_principal_ids.clone())
         .get(&KnownPrincipalType::CanisterIdDataBackup)
         .unwrap()
         .clone();
 
-    send_all_created_posts(
-        &data_backup_canister_id,
-        &canister_owner_principal_id.unwrap(),
-    )
-    .await;
-    send_all_token_data(
-        &data_backup_canister_id,
-        &canister_owner_principal_id.unwrap(),
-    )
-    .await;
-    send_all_follower_following_data(
-        &data_backup_canister_id,
-        &canister_owner_principal_id.unwrap(),
-    )
-    .await;
     send_profile_data(
         &data_backup_canister_id,
-        &canister_owner_principal_id.unwrap(),
+        &canister_owner_principal_id,
+        &canister_id,
     )
     .await;
+    send_all_created_posts(&data_backup_canister_id, &canister_owner_principal_id).await;
+    send_all_token_data(&data_backup_canister_id, &canister_owner_principal_id).await;
+    send_all_follower_following_data(&data_backup_canister_id, &canister_owner_principal_id).await;
 }
 
 const CHUNK_SIZE: usize = 10;
+
+async fn send_profile_data(
+    data_backup_canister_id: &Principal,
+    canister_owner_principal_id: &Principal,
+    canister_id: &Principal,
+) {
+    let profile_data = CANISTER_DATA
+        .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().profile.clone());
+
+    if profile_data.display_name.is_none() && profile_data.profile_picture_url.is_none() {
+        return;
+    }
+
+    let _response: () = call::call(
+            data_backup_canister_id.clone(),
+            "receive_profile_details_from_individual_user_canister",
+            (profile_data.display_name, profile_data.profile_picture_url, profile_data.unique_user_name, *canister_owner_principal_id, *canister_id),
+        )
+        .await
+        .expect("Failed to call the receive_profile_details_from_individual_user_canister method on the data_backup canister");
+}
 
 async fn send_all_created_posts(
     data_backup_canister_id: &Principal,
@@ -182,24 +188,4 @@ async fn send_all_follower_following_data(
         .await
         .expect("Failed to call the receive_principals_that_follow_me_from_individual_user_canister method on the data_backup canister");
     }
-}
-
-async fn send_profile_data(
-    data_backup_canister_id: &Principal,
-    canister_owner_principal_id: &Principal,
-) {
-    let profile_data = CANISTER_DATA
-        .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().profile.clone());
-
-    if profile_data.display_name.is_none() && profile_data.profile_picture_url.is_none() {
-        return;
-    }
-
-    let _response: () = call::call(
-            data_backup_canister_id.clone(),
-            "receive_profile_details_from_individual_user_canister",
-            (profile_data.display_name, profile_data.profile_picture_url, *canister_owner_principal_id),
-        )
-        .await
-        .expect("Failed to call the receive_profile_details_from_individual_user_canister method on the data_backup canister");
 }
