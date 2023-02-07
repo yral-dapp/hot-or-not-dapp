@@ -3,24 +3,21 @@ use std::borrow::Cow;
 use candid::{CandidType, Decode, Deserialize, Encode, Principal};
 use ic_stable_structures::{BoundedStorable, Storable};
 
-// * KeyTooLarge { given: 38, max: 32 }
-const STORABLE_PRINCIPAL_MAX_SIZE: u32 = 38;
-
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Ord, PartialOrd, Eq, PartialEq, Clone)]
 pub struct StorablePrincipal(pub Principal);
 
 impl Storable for StorablePrincipal {
-    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+    fn to_bytes(&self) -> Cow<[u8]> {
         Cow::Owned(Encode!(self).unwrap())
     }
 
-    fn from_bytes(bytes: Vec<u8>) -> Self {
-        Decode!(&bytes, Self).unwrap()
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        Decode!(bytes.as_ref(), Self).unwrap()
     }
 }
 
 impl BoundedStorable for StorablePrincipal {
-    fn max_size() -> u32 {
-        STORABLE_PRINCIPAL_MAX_SIZE
-    }
+    // * KeyTooLarge { given: 38, max: 32 }
+    const MAX_SIZE: u32 = 38;
+    const IS_FIXED_SIZE: bool = true;
 }

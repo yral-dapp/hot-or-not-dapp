@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 candid = { workspace = true }
-cfg-if = { workspace = true }
 ic-cdk = { workspace = true, features = ["timers"] }
 ic-stable-memory = { workspace = true }
 ic-stable-structures = { workspace = true }

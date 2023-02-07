@@ -4,10 +4,15 @@ use candid::{export_service, Principal};
 use data::memory_layout::CanisterData;
 use shared_utils::{
     access_control::UserAccessRole,
-    canister_specific::data_backup::types::{
-        args::DataBackupInitArgs, backup_statistics::BackupStatistics,
+    canister_specific::{
+        data_backup::types::{
+            all_user_data::AllUserData, args::DataBackupInitArgs,
+            backup_statistics::BackupStatistics,
+        },
+        individual_user_template::types::post::v1::Post,
     },
     common::types::known_principal::KnownPrincipalType,
+    types::utility_token::v1::TokenEventV1,
 };
 
 mod api;

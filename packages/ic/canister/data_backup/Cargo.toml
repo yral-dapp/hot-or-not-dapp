@@ -19,3 +19,4 @@ serde = { workspace = true }
 
 [dev-dependencies]
 test_utils = { path = "../../lib/test_utils" }
+ic-stable-memory = { workspace = true }

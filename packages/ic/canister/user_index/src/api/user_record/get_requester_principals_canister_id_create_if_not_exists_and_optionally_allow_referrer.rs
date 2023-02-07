@@ -73,8 +73,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-    ) {
+    fn test_ingress_principal_id_equality_from_different_sources() {
         assert_eq!("2vxsx-fae".to_string(), Principal::anonymous().to_text());
         assert_eq!(
             Principal::from_text("2vxsx-fae").unwrap(),

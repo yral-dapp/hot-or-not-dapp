@@ -8,7 +8,7 @@ use shared_utils::{
     },
 };
 use test_utils::setup::{
-    initialize_test_env_with_known_canisters::{
+    env_v0::{
         get_canister_id_of_specific_type_from_principal_id_map,
         get_initialized_env_with_provisioned_known_canisters,
     },

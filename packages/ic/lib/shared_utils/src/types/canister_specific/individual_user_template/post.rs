@@ -4,8 +4,9 @@ use candid::{CandidType, Deserialize, Principal};
 use serde::Serialize;
 use speedy::{Readable, Writable};
 
-#[derive(Readable, Writable, Serialize, Deserialize, CandidType, Clone)]
+#[derive(Readable, Writable, Serialize, Deserialize, CandidType, Clone, Default, Debug)]
 pub enum PostStatus {
+    #[default]
     Uploaded,
     Transcoding,
     CheckingExplicitness,
