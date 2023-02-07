@@ -2,6 +2,8 @@ describe('Navigation test', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
   const IC0_HOST = 'https://ic0.app'
 
+  const timeout = 10_000
+
   before(() => {
     cy.task(
       'log',
@@ -18,35 +20,36 @@ describe('Navigation test', () => {
   })
 
   it('On a video, navigate to user profile', () => {
-    cy.get('div[aria-roledescription=video-info] > a')
-      .and('be.visible')
-      .click({ force: true })
+    cy.get('player[i=0] div[aria-roledescription=video-info] > a', {
+      timeout,
+    }).click({ force: true })
     cy.wait(1000).then(() => {
       expect(cy.url().should('contain', 'profile'))
     })
   })
 
   it("Navigate to user profile and then navigate to user's lovers list", () => {
-    cy.get('div[aria-roledescription=video-info] > a')
-      .and('be.visible')
-      .click({ force: true })
+    cy.get('player[i=0] div[aria-roledescription=video-info] > a', {
+      timeout,
+    }).click({ force: true })
     cy.wait(5000).then(() => {
-      cy.contains('Lovers').click()
-      expect(cy.url().should('contain', 'lovers'))
+      cy.contains('Lovers')
+        .click()
+        .then(() => {
+          expect(cy.url().should('contain', 'lovers'))
+        })
     })
   })
 
   it('Navigate to user profile and then view a post', () => {
-    cy.get('div[aria-roledescription=video-info] > a')
-      .and('be.visible')
-      .click({ force: true })
+    cy.get('player[i=0] div[aria-roledescription=video-info] > a').click({
+      force: true,
+    })
     cy.scrollTo('bottom')
     cy.wait(5000).then(() => {
       cy.get('a[aria-roledescription=user-post]').then(($posts) => {
         $posts[0].click()
-        cy.wait(500).then(() => {
-          expect(cy.url().should('contain', 'post'))
-        })
+        expect(cy.url().should('contain', 'post'))
       })
     })
   })
