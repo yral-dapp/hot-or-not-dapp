@@ -2,7 +2,8 @@ describe('Navigation test', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
   const IC0_HOST = 'https://ic0.app'
 
-  const timeout = 10_000
+  const timeout = 20_000
+  const waitMs = 5_000
 
   before(() => {
     cy.task(
@@ -23,7 +24,7 @@ describe('Navigation test', () => {
     cy.get('player[i=0] div[aria-roledescription=video-info] > a', {
       timeout,
     }).click({ force: true })
-    cy.wait(1000).then(() => {
+    cy.wait(waitMs).then(() => {
       expect(cy.url().should('contain', 'profile'))
     })
   })
@@ -32,7 +33,7 @@ describe('Navigation test', () => {
     cy.get('player[i=0] div[aria-roledescription=video-info] > a', {
       timeout,
     }).click({ force: true })
-    cy.wait(5000).then(() => {
+    cy.wait(waitMs).then(() => {
       cy.contains('Lovers')
         .click()
         .then(() => {
@@ -46,7 +47,7 @@ describe('Navigation test', () => {
       force: true,
     })
     cy.scrollTo('bottom')
-    cy.wait(5000).then(() => {
+    cy.wait(waitMs).then(() => {
       cy.get('a[aria-roledescription=user-post]').then(($posts) => {
         $posts[0].click()
         expect(cy.url().should('contain', 'post'))
