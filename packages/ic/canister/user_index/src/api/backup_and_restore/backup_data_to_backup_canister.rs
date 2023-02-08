@@ -4,6 +4,7 @@ use shared_utils::common::types::known_principal::KnownPrincipalType;
 
 use crate::CANISTER_DATA;
 
+// TODO: this method is redundant. Remove
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 async fn backup_data_to_backup_canister() {
@@ -32,7 +33,7 @@ async fn backup_data_to_backup_canister() {
     send_unique_user_name_to_user_principal_id_mapping(&data_backup_canister_id).await;
 }
 
-const CHUNK_SIZE: usize = 1_000;
+const CHUNK_SIZE: usize = 100;
 
 async fn send_user_principal_id_to_canister_id_mapping(data_backup_canister_id: &Principal) {
     let kv_pair_vec_of_user_principal_id_to_canister_id =

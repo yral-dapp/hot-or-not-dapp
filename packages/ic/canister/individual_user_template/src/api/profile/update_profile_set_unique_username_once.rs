@@ -1,9 +1,7 @@
-use crate::data_model::{AccessControlMap, MyKnownPrincipalIdsMap, Profile};
+use crate::CANISTER_DATA;
 use ic_cdk::api::call;
-use ic_stable_memory::{s, utils::ic_types::SPrincipal};
 use shared_utils::{
-    access_control::{self, UserAccessRole},
-    constant,
+    common::types::known_principal::KnownPrincipalType,
     types::canister_specific::{
         individual_user_template::error_types::UpdateProfileSetUniqueUsernameError,
         user_index::error_types::SetUniqueUsernameError,
@@ -17,34 +15,41 @@ use shared_utils::{
 async fn update_profile_set_unique_username_once(
     new_unique_username: String,
 ) -> Result<(), UpdateProfileSetUniqueUsernameError> {
-    let request_maker = ic_cdk::caller();
-    let known_principal_ids = s!(MyKnownPrincipalIdsMap);
-
     // * access control
-    let user_id_access_control_map = s!(AccessControlMap);
+    let current_caller = ic_cdk::caller();
+    let my_principal_id = CANISTER_DATA
+        .with(|canister_data_ref_cell| canister_data_ref_cell.borrow().profile.principal_id)
+        .unwrap();
 
-    if !(access_control::does_principal_have_role(
-        &user_id_access_control_map,
-        UserAccessRole::ProfileOwner,
-        SPrincipal(request_maker),
-    )) {
+    if current_caller != my_principal_id {
         return Err(UpdateProfileSetUniqueUsernameError::NotAuthorized);
     }
 
+    let user_index_canister_principal_id = CANISTER_DATA.with(|canister_data_ref_cell| {
+        canister_data_ref_cell
+            .borrow()
+            .known_principal_ids
+            .get(&KnownPrincipalType::CanisterIdUserIndex)
+            .cloned()
+            .unwrap()
+    });
+
     // * cross canister call
     let (response,): (Result<(), SetUniqueUsernameError>,) = call::call(
-        constant::get_user_index_canister_principal_id(known_principal_ids),
+        user_index_canister_principal_id,
         "update_index_with_unique_user_name_corresponding_to_user_principal_id",
-        (new_unique_username.clone(), request_maker),
+        (new_unique_username.clone(), current_caller),
     )
     .await
     .map_err(|_| UpdateProfileSetUniqueUsernameError::UserIndexCrossCanisterCallFailed)?;
 
     match response {
         Ok(()) => {
-            let mut profile: Profile = s!(Profile);
-            profile.set_unique_user_name(new_unique_username);
-            s! {Profile = profile};
+            CANISTER_DATA.with(|canister_data_ref_cell| {
+                let mut profile = canister_data_ref_cell.borrow_mut().profile.clone();
+                profile.unique_user_name = Some(new_unique_username);
+                canister_data_ref_cell.borrow_mut().profile = profile;
+            });
             Ok(())
         }
         Err(SetUniqueUsernameError::UsernameAlreadyTaken) => {

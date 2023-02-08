@@ -7,7 +7,7 @@ export interface CanisterStatusResponse {
   'cycles' : bigint,
   'settings' : DefiniteCanisterSettings,
   'idle_cycles_burned_per_day' : bigint,
-  'module_hash' : [] | [Uint8Array],
+  'module_hash' : [] | [Uint8Array | number[]],
 }
 export type CanisterStatusType = { 'stopped' : null } |
   { 'stopping' : null } |
@@ -51,6 +51,7 @@ export interface UserIndexInitArgs {
   'access_control_map' : [] | [Array<[Principal, Array<UserAccessRole>]>],
 }
 export interface _SERVICE {
+  'backup_all_individual_user_canisters' : ActorMethod<[], undefined>,
   'backup_data_to_backup_canister' : ActorMethod<[], undefined>,
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],

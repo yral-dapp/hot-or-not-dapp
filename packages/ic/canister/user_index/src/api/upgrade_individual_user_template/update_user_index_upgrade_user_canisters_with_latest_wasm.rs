@@ -1,9 +1,13 @@
 use ic_cdk::api::{
     call::{self, CallResult},
-    management_canister::main::CanisterInstallMode,
+    management_canister::{
+        main::{self, CanisterInstallMode},
+        provisional::CanisterIdRecord,
+    },
 };
 use shared_utils::{
     access_control::{self, UserAccessRole},
+    constant::MINIMUM_CYCLES_TO_REVIVE_CANISTER,
     date_time::system_time,
 };
 
@@ -47,14 +51,6 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() {
     });
 
     for (user_principal_id, user_canister_id) in user_principal_id_to_canister_id_map.iter() {
-        let upgrade_response: CallResult<()> = call::call(
-            user_canister_id.clone(),
-            "backup_data_to_backup_canister",
-            (),
-        )
-        .await;
-        upgrade_response.ok();
-
         match canister_management::upgrade_individual_user_canister(
             user_canister_id.clone(),
             CanisterInstallMode::Upgrade,
@@ -72,10 +68,55 @@ async fn update_user_index_upgrade_user_canisters_with_latest_wasm() {
                     user_principal_id.to_text(),
                     e
                 ));
+
                 // TODO: update schema to accept failure reason
                 failed_canister_ids.push((user_principal_id.clone(), user_canister_id.clone()));
+
+                let response_result = main::canister_status(CanisterIdRecord {
+                    canister_id: user_canister_id.clone(),
+                })
+                .await;
+
+                if response_result.is_err() {
+                    main::deposit_cycles(
+                        CanisterIdRecord {
+                            canister_id: user_canister_id.clone(),
+                        },
+                        MINIMUM_CYCLES_TO_REVIVE_CANISTER,
+                    )
+                    .await
+                    .unwrap();
+                }
+
+                canister_management::upgrade_individual_user_canister(
+                    user_canister_id.clone(),
+                    CanisterInstallMode::Upgrade,
+                    saved_upgrade_status.version_number + 1,
+                )
+                .await
+                .ok();
             }
         }
+
+        let upgrade_response: CallResult<()> = call::call(
+            user_canister_id.clone(),
+            "backup_data_to_backup_canister",
+            (user_principal_id.clone(), user_canister_id.clone()),
+        )
+        .await;
+        upgrade_response.ok();
+
+        CANISTER_DATA.with(|canister_data_ref_cell| {
+            let mut last_run_upgrade_status = canister_data_ref_cell
+                .borrow_mut()
+                .last_run_upgrade_status
+                .clone();
+
+            last_run_upgrade_status.successful_upgrade_count = upgrade_count;
+            last_run_upgrade_status.failed_canister_ids = failed_canister_ids.clone();
+
+            canister_data_ref_cell.borrow_mut().last_run_upgrade_status = last_run_upgrade_status;
+        });
     }
 
     let new_upgrade_status = UpgradeStatusV1 {

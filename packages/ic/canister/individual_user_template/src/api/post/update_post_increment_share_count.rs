@@ -1,17 +1,25 @@
-use crate::data_model::AllCreatedPostsV1;
-use ic_stable_memory::s;
+use crate::CANISTER_DATA;
 use shared_utils::date_time::system_time;
 
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 fn update_post_increment_share_count(id: u64) -> u64 {
-    let mut all_posts: AllCreatedPostsV1 = s!(AllCreatedPostsV1);
-    let mut post_to_update = all_posts.get_cloned(id).unwrap();
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        let mut post_to_update = canister_data_ref_cell
+            .borrow_mut()
+            .all_created_posts
+            .get(&id)
+            .unwrap()
+            .clone();
 
-    let updated_share_count =
-        post_to_update.increment_share_count(&system_time::get_current_system_time_from_ic);
-    all_posts.replace(id, &post_to_update);
-    s! { AllCreatedPostsV1 = all_posts };
+        let updated_share_count =
+            post_to_update.increment_share_count(&system_time::get_current_system_time_from_ic);
 
-    updated_share_count
+        canister_data_ref_cell
+            .borrow_mut()
+            .all_created_posts
+            .insert(id, post_to_update);
+
+        updated_share_count
+    })
 }
