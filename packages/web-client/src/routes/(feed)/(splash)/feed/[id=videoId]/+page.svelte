@@ -17,8 +17,7 @@ import { hideSplashScreen } from '$stores/splashScreen'
 import userProfile from '$stores/userProfile'
 import { Principal } from '@dfinity/principal'
 import { onDestroy, onMount, tick } from 'svelte'
-import 'swiper/css'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
+import { register as initSwiper } from 'swiper/element/bundle'
 import type { PageData } from './$types'
 import { isiPhone } from '$lib/utils/isSafari'
 import { page } from '$app/stores'
@@ -212,6 +211,7 @@ function recordStats(
 }
 
 onMount(async () => {
+  initSwiper()
   updateURL()
   $playerState.initialized = false
   $playerState.muted = true
@@ -245,16 +245,15 @@ beforeNavigate(() => {
   <title>Home Feed | Hot or Not</title>
 </svelte:head>
 
-<Swiper
-  direction={'vertical'}
-  observer
-  cssMode
-  slidesPerView={1}
-  on:slideChange={handleChange}
-  spaceBetween={300}
-  class="h-full w-full">
+<swiper-container
+  direction="vertical"
+  observer="true"
+  css-mode="true"
+  slides-per-view="1"
+  class="h-full w-full"
+  on:slidechange={handleChange}>
   {#each videos as video, i (i)}
-    <SwiperSlide
+    <swiper-slide
       class="flex h-full w-full snap-always items-center justify-center">
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
         <HomeFeedPlayer
@@ -296,10 +295,10 @@ beforeNavigate(() => {
             uid={video.video_uid} />
         </HomeFeedPlayer>
       {/if}
-    </SwiperSlide>
+    </swiper-slide>
   {/each}
   {#if showError}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <swiper-slide class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">
@@ -309,18 +308,18 @@ beforeNavigate(() => {
           Clear here to refresh
         </Button>
       </div>
-    </SwiperSlide>
+    </swiper-slide>
   {/if}
   {#if loading}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <swiper-slide class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">Loading</div>
       </div>
-    </SwiperSlide>
+    </swiper-slide>
   {/if}
   {#if noMoreVideos}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <swiper-slide class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <NoVideosIcon class="w-56" />
@@ -328,6 +327,6 @@ beforeNavigate(() => {
           No more videos to display today
         </div>
       </div>
-    </SwiperSlide>
+    </swiper-slide>
   {/if}
-</Swiper>
+</swiper-container>

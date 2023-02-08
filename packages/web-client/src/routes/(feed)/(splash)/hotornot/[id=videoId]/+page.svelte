@@ -1,6 +1,4 @@
 <script lang="ts">
-import 'swiper/css'
-
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
 import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import HotOrNotPlayer from '$components/player/HotOrNotPlayer.svelte'
@@ -15,7 +13,7 @@ import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
 import Hls from 'hls.js'
 import { onMount, tick, onDestroy } from 'svelte'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
+import { register as initSwiper } from 'swiper/element/bundle'
 import type { PageData } from './$types'
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { updateURL } from '$lib/utils/feedUrl'
@@ -116,6 +114,7 @@ function handleVisibilityChange() {
 }
 
 onMount(async () => {
+  initSwiper()
   updateURL()
   $playerState.initialized = false
   $playerState.muted = true
@@ -145,16 +144,15 @@ beforeNavigate(() => {
   <title>Hot or Not Videos | Hot or Not</title>
 </svelte:head>
 
-<Swiper
-  direction={'vertical'}
-  observer
-  cssMode
-  slidesPerView={1}
-  on:slideChange={handleChange}
-  spaceBetween={300}
-  class="h-full w-full">
+<swiper-container
+  direction="vertical"
+  observer="true"
+  css-mode="true"
+  slides-per-view="1"
+  class="h-full w-full"
+  on:slidechange={handleChange}>
   {#each videos as video, i (i)}
-    <SwiperSlide
+    <swiper-slide
       class="flex h-full w-full snap-always items-center justify-center">
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
         <HotOrNotPlayer
@@ -181,10 +179,10 @@ beforeNavigate(() => {
             uid={video.video_uid} />
         </HotOrNotPlayer>
       {/if}
-    </SwiperSlide>
+    </swiper-slide>
   {/each}
   {#if showError}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <swiper-slide class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">
@@ -194,18 +192,18 @@ beforeNavigate(() => {
           Clear here to refresh
         </Button>
       </div>
-    </SwiperSlide>
+    </swiper-slide>
   {/if}
   {#if loading}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <swiper-slide class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">Loading</div>
       </div>
-    </SwiperSlide>
+    </swiper-slide>
   {/if}
   {#if noMoreVideos}
-    <SwiperSlide class="relative h-full w-full items-center justify-center">
+    <swiper-slide class="relative h-full w-full items-center justify-center">
       <div
         class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8">
         <NoBetsIcon class="w-56" />
@@ -216,6 +214,6 @@ beforeNavigate(() => {
           <HotOrNot />
         </div>
       </div>
-    </SwiperSlide>
+    </swiper-slide>
   {/if}
-</Swiper>
+</swiper-container>
