@@ -84,12 +84,6 @@ export const idlFactory = ({ IDL }) => {
     'profile_stats' : UserProfileGlobalStats,
     'followers_count' : IDL.Nat64,
   });
-  const UserAccessRole = IDL.Variant({
-    'CanisterController' : IDL.Null,
-    'ProfileOwner' : IDL.Null,
-    'CanisterAdmin' : IDL.Null,
-    'ProjectCanister' : IDL.Null,
-  });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
     'Referral' : IDL.Record({
@@ -160,7 +154,6 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'add_post' : IDL.Func([PostDetailsFromFrontend], [IDL.Nat64], []),
-    'backup_data_to_backup_canister' : IDL.Func([], [], []),
     'get_following_status_do_i_follow_this_user' : IDL.Func(
         [IDL.Principal],
         [IDL.Bool],
@@ -197,11 +190,6 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'get_rewarded_for_signing_up' : IDL.Func([], [], []),
-    'get_user_roles' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Vec(UserAccessRole)],
-        ['query'],
-      ),
     'get_user_utility_token_transaction_history_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [Result_2],
@@ -245,20 +233,9 @@ export const idlFactory = ({ IDL }) => {
         [Result_5],
         [],
       ),
-    'update_profile_resend_username_to_user_index_canister' : IDL.Func(
-        [],
-        [Result_6],
-        [],
-      ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
         [Result_6],
-        [],
-      ),
-    'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
-    'update_user_remove_role' : IDL.Func(
-        [UserAccessRole, IDL.Principal],
-        [],
         [],
       ),
   });

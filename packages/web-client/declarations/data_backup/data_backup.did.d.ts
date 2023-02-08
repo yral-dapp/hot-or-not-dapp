@@ -125,7 +125,7 @@ export interface _SERVICE {
     undefined
   >,
   'receive_profile_details_from_individual_user_canister' : ActorMethod<
-    [[] | [string], [] | [string], Principal],
+    [[] | [string], [] | [string], [] | [string], Principal, Principal],
     undefined
   >,
   'receive_unique_user_name_to_user_principal_id_mapping_from_user_index_canister' : ActorMethod<

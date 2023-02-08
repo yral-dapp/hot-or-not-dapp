@@ -4,6 +4,7 @@ use shared_utils::common::types::known_principal::KnownPrincipalType;
 
 use crate::CANISTER_DATA;
 
+// TODO: this method is redundant. Remove
 #[ic_cdk_macros::update]
 #[candid::candid_method(update)]
 async fn backup_data_to_backup_canister() {

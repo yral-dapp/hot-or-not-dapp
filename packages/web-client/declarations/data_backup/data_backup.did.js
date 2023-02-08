@@ -154,7 +154,13 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'receive_profile_details_from_individual_user_canister' : IDL.Func(
-        [IDL.Opt(IDL.Text), IDL.Opt(IDL.Text), IDL.Principal],
+        [
+          IDL.Opt(IDL.Text),
+          IDL.Opt(IDL.Text),
+          IDL.Opt(IDL.Text),
+          IDL.Principal,
+          IDL.Principal,
+        ],
         [],
         [],
       ),

@@ -114,10 +114,6 @@ export type UpdateProfileSetUniqueUsernameError = {
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
   { 'NotAuthorized' : null } |
   { 'UserCanisterEntryDoesNotExist' : null };
-export type UserAccessRole = { 'CanisterController' : null } |
-  { 'ProfileOwner' : null } |
-  { 'CanisterAdmin' : null } |
-  { 'ProjectCanister' : null };
 export interface UserProfileDetailsForFrontend {
   'unique_user_name' : [] | [string],
   'following_count' : bigint,
@@ -138,7 +134,6 @@ export interface UserProfileUpdateDetailsFromFrontend {
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
-  'backup_data_to_backup_canister' : ActorMethod<[], undefined>,
   'get_following_status_do_i_follow_this_user' : ActorMethod<
     [Principal],
     boolean
@@ -159,7 +154,6 @@ export interface _SERVICE {
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
-  'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result_2
@@ -189,14 +183,5 @@ export interface _SERVICE {
     [UserProfileUpdateDetailsFromFrontend],
     Result_5
   >,
-  'update_profile_resend_username_to_user_index_canister' : ActorMethod<
-    [],
-    Result_6
-  >,
   'update_profile_set_unique_username_once' : ActorMethod<[string], Result_6>,
-  'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
-  'update_user_remove_role' : ActorMethod<
-    [UserAccessRole, Principal],
-    undefined
-  >,
 }

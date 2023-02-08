@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use candid::{CandidType, Principal};
+use candid::{CandidType, Deserialize, Principal};
 use ic_stable_memory::{
     collections::{hash_map::SHashMap, vec::SVec},
     utils::ic_types::SPrincipal,
@@ -40,7 +40,7 @@ pub type PrincipalsIFollow = BTreeSet<SPrincipal>;
 pub type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
 pub type AllCreatedPostsV1 = SVec<PostV1>;
 
-#[derive(Default, CandidType)]
+#[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {
     // Key is Post ID
     pub all_created_posts: BTreeMap<u64, PostV1>,

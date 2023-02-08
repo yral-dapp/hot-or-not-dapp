@@ -125,6 +125,8 @@ service : (DataBackupInitArgs) -> {
   receive_profile_details_from_individual_user_canister : (
       opt text,
       opt text,
+      opt text,
+      principal,
       principal,
     ) -> ();
   receive_unique_user_name_to_user_principal_id_mapping_from_user_index_canister : (
