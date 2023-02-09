@@ -136,26 +136,31 @@ $: if (!inView) {
   stop()
 }
 
-onMount(() => {
-  if (playFormat === 'mp4' || isiPhone) {
-    //Force mp4 playback on iOS
-    videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
-  } else {
-    const src = getHlsUrl(uid)
-    if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-      videoEl.src = src + '#t=0.1'
-    } else if (Hls.isSupported()) {
-      hls = new Hls({ maxBufferLength: 5 })
-      hls?.loadSource(src)
-      hls?.attachMedia(videoEl)
-    } else {
-      // Fallback to mp4
+onMount(async () => {
+  try {
+    if (playFormat === 'mp4' || isiPhone) {
+      //Force mp4 playback on iOS
       videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
-      Log(
-        { error: 'Hls not supported', i, src, source: '1 videoPlayer' },
-        'warn',
-      )
+    } else {
+      const src = getHlsUrl(uid)
+      if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+        videoEl.src = src + '#t=0.1'
+      } else if (Hls.isSupported()) {
+        hls = new Hls({ maxBufferLength: 5 })
+        hls?.loadSource(src)
+        hls?.attachMedia(videoEl)
+      } else {
+        // Fallback to mp4
+        videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
+        Log(
+          { error: 'Hls not supported', i, src, source: '1 videoPlayer' },
+          'warn',
+        )
+      }
     }
+  } catch (e) {
+    videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
+    Log({ error: e, i, source: '2 videoPlayer' }, 'error')
   }
 })
 
