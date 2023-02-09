@@ -189,7 +189,7 @@ onDestroy(() => {
   playsinline
   preload={isiPhone ? 'metadata' : 'auto'}
   poster={thumbnail}
-  class="object-fit absolute z-[3] h-full w-full" />
+  class="absolute z-[3] h-full w-full" />
 
 {#if $playerState.muted || paused}
   <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
