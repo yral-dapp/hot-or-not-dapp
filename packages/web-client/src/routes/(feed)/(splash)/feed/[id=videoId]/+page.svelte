@@ -251,10 +251,10 @@ beforeNavigate(() => {
   css-mode="true"
   slides-per-view="1"
   class="h-full w-full"
+  style="height:100%; width: 100%;"
   on:slidechange={handleChange}>
   {#each videos as video, i (i)}
-    <swiper-slide
-      class="flex h-full w-full snap-always items-center justify-center">
+    <swiper-slide style="scroll-snap-stop: always;">
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
         <HomeFeedPlayer
           {i}
