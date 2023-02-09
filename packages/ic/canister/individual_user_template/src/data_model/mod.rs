@@ -1,44 +1,19 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use candid::{CandidType, Deserialize, Principal};
-use ic_stable_memory::{
-    collections::{hash_map::SHashMap, vec::SVec},
-    utils::ic_types::SPrincipal,
-};
 use shared_utils::{
-    access_control::UserAccessRole,
     canister_specific::individual_user_template::types::{
-        post::{v0::Post, v1::Post as PostV1},
-        token::TokenBalance,
+        post::v1::Post as PostV1, token::TokenBalance,
     },
-    common::types::known_principal::{KnownPrincipalMap, KnownPrincipalMapV1},
-    types::top_posts::{v0::PostScoreIndexItem, v1::PostScoreIndex},
+    common::types::known_principal::KnownPrincipalMapV1,
+    types::top_posts::v1::PostScoreIndex,
 };
 
-use self::{
-    profile::{v0::UserProfile, v1::UserProfile as UserProfileV1},
-    version_details::VersionDetails,
-};
+use self::{profile::v1::UserProfile as UserProfileV1, version_details::VersionDetails};
 
 pub mod hot_or_not;
 pub mod profile;
 pub mod version_details;
-
-// * Stable Variables
-pub type Profile = UserProfile;
-pub type SVersionDetails = VersionDetails;
-pub type MyKnownPrincipalIdsMap = KnownPrincipalMap;
-pub type MyTokenBalance = TokenBalance;
-
-// * Stable Collections
-pub type AllCreatedPosts = SVec<Post>;
-pub type AccessControlMap = SHashMap<SPrincipal, Vec<UserAccessRole>>;
-pub type PostsIndexSortedByScore = BTreeSet<PostScoreIndexItem>;
-pub type PostsIndexSortedByHomeFeedScore = PostScoreIndex;
-pub type PostsIndexSortedByHotOrNotFeedScore = PostScoreIndex;
-pub type PrincipalsIFollow = BTreeSet<SPrincipal>;
-pub type PrincipalsThatFollowMe = BTreeSet<SPrincipal>;
-pub type AllCreatedPostsV1 = SVec<PostV1>;
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {

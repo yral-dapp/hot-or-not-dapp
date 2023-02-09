@@ -1,15 +1,3 @@
-use std::time::SystemTime;
-
-use crate::data_model::{
-    AllCreatedPostsV1, MyKnownPrincipalIdsMap, PostsIndexSortedByHomeFeedScore,
-    PostsIndexSortedByHotOrNotFeedScore,
-};
-use ic_cdk::api::call;
-use ic_stable_memory::s;
-use shared_utils::constant;
-use shared_utils::date_time::system_time;
-use shared_utils::types::top_posts::v0::PostScoreIndexItem;
-
 // TODO: reenable this functionality using pure functions
 // pub fn update_post_home_feed_score_index_on_home_feed_post_score_recalculation(
 //     post_id: u64,
@@ -66,37 +54,37 @@ use shared_utils::types::top_posts::v0::PostScoreIndexItem;
 //     s! { PostsIndexSortedByHotOrNotFeedScore = posts_index_sorted_by_hot_or_not_feed_score };
 // }
 
-pub fn send_top_home_feed_post_scores_to_post_cache_canister() {
-    let top_post_scores: Vec<PostScoreIndexItem> = s!(PostsIndexSortedByHomeFeedScore)
-        .iter()
-        .take(3)
-        .cloned()
-        .collect();
+// pub fn send_top_home_feed_post_scores_to_post_cache_canister() {
+//     let top_post_scores: Vec<PostScoreIndexItem> = s!(PostsIndexSortedByHomeFeedScore)
+//         .iter()
+//         .take(3)
+//         .cloned()
+//         .collect();
 
-    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
+//     let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
 
-    let _ = call::notify(
-        constant::get_post_cache_canister_principal_id(known_principal_ids),
-        "receive_top_home_feed_posts_from_publishing_canister",
-        (top_post_scores,),
-    );
-}
+//     let _ = call::notify(
+//         constant::get_post_cache_canister_principal_id(known_principal_ids),
+//         "receive_top_home_feed_posts_from_publishing_canister",
+//         (top_post_scores,),
+//     );
+// }
 
-pub fn send_top_hot_or_not_feed_post_scores_to_post_cache_canister() {
-    let top_post_scores: Vec<PostScoreIndexItem> = s!(PostsIndexSortedByHotOrNotFeedScore)
-        .iter()
-        .take(3)
-        .cloned()
-        .collect();
+// pub fn send_top_hot_or_not_feed_post_scores_to_post_cache_canister() {
+//     let top_post_scores: Vec<PostScoreIndexItem> = s!(PostsIndexSortedByHotOrNotFeedScore)
+//         .iter()
+//         .take(3)
+//         .cloned()
+//         .collect();
 
-    let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
+//     let known_principal_ids: MyKnownPrincipalIdsMap = s!(MyKnownPrincipalIdsMap);
 
-    let _ = call::notify(
-        constant::get_post_cache_canister_principal_id(known_principal_ids),
-        "receive_top_hot_or_not_feed_posts_from_publishing_canister",
-        (top_post_scores,),
-    );
-}
+//     let _ = call::notify(
+//         constant::get_post_cache_canister_principal_id(known_principal_ids),
+//         "receive_top_hot_or_not_feed_posts_from_publishing_canister",
+//         (top_post_scores,),
+//     );
+// }
 
 // pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score(
 //     time_provider: &impl Fn() -> SystemTime,
@@ -117,30 +105,30 @@ pub fn send_top_hot_or_not_feed_post_scores_to_post_cache_canister() {
 //     s! { AllCreatedPostsV1 = all_created_posts };
 // }
 
-pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1() {
-    update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1_impl(
-        &system_time::get_current_system_time_from_ic,
-    );
-}
+// pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1() {
+//     update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1_impl(
+//         &system_time::get_current_system_time_from_ic,
+//     );
+// }
 
-pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1_impl(
-    time_provider: &impl Fn() -> SystemTime,
-) {
-    let posts_index_sorted_by_home_feed_score = s!(PostsIndexSortedByHomeFeedScore);
-    let mut all_created_posts = s!(AllCreatedPostsV1);
+// pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home_feed_score_v1_impl(
+//     time_provider: &impl Fn() -> SystemTime,
+// ) {
+//     let posts_index_sorted_by_home_feed_score = s!(PostsIndexSortedByHomeFeedScore);
+//     let mut all_created_posts = s!(AllCreatedPostsV1);
 
-    for post_score_index_item in posts_index_sorted_by_home_feed_score.iter() {
-        let mut post = all_created_posts
-            .get_cloned(post_score_index_item.post_id)
-            .unwrap();
+//     for post_score_index_item in posts_index_sorted_by_home_feed_score.iter() {
+//         let mut post = all_created_posts
+//             .get_cloned(post_score_index_item.post_id)
+//             .unwrap();
 
-        post.recalculate_home_feed_score(time_provider);
+//         post.recalculate_home_feed_score(time_provider);
 
-        all_created_posts.replace(post_score_index_item.post_id, &post);
-    }
+//         all_created_posts.replace(post_score_index_item.post_id, &post);
+//     }
 
-    s! { AllCreatedPostsV1 = all_created_posts };
-}
+//     s! { AllCreatedPostsV1 = all_created_posts };
+// }
 
 // pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score(
 //     time_provider: &impl Fn() -> SystemTime,
@@ -161,26 +149,26 @@ pub fn update_home_feed_post_scores_for_every_post_in_posts_index_sorted_by_home
 //     s! { AllCreatedPostsV1 = all_created_posts };
 // }
 
-pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1(
-) {
-    update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1_impl(&system_time::get_current_system_time_from_ic);
-}
+// pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1(
+// ) {
+//     update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1_impl(&system_time::get_current_system_time_from_ic);
+// }
 
-pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1_impl(
-    time_provider: &impl Fn() -> SystemTime,
-) {
-    let posts_index_sorted_by_hot_or_not_feed_score = s!(PostsIndexSortedByHomeFeedScore);
-    let mut all_created_posts = s!(AllCreatedPostsV1);
+// pub fn update_hot_or_not_feed_post_scores_for_every_post_in_posts_index_sorted_by_hot_or_not_feed_score_v1_impl(
+//     time_provider: &impl Fn() -> SystemTime,
+// ) {
+//     let posts_index_sorted_by_hot_or_not_feed_score = s!(PostsIndexSortedByHomeFeedScore);
+//     let mut all_created_posts = s!(AllCreatedPostsV1);
 
-    for post_score_index_item in posts_index_sorted_by_hot_or_not_feed_score.iter() {
-        let mut post = all_created_posts
-            .get_cloned(post_score_index_item.post_id)
-            .unwrap();
+//     for post_score_index_item in posts_index_sorted_by_hot_or_not_feed_score.iter() {
+//         let mut post = all_created_posts
+//             .get_cloned(post_score_index_item.post_id)
+//             .unwrap();
 
-        post.recalculate_hot_or_not_feed_score(time_provider);
+//         post.recalculate_hot_or_not_feed_score(time_provider);
 
-        all_created_posts.replace(post_score_index_item.post_id, &post);
-    }
+//         all_created_posts.replace(post_score_index_item.post_id, &post);
+//     }
 
-    s! { AllCreatedPostsV1 = all_created_posts };
-}
+//     s! { AllCreatedPostsV1 = all_created_posts };
+// }
