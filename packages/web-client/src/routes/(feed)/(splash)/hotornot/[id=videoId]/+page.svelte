@@ -11,7 +11,6 @@ import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
-import Hls from 'hls.js'
 import { onMount, tick, onDestroy } from 'svelte'
 import { register as initSwiper } from 'swiper/element/bundle'
 import type { PageData } from './$types'
@@ -173,7 +172,6 @@ beforeNavigate(() => {
             on:loaded={() => hideSplashScreen(500)}
             {i}
             playFormat="hls"
-            {Hls}
             isiPhone={isIPhone}
             inView={i == currentVideoIndex && !isDocumentHidden}
             uid={video.video_uid} />

@@ -10,7 +10,6 @@ import { page } from '$app/stores'
 import { individualUser } from '$lib/helpers/backend'
 import { isiPhone } from '$lib/utils/isSafari'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js'
 
 export let data: PageData
 
@@ -60,7 +59,6 @@ let isIPhone = isiPhone()
         <VideoPlayer
           i={0}
           playFormat="hls"
-          {Hls}
           isiPhone={isIPhone}
           inView
           uid={video.video_uid} />

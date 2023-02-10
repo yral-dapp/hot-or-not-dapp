@@ -10,6 +10,8 @@ declare namespace App {
   // interface Stuff {}
 }
 
+declare let Hls: typeof import('hls.js').default
+
 namespace svelte.JSX {
   interface SvelteWindowProps {
     onbeforeinstallprompt?:

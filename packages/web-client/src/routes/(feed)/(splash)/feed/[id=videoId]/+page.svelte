@@ -22,7 +22,6 @@ import type { PageData } from './$types'
 import { isiPhone } from '$lib/utils/isSafari'
 import { page } from '$app/stores'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js'
 import {
   joinArrayUniquely,
   updateMetadata,
@@ -287,7 +286,6 @@ beforeNavigate(() => {
               )}
             {i}
             playFormat="hls"
-            {Hls}
             isiPhone={isIPhone}
             inView={i == currentVideoIndex &&
               !isDocumentHidden &&
