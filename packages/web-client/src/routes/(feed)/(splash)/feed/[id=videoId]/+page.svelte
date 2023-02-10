@@ -249,6 +249,7 @@ beforeNavigate(() => {
   observer="true"
   css-mode="true"
   slides-per-view="1"
+  space-between="100"
   class="h-full w-full"
   style="height:100%; width: 100%;"
   on:slidechange={handleChange}>
