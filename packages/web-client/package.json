@@ -52,7 +52,7 @@
     "autoprefixer": "10.4.13",
     "c8": "7.12.0",
     "cypress": "12.5.1",
-    "cypress-mochawesome-reporter": "^3.2.3",
+    "cypress-mochawesome-reporter": "^3.3.0",
     "isomorphic-fetch": "3.0.0",
     "jsdom": "21.1.0",
     "postcss": "8.4.21",
