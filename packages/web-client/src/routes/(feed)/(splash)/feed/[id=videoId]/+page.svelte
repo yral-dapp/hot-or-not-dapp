@@ -17,7 +17,6 @@ import { hideSplashScreen } from '$stores/splashScreen'
 import userProfile from '$stores/userProfile'
 import { Principal } from '@dfinity/principal'
 import { onDestroy, onMount, tick } from 'svelte'
-import { register as initSwiper } from 'swiper/element/bundle'
 import type { PageData } from './$types'
 import { isiPhone } from '$lib/utils/isSafari'
 import { page } from '$app/stores'
@@ -210,7 +209,6 @@ function recordStats(
 }
 
 onMount(async () => {
-  initSwiper()
   updateURL()
   $playerState.initialized = false
   $playerState.muted = true
