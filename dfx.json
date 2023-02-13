@@ -22,7 +22,7 @@
     "individual_user_template": {
       "type": "rust",
       "package": "individual_user_template",
-      "candid": "./packages/ic/canister/individual_user_template/can.did",
+      "candid": "./packages/hot-or-not-backend-canister/src/canister/individual_user_template/can.did",
       "declarations": {
         "node_compatibility": true,
         "output": "./packages/web-client/declarations/individual_user_template"
