@@ -1,4 +1,0 @@
-pub mod get_profile_details;
-pub mod update_profile_display_details;
-pub mod update_profile_resend_username_to_user_index_canister;
-pub mod update_profile_set_unique_username_once;

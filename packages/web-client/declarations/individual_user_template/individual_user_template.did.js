@@ -11,10 +11,10 @@ export const idlFactory = ({ IDL }) => {
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const IndividualUserTemplateInitArgs = IDL.Record({
-    'known_principal_ids' : IDL.Vec(
-      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    'known_principal_ids' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
-    'profile_owner' : IDL.Principal,
+    'profile_owner' : IDL.Opt(IDL.Principal),
   });
   const PostDetailsFromFrontend = IDL.Record({
     'hashtags' : IDL.Vec(IDL.Text),
@@ -83,12 +83,6 @@ export const idlFactory = ({ IDL }) => {
     'principal_id' : IDL.Principal,
     'profile_stats' : UserProfileGlobalStats,
     'followers_count' : IDL.Nat64,
-  });
-  const UserAccessRole = IDL.Variant({
-    'CanisterController' : IDL.Null,
-    'ProfileOwner' : IDL.Null,
-    'CanisterAdmin' : IDL.Null,
-    'ProjectCanister' : IDL.Null,
   });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
@@ -196,17 +190,17 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'get_rewarded_for_signing_up' : IDL.Func([], [], []),
-    'get_user_roles' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Vec(UserAccessRole)],
-        ['query'],
-      ),
     'get_user_utility_token_transaction_history_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [Result_2],
         ['query'],
       ),
     'get_utility_token_balance' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_well_known_principal_value' : IDL.Func(
+        [KnownPrincipalType],
+        [IDL.Opt(IDL.Principal)],
+        ['query'],
+      ),
     'return_cycles_to_user_index_canister' : IDL.Func([], [], []),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
@@ -239,20 +233,9 @@ export const idlFactory = ({ IDL }) => {
         [Result_5],
         [],
       ),
-    'update_profile_resend_username_to_user_index_canister' : IDL.Func(
-        [],
-        [Result_6],
-        [],
-      ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
         [Result_6],
-        [],
-      ),
-    'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
-    'update_user_remove_role' : IDL.Func(
-        [UserAccessRole, IDL.Principal],
-        [],
         [],
       ),
   });
@@ -270,10 +253,10 @@ export const init = ({ IDL }) => {
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const IndividualUserTemplateInitArgs = IDL.Record({
-    'known_principal_ids' : IDL.Vec(
-      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    'known_principal_ids' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
-    'profile_owner' : IDL.Principal,
+    'profile_owner' : IDL.Opt(IDL.Principal),
   });
   return [IndividualUserTemplateInitArgs];
 };
