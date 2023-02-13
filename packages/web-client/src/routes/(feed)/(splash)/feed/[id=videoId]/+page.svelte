@@ -18,11 +18,13 @@ import userProfile from '$stores/userProfile'
 import { Principal } from '@dfinity/principal'
 import { onDestroy, onMount, tick } from 'svelte'
 import type { PageData } from './$types'
+import type { Swiper, SwiperOptions } from 'swiper'
+import { register } from 'swiper/element/bundle'
 import { isiPhone } from '$lib/utils/isSafari'
 import { page } from '$app/stores'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
 import {
-  joinArrayUniquely,
+  filterPostsUniquely,
   updateMetadata,
   type VideoViewReport,
 } from '$lib/utils/video'
@@ -50,6 +52,7 @@ let videoStats: Record<number, VideoViewReport> = {}
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
 let showError = false
+let swiperEl: Swiper
 
 $: pathname = $page.url.pathname
 
@@ -92,11 +95,14 @@ async function fetchNextVideos(force = false) {
 
       fetchedVideosCount = res.from
 
-      videos = joinArrayUniquely(videos, res.posts)
+      const newPosts = filterPostsUniquely(videos, res.posts)
+      videos = [...videos, ...newPosts]
+      // swiperEl.virtual.appendSlide(newPosts)
 
       if (res.noMorePosts) {
         const watchedVideos = await getWatchedVideosFromCache()
-        videos = joinArrayUniquely(videos, watchedVideos)
+        const newPosts = filterPostsUniquely(videos, watchedVideos)
+        videos = [...videos, ...newPosts]
       } else if (res.posts.length < fetchCount - 10) {
         fetchNextVideos(true)
       }
@@ -208,7 +214,19 @@ function recordStats(
   }
 }
 
+function configureSwiper() {
+  Object.assign(swiperEl, {
+    direction: 'vertical',
+    observer: true,
+    spaceBetween: 30,
+    cssMode: true,
+    slidesPerView: 1,
+    virtual: true,
+  } as SwiperOptions)
+}
+
 onMount(async () => {
+  configureSwiper()
   updateURL()
   $playerState.initialized = false
   $playerState.muted = true
@@ -243,55 +261,54 @@ beforeNavigate(() => {
 </svelte:head>
 
 <swiper-container
+  bind:this={swiperEl}
+  style="height:100%; width: 100%;"
   direction="vertical"
   observer="true"
+  space-between="30"
   css-mode="true"
   slides-per-view="1"
-  space-between="100"
-  class="h-full w-full"
-  style="height:100%; width: 100%;"
+  virtual="true"
   on:slidechange={handleChange}>
   {#each videos as video, i (i)}
     <swiper-slide style="scroll-snap-stop: always;">
-      {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
-        <HomeFeedPlayer
+      <HomeFeedPlayer
+        {i}
+        id={video.id}
+        likeCount={Number(video.like_count)}
+        displayName={video.created_by_display_name[0]}
+        profileLink={video.created_by_unique_user_name[0] ??
+          video.created_by_user_principal_id}
+        liked={video.liked_by_me}
+        description={video.description}
+        createdById={video.created_by_user_principal_id}
+        videoViews={Number(video.total_view_count)}
+        publisherCanisterId={video.publisher_canister_id}
+        userProfileSrc={video.created_by_profile_photo_url[0]}
+        {individualUser}
+        enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
+          video.hot_or_not_feed_ranking_score[0] !== undefined}
+        thumbnail={getThumbnailUrl(video.video_uid)}>
+        <VideoPlayer
+          bind:this={videoPlayers[i]}
+          on:loaded={() => hideSplashScreen(500)}
+          on:watchedPercentage={({ detail }) =>
+            recordStats(
+              detail,
+              video.publisher_canister_id,
+              video.id,
+              video.created_by_unique_user_name[0] ??
+                video.created_by_user_principal_id,
+              video.home_feed_ranking_score,
+            )}
           {i}
-          id={video.id}
-          likeCount={Number(video.like_count)}
-          displayName={video.created_by_display_name[0]}
-          profileLink={video.created_by_unique_user_name[0] ??
-            video.created_by_user_principal_id}
-          liked={video.liked_by_me}
-          description={video.description}
-          createdById={video.created_by_user_principal_id}
-          videoViews={Number(video.total_view_count)}
-          publisherCanisterId={video.publisher_canister_id}
-          userProfileSrc={video.created_by_profile_photo_url[0]}
-          {individualUser}
-          enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
-            video.hot_or_not_feed_ranking_score[0] !== undefined}
-          thumbnail={getThumbnailUrl(video.video_uid)}>
-          <VideoPlayer
-            bind:this={videoPlayers[i]}
-            on:loaded={() => hideSplashScreen(500)}
-            on:watchedPercentage={({ detail }) =>
-              recordStats(
-                detail,
-                video.publisher_canister_id,
-                video.id,
-                video.created_by_unique_user_name[0] ??
-                  video.created_by_user_principal_id,
-                video.home_feed_ranking_score,
-              )}
-            {i}
-            playFormat="hls"
-            isiPhone={isIPhone}
-            inView={i == currentVideoIndex &&
-              !isDocumentHidden &&
-              pathname.includes('feed')}
-            uid={video.video_uid} />
-        </HomeFeedPlayer>
-      {/if}
+          playFormat="hls"
+          isiPhone={isIPhone}
+          inView={i == currentVideoIndex &&
+            !isDocumentHidden &&
+            pathname.includes('feed')}
+          uid={video.video_uid} />
+      </HomeFeedPlayer>
     </swiper-slide>
   {/each}
   {#if showError}
