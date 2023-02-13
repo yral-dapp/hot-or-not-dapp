@@ -10,22 +10,22 @@ export type VideoViewReport = {
   score: bigint
 }
 
-export function joinArrayUniquely(
-  a: PostPopulated[],
-  b: PostPopulated[],
+export function filterPostsUniquely(
+  source: PostPopulated[],
+  newPosts: PostPopulated[],
 ): PostPopulated[] {
-  b.forEach((o) => {
-    const duplicates = a.findIndex(
-      (v) =>
-        (v.post_id === o.post_id &&
-          v.publisher_canister_id === o.publisher_canister_id) ||
-        v.video_uid === o.video_uid,
-    )
-    if (duplicates < 0) {
-      a.push(o)
-    }
+  return newPosts.filter((o) => {
+    if (
+      source.findIndex(
+        (v) =>
+          (v.post_id === o.post_id &&
+            v.publisher_canister_id === o.publisher_canister_id) ||
+          v.video_uid === o.video_uid,
+      ) > -1
+    ) {
+      return false
+    } else return true
   })
-  return a
 }
 
 export function updateMetadata(video?: PostPopulated) {
