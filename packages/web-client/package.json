@@ -28,8 +28,8 @@
     "@dfinity/identity": "0.15.3",
     "@dfinity/identity-secp256k1": "0.15.3",
     "@dfinity/principal": "0.15.3",
-    "@sentry/svelte": "7.37.1",
-    "@sentry/tracing": "7.37.1",
+    "@sentry/svelte": "7.37.2",
+    "@sentry/tracing": "7.37.2",
     "buffer": "6.0.3",
     "clsx": "1.2.1",
     "hls.js": "1.3.3",
@@ -47,8 +47,8 @@
     "@types/lodash-es": "4.17.6",
     "@types/throttle-debounce": "5.0.0",
     "@types/w3c-image-capture": "1.0.7",
-    "@vitest/coverage-c8": "0.28.4",
-    "@vitest/ui": "0.28.4",
+    "@vitest/coverage-c8": "0.28.5",
+    "@vitest/ui": "0.28.5",
     "autoprefixer": "10.4.13",
     "c8": "7.12.0",
     "cypress": "12.5.1",
@@ -67,6 +67,6 @@
     "vite": "4.1.1",
     "vite-plugin-node-polyfills": "0.7.0",
     "vite-tsconfig-paths": "4.0.5",
-    "vitest": "0.28.4"
+    "vitest": "0.28.5"
   }
 }
