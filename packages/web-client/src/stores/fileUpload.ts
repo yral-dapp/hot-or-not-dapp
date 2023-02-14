@@ -1,3 +1,3 @@
-import { writable } from 'svelte/store';
+import { writable } from 'svelte/store'
 
-export const fileToUpload = writable<File | Blob | null>(null);
+export const fileToUpload = writable<File | Blob | null>(null)

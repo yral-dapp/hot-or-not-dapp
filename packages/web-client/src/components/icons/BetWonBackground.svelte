@@ -1,6 +1,6 @@
 <script lang="ts">
-export { exportClass as class };
-let exportClass: any = '';
+export { exportClass as class }
+let exportClass: any = ''
 </script>
 
 <!-- prettier-ignore -->

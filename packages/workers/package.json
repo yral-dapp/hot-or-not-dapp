@@ -1,19 +1,19 @@
 {
-	"name": "@hnn/workers-api",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"dev": "wrangler dev --env localhost",
-		"publish": "wrangler publish --env main"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"itty-router": "3.0.11"
-	},
-	"devDependencies": {
-		"wrangler": "2.7.1"
-	}
+  "name": "@hnn/workers-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev --env localhost",
+    "publish": "wrangler publish --env main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "itty-router": "3.0.11"
+  },
+  "devDependencies": {
+    "wrangler": "2.9.1"
+  }
 }

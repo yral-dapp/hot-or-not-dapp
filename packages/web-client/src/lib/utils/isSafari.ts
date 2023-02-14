@@ -1,3 +1,3 @@
 export function isiPhone() {
-	return /iPhone|iPod|iPad/.test(navigator.platform);
+  return /iPhone|iPod|iPad/.test(navigator.platform)
 }

@@ -10,9 +10,18 @@ export const idlFactory = ({ IDL }) => {
     'CanisterIdSNSController' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
+  const UserAccessRole = IDL.Variant({
+    'CanisterController' : IDL.Null,
+    'ProfileOwner' : IDL.Null,
+    'CanisterAdmin' : IDL.Null,
+    'ProjectCanister' : IDL.Null,
+  });
   const UserIndexInitArgs = IDL.Record({
-    'known_principal_ids' : IDL.Vec(
-      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    'known_principal_ids' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
+    ),
+    'access_control_map' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(UserAccessRole)))
     ),
   });
   const CanisterStatusType = IDL.Variant({
@@ -38,17 +47,11 @@ export const idlFactory = ({ IDL }) => {
     'nanos_since_epoch' : IDL.Nat32,
     'secs_since_epoch' : IDL.Nat64,
   });
-  const UpgradeStatus = IDL.Record({
+  const UpgradeStatusV1 = IDL.Record({
     'version_number' : IDL.Nat64,
     'last_run_on' : SystemTime,
     'failed_canister_ids' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal)),
     'successful_upgrade_count' : IDL.Nat32,
-  });
-  const UserAccessRole = IDL.Variant({
-    'CanisterController' : IDL.Null,
-    'ProfileOwner' : IDL.Null,
-    'CanisterAdmin' : IDL.Null,
-    'ProjectCanister' : IDL.Null,
   });
   const SetUniqueUsernameError = IDL.Variant({
     'UsernameAlreadyTaken' : IDL.Null,
@@ -60,6 +63,8 @@ export const idlFactory = ({ IDL }) => {
     'Err' : SetUniqueUsernameError,
   });
   return IDL.Service({
+    'backup_all_individual_user_canisters' : IDL.Func([], [], []),
+    'backup_data_to_backup_canister' : IDL.Func([], [], []),
     'get_canister_status_from_management_canister' : IDL.Func(
         [IDL.Principal],
         [CanisterStatusResponse],
@@ -72,7 +77,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'get_index_details_last_upgrade_status' : IDL.Func(
         [],
-        [UpgradeStatus],
+        [UpgradeStatusV1],
         ['query'],
       ),
     'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : IDL.Func(
@@ -100,6 +105,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
+    'receive_data_from_backup_canister_and_restore_data_to_heap' : IDL.Func(
+        [IDL.Principal, IDL.Principal, IDL.Text],
+        [],
+        [],
+      ),
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
@@ -109,7 +119,7 @@ export const idlFactory = ({ IDL }) => {
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
     'update_user_index_upgrade_user_canisters_with_latest_wasm' : IDL.Func(
         [],
-        [UpgradeStatus],
+        [],
         [],
       ),
     'update_user_remove_role' : IDL.Func(
@@ -131,9 +141,18 @@ export const init = ({ IDL }) => {
     'CanisterIdSNSController' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
+  const UserAccessRole = IDL.Variant({
+    'CanisterController' : IDL.Null,
+    'ProfileOwner' : IDL.Null,
+    'CanisterAdmin' : IDL.Null,
+    'ProjectCanister' : IDL.Null,
+  });
   const UserIndexInitArgs = IDL.Record({
-    'known_principal_ids' : IDL.Vec(
-      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    'known_principal_ids' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
+    ),
+    'access_control_map' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(UserAccessRole)))
     ),
   });
   return [UserIndexInitArgs];
