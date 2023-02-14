@@ -1,0 +1,3 @@
+[submodule "packages/hot-or-not-backend-canister"]
+	path = packages/hot-or-not-backend-canister
+	url = https://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@github.com/go-bazzinga/hot-or-not-backend-canister
