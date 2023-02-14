@@ -26,8 +26,8 @@ export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export interface IndividualUserTemplateInitArgs {
-  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
-  'profile_owner' : Principal,
+  'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
+  'profile_owner' : [] | [Principal],
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdConfiguration' : null } |
@@ -114,10 +114,6 @@ export type UpdateProfileSetUniqueUsernameError = {
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
   { 'NotAuthorized' : null } |
   { 'UserCanisterEntryDoesNotExist' : null };
-export type UserAccessRole = { 'CanisterController' : null } |
-  { 'ProfileOwner' : null } |
-  { 'CanisterAdmin' : null } |
-  { 'ProjectCanister' : null };
 export interface UserProfileDetailsForFrontend {
   'unique_user_name' : [] | [string],
   'following_count' : bigint,
@@ -158,12 +154,15 @@ export interface _SERVICE {
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
-  'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result_2
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
+  'get_well_known_principal_value' : ActorMethod<
+    [KnownPrincipalType],
+    [] | [Principal]
+  >,
   'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
@@ -184,14 +183,5 @@ export interface _SERVICE {
     [UserProfileUpdateDetailsFromFrontend],
     Result_5
   >,
-  'update_profile_resend_username_to_user_index_canister' : ActorMethod<
-    [],
-    Result_6
-  >,
   'update_profile_set_unique_username_once' : ActorMethod<[string], Result_6>,
-  'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
-  'update_user_remove_role' : ActorMethod<
-    [UserAccessRole, Principal],
-    undefined
-  >,
 }
