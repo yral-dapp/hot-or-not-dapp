@@ -1,0 +1,3 @@
+[submodule "packages/video-moderation-dapp"]
+	path = packages/video-moderation-dapp
+	url = https://github.com/go-bazzinga/video-moderation-dapp
