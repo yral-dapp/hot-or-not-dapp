@@ -26,8 +26,8 @@
   "devDependencies": {
     "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
     "@types/node": "18.13.0",
-    "@typescript-eslint/eslint-plugin": "5.51.0",
-    "@typescript-eslint/parser": "5.51.0",
+    "@typescript-eslint/eslint-plugin": "5.52.0",
+    "@typescript-eslint/parser": "5.52.0",
     "eslint": "8.34.0",
     "eslint-plugin-svelte3": "4.0.0",
     "prettier": "2.8.4",
