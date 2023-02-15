@@ -26,6 +26,7 @@ export let individualUser: (
 ) => IndividualUserActor
 
 let truncate = true
+let bettingAllowed = true
 
 async function handleShare() {
   try {
@@ -104,12 +105,10 @@ async function handleShare() {
     </div>
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
-      class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
-      <div
-        class="absolute inset-0 z-[10] flex items-center justify-center font-bold">
-        Coming Soon
-      </div>
-      <div class="opacity-50">
+      class="{!bettingAllowed
+        ? 'pointer-events-none opacity-50 brightness-50 grayscale'
+        : ''}  absolute inset-x-0 bottom-0 z-[5] max-h-48">
+      <div class="">
         <HotOrNot />
       </div>
     </div>
