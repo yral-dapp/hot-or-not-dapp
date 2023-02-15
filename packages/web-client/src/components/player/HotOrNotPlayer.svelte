@@ -88,7 +88,7 @@ async function handleShare() {
             e.stopImmediatePropagation()
             truncate = !truncate
           }}
-          class="pointer-events-auto w-80 text-left">
+          class="pointer-events-auto w-80 text-left text-sm">
           {description}
         </button>
       </div>
