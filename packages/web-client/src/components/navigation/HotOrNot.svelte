@@ -10,6 +10,7 @@ import c from 'clsx'
 export let tutorialMode = false
 export let betPlaced: false | 'hot' | 'not' = false
 export let coinsBet = 10
+export let slotsFull = false
 
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
@@ -133,6 +134,13 @@ function toggleBet() {
     </IconButton>
     <span class="text-sm">Hot</span>
   </div>
+  {#if slotsFull}
+    <div
+      class="absolute bottom-16 -translate-x-3 rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
+      Slots are full. Please try again in the <br />
+      next slot after 16:32
+    </div>
+  {/if}
   {#if error}
     <div
       class="absolute bottom-16 -translate-x-3 rounded-md bg-white p-4 text-sm text-black drop-shadow-md">
