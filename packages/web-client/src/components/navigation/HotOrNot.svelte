@@ -11,15 +11,25 @@ export let tutorialMode = false
 export let betPlaced: false | 'hot' | 'not' = false
 export let coinsBet = 10
 
-async function placeBet(bet: 'hot' | 'not') {
-  loading = true
-  setTimeout(() => {
-    betPlaced = bet
-    loading = false
-  }, 2000)
-}
-
 let loading = false
+let tempPlacedBet: false | 'hot' | 'not' = false
+let error = false
+
+async function placeBet(bet: 'hot' | 'not') {
+  try {
+    loading = true
+    tempPlacedBet = bet
+    setTimeout(() => {
+      betPlaced = bet
+      loading = false
+    }, 2000)
+  } catch (e) {
+    error = true
+    setTimeout(() => {
+      error = false
+    }, 2000)
+  }
+}
 
 function increaseBet() {
   if (coinsBet == 10) coinsBet = 50
@@ -39,7 +49,8 @@ function toggleBet() {
 
 <hot-or-not
   class="pointer-events-none flex w-full items-center justify-center space-x-8 px-4">
-  <div class="relative flex flex-col items-center space-y-1">
+  <div
+    class="pointer-events-auto relative flex flex-col items-center space-y-1">
     {#if tutorialMode}
       <div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
@@ -47,9 +58,13 @@ function toggleBet() {
       disabled={tutorialMode}
       on:click={(e) => {
         e.stopImmediatePropagation()
-        betPlaced = 'not'
+        placeBet('not')
       }}>
-      <NotIcon class="h-24" />
+      <NotIcon
+        class={c('h-24 transition-transform', {
+          'scale-110': tempPlacedBet === 'not',
+          'scale-90 grayscale': tempPlacedBet === 'hot',
+        })} />
     </IconButton>
     <span class="text-sm">Not</span>
   </div>
@@ -110,8 +125,18 @@ function toggleBet() {
         placeBet('hot')
         betPlaced = 'hot'
       }}>
-      <HotIcon class="h-24" />
+      <HotIcon
+        class={c('h-24 transition-transform', {
+          'scale-110': tempPlacedBet === 'hot',
+          'scale-90 grayscale': tempPlacedBet === 'not',
+        })} />
     </IconButton>
     <span class="text-sm">Hot</span>
   </div>
+  {#if error}
+    <div
+      class="absolute bottom-16 -translate-x-3 rounded-md bg-white p-4 text-sm text-black drop-shadow-md">
+      Something went wrong! Please try again.
+    </div>
+  {/if}
 </hot-or-not>
