@@ -100,6 +100,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: "true"
+          token: ${{ secrets.SUBMODULE_PAT }}
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
