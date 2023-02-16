@@ -8,17 +8,18 @@ import NotIcon from '$components/icons/NotIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
 import c from 'clsx'
-import { fade, slide } from 'svelte/transition'
+import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
-export let betPlaced: false | 'hot' | 'not' = 'not'
+export let betPlaced: false | 'hot' | 'not' = false
 export let betStatus: 'pending' | 'lost' | 'won' = 'pending'
 export let coinsBet = 10
 export let slotsFull = false
 
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
-let error = false
+let error =
+  'You do not have enough tokens to bet. Your wallet balance is 5 tokens.'
 
 async function placeBet(bet: 'hot' | 'not') {
   try {
@@ -29,9 +30,9 @@ async function placeBet(bet: 'hot' | 'not') {
       loading = false
     }, 2000)
   } catch (e) {
-    error = true
+    error = 'Something went wrong. Please try again'
     setTimeout(() => {
-      error = false
+      error = ''
     }, 2000)
   }
 }
@@ -151,8 +152,8 @@ function toggleBet() {
       {/if}
       {#if error}
         <div
-          class="absolute bottom-16 -translate-x-3 rounded-md bg-white p-4 text-sm text-black drop-shadow-md">
-          Something went wrong! Please try again.
+          class="absolute bottom-16 -translate-x-3 rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
+          {error}
         </div>
       {/if}
     </div>
