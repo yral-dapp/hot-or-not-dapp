@@ -80,12 +80,12 @@ function toggleBet() {
         increaseBet()
       }}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-        invisible: betPlaced,
+        invisible: betPlaced || tempPlacedBet,
       })}>
       <ChevronUpIcon class="h-2" />
     </IconButton>
     <button
-      disabled={betPlaced !== false}
+      disabled={betPlaced !== false || tempPlacedBet !== false}
       on:click|stopPropagation={toggleBet}
       class="relative h-20 w-20 select-none">
       <BetCoinIcon class="h-20" />
@@ -109,7 +109,7 @@ function toggleBet() {
       }}
       disabled={coinsBet == 10}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-        invisible: betPlaced,
+        invisible: betPlaced || tempPlacedBet,
       })}>
       <ChevronUpIcon class="h-2 rotate-180" />
     </IconButton>
@@ -124,7 +124,6 @@ function toggleBet() {
       on:click={(e) => {
         e.stopImmediatePropagation()
         placeBet('hot')
-        betPlaced = 'hot'
       }}>
       <HotIcon
         class={c('h-24 transition-transform', {
