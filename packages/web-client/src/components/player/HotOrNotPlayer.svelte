@@ -105,12 +105,11 @@ async function handleShare() {
     </div>
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
-      class="{!bettingAllowed
+      class="absolute inset-x-0 bottom-0 z-[5] h-40 
+      {!bettingAllowed
         ? 'pointer-events-none opacity-50 brightness-50 grayscale'
-        : ''}  absolute inset-x-0 bottom-0 z-[5] max-h-48">
-      <div class="">
-        <HotOrNot />
-      </div>
+        : ''}">
+      <HotOrNot />
     </div>
   </div>
 </player>
