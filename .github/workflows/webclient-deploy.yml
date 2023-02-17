@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-				with:
-					submodules: "true"
-					token: ${{ secrets.SUBMODULE_PAT }}
+        with:
+          submodules: "true"
+          token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build:static
@@ -39,9 +39,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-				with:
-					submodules: "true"
-					token: ${{ secrets.SUBMODULE_PAT }}
+        with:
+          submodules: "true"
+          token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build
