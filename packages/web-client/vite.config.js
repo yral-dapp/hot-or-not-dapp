@@ -9,7 +9,7 @@ import { defineConfig } from 'vite'
 
 /** @type {import('vite').UserConfig} */
 export default ({ mode }) => {
-  const isDev = mode === 'production'
+  const isDev = mode !== 'production'
 
   console.log('starting vite in', mode, 'mode')
 
@@ -19,7 +19,7 @@ export default ({ mode }) => {
 
   try {
     canisterIds = isDev
-      ? require('./../../.dfx/local/canister_ids.json')
+      ? require('../hot-or-not-backend-canister/.dfx/local/canister_ids.json')
       : require('./../../canister_ids.json')
   } catch (e) {
     console.error('Error finding canisters info', e)
