@@ -130,13 +130,15 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            target/
-            .dfx/
+            ./packages/hot-or-not-backend-canister/target/
+            ./packages/hot-or-not-backend-canister/.dfx/
           key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Start DFX Server
         if: always()
-        run: dfx start --background
+        run: |
+          cd ./packages/hot-or-not-backend-canister
+          dfx start --background
 
       - name: Provision local canister IDs for the canisters
         run: |
@@ -147,7 +149,9 @@ jobs:
 
       - name: Install canisters
         if: always()
-        run: ./packages/hot-or-not-backend-canister/scripts/canisters/local_deploy/install_all_canisters_without_test.sh
+        run: |
+          cd ./packages/hot-or-not-backend-canister/
+          ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()
