@@ -7,6 +7,8 @@
     "./packages/workers"
   ],
   "scripts": {
+    "backend": "cd ./packages/hot-or-not-backend-canister && dfx start",
+    "backend:clean": "cd ./packages/hot-or-not-backend-canister && dfx start --clean",
     "build": "npm run wc:build",
     "wc:check": "npm run check --w @hnn/web-client",
     "wc:tsc": "npm run tsc --w @hnn/web-client",
@@ -32,6 +34,6 @@
     "eslint-plugin-svelte3": "4.0.0",
     "prettier": "2.8.4",
     "prettier-plugin-svelte": "2.9.0",
-    "prettier-plugin-tailwindcss": "0.2.2"
+    "prettier-plugin-tailwindcss": "0.2.3"
   }
 }
