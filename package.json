@@ -9,6 +9,7 @@
   "scripts": {
     "backend": "cd ./packages/hot-or-not-backend-canister && dfx start",
     "backend:clean": "cd ./packages/hot-or-not-backend-canister && dfx start --clean",
+    "backend:install": "cd ./packages/hot-or-not-backend-canister && ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh",
     "build": "npm run wc:build",
     "wc:check": "npm run check --w @hnn/web-client",
     "wc:tsc": "npm run tsc --w @hnn/web-client",
