@@ -51,7 +51,7 @@
     "@vitest/ui": "0.28.5",
     "autoprefixer": "10.4.13",
     "c8": "7.13.0",
-    "cypress": "12.5.1",
+    "cypress": "12.6.0",
     "cypress-mochawesome-reporter": "3.3.0",
     "isomorphic-fetch": "3.0.0",
     "jsdom": "21.1.0",
