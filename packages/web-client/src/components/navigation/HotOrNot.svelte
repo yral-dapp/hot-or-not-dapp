@@ -18,8 +18,7 @@ export let slotsFull = false
 
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
-let error =
-  'You do not have enough tokens to bet. Your wallet balance is 5 tokens.'
+let error = ''
 
 async function placeBet(bet: 'hot' | 'not') {
   try {
@@ -31,6 +30,8 @@ async function placeBet(bet: 'hot' | 'not') {
     }, 2000)
   } catch (e) {
     error = 'Something went wrong. Please try again'
+    error =
+      'You do not have enough tokens to bet. Your wallet balance is 5 tokens.'
     setTimeout(() => {
       error = ''
     }, 2000)
