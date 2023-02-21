@@ -9,6 +9,7 @@ on:
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
       - ".github/workflows/webclient-test.yml"
+      - ".github/workflows/webclient-merge.yml"
 
 jobs:
   google-chat-webhook:
