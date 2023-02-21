@@ -77,7 +77,7 @@ async function copyLink() {
     await navigator.clipboard.writeText(link)
     copied = true
   } catch (e) {
-    Log({ error: e, from: '1 copyLink' }, 'error')
+    Log({ error: e, from: '1 copyLink' }, 'warn')
   }
 }
 

@@ -44,7 +44,10 @@ jobs:
     outputs:
       previewUrl: ${{ steps.preview-url.outputs.url }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: "true"
+          token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build
@@ -130,15 +133,17 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            target/
-            .dfx/
+            ./packages/hot-or-not-backend-canister/target/
+            ./packages/hot-or-not-backend-canister/.dfx/
           key: ${{ runner.os }}-testing-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Start DFX Server
         if: always()
+        working-directory: ./packages/hot-or-not-backend-canister
         run: dfx start --background
 
       - name: Provision local canister IDs for the canisters
+        working-directory: ./packages/hot-or-not-backend-canister
         run: |
           dfx canister create --no-wallet configuration
           dfx canister create --no-wallet individual_user_template
@@ -147,7 +152,8 @@ jobs:
 
       - name: Install canisters
         if: always()
-        run: ./packages/hot-or-not-backend-canister/scripts/canisters/local_deploy/install_all_canisters_without_test.sh
+        working-directory: ./packages/hot-or-not-backend-canister
+        run: ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh
 
       - name: Test DFX connection
         if: always()

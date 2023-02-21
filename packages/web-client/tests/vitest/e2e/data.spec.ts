@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { HttpAgent } from '@dfinity/agent'
 //@ts-ignore
-import canisterIds from '../../../../../.dfx/local/canister_ids.json'
+import canisterIds from '../../../../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
 import { createActor as createUserIndexActor } from '../../../declarations/user_index/index.js'
 import { createActor as createIndividualUserActor } from '../../../declarations/individual_user_template/index.js'
 import fetch from 'isomorphic-fetch'

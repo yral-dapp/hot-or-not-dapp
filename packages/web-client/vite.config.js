@@ -20,8 +20,8 @@ export default ({ mode }) => {
 
   try {
     canisterIds = isDev
-      ? require('./../../.dfx/local/canister_ids.json')
-      : require('./../../canister_ids.json')
+      ? require('../hot-or-not-backend-canister/.dfx/local/canister_ids.json')
+      : require('../hot-or-not-backend-canister/canister_ids.json')
   } catch (e) {
     console.error('Error finding canisters info', e)
     throw '⚠ Before starting the dev server you need to run: `dfx deploy`'

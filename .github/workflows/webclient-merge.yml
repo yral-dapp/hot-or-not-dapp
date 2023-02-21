@@ -2,20 +2,16 @@ name: Web-client changelog
 
 on:
   pull_request:
-    types: [closed]
-  push:
-    branches:
-      - main
+    types:
+      - closed
     paths:
       - "packages/web-client/**"
-      - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
-      - ".github/workflows/webclient-test.yml"
+      - ".github/workflows/**"
 
 jobs:
   google-chat-webhook:
     name: Google chat bot
-    if: github.actor != 'dependabot[bot]'
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Send deployment URL to Google Chat
