@@ -7,12 +7,13 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import NotIcon from '$components/icons/NotIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
+import WalletIcon from '$components/icons/WalletIcon.svelte'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
-export let betPlaced: false | 'hot' | 'not' = false
-export let betStatus: 'pending' | 'lost' | 'won' = 'pending'
+export let betPlaced: false | 'hot' | 'not' = 'hot'
+export let betStatus: 'pending' | 'lost' | 'won' = 'won'
 export let coinsBet = 10
 export let slotsFull = false
 
@@ -158,45 +159,71 @@ function toggleBet() {
         </div>
       {/if}
     </div>
-  {:else if betStatus === 'pending'}
-    <div transition:fade class="flex h-full items-center space-x-4 px-8">
-      <div class="shrink-0">
-        {#if betPlaced === 'hot'}
-          <HotIcon class="h-16" />
-        {:else if betPlaced === 'not'}
-          <NotIcon class="h-16" />
-        {/if}
-      </div>
-      <div class="relative h-16 w-16 shrink-0">
-        <BetCoinIcon class="h-16" />
-        <span
-          style="text-shadow: 3px 3px 0 #EA9C00;"
-          class="absolute inset-0 flex select-none items-center justify-center text-2xl font-extrabold text-[#ffeea8]">
-          {coinsBet}
-        </span>
-      </div>
-      <div class="flex flex-col space-y-1">
-        <div class="text-sm">
-          You have placed bet on {betPlaced === 'hot' ? 'Hot' : 'Not'} for 10 coins.
-          Your bet details:
+  {:else if betStatus === 'pending' || betStatus === 'won'}
+    <div transition:fade class="flex h-full items-center space-x-4 px-4">
+      <div
+        class={c('flex items-center', {
+          'translate-y-4 -space-y-8 -space-x-8': betStatus !== 'pending',
+        })}>
+        <div class="z-[2] shrink-0">
+          {#if betPlaced === 'hot'}
+            <HotIcon class="h-16" />
+          {:else if betPlaced === 'not'}
+            <NotIcon class="h-16" />
+          {/if}
         </div>
-        <div class="flex items-center space-x-2">
-          <div
-            class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
-            <TimerIcon class="h-4" />
-            <span class=" text-sm text-white">10:57</span>
-          </div>
-          <div
-            class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
-            <UserAvatarIcon class="h-4" />
-            <span class=" text-sm text-white">11/20</span>
-          </div>
+        <div class="relative z-[1] h-16 w-16 shrink-0">
+          <BetCoinIcon class="h-16" />
+          <span
+            style="text-shadow: 3px 3px 0 #EA9C00;"
+            class="absolute inset-0 flex select-none items-center justify-center text-2xl font-extrabold text-[#ffeea8]">
+            {coinsBet}
+          </span>
         </div>
       </div>
+      {#if betStatus === 'pending'}
+        <div class="flex flex-col space-y-1">
+          <div class="text-sm">
+            You have placed bet on {betPlaced === 'hot' ? 'Hot' : 'Not'} for 10 coins.
+            Your bet details:
+          </div>
+          <div class="flex items-center space-x-2">
+            <div
+              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
+              <TimerIcon class="h-4" />
+              <span class=" text-sm text-white">10:57</span>
+            </div>
+            <div
+              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
+              <UserAvatarIcon class="h-4" />
+              <span class=" text-sm text-white">11/20</span>
+            </div>
+          </div>
+        </div>
+      {:else}
+        <div
+          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border text-xs">
+          {betStatus === 'won' ? 'Win' : 'Lose'} Icon
+        </div>
+        <div class="flex flex-col space-y-1">
+          <div class="text-sm">
+            You placed bet on {betPlaced === 'hot' ? 'Hot' : 'Not'} for 10 coins.
+            Bet result:
+          </div>
+          <div class="flex items-center space-x-2">
+            <div
+              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
+              <div class="h-4 w-4 rounded-full border" />
+              <span class=" text-sm text-white">10</span>
+            </div>
+            <div
+              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
+              <WalletIcon class="h-4" />
+              <span class=" text-sm text-white">30</span>
+            </div>
+          </div>
+        </div>
+      {/if}
     </div>
-  {:else if betStatus === 'won'}
-    <div>You have won</div>
-  {:else}
-    <div>You have lost</div>
   {/if}
 </hot-or-not>
