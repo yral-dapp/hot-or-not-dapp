@@ -2,7 +2,8 @@ name: Web-client changelog
 
 on:
   pull_request:
-    types: [closed]
+    branches:
+      - main
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
