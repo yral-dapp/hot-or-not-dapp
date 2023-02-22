@@ -12,14 +12,14 @@ import c from 'clsx'
 import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
-export let betPlaced: false | 'hot' | 'not' = 'hot'
-export let betStatus: 'pending' | 'lost' | 'won' = 'won'
+export let betPlaced: false | 'hot' | 'not' = false
+export let betStatus: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
 export let coinsBet = 10
 export let slotsFull = false
 
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
-let error = ''
+let error = 'Coming soon'
 
 async function placeBet(bet: 'hot' | 'not') {
   try {
@@ -159,7 +159,7 @@ function toggleBet() {
         </div>
       {/if}
     </div>
-  {:else if betStatus === 'pending' || betStatus === 'won'}
+  {:else}
     <div transition:fade class="flex h-full items-center space-x-4 px-4">
       <div
         class={c('flex items-center', {
@@ -202,8 +202,8 @@ function toggleBet() {
         </div>
       {:else}
         <div
-          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border text-xs">
-          {betStatus === 'won' ? 'Win' : 'Lose'} Icon
+          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border text-xs capitalize">
+          {betStatus} Icon
         </div>
         <div class="flex flex-col space-y-1">
           <div class="text-sm">
@@ -219,7 +219,9 @@ function toggleBet() {
             <div
               class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
               <WalletIcon class="h-4" />
-              <span class=" text-sm text-white">30</span>
+              <span class=" text-sm text-white">
+                {betStatus !== 'won' ? '-10' : '20'}
+              </span>
             </div>
           </div>
         </div>
