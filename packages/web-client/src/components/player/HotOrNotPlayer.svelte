@@ -26,7 +26,7 @@ export let individualUser: (
 ) => IndividualUserActor
 
 let truncate = true
-let bettingAllowed = true
+let bettingAllowed = false
 
 async function handleShare() {
   try {
