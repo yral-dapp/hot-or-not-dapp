@@ -38,7 +38,7 @@ const findWallet = () => {
           bind:value={walletId}
           on:change={findWallet}
           type="text"
-          placeholder="Enter Wallet ID to send tokens"
+          placeholder="Enter user's ID or username to send tokens"
           class="w-full rounded-md bg-white/10 py-4" />
       </div>
       {#if walletId}
