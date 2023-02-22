@@ -8,6 +8,10 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
 
 let walletId = ''
+
+const findWallet = () => {
+  console.log('calling api')
+}
 </script>
 
 <svelte:head>
@@ -32,6 +36,7 @@ let walletId = ''
       <div class="w-full pt-6">
         <Input
           bind:value={walletId}
+          on:change={findWallet}
           type="text"
           placeholder="Enter Wallet ID to send tokens"
           class="w-full rounded-md bg-white/10 py-4" />
