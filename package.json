@@ -9,7 +9,7 @@
   "scripts": {
     "backend": "cd ./packages/hot-or-not-backend-canister && dfx start",
     "backend:clean": "cd ./packages/hot-or-not-backend-canister && dfx start --clean",
-    "backend:install": "cd ./packages/hot-or-not-backend-canister && ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh",
+    "backend:install": "cd ./packages/hot-or-not-backend-canister && ./scripts/canisters/local_deploy/install_all_canisters.sh --skip-test",
     "build": "npm run wc:build",
     "wc:check": "npm run check --w @hnn/web-client",
     "wc:tsc": "npm run tsc --w @hnn/web-client",
@@ -29,8 +29,8 @@
   "devDependencies": {
     "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
     "@types/node": "18.14.0",
-    "@typescript-eslint/eslint-plugin": "5.52.0",
-    "@typescript-eslint/parser": "5.52.0",
+    "@typescript-eslint/eslint-plugin": "5.53.0",
+    "@typescript-eslint/parser": "5.53.0",
     "eslint": "8.34.0",
     "eslint-plugin-svelte3": "4.0.0",
     "prettier": "2.8.4",
