@@ -10,11 +10,15 @@ import { generateRandomName } from '$lib/utils/randomUsername'
 let walletId = ''
 </script>
 
+<svelte:head>
+  <title>Hot or Not | Wallet | Send tokens</title>
+</svelte:head>
+
 <HomeLayout>
   <svelte:fragment slot="top">
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
-      Refer & Earn
+      Send Tokens
       <div class="absolute top-4 left-4">
         <IconButton href="/wallet-staging">
           <CaretLeftIcon class="h-5 w-5" />
