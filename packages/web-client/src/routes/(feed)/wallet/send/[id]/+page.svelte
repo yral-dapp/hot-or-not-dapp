@@ -1,17 +1,47 @@
 <script lang="ts">
+import type { UserProfileDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
+import { individualUser, userIndex } from '$lib/helpers/backend'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { isPrincipal } from '$lib/utils/isPrincipal'
 import { generateRandomName } from '$lib/utils/randomUsername'
+import { Principal } from '@dfinity/principal'
+import { debounce } from 'throttle-debounce'
 
 let walletId = ''
+let foundUser: UserProfileDetailsForFrontend | null = null
+let loading = false
+let selectedUserId: Principal | null = null
 
-const findWallet = () => {
-  console.log('calling api')
-}
+const findWallet = debounce(500, async () => {
+  // if (!!walletId.trim()) return
+  loading = true
+  foundUser = selectedUserId = null
+  let canisterId: Principal | undefined = undefined
+  if (isPrincipal(walletId)) {
+    canisterId
+    await userIndex().get_user_canister_id_from_user_principal_id(
+      Principal.from(walletId),
+    )[0]
+  } else {
+    canisterId = await userIndex().get_user_canister_id_from_unique_user_name(
+      walletId,
+    )[0]
+  }
+  if (!canisterId) {
+    loading = false
+    return
+  }
+
+  foundUser = await individualUser(canisterId[0]).get_profile_details()
+
+  loading = false
+})
 </script>
 
 <svelte:head>
@@ -36,12 +66,22 @@ const findWallet = () => {
       <div class="w-full pt-6">
         <Input
           bind:value={walletId}
-          on:change={findWallet}
+          on:blur={findWallet}
           type="text"
-          placeholder="Enter user's ID or username to send tokens"
+          placeholder="Enter user's ID or username to search user"
           class="w-full rounded-md bg-white/10 py-4" />
       </div>
-      {#if walletId}
+      {#if loading}
+        <div
+          class="flex h-full w-full flex-col items-center justify-center space-y-4 px-16">
+          <LoadingIcon class="h-5 w-5 animate-spin-slow" />
+        </div>
+      {:else if walletId && !foundUser}
+        <div
+          class="flex h-full w-full flex-col items-center justify-center space-y-4 px-16">
+          No such user found
+        </div>
+      {:else if foundUser}
         <div class="flex w-full items-center justify-between py-8 text-white">
           <div class="flex items-center space-x-4">
             <img
@@ -60,7 +100,9 @@ const findWallet = () => {
         <div
           class="flex h-full w-full flex-col items-center justify-center space-y-4 px-16">
           <NoTransactionsIcon class="w-56" />
-          <div class="text-lg">You have not made any transactions yet</div>
+          <div class="text-md text-center">
+            You have not made any transactions yet
+          </div>
         </div>
       {/if}
     </div>
