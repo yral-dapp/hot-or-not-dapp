@@ -20,14 +20,6 @@ import { loadingAuthStatus } from '$stores/loading'
 import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 
-const link = $page.url.host.includes('ic0.app')
-  ? `https://${
-      import.meta.env.VITE_WEBCLIENT_CANISTER_ID
-    }.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${
-      $userProfile.principal_id
-    }&login=true`
-  : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
-
 let selectedTab = 0
 let endOfList = false
 let loading = true
@@ -37,7 +29,7 @@ let history: TransactionHistory[] = []
 const INVITE_WIN_TOKENS = 500
 
 async function loadHistory() {
-  if (endOfList) {
+  if (endOfList || !loggedIn) {
     return
   }
 
@@ -94,6 +86,16 @@ onMount(() => {
 })
 
 $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
+
+$: link = !loggedIn
+  ? ''
+  : $page.url.host.includes('ic0.app')
+  ? `https://${
+      import.meta.env.VITE_WEBCLIENT_CANISTER_ID
+    }.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${
+      $userProfile.principal_id
+    }&login=true`
+  : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
 </script>
 
 <svelte:head>
@@ -125,7 +127,7 @@ $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
         <div class="shrink-0  text-center text-2xl font-bold">
           Invite & Win {INVITE_WIN_TOKENS} tokens
         </div>
-        {#if true}
+        {#if loggedIn}
           <div class="shrink-0 text-center text-sm opacity-70">
             Send a referral link to your friends via link/whatsapp and win
             tokens

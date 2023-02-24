@@ -37,7 +37,7 @@ let recordingProgress: Tweened<number> | undefined = tweened(0, {
   duration: 1000,
   easing: linear,
 })
-let canvasEl: HTMLCanvasElement
+let canvasEl: HTMLCanvasElement | undefined = undefined
 let cameraEl: HTMLElement
 let filtersEl: HTMLElement
 let selectedFilter: keyof typeof allFilters | 'clear' = 'clear'
@@ -221,7 +221,7 @@ async function startRecording(ignoreTimer = false) {
       timerCountdown = cameraControls.timer === '5s' ? 5 : 10
       setTimer()
     } else {
-      if (useCanvas) {
+      if (useCanvas && canvasEl) {
         recordStream = canvasEl.captureStream(30)
         audioTrack && recordStream.addTrack(audioTrack)
       } else recordStream = mediaStream
@@ -281,8 +281,8 @@ async function updateCanvas(height: number, width: number) {
 
 function computeFrame() {
   try {
-    const ctx = canvasEl.getContext('2d', { willReadFrequently: true })
-    if (ctx) {
+    const ctx = canvasEl?.getContext('2d', { willReadFrequently: true })
+    if (canvasEl && ctx) {
       ctx.drawImage(
         videoEl,
         0,
