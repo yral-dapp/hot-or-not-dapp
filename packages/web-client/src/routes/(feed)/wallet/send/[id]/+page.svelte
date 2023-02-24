@@ -7,16 +7,23 @@ import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import { individualUser, userIndex } from '$lib/helpers/backend'
+import { fetchHistory } from '$lib/helpers/profile'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { isPrincipal } from '$lib/utils/isPrincipal'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { Principal } from '@dfinity/principal'
+import { onMount } from 'svelte'
 import { debounce } from 'throttle-debounce'
 
 let walletId = ''
 let foundUser: UserProfileDetailsForFrontend | null = null
 let loading = false
 let selectedUserId: Principal | null = null
+let recents: UserProfileDetailsForFrontend[] = []
+
+async function populateRecentTransactions() {
+  const transactions = await fetchHistory(history.length)
+}
 
 const findWallet = debounce(500, async () => {
   // if (!!walletId.trim()) return
@@ -41,6 +48,10 @@ const findWallet = debounce(500, async () => {
   foundUser = await individualUser(canisterId[0]).get_profile_details()
 
   loading = false
+})
+
+onMount(() => {
+  populateRecentTransactions()
 })
 </script>
 
@@ -105,6 +116,22 @@ const findWallet = debounce(500, async () => {
           </div>
         </div>
       {/if}
+      <div
+        class="flex h-full w-full flex-col items-center justify-center space-y-4 px-16">
+        <div>Recents</div>
+        {#each recents as recent}
+          <div class="flex items-center space-x-4">
+            <img
+              src={recent.profile_picture_url[0]}
+              alt="avatar"
+              class="h-12 w-12 rounded-full object-cover" />
+            <div class="flex flex-col items-start">
+              <span>{recent.display_name}</span>
+              <span class="text-sm text-white/50">10 Aug</span>
+            </div>
+          </div>
+        {/each}
+      </div>
     </div>
   </svelte:fragment>
 </HomeLayout>
