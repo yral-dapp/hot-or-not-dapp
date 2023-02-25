@@ -4,9 +4,9 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 // import { partytownVite } from '@builder.io/partytown/utils';
 
-const isDev = mode !== 'production'
+const isDev = process.env.NODE_ENV !== 'production'
 
-console.log('starting vite in', mode, 'mode')
+console.log('starting vite in', process.env.NODE_ENV, 'mode')
 
 const DFX_PORT = 4943
 
@@ -27,13 +27,13 @@ const canisterDefinitions = Object.entries(canisterIds).reduce(
   (acc, [key, val]) => ({
     ...acc,
     [`process.env.${key.toUpperCase()}_CANISTER_ID`]: isDev
-      ? JSON.stringify(val.local)
-      : JSON.stringify(val.ic),
+      ? JSON.stringify((val as any).local)
+      : JSON.stringify((val as any).ic),
   }),
   {},
 )
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   resolve: {
     alias: {
       $canisters: resolve('./declarations'),
