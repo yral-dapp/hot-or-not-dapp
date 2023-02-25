@@ -1,4 +1,5 @@
 import { resolve } from 'path'
+//@ts-ignore
 import { sveltekit } from '@sveltejs/kit/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
@@ -14,8 +15,10 @@ let canisterIds = {}
 
 try {
   canisterIds = isDev
-    ? import('../hot-or-not-backend-canister/.dfx/local/canister_ids.json')
-    : import('../hot-or-not-backend-canister/canister_ids.json')
+    ? await import(
+        '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
+      )
+    : await import('../hot-or-not-backend-canister/canister_ids.json')
 } catch (e) {
   console.error('Error finding canisters info', e)
   throw '⚠ Before starting the dev server you need to run: `dfx deploy`'
@@ -74,14 +77,11 @@ export default defineConfig(() => ({
   },
   plugins: [
     sveltekit(),
-    // https://github.com/vitejs/vite/discussions/2785#discussioncomment-4738116
     nodePolyfills({
+      // https://github.com/vitejs/vite/discussions/2785#discussioncomment-4738116
       // Whether to polyfill `node:` protocol imports.
       protocolImports: true,
     }),
-    // partytownVite({
-    // 	dest: join(process.cwd(), 'static', '~partytown')
-    // }),
   ],
   optimizeDeps: {
     esbuildOptions: {
