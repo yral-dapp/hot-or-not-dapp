@@ -210,8 +210,6 @@ onMount(async () => {
 
 onDestroy(() => {
   $fileToUpload = null
-  videoEl?.pause()
-  videoEl?.load()
   videoStatusInterval && clearInterval(videoStatusInterval)
 })
 </script>
@@ -349,7 +347,7 @@ onDestroy(() => {
     <div class="pt-16 pb-24">
       <div class="pb-4">
         <span class="text-primary">Note:</span>
-         Once the video is uploaded on the server it can't be deleted.
+        Once the video is uploaded on the server it can't be deleted.
       </div>
       {#if uploadStatus === 'to-upload'}
         <Button class="w-full" on:click={nextStep}>Upload Video</Button>
