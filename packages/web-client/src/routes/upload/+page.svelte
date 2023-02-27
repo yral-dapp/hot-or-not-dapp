@@ -77,7 +77,7 @@ async function updateVideoStream() {
   videoEl.srcObject = mediaStream
 }
 
-function checkFileSelected(files: FileList | null) {
+function checkInput(files: FileList | null) {
   loading = true
   if (files && files[0]) {
     if (files[0].size / 1024 / 1024 > 200) {
@@ -386,7 +386,6 @@ onDestroy(async () => {
           on:play
           muted
           bind:this={videoEl}
-          autoplay
           playsinline
           style={!useCanvas
             ? cameraControls.flip.facingMode === 'user'
@@ -576,7 +575,7 @@ onDestroy(async () => {
   disabled={loading || recording}
   bind:this={inputEl}
   class="hidden"
-  on:change={(e) => checkFileSelected(e.currentTarget.files)} />
+  on:change={(e) => checkInput(e.currentTarget.files)} />
 
 <Popup
   showCloseButton
