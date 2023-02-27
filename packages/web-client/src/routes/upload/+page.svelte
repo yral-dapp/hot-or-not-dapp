@@ -78,7 +78,6 @@ async function updateVideoStream() {
 }
 
 async function checkLoadedVideo(videoEl: HTMLVideoElement, file: File) {
-  URL.revokeObjectURL(videoEl.src)
   if (videoEl.duration && videoEl.duration > 1) {
     if (videoEl.duration > 60) {
       invalidFileSelected = {
@@ -105,6 +104,7 @@ async function checkLoadedVideo(videoEl: HTMLVideoElement, file: File) {
     }
     loading = false
   }
+  URL.revokeObjectURL(videoEl.src)
 }
 
 function checkInput(files: FileList | null) {
