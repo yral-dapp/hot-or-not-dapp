@@ -55,6 +55,7 @@ let invalidFileSelected = {
   error: 'size',
 }
 let audioTrack: MediaStreamTrack | undefined = undefined
+let fileToUploadTemp: File | null = null
 
 const MAX_RECORDING_SECONDS = 60
 const filterPreviewImage =
@@ -77,6 +78,36 @@ async function updateVideoStream() {
   videoEl.srcObject = mediaStream
 }
 
+async function checkLoadedVideo() {
+  if (videoEl.duration && videoEl.duration > 1) {
+    if (videoEl.duration > 60) {
+      invalidFileSelected = {
+        show: true,
+        error: 'length',
+      }
+      loading = false
+    } else {
+      Log(
+        {
+          res: 'Selected file is fine. Proceeding',
+          source: '0 checkFileSelected',
+        },
+        'info',
+      )
+      $fileToUpload = fileToUploadTemp
+      await videoEl.pause()
+      goto('/upload/new')
+    }
+  } else {
+    invalidFileSelected = {
+      show: true,
+      error: 'other',
+    }
+    loading = false
+  }
+  URL.revokeObjectURL(videoEl.src)
+}
+
 function checkInput(files: FileList | null) {
   loading = true
   if (files && files[0]) {
@@ -91,35 +122,9 @@ function checkInput(files: FileList | null) {
     }
     const videoEl = document.createElement('video')
     videoEl.preload = 'metadata'
-    videoEl.onloadedmetadata = () => {
-      URL.revokeObjectURL(videoEl.src)
-      if (videoEl.duration && videoEl.duration > 1) {
-        if (videoEl.duration > 60) {
-          invalidFileSelected = {
-            show: true,
-            error: 'length',
-          }
-          loading = false
-        } else {
-          Log(
-            {
-              res: 'Selected file is fine. Proceeding',
-              source: '0 checkFileSelected',
-            },
-            'info',
-          )
-          $fileToUpload = files[0]
-          goto('/upload/new')
-        }
-      } else {
-        invalidFileSelected = {
-          show: true,
-          error: 'other',
-        }
-        loading = false
-      }
-    }
     videoEl.src = URL.createObjectURL(files[0])
+    fileToUploadTemp = files[0]
+    videoEl.onloadedmetadata = () => checkLoadedVideo()
   }
 }
 
