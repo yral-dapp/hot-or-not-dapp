@@ -383,7 +383,6 @@ onDestroy(async () => {
       {:else}
         <!-- svelte-ignore a11y-media-has-caption -->
         <video
-          on:play
           muted
           bind:this={videoEl}
           playsinline
