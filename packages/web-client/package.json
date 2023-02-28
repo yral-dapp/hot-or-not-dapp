@@ -28,7 +28,7 @@
     "@dfinity/identity": "0.15.4",
     "@dfinity/identity-secp256k1": "0.15.4",
     "@dfinity/principal": "0.15.4",
-    "@sentry/svelte": "7.38.0",
+    "@sentry/svelte": "7.39.0",
     "@sentry/tracing": "7.38.0",
     "buffer": "6.0.3",
     "clsx": "1.2.1",
