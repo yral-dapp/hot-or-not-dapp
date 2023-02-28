@@ -66,10 +66,17 @@ async function initializeGA() {
   }
 }
 
+function listenForUnhandledRejections() {
+  window.addEventListener('unhandledrejection', (e) => {
+    console.debug('unhandledrejection', e)
+  })
+}
+
 onMount(() => {
   try {
     $navigateBack = null
     initSentry()
+    listenForUnhandledRejections()
     initializeAuthClient()
     registerServiceWorker()
     initializeGoSquared()
