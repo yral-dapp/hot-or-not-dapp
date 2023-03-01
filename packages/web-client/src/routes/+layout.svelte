@@ -66,10 +66,18 @@ async function initializeGA() {
   }
 }
 
+function listenForUnhandledRejections() {
+  window.addEventListener('unhandledrejection', (e) => {
+    // Handle app-crash level errors here
+    Log(e, 'error')
+  })
+}
+
 onMount(() => {
   try {
     $navigateBack = null
     initSentry()
+    listenForUnhandledRejections()
     initializeAuthClient()
     registerServiceWorker()
     initializeGoSquared()

@@ -1,10 +1,14 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import Log from '$lib/utils/Log'
 
 function throwError() {
-  Log('Custom exeception thrown', 'error')
+  throw 'Sync error thrown'
+}
+
+async function throwAsyncError() {
+  throw 'Async error thrown'
 }
 </script>
 
-<Button on:click={throwError}>Throw error</Button>
+<Button on:click={throwError}>Throw sync error</Button>
+<Button on:click={throwAsyncError}>Throw async error</Button>
