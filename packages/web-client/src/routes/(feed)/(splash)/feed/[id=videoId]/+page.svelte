@@ -268,7 +268,6 @@ beforeNavigate(() => {
   space-between="30"
   css-mode="true"
   slides-per-view="1"
-  virtual="true"
   on:slidechange={handleChange}>
   {#each videos as video, i (i)}
     <swiper-slide style="scroll-snap-stop: always;">
