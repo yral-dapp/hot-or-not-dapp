@@ -68,7 +68,8 @@ async function initializeGA() {
 
 function listenForUnhandledRejections() {
   window.addEventListener('unhandledrejection', (e) => {
-    console.debug('unhandledrejection', e)
+    // Handle app-crash level errors here
+    Log(e, 'error')
   })
 }
 
