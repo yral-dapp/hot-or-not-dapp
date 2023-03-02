@@ -93,6 +93,7 @@ async function updateUserIndexCanister(): Promise<{
           { error: e, source: '1 updateUserIndexCanister', type: 'idb' },
           'error',
         )
+        return { error: false, new_user, referral: referralStore.principalId }
       }
     }
 
