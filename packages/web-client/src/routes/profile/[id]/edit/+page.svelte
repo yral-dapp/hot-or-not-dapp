@@ -115,6 +115,7 @@ async function saveChanges() {
             { error: e, source: '1 saveChanges Profile', type: 'idb' },
             'error',
           )
+          loading = false
         }
       }
     } catch (e) {

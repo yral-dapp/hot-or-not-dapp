@@ -11,5 +11,5 @@ export const dbPromise = openDB('keyval-store', 2, {
     }
   },
 }).catch((e) => {
-  Log({ error: e, from: 'idb' }, 'warn')
+  Log({ error: e, from: 'idb' }, 'error')
 })

@@ -19,6 +19,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
       cachedPost = await watchHistoryIdb.get(params.id)
     } catch (e) {
       Log({ error: e, source: '1 videoFeedLoad', type: 'idb' }, 'error')
+      cachedPost = undefined
     }
 
     if (cachedPost) {
