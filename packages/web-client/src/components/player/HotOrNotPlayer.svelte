@@ -28,7 +28,7 @@ export let individualUser: (
 ) => IndividualUserActor
 
 let truncate = true
-let bettingAllowed = false
+$: bettingAllowed = betStatus && 'BettingClosed' in betStatus
 
 async function handleShare() {
   try {
