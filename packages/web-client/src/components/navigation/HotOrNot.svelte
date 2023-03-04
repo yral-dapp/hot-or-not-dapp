@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { BettingStatus } from '$canisters/individual_user_template/individual_user_template.did'
 import IconButton from '$components/button/IconButton.svelte'
 import BetCoinIcon from '$components/icons/BetCoinIcon.svelte'
 import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
@@ -12,11 +13,12 @@ import c from 'clsx'
 import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
-export let betPlaced: false | 'hot' | 'not' = false
-export let betStatus: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
-export let coinsBet = 10
 export let slotsFull = false
+export let betStatus: BettingStatus | undefined = undefined
 
+let betPlaced: false | 'hot' | 'not' = false
+let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
+let coinsBet = 10
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
 let error = 'Coming soon'
@@ -163,7 +165,7 @@ function toggleBet() {
     <div transition:fade class="flex h-full items-center space-x-4 px-4">
       <div
         class={c('flex items-center', {
-          'translate-y-4 -space-y-8 -space-x-8': betStatus !== 'pending',
+          'translate-y-4 -space-y-8 -space-x-8': betResult !== 'pending',
         })}>
         <div class="z-[2] shrink-0">
           {#if betPlaced === 'hot'}
@@ -181,7 +183,7 @@ function toggleBet() {
           </span>
         </div>
       </div>
-      {#if betStatus === 'pending'}
+      {#if betResult === 'pending'}
         <div class="flex flex-col space-y-1">
           <div class="text-sm">
             You have placed bet on {betPlaced === 'hot' ? 'Hot' : 'Not'} for 10 coins.
@@ -203,7 +205,7 @@ function toggleBet() {
       {:else}
         <div
           class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border text-xs capitalize">
-          {betStatus} Icon
+          {betResult} Icon
         </div>
         <div class="flex flex-col space-y-1">
           <div class="text-sm">
@@ -220,7 +222,7 @@ function toggleBet() {
               class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
               <WalletIcon class="h-4" />
               <span class=" text-sm text-white">
-                {betStatus !== 'won' ? '-10' : '20'}
+                {betResult !== 'won' ? '-10' : '20'}
               </span>
             </div>
           </div>
