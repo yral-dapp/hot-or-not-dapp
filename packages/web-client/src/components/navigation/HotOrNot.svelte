@@ -9,6 +9,7 @@ import NotIcon from '$components/icons/NotIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
+import { individualUser } from '$lib/helpers/backend'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
@@ -32,8 +33,19 @@ $: if (
 ) {
   betPlaced = false
   tempPlacedBet = false
-} else {
-  //fetch what kind of bet is placed
+} else if (!disabled) {
+  updateBetStatus()
+}
+
+async function updateBetStatus() {
+  try {
+    const res = await individualUser().get_hot_or_not_bet_details_for_this_post(
+      postId,
+    )
+  } catch (e) {
+    //TODO: Add retries
+    error = 'Error fetching your bet details'
+  }
 }
 
 async function placeBet(bet: 'hot' | 'not') {
