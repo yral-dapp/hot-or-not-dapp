@@ -23,6 +23,16 @@ let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
 let error = 'Coming soon'
 
+$: if (
+  betStatus &&
+  'BettingOpen' in betStatus &&
+  !betStatus['BettingOpen'].has_this_user_participated_in_this_post[0]
+) {
+  betPlaced = false
+} else {
+  //fetch what kind of bet is placed
+}
+
 async function placeBet(bet: 'hot' | 'not') {
   try {
     loading = true
