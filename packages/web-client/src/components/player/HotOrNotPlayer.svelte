@@ -111,7 +111,7 @@ async function handleShare() {
       {!bettingAllowed
         ? 'pointer-events-none opacity-50 brightness-50 grayscale'
         : ''}">
-      <HotOrNot {postId} {betStatus} />
+      <HotOrNot disabled {postId} {betStatus} />
     </div>
   </div>
 </player>

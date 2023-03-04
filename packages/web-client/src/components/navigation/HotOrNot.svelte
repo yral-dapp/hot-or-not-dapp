@@ -13,6 +13,7 @@ import c from 'clsx'
 import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
+export let disabled = false
 export let betStatus: BettingStatus | undefined = undefined
 export let postId: bigint
 
