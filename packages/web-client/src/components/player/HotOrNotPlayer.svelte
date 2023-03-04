@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { BettingStatus } from '$canisters/individual_user_template/individual_user_template.did'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
@@ -13,6 +14,7 @@ import type { Principal } from '@dfinity/principal'
 
 export let i: number
 export let id: bigint
+export let betStatus: BettingStatus | undefined = undefined
 export let thumbnail = ''
 export let displayName = ''
 export let profileLink = ''
@@ -109,7 +111,7 @@ async function handleShare() {
       {!bettingAllowed
         ? 'pointer-events-none opacity-50 brightness-50 grayscale'
         : ''}">
-      <HotOrNot />
+      <HotOrNot {betStatus} />
     </div>
   </div>
 </player>
