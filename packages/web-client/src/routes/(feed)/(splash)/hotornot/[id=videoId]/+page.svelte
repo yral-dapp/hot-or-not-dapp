@@ -159,7 +159,7 @@ beforeNavigate(() => {
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
         <HotOrNotPlayer
           {i}
-          id={video.id}
+          postId={video.id}
           displayName={video.created_by_display_name[0]}
           profileLink={video.created_by_unique_user_name[0] ??
             video.created_by_user_principal_id}
@@ -214,7 +214,7 @@ beforeNavigate(() => {
           There are no more videos to bet on
         </div>
         <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-          <HotOrNot />
+          <HotOrNot postId={0n} />
         </div>
       </div>
     </SwiperSlide>

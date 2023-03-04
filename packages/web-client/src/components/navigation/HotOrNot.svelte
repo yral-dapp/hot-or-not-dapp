@@ -14,6 +14,7 @@ import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
 export let betStatus: BettingStatus | undefined = undefined
+export let postId: bigint
 
 let betPlaced: false | 'hot' | 'not' = false
 let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'pending'

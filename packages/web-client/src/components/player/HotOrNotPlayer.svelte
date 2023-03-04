@@ -13,7 +13,7 @@ import userProfile from '$stores/userProfile'
 import type { Principal } from '@dfinity/principal'
 
 export let i: number
-export let id: bigint
+export let postId: bigint
 export let betStatus: BettingStatus | undefined = undefined
 export let thumbnail = ''
 export let displayName = ''
@@ -35,17 +35,17 @@ async function handleShare() {
     await navigator.share({
       title: 'Hot or Not',
       text: `Check out this hot video by ${displayName}. \n${description}`,
-      url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`,
+      url: `https://hotornot.wtf/feed/${publisherCanisterId}@${Number(postId)}`,
     })
   } catch (_) {}
   registerEvent('share_video', {
     userId: $userProfile.principal_id,
     video_publisher_id: profileLink,
     video_publisher_canister_id: publisherCanisterId,
-    video_id: id,
+    video_id: postId,
   })
   await individualUser(publisherCanisterId).update_post_increment_share_count(
-    id,
+    postId,
   )
 }
 </script>
@@ -111,7 +111,7 @@ async function handleShare() {
       {!bettingAllowed
         ? 'pointer-events-none opacity-50 brightness-50 grayscale'
         : ''}">
-      <HotOrNot {betStatus} />
+      <HotOrNot {postId} {betStatus} />
     </div>
   </div>
 </player>
