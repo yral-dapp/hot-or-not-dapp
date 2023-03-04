@@ -168,6 +168,7 @@ beforeNavigate(() => {
           videoViews={Number(video.total_view_count)}
           publisherCanisterId={video.publisher_canister_id}
           userProfileSrc={video.created_by_profile_photo_url[0]}
+          betStatus={video.hot_or_not_betting_status[0]}
           {individualUser}
           thumbnail={getThumbnailUrl(video.video_uid)}>
           <VideoPlayer
