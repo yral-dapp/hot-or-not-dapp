@@ -17,10 +17,11 @@ export let betStatus: BettingStatus | undefined = undefined
 
 let betPlaced: false | 'hot' | 'not' = false
 let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
-let coinsBet = 10
+let coinsBetPlaced = 10
+let selectedCoins = 10
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
-let error = 'Coming soon'
+let error = ''
 
 $: if (
   betStatus &&
@@ -28,6 +29,7 @@ $: if (
   !betStatus['BettingOpen'].has_this_user_participated_in_this_post[0]
 ) {
   betPlaced = false
+  tempPlacedBet = false
 } else {
   //fetch what kind of bet is placed
 }
@@ -51,17 +53,17 @@ async function placeBet(bet: 'hot' | 'not') {
 }
 
 function increaseBet() {
-  if (coinsBet == 10) coinsBet = 50
-  else if (coinsBet == 50) coinsBet = 100
+  if (selectedCoins == 10) selectedCoins = 50
+  else if (selectedCoins == 50) selectedCoins = 100
 }
 
 function decreaseBet() {
-  if (coinsBet == 50) coinsBet = 10
-  else if (coinsBet == 100) coinsBet = 50
+  if (selectedCoins == 50) selectedCoins = 10
+  else if (selectedCoins == 100) selectedCoins = 50
 }
 
 function toggleBet() {
-  if (coinsBet == 100) coinsBet = 10
+  if (selectedCoins == 100) selectedCoins = 10
   else increaseBet()
 }
 </script>
@@ -96,7 +98,7 @@ function toggleBet() {
           ? '!pointer-events-none opacity-0'
           : 'pointer-events-auto'}">
         <IconButton
-          disabled={coinsBet == 100}
+          disabled={selectedCoins == 100}
           on:click={(e) => {
             e.stopImmediatePropagation()
             increaseBet()
@@ -119,7 +121,7 @@ function toggleBet() {
               <span
                 style="text-shadow: 3px 3px 0 #EA9C00;"
                 class="select-none text-3xl font-extrabold text-[#FFCC00]">
-                {coinsBet}
+                {selectedCoins}
               </span>
             {/if}
           </div>
@@ -129,7 +131,7 @@ function toggleBet() {
             e.stopImmediatePropagation()
             decreaseBet()
           }}
-          disabled={coinsBet == 10}
+          disabled={selectedCoins == 10}
           class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
             invisible: betPlaced || tempPlacedBet,
           })}>
@@ -182,7 +184,7 @@ function toggleBet() {
           <span
             style="text-shadow: 3px 3px 0 #EA9C00;"
             class="absolute inset-0 flex select-none items-center justify-center text-2xl font-extrabold text-[#ffeea8]">
-            {coinsBet}
+            {coinsBetPlaced}
           </span>
         </div>
       </div>
