@@ -1,5 +1,8 @@
 <script lang="ts">
-import type { BettingStatus } from '$canisters/individual_user_template/individual_user_template.did'
+import type {
+  BetDirection,
+  BettingStatus,
+} from '$canisters/individual_user_template/individual_user_template.did'
 import IconButton from '$components/button/IconButton.svelte'
 import BetCoinIcon from '$components/icons/BetCoinIcon.svelte'
 import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
@@ -10,6 +13,7 @@ import TimerIcon from '$components/icons/TimerIcon.svelte'
 import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
 import { individualUser } from '$lib/helpers/backend'
+import { fetchTokenBalance } from '$lib/helpers/profile'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
@@ -48,18 +52,54 @@ async function updateBetStatus() {
   }
 }
 
+async function getWalletBalance() {
+  const res = await fetchTokenBalance()
+  if (res.error) {
+    throw res.error
+  } else {
+    return res.balance
+  }
+}
+
 async function placeBet(bet: 'hot' | 'not') {
   try {
     loading = true
     tempPlacedBet = bet
-    setTimeout(() => {
-      betPlaced = bet
+
+    let bet_direction: BetDirection | null = null
+    if (tempPlacedBet === 'hot') {
+      bet_direction = {
+        Hot: null,
+      }
+    } else {
+      bet_direction = {
+        Not: null,
+      }
+    }
+
+    if (!bet_direction) return
+
+    const balance = await getWalletBalance()
+
+    if (balance < selectedCoins) {
+      error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
       loading = false
-    }, 2000)
+    }
+
+    const betRes = await individualUser().bet_on_currently_viewing_post({
+      bet_amount: BigInt(selectedCoins),
+      bet_direction,
+      post_id: postId,
+    })
+
+    if ('Ok' in betRes) {
+      betPlaced = tempPlacedBet
+    } else {
+      tempPlacedBet = false
+      throw ''
+    }
   } catch (e) {
-    error = 'Something went wrong. Please try again'
-    error =
-      'You do not have enough tokens to bet. Your wallet balance is 5 tokens.'
+    error = 'Something went wrong while placing bet. Please try again'
     setTimeout(() => {
       error = ''
     }, 2000)
