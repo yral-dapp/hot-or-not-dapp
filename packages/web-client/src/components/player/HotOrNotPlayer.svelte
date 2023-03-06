@@ -3,7 +3,10 @@ import type { BettingStatus } from '$canisters/individual_user_template/individu
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
+import PieChartIcon from '$components/icons/PieChartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
+import TimerIcon from '$components/icons/TimerIcon.svelte'
+import UsersIcon from '$components/icons/UsersIcon.svelte'
 import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import type { IndividualUserActor } from '$lib/helpers/backend'
@@ -48,6 +51,10 @@ async function handleShare() {
     postId,
   )
 }
+
+$: timeLeft = '50m 11s'
+$: usersInThisSlot = 48
+$: roomNumber = 24
 </script>
 
 <player
@@ -94,6 +101,23 @@ async function handleShare() {
           class="pointer-events-auto w-80 text-left text-sm">
           {description}
         </button>
+        <div class:hidden={!bettingAllowed} class="flex items-center space-x-3">
+          <div
+            class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
+            <TimerIcon class="h-4 w-4" />
+            <span class="text-sm">{timeLeft}</span>
+          </div>
+          <div
+            class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
+            <UsersIcon class="h-4 w-4" />
+            <span class="text-sm">{usersInThisSlot}/100</span>
+          </div>
+          <div
+            class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
+            <PieChartIcon class="h-4 w-4" />
+            <span class="text-sm">{roomNumber}/48</span>
+          </div>
+        </div>
       </div>
       <div class="max-w-16 flex shrink-0 flex-col space-y-6">
         <IconButton
