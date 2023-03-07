@@ -13,7 +13,7 @@ import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
-import Hls from 'hls.js'
+import Hls from 'hls.js/dist/hls.min'
 import { onMount, tick, onDestroy } from 'svelte'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import type { PageData } from './$types'
@@ -159,7 +159,7 @@ beforeNavigate(() => {
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
         <HotOrNotPlayer
           {i}
-          id={video.id}
+          postId={video.id}
           displayName={video.created_by_display_name[0]}
           profileLink={video.created_by_unique_user_name[0] ??
             video.created_by_user_principal_id}
@@ -168,6 +168,7 @@ beforeNavigate(() => {
           videoViews={Number(video.total_view_count)}
           publisherCanisterId={video.publisher_canister_id}
           userProfileSrc={video.created_by_profile_photo_url[0]}
+          betStatus={video.hot_or_not_betting_status[0]}
           {individualUser}
           thumbnail={getThumbnailUrl(video.video_uid)}>
           <VideoPlayer
@@ -213,7 +214,7 @@ beforeNavigate(() => {
           There are no more videos to bet on
         </div>
         <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-          <HotOrNot />
+          <HotOrNot postId={0n} />
         </div>
       </div>
     </SwiperSlide>

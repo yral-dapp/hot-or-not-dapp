@@ -47,7 +47,7 @@ export const idlFactory = ({ IDL }) => {
     'nanos_since_epoch' : IDL.Nat32,
     'secs_since_epoch' : IDL.Nat64,
   });
-  const UpgradeStatusV1 = IDL.Record({
+  const UpgradeStatus = IDL.Record({
     'version_number' : IDL.Nat64,
     'last_run_on' : SystemTime,
     'failed_canister_ids' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal)),
@@ -62,9 +62,13 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
+  const CanisterInstallMode = IDL.Variant({
+    'reinstall' : IDL.Null,
+    'upgrade' : IDL.Null,
+    'install' : IDL.Null,
+  });
   return IDL.Service({
     'backup_all_individual_user_canisters' : IDL.Func([], [], []),
-    'backup_data_to_backup_canister' : IDL.Func([], [], []),
     'get_canister_status_from_management_canister' : IDL.Func(
         [IDL.Principal],
         [CanisterStatusResponse],
@@ -77,7 +81,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'get_index_details_last_upgrade_status' : IDL.Func(
         [],
-        [UpgradeStatusV1],
+        [UpgradeStatus],
         ['query'],
       ),
     'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : IDL.Func(
@@ -119,12 +123,17 @@ export const idlFactory = ({ IDL }) => {
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
     'update_user_index_upgrade_user_canisters_with_latest_wasm' : IDL.Func(
         [],
-        [],
+        [IDL.Text],
         [],
       ),
     'update_user_remove_role' : IDL.Func(
         [UserAccessRole, IDL.Principal],
         [],
+        [],
+      ),
+    'upgrade_specific_individual_user_canister_with_latest_wasm' : IDL.Func(
+        [IDL.Principal, IDL.Principal, IDL.Opt(CanisterInstallMode)],
+        [IDL.Text],
         [],
       ),
   });

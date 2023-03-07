@@ -13,6 +13,7 @@ export async function getCanisterId(id: string): Promise<string | undefined> {
       canId = await canisterIdb.get(id)
     } catch (e) {
       Log({ error: e, from: '1 getCanisterId', type: 'idb' }, 'error')
+      return
     }
     if (canId) return canId
     else {

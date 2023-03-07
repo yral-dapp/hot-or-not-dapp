@@ -14,7 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/svelte'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
 import { isiPhone } from '$lib/utils/isSafari'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js'
+import Hls from 'hls.js/dist/hls.min'
 
 export let data: PageData
 

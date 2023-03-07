@@ -36,25 +36,16 @@ export const idlFactory = ({ IDL }) => {
       'referee_user_principal_id' : IDL.Principal,
     }),
   });
-  const TokenEventV1 = IDL.Variant({
+  const TokenEvent = IDL.Variant({
     'Stake' : IDL.Null,
     'Burn' : IDL.Null,
     'Mint' : IDL.Record({ 'timestamp' : SystemTime, 'details' : MintEvent }),
     'Transfer' : IDL.Null,
   });
-  const TokenEvent = IDL.Variant({
-    'Stake' : IDL.Null,
-    'Burn' : IDL.Null,
-    'Mint' : MintEvent,
-    'Transfer' : IDL.Null,
-  });
   const TokenBalance = IDL.Record({
     'utility_token_balance' : IDL.Nat64,
     'utility_token_transaction_history_v1' : IDL.Vec(
-      IDL.Tuple(IDL.Nat64, TokenEventV1)
-    ),
-    'utility_token_transaction_history' : IDL.Vec(
-      IDL.Tuple(SystemTime, TokenEvent)
+      IDL.Tuple(IDL.Nat64, TokenEvent)
     ),
   });
   const PostStatus = IDL.Variant({
@@ -71,9 +62,21 @@ export const idlFactory = ({ IDL }) => {
     'average_watch_percentage' : IDL.Nat8,
     'threshold_view_count' : IDL.Nat64,
   });
-  const HotOrNotFeedDetails = IDL.Record({
+  const BetDirection = IDL.Variant({ 'Hot' : IDL.Null, 'Not' : IDL.Null });
+  const BetDetails = IDL.Record({
+    'bet_direction' : BetDirection,
+    'amount' : IDL.Nat64,
+  });
+  const RoomDetails = IDL.Record({
+    'bets_made' : IDL.Vec(IDL.Tuple(IDL.Principal, BetDetails)),
+  });
+  const SlotDetails = IDL.Record({
+    'room_details' : IDL.Vec(IDL.Tuple(IDL.Nat64, RoomDetails)),
+  });
+  const HotOrNotDetails = IDL.Record({
     'upvotes' : IDL.Vec(IDL.Principal),
     'score' : IDL.Nat64,
+    'slot_history' : IDL.Vec(IDL.Tuple(IDL.Nat8, SlotDetails)),
     'downvotes' : IDL.Vec(IDL.Principal),
   });
   const Post = IDL.Record({
@@ -86,20 +89,27 @@ export const idlFactory = ({ IDL }) => {
     'likes' : IDL.Vec(IDL.Principal),
     'video_uid' : IDL.Text,
     'view_stats' : PostViewStatistics,
-    'hot_or_not_feed_details' : IDL.Opt(HotOrNotFeedDetails),
+    'hot_or_not_details' : IDL.Opt(HotOrNotDetails),
     'homefeed_ranking_score' : IDL.Nat64,
     'creator_consent_for_inclusion_in_hot_or_not' : IDL.Bool,
   });
-  const ProfileDetails = IDL.Record({
+  const UserProfileGlobalStats = IDL.Record({
+    'lifetime_earnings' : IDL.Nat64,
+    'hots_earned_count' : IDL.Nat64,
+    'nots_earned_count' : IDL.Nat64,
+  });
+  const UserProfile = IDL.Record({
+    'unique_user_name' : IDL.Opt(IDL.Text),
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
+    'principal_id' : IDL.Opt(IDL.Principal),
+    'profile_stats' : UserProfileGlobalStats,
   });
   const UserOwnedCanisterData = IDL.Record({
-    'unique_user_name' : IDL.Text,
     'principals_i_follow' : IDL.Vec(IDL.Principal),
     'token_data' : TokenBalance,
     'all_created_posts' : IDL.Vec(IDL.Tuple(IDL.Nat64, Post)),
-    'profile' : ProfileDetails,
+    'profile' : UserProfile,
     'principals_that_follow_me' : IDL.Vec(IDL.Principal),
   });
   const AllUserData = IDL.Record({
@@ -129,7 +139,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'receive_all_token_transactions_from_individual_user_canister' : IDL.Func(
-        [IDL.Vec(IDL.Tuple(IDL.Nat64, TokenEventV1)), IDL.Principal],
+        [IDL.Vec(IDL.Tuple(IDL.Nat64, TokenEvent)), IDL.Principal],
         [],
         [],
       ),
@@ -154,29 +164,13 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'receive_profile_details_from_individual_user_canister' : IDL.Func(
-        [
-          IDL.Opt(IDL.Text),
-          IDL.Opt(IDL.Text),
-          IDL.Opt(IDL.Text),
-          IDL.Principal,
-          IDL.Principal,
-        ],
+        [UserProfile, IDL.Principal, IDL.Principal],
         [],
         [],
       ),
-    'receive_unique_user_name_to_user_principal_id_mapping_from_user_index_canister' : IDL.Func(
-        [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Principal))],
-        [],
-        [],
-      ),
-    'receive_user_principal_id_to_canister_id_mapping_from_user_index_canister' : IDL.Func(
-        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal))],
-        [],
-        [],
-      ),
-    'restore_backed_up_data_to_individual_user_canisters' : IDL.Func(
-        [],
-        [],
+    'restore_backed_up_data_to_individual_users_canister' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Text],
         [],
       ),
     'send_restore_data_back_to_user_index_canister' : IDL.Func([], [], []),
