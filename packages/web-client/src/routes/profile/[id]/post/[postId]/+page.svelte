@@ -10,7 +10,7 @@ import { page } from '$app/stores'
 import { individualUser } from '$lib/helpers/backend'
 import { isiPhone } from '$lib/utils/isSafari'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js'
+import Hls from 'hls.js/dist/hls.min'
 
 export let data: PageData
 
