@@ -1,8 +1,12 @@
 <script lang="ts">
+import type { BettingStatus } from '$canisters/individual_user_template/individual_user_template.did'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
+import PieChartIcon from '$components/icons/PieChartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
+import TimerIcon from '$components/icons/TimerIcon.svelte'
+import UsersIcon from '$components/icons/UsersIcon.svelte'
 import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import type { IndividualUserActor } from '$lib/helpers/backend'
@@ -12,7 +16,8 @@ import userProfile from '$stores/userProfile'
 import type { Principal } from '@dfinity/principal'
 
 export let i: number
-export let id: bigint
+export let postId: bigint
+export let betStatus: BettingStatus | undefined = undefined
 export let thumbnail = ''
 export let displayName = ''
 export let profileLink = ''
@@ -26,26 +31,30 @@ export let individualUser: (
 ) => IndividualUserActor
 
 let truncate = true
-let bettingAllowed = false
+$: bettingAllowed = betStatus && 'BettingClosed' in betStatus
 
 async function handleShare() {
   try {
     await navigator.share({
       title: 'Hot or Not',
       text: `Check out this hot video by ${displayName}. \n${description}`,
-      url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`,
+      url: `https://hotornot.wtf/feed/${publisherCanisterId}@${Number(postId)}`,
     })
   } catch (_) {}
   registerEvent('share_video', {
     userId: $userProfile.principal_id,
     video_publisher_id: profileLink,
     video_publisher_canister_id: publisherCanisterId,
-    video_id: id,
+    video_id: postId,
   })
   await individualUser(publisherCanisterId).update_post_increment_share_count(
-    id,
+    postId,
   )
 }
+
+$: timeLeft = '50m 11s'
+$: usersInThisSlot = 48
+$: roomNumber = 24
 </script>
 
 <player
@@ -92,6 +101,23 @@ async function handleShare() {
           class="pointer-events-auto w-80 text-left text-sm">
           {description}
         </button>
+        <div class:hidden={!bettingAllowed} class="flex items-center space-x-3">
+          <div
+            class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
+            <TimerIcon class="h-4 w-4" />
+            <span class="text-sm">{timeLeft}</span>
+          </div>
+          <div
+            class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
+            <UsersIcon class="h-4 w-4" />
+            <span class="text-sm">{usersInThisSlot}/100</span>
+          </div>
+          <div
+            class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
+            <PieChartIcon class="h-4 w-4" />
+            <span class="text-sm">{roomNumber}/48</span>
+          </div>
+        </div>
       </div>
       <div class="max-w-16 flex shrink-0 flex-col space-y-6">
         <IconButton
@@ -109,7 +135,7 @@ async function handleShare() {
       {!bettingAllowed
         ? 'pointer-events-none opacity-50 brightness-50 grayscale'
         : ''}">
-      <HotOrNot />
+      <HotOrNot disabled {postId} {betStatus} />
     </div>
   </div>
 </player>

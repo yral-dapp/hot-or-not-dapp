@@ -64,7 +64,7 @@ let step: 1 | 2 | 3 = 1
 
         <div
           class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
-          <HotOrNot tutorialMode />
+          <HotOrNot disabled tutorialMode postId={0n} />
         </div>
       </div>
     {:else if step == 3}

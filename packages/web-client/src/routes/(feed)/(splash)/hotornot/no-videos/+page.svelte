@@ -15,6 +15,6 @@ onMount(async () => {
   <NoBetsIcon class="w-56" />
   <div class="text-center text-lg font-bold">There are no videos to bet on</div>
   <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-    <HotOrNot />
+    <HotOrNot disabled postId={0n} />
   </div>
 </div>

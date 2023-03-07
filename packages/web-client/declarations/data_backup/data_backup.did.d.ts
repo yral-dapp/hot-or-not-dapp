@@ -7,13 +7,20 @@ export interface AllUserData {
   'canister_data' : UserOwnedCanisterData,
 }
 export interface BackupStatistics { 'number_of_user_entries' : bigint }
+export interface BetDetails {
+  'bet_direction' : BetDirection,
+  'amount' : bigint,
+}
+export type BetDirection = { 'Hot' : null } |
+  { 'Not' : null };
 export interface DataBackupInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'access_control_map' : [] | [Array<[Principal, Array<UserAccessRole>]>],
 }
-export interface HotOrNotFeedDetails {
+export interface HotOrNotDetails {
   'upvotes' : Array<Principal>,
   'score' : bigint,
+  'slot_history' : Array<[number, SlotDetails]>,
   'downvotes' : Array<Principal>,
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
@@ -44,7 +51,7 @@ export interface Post {
   'likes' : Array<Principal>,
   'video_uid' : string,
   'view_stats' : PostViewStatistics,
-  'hot_or_not_feed_details' : [] | [HotOrNotFeedDetails],
+  'hot_or_not_details' : [] | [HotOrNotDetails],
   'homefeed_ranking_score' : bigint,
   'creator_consent_for_inclusion_in_hot_or_not' : boolean,
 }
@@ -60,24 +67,17 @@ export interface PostViewStatistics {
   'average_watch_percentage' : number,
   'threshold_view_count' : bigint,
 }
-export interface ProfileDetails {
-  'profile_picture_url' : [] | [string],
-  'display_name' : [] | [string],
-}
+export interface RoomDetails { 'bets_made' : Array<[Principal, BetDetails]> }
+export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
 export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
 export interface TokenBalance {
   'utility_token_balance' : bigint,
-  'utility_token_transaction_history_v1' : Array<[bigint, TokenEventV1]>,
-  'utility_token_transaction_history' : Array<[SystemTime, TokenEvent]>,
+  'utility_token_transaction_history_v1' : Array<[bigint, TokenEvent]>,
 }
 export type TokenEvent = { 'Stake' : null } |
-  { 'Burn' : null } |
-  { 'Mint' : MintEvent } |
-  { 'Transfer' : null };
-export type TokenEventV1 = { 'Stake' : null } |
   { 'Burn' : null } |
   { 'Mint' : { 'timestamp' : SystemTime, 'details' : MintEvent } } |
   { 'Transfer' : null };
@@ -86,12 +86,23 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'CanisterAdmin' : null } |
   { 'ProjectCanister' : null };
 export interface UserOwnedCanisterData {
-  'unique_user_name' : string,
   'principals_i_follow' : Array<Principal>,
   'token_data' : TokenBalance,
   'all_created_posts' : Array<[bigint, Post]>,
-  'profile' : ProfileDetails,
+  'profile' : UserProfile,
   'principals_that_follow_me' : Array<Principal>,
+}
+export interface UserProfile {
+  'unique_user_name' : [] | [string],
+  'profile_picture_url' : [] | [string],
+  'display_name' : [] | [string],
+  'principal_id' : [] | [Principal],
+  'profile_stats' : UserProfileGlobalStats,
+}
+export interface UserProfileGlobalStats {
+  'lifetime_earnings' : bigint,
+  'hots_earned_count' : bigint,
+  'nots_earned_count' : bigint,
 }
 export interface _SERVICE {
   'get_current_backup_statistics' : ActorMethod<[], BackupStatistics>,
@@ -105,7 +116,7 @@ export interface _SERVICE {
     [] | [Principal]
   >,
   'receive_all_token_transactions_from_individual_user_canister' : ActorMethod<
-    [Array<[bigint, TokenEventV1]>, Principal],
+    [Array<[bigint, TokenEvent]>, Principal],
     undefined
   >,
   'receive_all_user_posts_from_individual_user_canister' : ActorMethod<
@@ -125,20 +136,12 @@ export interface _SERVICE {
     undefined
   >,
   'receive_profile_details_from_individual_user_canister' : ActorMethod<
-    [[] | [string], [] | [string], [] | [string], Principal, Principal],
+    [UserProfile, Principal, Principal],
     undefined
   >,
-  'receive_unique_user_name_to_user_principal_id_mapping_from_user_index_canister' : ActorMethod<
-    [Array<[string, Principal]>],
-    undefined
-  >,
-  'receive_user_principal_id_to_canister_id_mapping_from_user_index_canister' : ActorMethod<
-    [Array<[Principal, Principal]>],
-    undefined
-  >,
-  'restore_backed_up_data_to_individual_user_canisters' : ActorMethod<
-    [],
-    undefined
+  'restore_backed_up_data_to_individual_users_canister' : ActorMethod<
+    [Principal],
+    string
   >,
   'send_restore_data_back_to_user_index_canister' : ActorMethod<[], undefined>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,

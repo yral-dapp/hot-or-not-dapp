@@ -1,10 +1,9 @@
 import type {
-  GetFollowerOrFollowingError,
   GetPostsOfUserProfileError,
   MintEvent,
   PostDetailsForFrontend,
   SystemTime,
-  TokenEventV1,
+  TokenEvent,
   UserProfileDetailsForFrontend,
 } from '$canisters/individual_user_template/individual_user_template.did'
 import { setUserProperties } from '$components/seo/GA.svelte'
@@ -277,7 +276,7 @@ export async function loveUser(userId: string) {
 
 export interface TransactionHistory {
   id: BigInt
-  type: UnionKeyOf<TokenEventV1>
+  type: UnionKeyOf<TokenEvent>
   token: number
   timestamp: SystemTime
   details: MintEvent
@@ -294,14 +293,14 @@ type HistoryResponse =
     }
 
 async function transformHistoryRecords(
-  res: Array<[bigint, TokenEventV1]>,
+  res: Array<[bigint, TokenEvent]>,
   filter?: UnionKeyOf<MintEvent>,
 ): Promise<TransactionHistory[]> {
   const history: TransactionHistory[] = []
 
   res.forEach((o) => {
     const obj = o[1]
-    const type = Object.keys(obj)[0] as UnionKeyOf<TokenEventV1>
+    const type = Object.keys(obj)[0] as UnionKeyOf<TokenEvent>
     const subType = Object.keys(obj[type].details)[0]
     if (!filter || filter === subType) {
       history.push({
@@ -336,10 +335,9 @@ export async function fetchHistory(
         endOfList: history.length < 10,
       }
     } else if ('Err' in res) {
-      type errors = UnionKeyOf<GetFollowerOrFollowingError>
+      type errors = UnionKeyOf<GetPostsOfUserProfileError>
       const err = Object.keys(res.Err)[0] as errors
       switch (err) {
-        case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
         case 'InvalidBoundsPassed':
           return { error: true }
         case 'ReachedEndOfItemsList':
@@ -350,6 +348,7 @@ export async function fetchHistory(
     Log({ error: e, from: '11 fetchHistory' }, 'error')
     return { error: true }
   }
+  return { error: true }
 }
 
 export async function fetchTokenBalance(): Promise<
