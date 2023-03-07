@@ -108,8 +108,8 @@ async function saveChanges() {
       const canId = await getCanisterId(userPrincipal.toString())
       if (canId) {
         try {
-          const { canisterIdb } = await import('$lib/utils/idb')
-          canisterIdb.set(newUsername, canId)
+          const { idb } = await import('$lib/idb')
+          idb.set('canisters', newUsername, canId)
         } catch (e) {
           Log(
             { error: e, source: '1 saveChanges Profile', type: 'idb' },
