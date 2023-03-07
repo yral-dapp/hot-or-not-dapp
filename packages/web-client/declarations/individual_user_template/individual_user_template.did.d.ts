@@ -13,6 +13,10 @@ export interface BetDetails {
 }
 export type BetDirection = { 'Hot' : null } |
   { 'Not' : null };
+export type BetOnCurrentlyViewingPostError = { 'InsufficientBalance' : null } |
+  { 'UserAlreadyParticipatedInThisPost' : null } |
+  { 'BettingClosed' : null } |
+  { 'UserNotLoggedIn' : null };
 export type BettingStatus = {
     'BettingOpen' : {
       'number_of_participants' : number,
@@ -129,8 +133,8 @@ export interface PostViewStatistics {
   'average_watch_percentage' : number,
   'threshold_view_count' : bigint,
 }
-export type Result = { 'Ok' : null } |
-  { 'Err' : null };
+export type Result = { 'Ok' : BettingStatus } |
+  { 'Err' : BetOnCurrentlyViewingPostError };
 export type Result_1 = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
 export type Result_2 = { 'Ok' : Array<Principal> } |

@@ -29,7 +29,6 @@ export const idlFactory = ({ IDL }) => {
     'post_id' : IDL.Nat64,
     'bet_direction' : BetDirection,
   });
-  const Result = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Null });
   const SystemTime = IDL.Record({
     'nanos_since_epoch' : IDL.Nat32,
     'secs_since_epoch' : IDL.Nat64,
@@ -43,6 +42,16 @@ export const idlFactory = ({ IDL }) => {
       'started_at' : SystemTime,
     }),
     'BettingClosed' : IDL.Null,
+  });
+  const BetOnCurrentlyViewingPostError = IDL.Variant({
+    'InsufficientBalance' : IDL.Null,
+    'UserAlreadyParticipatedInThisPost' : IDL.Null,
+    'BettingClosed' : IDL.Null,
+    'UserNotLoggedIn' : IDL.Null,
+  });
+  const Result = IDL.Variant({
+    'Ok' : BettingStatus,
+    'Err' : BetOnCurrentlyViewingPostError,
   });
   const PostStatus = IDL.Variant({
     'BannedForExplicitness' : IDL.Null,
