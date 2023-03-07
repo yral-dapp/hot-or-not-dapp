@@ -1,6 +1,7 @@
 <script lang="ts">
 import type {
   BetDirection,
+  BetOnCurrentlyViewingPostError,
   BettingStatus,
 } from '$canisters/individual_user_template/individual_user_template.did'
 import IconButton from '$components/button/IconButton.svelte'
@@ -14,6 +15,7 @@ import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { fetchTokenBalance } from '$lib/helpers/profile'
+import { authState } from '$stores/auth'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
@@ -79,13 +81,6 @@ async function placeBet(bet: 'hot' | 'not') {
 
     if (!bet_direction) return
 
-    const balance = await getWalletBalance()
-
-    if (balance < selectedCoins) {
-      error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
-      loading = false
-    }
-
     const betRes = await individualUser().bet_on_currently_viewing_post({
       bet_amount: BigInt(selectedCoins),
       bet_direction,
@@ -95,7 +90,27 @@ async function placeBet(bet: 'hot' | 'not') {
     if ('Ok' in betRes) {
       betPlaced = tempPlacedBet
     } else {
+      type UnionKeyOf<U> = U extends U ? keyof U : never
+      type errors = UnionKeyOf<BetOnCurrentlyViewingPostError>
+      const err = Object.keys(betRes.Err)[0] as errors
+      switch (err) {
+        case 'BettingClosed':
+          disabled = true
+          error = 'Betting has been closed'
+          break
+        case 'InsufficientBalance':
+          const balance = await getWalletBalance()
+          error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
+          break
+        case 'UserAlreadyParticipatedInThisPost':
+          error = 'You have already bet on this post'
+          break
+        case 'UserNotLoggedIn':
+          $authState.showLogin = true
+          break
+      }
       tempPlacedBet = false
+      loading = false
       throw ''
     }
   } catch (e) {
