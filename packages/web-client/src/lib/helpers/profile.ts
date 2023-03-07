@@ -72,8 +72,9 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
       })
       if (updateProfile.unique_user_name[0]) {
         try {
-          const { canisterIdb } = await import('$lib/utils/idb')
-          canisterIdb.set(
+          const { idb } = await import('$lib/idb')
+          idb.set(
+            'canisters',
             updateProfile.unique_user_name[0],
             authStateData.userCanisterId,
           )

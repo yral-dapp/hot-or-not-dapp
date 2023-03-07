@@ -7,8 +7,8 @@ let error = false
 
 async function getHistory() {
   try {
-    const { watchHistoryIdb } = await import('$lib/utils/idb')
-    const values = (await watchHistoryIdb.values()) as PostPopulatedHistory[]
+    const { idb } = await import('$lib/idb')
+    const values = (await idb.values('watch')) as PostPopulatedHistory[]
     if (values.length) {
       history = values
     }

@@ -179,8 +179,9 @@ async function recordView(post?: PostPopulated) {
     watched_at: Date.now(),
   }
   try {
-    const { watchHistoryIdb } = await import('$lib/utils/idb')
-    await watchHistoryIdb.set(
+    const { idb } = await import('$lib/idb')
+    await idb.set(
+      'watch',
       post.publisher_canister_id + '@' + post.post_id,
       postHistory,
     )

@@ -15,8 +15,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
     let cachedPost: PostPopulated | undefined = undefined
 
     try {
-      const { watchHistoryHomeIdb } = await import('$lib/utils/idb')
-      cachedPost = await watchHistoryHomeIdb.get(params.id)
+      const { idb } = await import('$lib/idb')
+      cachedPost = await idb.get('watch', params.id)
     } catch (e) {
       Log({ error: e, source: '1 videoFeedLoad', type: 'idb' }, 'error')
       cachedPost = undefined
