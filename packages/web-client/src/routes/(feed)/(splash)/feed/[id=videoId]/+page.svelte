@@ -32,6 +32,7 @@ import {
 import { updateURL } from '$lib/utils/feedUrl'
 import Button from '$components/button/Button.svelte'
 import { beforeNavigate } from '$app/navigation'
+import type { IDB } from '$lib/idb'
 
 export let data: PageData
 
@@ -49,6 +50,7 @@ let fetchedVideosCount = 0
 let isIPhone = isiPhone()
 let isDocumentHidden = false
 let videoStats: Record<number, VideoViewReport> = {}
+let idb: IDB | null = null
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
@@ -179,7 +181,9 @@ async function recordView(post?: PostPopulated) {
     watched_at: Date.now(),
   }
   try {
-    const { idb } = await import('$lib/idb')
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
     await idb.set(
       'watch',
       post.publisher_canister_id + '@' + post.post_id,
