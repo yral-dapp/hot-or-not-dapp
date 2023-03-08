@@ -17,7 +17,7 @@ import type { Principal } from '@dfinity/principal'
 
 export let i: number
 export let postId: bigint
-export let betStatus: BettingStatus | undefined = undefined
+export let betStatus: BettingStatus
 export let thumbnail = ''
 export let displayName = ''
 export let profileLink = ''
@@ -31,7 +31,7 @@ export let individualUser: (
 ) => IndividualUserActor
 
 let truncate = true
-$: bettingAllowed = betStatus && 'BettingClosed' in betStatus
+$: bettingAllowed = betStatus && !('BettingClosed' in betStatus)
 
 async function handleShare() {
   try {
@@ -131,11 +131,8 @@ $: roomNumber = 24
     </div>
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
-      class="absolute inset-x-0 bottom-0 z-[5] h-40 
-      {!bettingAllowed
-        ? 'pointer-events-none opacity-50 brightness-50 grayscale'
-        : ''}">
-      <HotOrNot disabled {postId} {betStatus} />
+      class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
+      <HotOrNot {postId} {betStatus} />
     </div>
   </div>
 </player>
