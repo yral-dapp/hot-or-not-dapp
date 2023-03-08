@@ -20,7 +20,7 @@ import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
 export let disabled = false
-export let betStatus: BettingStatus
+export let betStatus: BettingStatus | undefined = undefined
 export let postId: bigint
 export let inView = false
 
@@ -36,10 +36,10 @@ let timeLeft = '59m 10s'
 $: console.log({ postId, betStatus, canId: $authState.userCanisterId })
 
 $: if (
-  betStatus['BettingOpen']?.['has_this_user_participated_in_this_post']?.[0]
+  betStatus?.['BettingOpen']?.['has_this_user_participated_in_this_post']?.[0]
 ) {
-  error = 'You have already placed a bet'
-} else if ('BettingClosed' in betStatus) {
+  error = 'You have already placed a bet on this post'
+} else if (betStatus && 'BettingClosed' in betStatus) {
   error = 'Betting has been closed'
 }
 
@@ -114,13 +114,16 @@ async function placeBet(bet: 'hot' | 'not') {
         case 'UserNotLoggedIn':
           $authState.showLogin = true
           break
+        default:
+          throw ''
       }
       tempPlacedBet = false
       loading = false
-      throw ''
     }
   } catch (e) {
     Log({ error: e, from: 'placeBet 1' }, 'error')
+    tempPlacedBet = false
+    loading = false
     error = 'Something went wrong while placing bet. Please try again'
     setTimeout(() => {
       error = ''
@@ -159,7 +162,9 @@ function toggleBet() {
       class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-8 px-4"
       transition:fade>
       <div
-        class="pointer-events-auto relative flex flex-col items-center space-y-1">
+        class="relative flex flex-col items-center space-y-1 {error
+          ? 'pointer-events-none'
+          : 'pointer-events-auto'}">
         {#if tutorialMode}
           <div
             class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
@@ -179,7 +184,7 @@ function toggleBet() {
         <span class="text-sm">Not</span>
       </div>
       <div
-        class="relative flex flex-col items-center {tutorialMode
+        class="relative flex flex-col items-center {tutorialMode || error
           ? '!pointer-events-none opacity-0'
           : 'pointer-events-auto'}">
         <IconButton
@@ -224,7 +229,9 @@ function toggleBet() {
         </IconButton>
       </div>
       <div
-        class="pointer-events-auto relative flex flex-col items-center space-y-1">
+        class="relative flex flex-col items-center space-y-1 {error
+          ? 'pointer-events-none'
+          : 'pointer-events-auto'}">
         {#if tutorialMode}
           <div
             class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
