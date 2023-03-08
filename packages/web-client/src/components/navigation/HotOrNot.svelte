@@ -24,8 +24,8 @@ export let betStatus: BettingStatus
 export let postId: bigint
 export let inView = false
 
-let betPlaced: false | 'hot' | 'not' = 'hot'
-let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'won'
+let betPlaced: false | 'hot' | 'not' = false
+let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
 let coinsBetPlaced = 10
 let selectedCoins = 10
 let loading = false
@@ -145,9 +145,18 @@ function toggleBet() {
 </script>
 
 <hot-or-not class="pointer-events-none block h-full w-full">
+  {#if error}
+    <div
+      class="absolute inset-0 bottom-0 z-50 flex items-center justify-center">
+      <div
+        class="rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
+        {error}
+      </div>
+    </div>
+  {/if}
   {#if betPlaced === false}
     <div
-      class="pointer-events-none absolute inset-0 top-0  flex items-center justify-center space-x-8 px-4"
+      class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-8 px-4"
       transition:fade>
       <div
         class="pointer-events-auto relative flex flex-col items-center space-y-1">
@@ -234,13 +243,6 @@ function toggleBet() {
         </IconButton>
         <span class="text-sm">Hot</span>
       </div>
-
-      {#if error}
-        <div
-          class="absolute bottom-16 -translate-x-3 rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
-          {error}
-        </div>
-      {/if}
     </div>
   {:else}
     <div transition:fade class="flex h-full w-full items-center space-x-8 px-4">
