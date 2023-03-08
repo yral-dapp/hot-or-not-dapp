@@ -17,7 +17,7 @@ import type { Principal } from '@dfinity/principal'
 
 export let i: number
 export let postId: bigint
-export let betStatus: BettingStatus
+export let betStatus: BettingStatus | undefined
 export let thumbnail = ''
 export let displayName = ''
 export let profileLink = ''
@@ -129,10 +129,12 @@ $: roomNumber = 24
         </IconButton>
       </div>
     </div>
-    <div
-      style="-webkit-transform: translate3d(0, 0, 0);"
-      class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
-      <HotOrNot {postId} {betStatus} />
-    </div>
+    {#if betStatus}
+      <div
+        style="-webkit-transform: translate3d(0, 0, 0);"
+        class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
+        <HotOrNot {postId} {betStatus} />
+      </div>
+    {/if}
   </div>
 </player>
