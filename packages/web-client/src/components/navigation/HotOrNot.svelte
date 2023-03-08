@@ -11,35 +11,39 @@ import HotIcon from '$components/icons/HotIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import NotIcon from '$components/icons/NotIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
-import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
-import WalletIcon from '$components/icons/WalletIcon.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { fetchTokenBalance } from '$lib/helpers/profile'
+import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
 export let disabled = false
-export let betStatus: BettingStatus | undefined = undefined
+export let betStatus: BettingStatus
 export let postId: bigint
+export let inView = false
 
-let betPlaced: false | 'hot' | 'not' = false
-let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
+let betPlaced: false | 'hot' | 'not' = 'hot'
+let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'won'
 let coinsBetPlaced = 10
 let selectedCoins = 10
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
 let error = ''
+let timeLeft = '59m 10s'
+
+$: console.log({ postId, betStatus, canId: $authState.userCanisterId })
 
 $: if (
-  betStatus &&
-  'BettingOpen' in betStatus &&
-  !betStatus['BettingOpen'].has_this_user_participated_in_this_post[0]
+  betStatus['BettingOpen']?.['has_this_user_participated_in_this_post']?.[0]
 ) {
-  betPlaced = false
-  tempPlacedBet = false
-} else if (!disabled) {
+  error = 'You have already placed a bet'
+} else if ('BettingClosed' in betStatus) {
+  error = 'Betting has been closed'
+}
+
+$: if (inView && !error && !disabled) {
   updateBetStatus()
 }
 
@@ -87,6 +91,8 @@ async function placeBet(bet: 'hot' | 'not') {
       post_id: postId,
     })
 
+    console.log({ betRes })
+
     if ('Ok' in betRes) {
       betPlaced = tempPlacedBet
     } else {
@@ -114,6 +120,7 @@ async function placeBet(bet: 'hot' | 'not') {
       throw ''
     }
   } catch (e) {
+    Log({ error: e, from: 'placeBet 1' }, 'error')
     error = 'Something went wrong while placing bet. Please try again'
     setTimeout(() => {
       error = ''
@@ -137,7 +144,7 @@ function toggleBet() {
 }
 </script>
 
-<hot-or-not class="pointer-events-none w-full">
+<hot-or-not class="pointer-events-none block h-full w-full">
   {#if betPlaced === false}
     <div
       class="pointer-events-none absolute inset-0 top-0  flex items-center justify-center space-x-8 px-4"
@@ -236,10 +243,11 @@ function toggleBet() {
       {/if}
     </div>
   {:else}
-    <div transition:fade class="flex h-full items-center space-x-4 px-4">
+    <div transition:fade class="flex h-full w-full items-center space-x-8 px-4">
       <div
         class={c('flex items-center', {
           'translate-y-4 -space-y-8 -space-x-8': betResult !== 'pending',
+          'space-x-2': betResult === 'pending',
         })}>
         <div class="z-[2] shrink-0">
           {#if betPlaced === 'hot'}
@@ -258,47 +266,27 @@ function toggleBet() {
         </div>
       </div>
       {#if betResult === 'pending'}
-        <div class="flex flex-col space-y-1">
-          <div class="text-sm">
-            You have placed bet on {betPlaced === 'hot' ? 'Hot' : 'Not'} for 10 coins.
-            Your bet details:
-          </div>
-          <div class="flex items-center space-x-2">
-            <div
-              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
-              <TimerIcon class="h-4" />
-              <span class=" text-sm text-white">10:57</span>
-            </div>
-            <div
-              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
-              <UserAvatarIcon class="h-4" />
-              <span class=" text-sm text-white">11/20</span>
-            </div>
+        <div class="flex shrink-0 grow flex-col space-y-2">
+          <span class="text-sm">
+            Your bet: {coinsBetPlaced} coins on {betPlaced}
+          </span>
+          <div
+            class="flex grow items-center justify-center space-x-2 rounded-full bg-primary px-3 py-2 shadow-button-primary">
+            <TimerIcon class="h-5 w-5" />
+            <span class="font-bold text-white">{timeLeft}</span>
           </div>
         </div>
       {:else}
-        <div
-          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border text-xs capitalize">
-          {betResult} Icon
-        </div>
-        <div class="flex flex-col space-y-1">
-          <div class="text-sm">
-            You placed bet on {betPlaced === 'hot' ? 'Hot' : 'Not'} for 10 coins.
-            Bet result:
-          </div>
-          <div class="flex items-center space-x-2">
-            <div
-              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
-              <div class="h-4 w-4 rounded-full border" />
-              <span class=" text-sm text-white">10</span>
-            </div>
-            <div
-              class="flex items-center space-x-1 rounded-full bg-black/50 py-2 px-3">
-              <WalletIcon class="h-4" />
-              <span class=" text-sm text-white">
-                {betResult !== 'won' ? '-10' : '20'}
-              </span>
-            </div>
+        <div class="flex shrink-0 grow flex-col space-y-2">
+          <span class="text-sm">
+            Your bet: {coinsBetPlaced} coins on {betPlaced}
+          </span>
+          <div
+            class="flex grow items-center justify-center space-x-2 rounded-full px-3 py-2 {betResult ===
+            'won'
+              ? 'bg-green-500'
+              : 'bg-red-500'}">
+            <span class="font-bold text-white">You {betResult}</span>
           </div>
         </div>
       {/if}
