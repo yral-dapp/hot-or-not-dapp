@@ -3,8 +3,9 @@ import Log from '../utils/Log'
 
 type DBStores = 'canisters' | 'watch' | 'watch-hon'
 
-const dbPromise = openDB('keyval-store', 2, {
+const dbPromise = openDB('keyval-store', 3, {
   upgrade(db) {
+    console.log('upgrade called', db, db.objectStoreNames)
     if (!db.objectStoreNames.contains('keyval')) {
       db.createObjectStore('keyval')
     }
@@ -22,21 +23,21 @@ const dbPromise = openDB('keyval-store', 2, {
   Log({ error: e, from: 'idb' }, 'error')
 })
 
-export async function get(db: DBStores, key) {
-  return (await dbPromise)?.get(db, key)
+export async function get(storeName: DBStores, key) {
+  return (await dbPromise)?.get(storeName, key)
 }
-export async function set(db: DBStores, key, val) {
-  return (await dbPromise)?.put(db, val, key)
+export async function set(storeName: DBStores, key, val) {
+  return (await dbPromise)?.put(storeName, val, key)
 }
-export async function del(db: DBStores, key) {
-  return (await dbPromise)?.delete(db, key)
+export async function del(storeName: DBStores, key) {
+  return (await dbPromise)?.delete(storeName, key)
 }
-export async function clear(db: DBStores) {
-  return (await dbPromise)?.clear(db)
+export async function clear(storeName: DBStores) {
+  return (await dbPromise)?.clear(storeName)
 }
-export async function keys(db: DBStores) {
-  return (await dbPromise)?.getAllKeys(db)
+export async function keys(storeName: DBStores) {
+  return (await dbPromise)?.getAllKeys(storeName)
 }
-export async function values(db: DBStores) {
-  return (await dbPromise)?.getAll(db)
+export async function values(storeName: DBStores) {
+  return (await dbPromise)?.getAll(storeName)
 }
