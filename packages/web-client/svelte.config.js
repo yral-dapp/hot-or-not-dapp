@@ -1,6 +1,7 @@
 import staticAdapter from '@sveltejs/adapter-static'
 import cfAdapter from '@sveltejs/adapter-cloudflare'
 import preprocess from 'svelte-preprocess'
+import directives from './directives.js'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
@@ -18,14 +19,14 @@ const config = {
     postcss: true,
     preserve: ['partytown'],
   }),
+
   kit: {
-    // Todo: add CSP config
-    // csp: isDev
-    // 	? undefined
-    // 	: {
-    // 			mode: 'hash',
-    // 			directives: { 'script-src': ['self'] }
-    // 	  },
+    csp: isDev
+      ? undefined
+      : {
+          mode: 'hash',
+          directives,
+        },
     serviceWorker: {
       register: false,
     },
