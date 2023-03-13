@@ -22,12 +22,14 @@ const cspDirectives = {
   ],
   'img-src': [
     'self',
+    'https://hotornot.wtf',
     'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
     'https://imagedelivery.net',
     'https://images.unsplash.com',
   ],
   'media-src': [
     'self',
+    'blob:',
     'data:',
     'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
   ],
