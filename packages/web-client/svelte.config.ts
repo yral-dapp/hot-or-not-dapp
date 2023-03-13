@@ -2,6 +2,7 @@ import staticAdapter from '@sveltejs/adapter-static'
 import cfAdapter from '@sveltejs/adapter-cloudflare'
 import preprocess from 'svelte-preprocess'
 import directives from './directives.js'
+import { type Config } from '@sveltejs/kit'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
@@ -13,8 +14,7 @@ console.log(
   isDev,
 )
 
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
+const config: Config = {
   preprocess: preprocess({
     postcss: true,
     preserve: ['partytown'],
