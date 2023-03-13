@@ -21,17 +21,14 @@ const config = {
   }),
 
   kit: {
-    csp: isDev
-      ? undefined
-      : {
-          mode: 'hash',
-          directives,
-        },
     serviceWorker: {
       register: false,
     },
     files: {
       assets: 'static',
+      hooks: {
+        server: './hooks/server.hooks.ts',
+      },
     },
     adapter: isSSR
       ? cfAdapter()
