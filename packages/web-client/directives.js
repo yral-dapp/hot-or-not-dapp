@@ -6,11 +6,15 @@ const cspDirectives = {
     'https://*.lr-in-prod.com',
     'https://*.googletagmanager.com',
     'wasm-eval',
-    'unsafe-inline',
+    'nonce-rAnd0m',
+    'sha256-0FOyb71rYY8ZAx0nglAQIyLNmZs4/uR53cog5RxYrt4=', // SHA of the goSquared script
+    'sha256-Ldq+1tIcjwDo/zGvEqC/TUgHL8eBmyd54UR6VYtXxdE=', //SHA Of the Gtag fetch script
+    'sha256-G6YM50niUSwqExarkhk2LGwuu8PToJsmOYAqXQJi+cQ=', //SHA Of the Gtag init function
   ],
   'connect-src': [
     'self',
     'ws://localhost:*',
+    'https://ic0.app',
     'https://*.ic0.app',
     'https://*.sentry.io',
     'https://*.lr-in-prod.com',
