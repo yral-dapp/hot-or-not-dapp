@@ -2,7 +2,7 @@
 const cspDirectives = {
   'connect-src': [
     'self',
-    'ws://localhost:*',
+    'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
     'https://ic0.app',
     'https://*.ic0.app',
     'https://*.sentry.io',
@@ -11,6 +11,7 @@ const cspDirectives = {
   ],
   'img-src': [
     'self',
+    'www.googletagmanager.com',
     'https://hotornot.wtf',
     'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
     'https://imagedelivery.net',
@@ -21,6 +22,15 @@ const cspDirectives = {
     'blob:',
     'data:',
     'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
+  ],
+  'script-src': [
+    'self',
+    'sha256-/qeDSCLkYHmPQRZSpy6ESTB1rkGghBTDYkeHjWHUwys=',
+    'sha256-vbYiNewrabeMlaOVkqLQP7iF+8z5+u9HfIGL2mm0np8=',
+    'sha256-NK8YV7rWK86z7bPANGs0hxTjJZ11YaleSgSx58xq+Yg=',
+    'sha256-YbseCq5FvHWOJs0CPVvQNUv7ay1kgEqsYiFK0Nj2jtM=',
+    'https://www.googletagmanager.com',
+    'https://*.cloudfront.net/gosquared.js',
   ],
   'font-src': ['self', 'data:', 'https://fonts.gstatic.com'],
   'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
