@@ -21,10 +21,12 @@ const config = {
   }),
 
   kit: {
-    csp: {
-      mode: 'hash',
-      directives,
-    },
+    csp: isDev
+      ? undefined
+      : {
+          mode: 'hash',
+          directives,
+        },
     serviceWorker: {
       register: false,
     },
