@@ -1,6 +1,5 @@
-import type { CspDirectives } from '@sveltejs/kit/types/private'
-
-const cspDirectives: CspDirectives = {
+/** @type {import("@sveltejs/kit/types/private").CspDirectives} */
+const cspDirectives = {
   'connect-src': [
     'self',
     'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
