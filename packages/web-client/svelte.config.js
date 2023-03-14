@@ -1,7 +1,7 @@
 import staticAdapter from '@sveltejs/adapter-static'
 import cfAdapter from '@sveltejs/adapter-cloudflare'
 import preprocess from 'svelte-preprocess'
-import directives from './directives.js'
+import directives from './directives'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
