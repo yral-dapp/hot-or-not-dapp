@@ -1,16 +1,5 @@
 /** @type {import("@sveltejs/kit/types/private").CspDirectives} */
 const cspDirectives = {
-  'script-src': [
-    'self',
-    'report-sample',
-    'https://*.lr-in-prod.com',
-    'https://*.googletagmanager.com',
-    'wasm-eval',
-    'nonce-rAnd0m',
-    'sha256-0FOyb71rYY8ZAx0nglAQIyLNmZs4/uR53cog5RxYrt4=', // SHA of the goSquared script
-    'sha256-Ldq+1tIcjwDo/zGvEqC/TUgHL8eBmyd54UR6VYtXxdE=', //SHA Of the Gtag fetch script
-    'sha256-G6YM50niUSwqExarkhk2LGwuu8PToJsmOYAqXQJi+cQ=', //SHA Of the Gtag init function
-  ],
   'connect-src': [
     'self',
     'ws://localhost:*',
