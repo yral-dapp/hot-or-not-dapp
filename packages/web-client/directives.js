@@ -8,6 +8,7 @@ const cspDirectives = {
     'https://*.sentry.io',
     'https://*.lr-in-prod.com',
     'https://*.google-analytics.com',
+    'https://*.gosquared.com',
   ],
   'img-src': [
     'self',
@@ -31,7 +32,9 @@ const cspDirectives = {
     'sha256-YbseCq5FvHWOJs0CPVvQNUv7ay1kgEqsYiFK0Nj2jtM=',
     'https://www.googletagmanager.com',
     'https://*.cloudfront.net/gosquared.js',
+    'https://*.gosquared.com',
   ],
+  'worker-src': ['self', 'blob:'],
   'font-src': ['self', 'data:', 'https://fonts.gstatic.com'],
   'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
   'default-src': ['self'],
