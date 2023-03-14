@@ -5,7 +5,6 @@ type DBStores = 'canisters' | 'watch' | 'watch-hon'
 
 const dbPromise = openDB('keyval-store', 3, {
   upgrade(db) {
-    console.log('upgrade called', db, db.objectStoreNames)
     if (!db.objectStoreNames.contains('keyval')) {
       db.createObjectStore('keyval')
     }
