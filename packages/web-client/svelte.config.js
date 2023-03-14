@@ -22,7 +22,7 @@ const config = {
 
   kit: {
     csp: {
-      mode: 'nonce',
+      mode: 'hash',
       directives,
     },
     serviceWorker: {
