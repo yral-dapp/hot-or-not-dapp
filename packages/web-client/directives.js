@@ -2,7 +2,6 @@
 const cspDirectives = {
   'connect-src': [
     'self',
-    'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
     'https://ic0.app',
     'https://*.ic0.app',
     'https://*.sentry.io',
