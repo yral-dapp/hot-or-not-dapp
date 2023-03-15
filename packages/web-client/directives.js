@@ -20,7 +20,7 @@ const cspDirectives = {
     'https://images.unsplash.com',
   ],
   'report-uri': [
-    'https://o4504076385124352.ingest.sentry.io/api/4504076386238464/security/?sentry_key=7586a69b01314524b31c8f4f64b41988',
+    'https://o4504076385124352.ingest.sentry.io/api/4504076386238464/security/?sentry_key=7586a69b01314524b31c8f4f64b41988&sentry_environment=production',
   ],
   'media-src': [
     'self',
