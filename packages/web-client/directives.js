@@ -18,7 +18,7 @@ const cspDirectives = {
     'https://imagedelivery.net',
     'https://images.unsplash.com',
   ],
-  'report-uri': 'https://examplewebsite.wtf',
+  'report-uri': ['https://examplewebsite.wtf'],
   'media-src': [
     'self',
     'blob:',
