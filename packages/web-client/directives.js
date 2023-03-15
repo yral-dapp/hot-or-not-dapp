@@ -4,6 +4,7 @@ const cspDirectives = {
     'self',
     'https://ic0.app',
     'https://*.ic0.app',
+    'https://sentry.io',
     'https://*.sentry.io',
     'https://*.lr-in-prod.com',
     'https://*.google-analytics.com',
