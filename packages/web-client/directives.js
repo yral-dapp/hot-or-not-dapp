@@ -13,7 +13,7 @@ const cspDirectives = {
   ],
   'img-src': [
     'self',
-    'www.googletagmanager.com',
+    'https://www.googletagmanager.com',
     'https://hotornot.wtf',
     'https://customer-2p3jflss4r4hmpnz.cloudflarestream.com',
     'https://imagedelivery.net',
