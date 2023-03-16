@@ -190,7 +190,7 @@ async function recordView(post?: PostPopulated) {
       postHistory,
     )
   } catch (e) {
-    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
+    Log({ error: e, source: '1 recordView', type: 'idb' }, 'warn')
   }
 }
 
