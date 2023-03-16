@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 import Log from '../utils/Log'
 
-type DBStores = 'canisters' | 'watch' | 'watch-hon'
+type DBStores = 'canisters' | 'watch' | 'watch-hon' | 'hon-bets'
 
 const dbPromise = openDB('keyval-store', 3, {
   upgrade(db) {
@@ -16,6 +16,9 @@ const dbPromise = openDB('keyval-store', 3, {
     }
     if (!db.objectStoreNames.contains('watch-hon')) {
       db.createObjectStore('watch-hon')
+    }
+    if (!db.objectStoreNames.contains('hon-bets')) {
+      db.createObjectStore('hon-bets')
     }
   },
 }).catch((e) => {
