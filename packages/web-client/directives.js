@@ -34,6 +34,7 @@ const cspDirectives = {
     'sha256-vbYiNewrabeMlaOVkqLQP7iF+8z5+u9HfIGL2mm0np8=',
     'sha256-NK8YV7rWK86z7bPANGs0hxTjJZ11YaleSgSx58xq+Yg=',
     'sha256-YbseCq5FvHWOJs0CPVvQNUv7ay1kgEqsYiFK0Nj2jtM=',
+    'sha256-6DLK+X6XDQTewWRcDgfM+LwJzRdnV8K5zgZAvji3Yt4=',
     'https://www.googletagmanager.com',
     'https://*.cloudfront.net/gosquared.js',
     'https://*.gosquared.com',
