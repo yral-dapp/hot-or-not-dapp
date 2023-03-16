@@ -18,6 +18,7 @@ import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
+import { onMount } from 'svelte/types/runtime/internal/lifecycle'
 
 export let tutorialMode = false
 export let disabled = false
@@ -72,6 +73,17 @@ async function getWalletBalance() {
     throw res.error
   } else {
     return res.balance
+  }
+}
+
+async function getBetFromCache(betId: string) {
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    return await idb.get('hon-bets', betId)
+  } catch (e) {
+    Log({ error: e, source: '1 getBetFromCache', type: 'idb' }, 'warn')
   }
 }
 
@@ -134,6 +146,13 @@ function toggleBet() {
   if (selectedCoins == 100) selectedCoins = 10
   else increaseBet()
 }
+
+onMount(async () => {
+  const betInCache = await getBetFromCache('')
+  if (betInCache) {
+    // check if cached bet is outdated or still can be used
+  }
+})
 </script>
 
 <hot-or-not class="pointer-events-none w-full">
