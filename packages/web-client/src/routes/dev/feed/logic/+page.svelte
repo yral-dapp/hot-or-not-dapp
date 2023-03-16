@@ -9,7 +9,6 @@ let error = false
 let fromCount = 0
 
 async function getVideosForFeed() {
-  console.log('fetching posts')
   try {
     const res = await getTopPosts(fromCount, 50, true)
     if (res.error) {
