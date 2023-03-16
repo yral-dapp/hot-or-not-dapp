@@ -14,6 +14,8 @@ import UserAvatarIcon from '$components/icons/UserAvatarIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { fetchTokenBalance } from '$lib/helpers/profile'
+import type { IDB } from '$lib/idb'
+import Log from '$lib/utils/Log'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
@@ -29,6 +31,7 @@ let selectedCoins = 10
 let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
 let error = ''
+let idb: IDB | null = null
 
 $: if (
   betStatus &&
@@ -39,6 +42,17 @@ $: if (
   tempPlacedBet = false
 } else if (!disabled) {
   updateBetStatus()
+}
+
+async function saveBetToCache(betDetails: any) {
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    await idb.set('hon-bets', betDetails.id, betDetails)
+  } catch (e) {
+    Log({ error: e, source: '1 saveBetToCache', type: 'idb' }, 'warn')
+  }
 }
 
 async function updateBetStatus() {
