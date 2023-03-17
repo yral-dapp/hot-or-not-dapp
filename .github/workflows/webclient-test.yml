@@ -153,7 +153,7 @@ jobs:
       - name: Install canisters
         if: always()
         working-directory: ./packages/hot-or-not-backend-canister
-        run: ./scripts/canisters/local_deploy/install_all_canisters_without_test.sh
+        run: ./scripts/canisters/local_deploy/install_all_canisters.sh -s
 
       - name: Test DFX connection
         if: always()

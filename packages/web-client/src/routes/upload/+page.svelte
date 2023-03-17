@@ -37,7 +37,7 @@ let recordingProgress: Tweened<number> | undefined = tweened(0, {
   duration: 1000,
   easing: linear,
 })
-let canvasEl: HTMLCanvasElement
+let canvasEl: HTMLCanvasElement | undefined = undefined
 let cameraEl: HTMLElement
 let filtersEl: HTMLElement
 let selectedFilter: keyof typeof allFilters | 'clear' = 'clear'
@@ -77,7 +77,37 @@ async function updateVideoStream() {
   videoEl.srcObject = mediaStream
 }
 
-function checkFileSelected(files: FileList | null) {
+async function checkLoadedVideo(videoEl: HTMLVideoElement, file: File) {
+  if (videoEl.duration && videoEl.duration > 1) {
+    if (videoEl.duration > 60) {
+      invalidFileSelected = {
+        show: true,
+        error: 'length',
+      }
+      loading = false
+    } else {
+      Log(
+        {
+          res: 'Selected file is fine. Proceeding',
+          source: '0 checkFileSelected',
+        },
+        'info',
+      )
+      $fileToUpload = file
+      await videoEl.pause()
+      goto('/upload/new')
+    }
+  } else {
+    invalidFileSelected = {
+      show: true,
+      error: 'other',
+    }
+    loading = false
+  }
+  URL.revokeObjectURL(videoEl.src)
+}
+
+function checkInput(files: FileList | null) {
   loading = true
   if (files && files[0]) {
     if (files[0].size / 1024 / 1024 > 200) {
@@ -91,35 +121,8 @@ function checkFileSelected(files: FileList | null) {
     }
     const videoEl = document.createElement('video')
     videoEl.preload = 'metadata'
-    videoEl.onloadedmetadata = () => {
-      URL.revokeObjectURL(videoEl.src)
-      if (videoEl.duration && videoEl.duration > 1) {
-        if (videoEl.duration > 60) {
-          invalidFileSelected = {
-            show: true,
-            error: 'length',
-          }
-          loading = false
-        } else {
-          Log(
-            {
-              res: 'Selected file is fine. Proceeding',
-              source: '0 checkFileSelected',
-            },
-            'info',
-          )
-          $fileToUpload = files[0]
-          goto('/upload/new')
-        }
-      } else {
-        invalidFileSelected = {
-          show: true,
-          error: 'other',
-        }
-        loading = false
-      }
-    }
     videoEl.src = URL.createObjectURL(files[0])
+    videoEl.onloadedmetadata = () => checkLoadedVideo(videoEl, files[0])
   }
 }
 
@@ -221,7 +224,7 @@ async function startRecording(ignoreTimer = false) {
       timerCountdown = cameraControls.timer === '5s' ? 5 : 10
       setTimer()
     } else {
-      if (useCanvas) {
+      if (useCanvas && canvasEl) {
         recordStream = canvasEl.captureStream(30)
         audioTrack && recordStream.addTrack(audioTrack)
       } else recordStream = mediaStream
@@ -281,8 +284,8 @@ async function updateCanvas(height: number, width: number) {
 
 function computeFrame() {
   try {
-    const ctx = canvasEl.getContext('2d', { willReadFrequently: true })
-    if (ctx) {
+    const ctx = canvasEl?.getContext('2d', { willReadFrequently: true })
+    if (canvasEl && ctx) {
       ctx.drawImage(
         videoEl,
         0,
@@ -383,10 +386,9 @@ onDestroy(async () => {
       {:else}
         <!-- svelte-ignore a11y-media-has-caption -->
         <video
-          on:play
+          autoplay
           muted
           bind:this={videoEl}
-          autoplay
           playsinline
           style={!useCanvas
             ? cameraControls.flip.facingMode === 'user'
@@ -576,7 +578,7 @@ onDestroy(async () => {
   disabled={loading || recording}
   bind:this={inputEl}
   class="hidden"
-  on:change={(e) => checkFileSelected(e.currentTarget.files)} />
+  on:change={(e) => checkInput(e.currentTarget.files)} />
 
 <Popup
   showCloseButton

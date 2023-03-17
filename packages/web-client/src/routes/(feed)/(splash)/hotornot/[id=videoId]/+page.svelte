@@ -4,12 +4,14 @@ import 'swiper/css'
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
 import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import HotOrNotPlayer from '$components/player/HotOrNotPlayer.svelte'
+import { Swiper, SwiperSlide } from 'swiper/svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import {
   getHotOrNotPosts,
   getSinglePostById,
   type PostPopulated,
+  type PostPopulatedHistory,
 } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { isiPhone } from '$lib/utils/isSafari'
@@ -17,14 +19,11 @@ import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
-import { onMount, tick, onDestroy } from 'svelte'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
-import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
-import { updateURL } from '$lib/utils/feedUrl'
 import Button from '$components/button/Button.svelte'
 import { beforeNavigate } from '$app/navigation'
 import { page } from '$app/stores'
 import { browser } from '$app/environment'
+import type { IDB } from '$lib/idb'
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -38,6 +37,7 @@ let videoPlayers: VideoPlayer[] = []
 let fetchedVideosCount = 0
 let isIPhone = isiPhone()
 let isDocumentHidden = false
+let idb: IDB | null = null
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
@@ -106,8 +106,29 @@ async function handleChange(e: CustomEvent) {
   currentVideoIndex = index
   Log({ currentVideoIndex, source: '0 handleChange' }, 'info')
   fetchNextVideos()
+  recordView(videos[currentVideoIndex])
   updateURL(videos[currentVideoIndex])
   updateMetadata(videos[currentVideoIndex])
+}
+
+async function recordView(post?: PostPopulated) {
+  if (!post) return
+  const postHistory: PostPopulatedHistory = {
+    ...post,
+    watched_at: Date.now(),
+  }
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    await idb.set(
+      'watch-hon',
+      post.publisher_canister_id + '@' + post.post_id,
+      postHistory,
+    )
+  } catch (e) {
+    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
+  }
 }
 
 function handleVisibilityChange() {
@@ -173,7 +194,7 @@ beforeNavigate(() => {
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
         <HotOrNotPlayer
           {i}
-          id={video.id}
+          postId={video.id}
           displayName={video.created_by_display_name[0]}
           profileLink={video.created_by_unique_user_name[0] ??
             video.created_by_user_principal_id}
@@ -182,6 +203,7 @@ beforeNavigate(() => {
           videoViews={Number(video.total_view_count)}
           publisherCanisterId={video.publisher_canister_id}
           userProfileSrc={video.created_by_profile_photo_url[0]}
+          betStatus={video.hot_or_not_betting_status[0]}
           {individualUser}
           thumbnail={getThumbnailUrl(video.video_uid)}>
           <VideoPlayer
@@ -226,7 +248,7 @@ beforeNavigate(() => {
           There are no more videos to bet on
         </div>
         <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-          <HotOrNot />
+          <HotOrNot postId={0n} />
         </div>
       </div>
     </SwiperSlide>

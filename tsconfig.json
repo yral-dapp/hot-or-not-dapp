@@ -1,10 +1,11 @@
 {
-	"compilerOptions": {
-		"preserveSymlinks": true,
-		"incremental": true,
-		"baseUrl": "./packages",
-		"rootDir": "."
-	},
-	"exclude": ["node_modules", "build"],
-	"references": [{ "path": "packages/web-client" }]
+  "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "preserveSymlinks": true,
+    "incremental": true,
+    "baseUrl": "./packages",
+    "rootDir": "."
+  },
+  "exclude": ["node_modules", "build"],
+  "references": [{ "path": "packages/web-client" }]
 }

@@ -16,6 +16,13 @@ import GoSquared from '$components/seo/GoSquared.svelte'
 
 const ignoredPaths = ['edit', 'lovers', 'post']
 
+function listenForUnhandledRejections() {
+  window.addEventListener('unhandledrejection', (e) => {
+    // Handle app-crash level errors here
+    Log(e, 'error')
+  })
+}
+
 beforeNavigate(({ from, to }) => {
   if (
     ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
@@ -39,6 +46,7 @@ async function initAuthClient() {
 
 onMount(() => {
   $navigateBack = null
+  listenForUnhandledRejections()
   const env = $page.url.host.includes('t:') ? 'localDev' : 'production'
   registerServiceWorker(env)
   browser && initAuthClient()

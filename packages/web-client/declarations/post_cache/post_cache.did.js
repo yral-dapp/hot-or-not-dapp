@@ -11,8 +11,8 @@ export const idlFactory = ({ IDL }) => {
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const PostCacheInitArgs = IDL.Record({
-    'known_principal_ids' : IDL.Vec(
-      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    'known_principal_ids' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
   });
   const PostScoreIndexItem = IDL.Record({
@@ -82,8 +82,8 @@ export const init = ({ IDL }) => {
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const PostCacheInitArgs = IDL.Record({
-    'known_principal_ids' : IDL.Vec(
-      IDL.Tuple(KnownPrincipalType, IDL.Principal)
+    'known_principal_ids' : IDL.Opt(
+      IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
   });
   return [PostCacheInitArgs];

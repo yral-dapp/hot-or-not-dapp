@@ -86,13 +86,18 @@ async function updateUserIndexCanister(): Promise<{
       userCanisterPrincipal
     ) {
       try {
-        const { canisterIdb } = await import('$lib/utils/idb')
-        canisterIdb.set(authStateData.idString, userCanisterPrincipal.toText())
+        const { idb } = await import('$lib/idb')
+        idb.set(
+          'canisters',
+          authStateData.idString,
+          userCanisterPrincipal.toText(),
+        )
       } catch (e) {
         Log(
           { error: e, source: '1 updateUserIndexCanister', type: 'idb' },
           'error',
         )
+        return { error: false, new_user, referral: referralStore.principalId }
       }
     }
 

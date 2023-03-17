@@ -33,13 +33,12 @@ async function filterPosts(
   posts: PostScoreIndexItem[],
 ): Promise<PostScoreIndexItem[]> {
   try {
-    const { watchHistoryIdb } = await import('$lib/utils/idb')
-    const keysArr = (await watchHistoryIdb.keys()) as string[]
-    if (!keysArr.length) return posts
-    const keysSet = new Set(keysArr)
-    const filtered = posts.filter((o) => {
-      return !keysSet.has(o.publisher_canister_id.toText() + '@' + o.post_id)
-    })
+    const { idb } = await import('$lib/idb')
+    const keys = (await idb.keys('watch')) as string[]
+    if (!keys.length) return posts
+    const filtered = posts.filter(
+      (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
+    )
     return filtered
   } catch (e) {
     Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
@@ -51,8 +50,8 @@ export async function getWatchedVideosFromCache(
   sort = false,
 ): Promise<PostPopulatedHistory[]> {
   try {
-    const { watchHistoryIdb } = await import('$lib/utils/idb')
-    const values = ((await watchHistoryIdb.values()) || []).slice(
+    const { idb } = await import('$lib/idb')
+    const values = ((await idb.values('watch')) || []).slice(
       50,
     ) as PostPopulatedHistory[]
     if (!values.length) return []

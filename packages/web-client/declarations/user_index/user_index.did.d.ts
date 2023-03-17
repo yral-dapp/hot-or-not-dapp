@@ -1,6 +1,9 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export type CanisterInstallMode = { 'reinstall' : null } |
+  { 'upgrade' : null } |
+  { 'install' : null };
 export interface CanisterStatusResponse {
   'status' : CanisterStatusType,
   'memory_size' : bigint,
@@ -36,7 +39,7 @@ export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
-export interface UpgradeStatusV1 {
+export interface UpgradeStatus {
   'version_number' : bigint,
   'last_run_on' : SystemTime,
   'failed_canister_ids' : Array<[Principal, Principal]>,
@@ -52,13 +55,12 @@ export interface UserIndexInitArgs {
 }
 export interface _SERVICE {
   'backup_all_individual_user_canisters' : ActorMethod<[], undefined>,
-  'backup_data_to_backup_canister' : ActorMethod<[], undefined>,
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],
     CanisterStatusResponse
   >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
-  'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatusV1>,
+  'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
   'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
     [[] | [Principal]],
     Principal
@@ -88,10 +90,14 @@ export interface _SERVICE {
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<
     [],
-    undefined
+    string
   >,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
     undefined
+  >,
+  'upgrade_specific_individual_user_canister_with_latest_wasm' : ActorMethod<
+    [Principal, Principal, [] | [CanisterInstallMode]],
+    string
   >,
 }

@@ -11,7 +11,7 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
 export interface PostCacheInitArgs {
-  'known_principal_ids' : Array<[KnownPrincipalType, Principal]>,
+  'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
 }
 export interface PostScoreIndexItem {
   'post_id' : bigint,
