@@ -63,6 +63,7 @@ export async function getWatchedVideosFromCache(): Promise<
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function filterHotOrNotPosts(
   posts: PostPopulatedHistory[],
 ): Promise<PostPopulatedHistory[]> {
