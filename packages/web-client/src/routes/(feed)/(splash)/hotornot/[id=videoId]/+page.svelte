@@ -24,6 +24,9 @@ import { beforeNavigate } from '$app/navigation'
 import { page } from '$app/stores'
 import { browser } from '$app/environment'
 import type { IDB } from '$lib/idb'
+import { tick, onMount, onDestroy } from 'svelte'
+import { updateURL } from '$lib/utils/feedUrl'
+import { updateMetadata } from '$lib/utils/video'
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -82,7 +85,7 @@ async function fetchNextVideos(force = false) {
 
       fetchedVideosCount = res.from
 
-      videos = joinArrayUniquely(videos, res.posts)
+      videos = [...videos, ...res.posts]
 
       if (res.noMorePosts) {
         noMoreVideos = res.noMorePosts
