@@ -63,6 +63,22 @@ export async function getWatchedVideosFromCache(): Promise<
   }
 }
 
+export async function filterHotOrNotPosts(
+  posts: PostPopulatedHistory[],
+): Promise<PostPopulatedHistory[]> {
+  try {
+    const { idb } = await import('$lib/idb')
+    const betVideos = (await idb.keys('hon-bets')) || []
+    if (!betVideos.length) return posts
+    return posts.filter(
+      (o) => !betVideos.includes(`${o.post_id}@${o.publisher_canister_id}`),
+    )
+  } catch (e) {
+    Log({ error: e, from: '1 filterHotOrNotPosts', type: 'idb' }, 'error')
+    return []
+  }
+}
+
 export async function getTopPosts(
   from: number,
   numberOfPosts: number = 10,
