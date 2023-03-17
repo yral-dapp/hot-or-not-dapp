@@ -63,7 +63,7 @@ export async function getWatchedVideosFromCache(): Promise<
   }
 }
 
-export async function filterHotOrNotPosts(
+async function filterHotOrNotPosts(
   posts: PostPopulatedHistory[],
 ): Promise<PostPopulatedHistory[]> {
   try {
