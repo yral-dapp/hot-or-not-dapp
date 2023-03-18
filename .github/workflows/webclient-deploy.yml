@@ -25,7 +25,7 @@ jobs:
       - run: npm run wc:build:static
       - run: |
           set -euxo pipefail
-          DFX_VERSION=0.12.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+          DFX_VERSION=0.13.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
       - run: |
           touch actions_identity.pem
