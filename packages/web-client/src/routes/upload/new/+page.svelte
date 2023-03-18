@@ -138,7 +138,7 @@ const handleSuccessfulUpload = debounce(
     clearInterval(videoStatusInterval)
     try {
       Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info')
-      const postId = await individualUser().add_post({
+      const postId = await individualUser().add_post_v2({
         description: videoDescription,
         hashtags,
         video_uid: videoUid,
