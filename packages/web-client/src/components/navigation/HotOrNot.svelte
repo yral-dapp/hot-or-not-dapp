@@ -184,9 +184,15 @@ function toggleBet() {
         <span class="text-sm">Not</span>
       </div>
       <div
-        class="relative flex flex-col items-center {tutorialMode || error
-          ? '!pointer-events-none opacity-0'
-          : 'pointer-events-auto'}">
+        class={c(
+          'relative flex flex-col items-center',
+          tutorialMode || error
+            ? '!pointer-events-none'
+            : 'pointer-events-auto',
+          {
+            'opacity-0': tutorialMode,
+          },
+        )}>
         <IconButton
           disabled={selectedCoins == 100}
           on:click={(e) => {
