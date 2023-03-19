@@ -1,6 +1,5 @@
 <script lang="ts">
 import 'swiper/css'
-
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
 import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import HotOrNotPlayer from '$components/player/HotOrNotPlayer.svelte'
@@ -20,14 +19,12 @@ import { hideSplashScreen } from '$stores/splashScreen'
 import Hls from 'hls.js/dist/hls.min'
 import { onMount, tick, onDestroy } from 'svelte'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
-import type { PageData } from './$types'
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { updateURL } from '$lib/utils/feedUrl'
 import Button from '$components/button/Button.svelte'
 import { beforeNavigate } from '$app/navigation'
 import type { IDB } from '$lib/idb'
 
-export let data: PageData
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
 const keepVideosLoadedCount: number = 4
@@ -149,8 +146,6 @@ onMount(async () => {
   if ($hotOrNotFeedVideos.length) {
     videos = $hotOrNotFeedVideos
     $hotOrNotFeedVideos = []
-  } else if (data.post) {
-    videos = [data.post, ...videos]
   }
   await tick()
   await fetchNextVideos()

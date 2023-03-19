@@ -57,10 +57,20 @@ export const idlFactory = ({ IDL }) => {
     'Transcoding' : IDL.Null,
     'Deleted' : IDL.Null,
   });
+  const FeedScore = IDL.Record({
+    'current_score' : IDL.Nat64,
+    'last_synchronized_at' : SystemTime,
+    'last_synchronized_score' : IDL.Nat64,
+  });
   const PostViewStatistics = IDL.Record({
     'total_view_count' : IDL.Nat64,
     'average_watch_percentage' : IDL.Nat8,
     'threshold_view_count' : IDL.Nat64,
+  });
+  const AggregateStats = IDL.Record({
+    'total_number_of_not_bets' : IDL.Nat64,
+    'total_amount_bet' : IDL.Nat64,
+    'total_number_of_hot_bets' : IDL.Nat64,
   });
   const BetDirection = IDL.Variant({ 'Hot' : IDL.Null, 'Not' : IDL.Null });
   const BetDetails = IDL.Record({
@@ -74,10 +84,10 @@ export const idlFactory = ({ IDL }) => {
     'room_details' : IDL.Vec(IDL.Tuple(IDL.Nat64, RoomDetails)),
   });
   const HotOrNotDetails = IDL.Record({
-    'upvotes' : IDL.Vec(IDL.Principal),
+    'hot_or_not_feed_score' : FeedScore,
+    'aggregate_stats' : AggregateStats,
     'score' : IDL.Nat64,
     'slot_history' : IDL.Vec(IDL.Tuple(IDL.Nat8, SlotDetails)),
-    'downvotes' : IDL.Vec(IDL.Principal),
   });
   const Post = IDL.Record({
     'id' : IDL.Nat64,
@@ -88,6 +98,7 @@ export const idlFactory = ({ IDL }) => {
     'created_at' : SystemTime,
     'likes' : IDL.Vec(IDL.Principal),
     'video_uid' : IDL.Text,
+    'home_feed_score' : FeedScore,
     'view_stats' : PostViewStatistics,
     'hot_or_not_details' : IDL.Opt(HotOrNotDetails),
     'homefeed_ranking_score' : IDL.Nat64,

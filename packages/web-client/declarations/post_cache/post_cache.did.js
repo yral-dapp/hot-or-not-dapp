@@ -61,6 +61,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'remove_all_feed_entries' : IDL.Func([], [], []),
     'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
     'update_user_remove_role' : IDL.Func(
         [UserAccessRole, IDL.Principal],

@@ -1,6 +1,11 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export interface AggregateStats {
+  'total_number_of_not_bets' : bigint,
+  'total_amount_bet' : bigint,
+  'total_number_of_hot_bets' : bigint,
+}
 export type AnotherUserFollowedMeError = {
     'UserIndexCrossCanisterCallFailed' : null
   } |
@@ -13,6 +18,10 @@ export interface BetDetails {
 }
 export type BetDirection = { 'Hot' : null } |
   { 'Not' : null };
+export type BetOnCurrentlyViewingPostError = { 'InsufficientBalance' : null } |
+  { 'UserAlreadyParticipatedInThisPost' : null } |
+  { 'BettingClosed' : null } |
+  { 'UserNotLoggedIn' : null };
 export type BettingStatus = {
     'BettingOpen' : {
       'number_of_participants' : number,
@@ -23,6 +32,11 @@ export type BettingStatus = {
     }
   } |
   { 'BettingClosed' : null };
+export interface FeedScore {
+  'current_score' : bigint,
+  'last_synchronized_at' : SystemTime,
+  'last_synchronized_score' : bigint,
+}
 export type FollowAnotherUserProfileError = {
     'UserToFollowDoesNotExist' : null
   } |
@@ -39,10 +53,10 @@ export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export interface HotOrNotDetails {
-  'upvotes' : Array<Principal>,
+  'hot_or_not_feed_score' : FeedScore,
+  'aggregate_stats' : AggregateStats,
   'score' : bigint,
   'slot_history' : Array<[number, SlotDetails]>,
-  'downvotes' : Array<Principal>,
 }
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
@@ -81,6 +95,7 @@ export interface Post {
   'created_at' : SystemTime,
   'likes' : Array<Principal>,
   'video_uid' : string,
+  'home_feed_score' : FeedScore,
   'view_stats' : PostViewStatistics,
   'hot_or_not_details' : [] | [HotOrNotDetails],
   'homefeed_ranking_score' : bigint,
@@ -129,21 +144,23 @@ export interface PostViewStatistics {
   'average_watch_percentage' : number,
   'threshold_view_count' : bigint,
 }
-export type Result = { 'Ok' : null } |
-  { 'Err' : null };
-export type Result_1 = { 'Ok' : Array<PostDetailsForFrontend> } |
+export type Result = { 'Ok' : bigint } |
+  { 'Err' : string };
+export type Result_1 = { 'Ok' : BettingStatus } |
+  { 'Err' : BetOnCurrentlyViewingPostError };
+export type Result_2 = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_2 = { 'Ok' : Array<Principal> } |
+export type Result_3 = { 'Ok' : Array<Principal> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_3 = { 'Ok' : Array<[bigint, TokenEvent]> } |
+export type Result_4 = { 'Ok' : Array<[bigint, TokenEvent]> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_4 = { 'Ok' : boolean } |
-  { 'Err' : FollowAnotherUserProfileError };
 export type Result_5 = { 'Ok' : boolean } |
+  { 'Err' : FollowAnotherUserProfileError };
+export type Result_6 = { 'Ok' : boolean } |
   { 'Err' : AnotherUserFollowedMeError };
-export type Result_6 = { 'Ok' : UserProfileDetailsForFrontend } |
+export type Result_7 = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
-export type Result_7 = { 'Ok' : null } |
+export type Result_8 = { 'Ok' : null } |
   { 'Err' : UpdateProfileSetUniqueUsernameError };
 export interface RoomDetails { 'bets_made' : Array<[Principal, BetDetails]> }
 export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
@@ -190,11 +207,12 @@ export interface UserProfileUpdateDetailsFromFrontend {
 }
 export interface _SERVICE {
   'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
+  'add_post_v2' : ActorMethod<[PostDetailsFromFrontend], Result>,
   'backup_data_to_backup_canister' : ActorMethod<
     [Principal, Principal],
     undefined
   >,
-  'bet_on_currently_viewing_post' : ActorMethod<[PlaceBetArg], Result>,
+  'bet_on_currently_viewing_post' : ActorMethod<[PlaceBetArg], Result_1>,
   'get_following_status_do_i_follow_this_user' : ActorMethod<
     [Principal],
     boolean
@@ -209,19 +227,19 @@ export interface _SERVICE {
   >,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_1
+    Result_2
   >,
-  'get_principals_i_follow_paginated' : ActorMethod<[bigint, bigint], Result_2>,
+  'get_principals_i_follow_paginated' : ActorMethod<[bigint, bigint], Result_3>,
   'get_principals_that_follow_me_paginated' : ActorMethod<
     [bigint, bigint],
-    Result_2
+    Result_3
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_3
+    Result_4
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
@@ -262,15 +280,15 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_principals_i_follow_toggle_list_with_principal_specified' : ActorMethod<
     [Principal],
-    Result_4
+    Result_5
   >,
   'update_principals_that_follow_me_toggle_list_with_specified_principal' : ActorMethod<
     [Principal],
-    Result_5
+    Result_6
   >,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_6
+    Result_7
   >,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_7>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_8>,
 }

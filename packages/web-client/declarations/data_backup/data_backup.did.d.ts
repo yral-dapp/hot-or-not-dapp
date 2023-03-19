@@ -1,6 +1,11 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
+export interface AggregateStats {
+  'total_number_of_not_bets' : bigint,
+  'total_amount_bet' : bigint,
+  'total_number_of_hot_bets' : bigint,
+}
 export interface AllUserData {
   'user_principal_id' : Principal,
   'user_canister_id' : Principal,
@@ -17,11 +22,16 @@ export interface DataBackupInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'access_control_map' : [] | [Array<[Principal, Array<UserAccessRole>]>],
 }
+export interface FeedScore {
+  'current_score' : bigint,
+  'last_synchronized_at' : SystemTime,
+  'last_synchronized_score' : bigint,
+}
 export interface HotOrNotDetails {
-  'upvotes' : Array<Principal>,
+  'hot_or_not_feed_score' : FeedScore,
+  'aggregate_stats' : AggregateStats,
   'score' : bigint,
   'slot_history' : Array<[number, SlotDetails]>,
-  'downvotes' : Array<Principal>,
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdConfiguration' : null } |
@@ -50,6 +60,7 @@ export interface Post {
   'created_at' : SystemTime,
   'likes' : Array<Principal>,
   'video_uid' : string,
+  'home_feed_score' : FeedScore,
   'view_stats' : PostViewStatistics,
   'hot_or_not_details' : [] | [HotOrNotDetails],
   'homefeed_ranking_score' : bigint,

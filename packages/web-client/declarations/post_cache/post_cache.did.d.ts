@@ -45,6 +45,7 @@ export interface _SERVICE {
     [Array<PostScoreIndexItem>],
     undefined
   >,
+  'remove_all_feed_entries' : ActorMethod<[], undefined>,
   'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_remove_role' : ActorMethod<
     [UserAccessRole, Principal],
