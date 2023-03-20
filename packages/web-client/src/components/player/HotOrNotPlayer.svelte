@@ -133,7 +133,7 @@ $: roomNumber = 24
       <div
         style="-webkit-transform: translate3d(0, 0, 0);"
         class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
-        <HotOrNot {postId} {betStatus} />
+        <HotOrNot disabled {postId} {betStatus} />
       </div>
     {/if}
   </div>
