@@ -192,7 +192,6 @@ export async function updatePostInWatchHistory(
   post: PostPopulated,
   update?: Partial<PostPopulated>,
 ) {
-  console.log({ update })
   if (!post) return
   const postHistory: PostPopulatedHistory = {
     ...post,
