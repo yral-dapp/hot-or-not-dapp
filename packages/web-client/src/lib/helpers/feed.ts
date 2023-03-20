@@ -3,6 +3,7 @@ import type {
   PostScoreIndexItem,
   TopPostsFetchError,
 } from '$canisters/post_cache/post_cache.did'
+import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { Principal } from '@dfinity/principal'
 import { individualUser, postCache } from './backend'
@@ -13,6 +14,8 @@ export interface PostPopulated
   created_by_user_principal_id: string
   publisher_canister_id: string
 }
+
+let idb: IDB | null = null
 
 export interface PostPopulatedHistory extends PostPopulated {
   watched_at: number
@@ -33,7 +36,9 @@ async function filterPosts(
   posts: PostScoreIndexItem[],
 ): Promise<PostScoreIndexItem[]> {
   try {
-    const { idb } = await import('$lib/idb')
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
     const keys = (await idb.keys('watch')) as string[]
     if (!keys.length) return posts
     const filtered = posts.filter(
@@ -50,7 +55,9 @@ export async function getWatchedVideosFromCache(): Promise<
   PostPopulatedHistory[]
 > {
   try {
-    const { idb } = await import('$lib/idb')
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
     const values = ((await idb.values('watch')) || []).slice(
       50,
     ) as PostPopulatedHistory[]
@@ -177,5 +184,30 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
   } catch (e) {
     Log({ error: e, from: '11 populatePosts.feed' }, 'error')
     return { error: true, posts: [] }
+  }
+}
+
+export async function updatePostInWatchHistory(
+  store: 'watch-hon' | 'watch',
+  post: PostPopulated,
+  update?: Partial<PostPopulated>,
+) {
+  if (!post) return
+  const postHistory: PostPopulatedHistory = {
+    ...post,
+    ...update,
+    watched_at: Date.now(),
+  }
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    await idb.set(
+      store,
+      post.publisher_canister_id + '@' + post.post_id,
+      postHistory,
+    )
+  } catch (e) {
+    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
   }
 }

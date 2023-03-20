@@ -187,6 +187,8 @@ onDestroy(() => {
   disablepictureinpicture
   disableremoteplayback
   playsinline
+  bind:currentTime
+  bind:duration
   preload={isiPhone ? 'metadata' : 'auto'}
   poster={thumbnail}
   class="object-fit absolute z-[3] h-full w-full" />
