@@ -177,8 +177,10 @@ onMount(async () => {
           <span class="text-md pt-4 font-bold">
             {profile.display_name}
           </span>
-          <span class="text-sm">
-            {`@${profile.unique_user_name}`}
+          <span class="px-12 text-center text-sm">
+            {profile.username_set
+              ? `@${profile.unique_user_name}`
+              : profile.principal_id}
           </span>
         </div>
         <div
