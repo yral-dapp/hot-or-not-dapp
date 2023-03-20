@@ -214,7 +214,7 @@ beforeNavigate(() => {
           There are no more videos to bet on
         </div>
         <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-          <HotOrNot postId={0n} />
+          <HotOrNot disabled postId={0n} />
         </div>
       </div>
     </SwiperSlide>

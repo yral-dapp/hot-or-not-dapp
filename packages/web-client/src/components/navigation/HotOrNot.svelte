@@ -121,7 +121,7 @@ async function placeBet(bet: 'hot' | 'not') {
       loading = false
     }
   } catch (e) {
-    Log({ error: e, from: 'placeBet 1' }, 'error')
+    Log({ error: e, postId, from: 'placeBet 1' }, 'error')
     tempPlacedBet = false
     loading = false
     error = 'Something went wrong while placing bet. Please try again'
