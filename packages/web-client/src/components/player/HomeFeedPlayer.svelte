@@ -12,6 +12,7 @@ import { generateRandomName } from '$lib/utils/randomUsername'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import type { Principal } from '@dfinity/principal'
+import { createEventDispatcher } from 'svelte'
 
 export let i: number
 export let id: bigint
@@ -30,9 +31,14 @@ export let individualUser: (
 export let likeCount: number = 0
 export let enrolledInHotOrNot = false
 
+const dispatch = createEventDispatcher<{
+  like: void
+}>()
+
 async function handleLike() {
   if ($authState.isLoggedIn) {
     liked = !liked
+    dispatch('like')
     registerEvent('like_video', {
       userId: $userProfile.principal_id,
       video_publisher_id: profileLink,
