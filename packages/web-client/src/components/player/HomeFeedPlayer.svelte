@@ -19,57 +19,17 @@ export let id: bigint
 export let thumbnail = ''
 export let displayName = ''
 export let profileLink = ''
-export let description = ''
 export let videoViews = 254000
 export let publisherCanisterId: string
 export let userProfileSrc = ''
 export let liked = false
 export let createdById = ''
-export let individualUser: (
-  principal?: Principal | string,
-) => IndividualUserActor
-export let likeCount: number = 0
 export let enrolledInHotOrNot = false
 
 const dispatch = createEventDispatcher<{
   like: void
+  share: void
 }>()
-
-async function handleLike() {
-  if ($authState.isLoggedIn) {
-    liked = !liked
-    dispatch('like')
-    registerEvent('like_video', {
-      userId: $userProfile.principal_id,
-      video_publisher_id: profileLink,
-      video_publisher_canister_id: publisherCanisterId,
-      video_id: id,
-      likes: likeCount,
-    })
-    await individualUser(
-      publisherCanisterId,
-    ).update_post_toggle_like_status_by_caller(id)
-  } else $authState.showLogin = true
-}
-
-async function handleShare() {
-  try {
-    await navigator.share({
-      title: 'Hot or Not',
-      text: `Check out this hot video by ${displayName}. \n${description}`,
-      url: `https://hotornot.wtf/feed/${publisherCanisterId}@${id}`,
-    })
-  } catch (_) {}
-  registerEvent('share_video', {
-    userId: $userProfile.principal_id,
-    video_publisher_id: profileLink,
-    video_publisher_canister_id: publisherCanisterId,
-    video_id: id,
-  })
-  await individualUser(publisherCanisterId).update_post_increment_share_count(
-    id,
-  )
-}
 </script>
 
 <player
@@ -92,7 +52,7 @@ async function handleShare() {
           ariaLabel="Toggle like on this post"
           on:click={(e) => {
             e.stopImmediatePropagation()
-            handleLike()
+            dispatch('like')
           }}>
           <HeartIcon filled={liked && $authState.isLoggedIn} class="h-8 w-8" />
         </IconButton>
@@ -100,7 +60,7 @@ async function handleShare() {
           ariaLabel="Share this post"
           on:click={(e) => {
             e.stopImmediatePropagation()
-            handleShare()
+            dispatch('share')
           }}>
           <ShareMessageIcon class="h-6 w-6" />
         </IconButton>

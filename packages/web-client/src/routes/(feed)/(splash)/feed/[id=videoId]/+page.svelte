@@ -23,6 +23,7 @@ import {
   updateMetadata,
   type VideoViewReport,
 } from '$lib/utils/video'
+import { authState } from '$stores/auth'
 import { homeFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
 import userProfile from '$stores/userProfile'
@@ -237,6 +238,55 @@ beforeNavigate(() => {
   videos.length > 2 && homeFeedVideos.set(videos.slice(currentPlayingIndex))
   isDocumentHidden = true
 })
+
+async function handleLike(videoIndex: number) {
+  if (!$authState.isLoggedIn) {
+    $authState.showLogin = true
+    return
+  }
+  const post = videos[videoIndex]
+  if (!post) return
+
+  updatePostInWatchHistory('watch', post, {
+    liked_by_me: !post.liked_by_me,
+  })
+  videos[videoIndex].liked_by_me = !videos[videoIndex].liked_by_me
+
+  registerEvent('like_video', {
+    userId: $userProfile.principal_id,
+    video_publisher_id:
+      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
+    video_publisher_canister_id: post.publisher_canister_id,
+    video_id: post.id,
+    likes: post.like_count,
+  })
+
+  await individualUser(
+    post.publisher_canister_id,
+  ).update_post_toggle_like_status_by_caller(post.id)
+}
+
+async function handleShare(videoIndex: number) {
+  const post = videos[videoIndex]
+  if (!post) return
+  try {
+    await navigator.share({
+      title: 'Hot or Not',
+      text: `Check out this hot video by ${post.created_by_display_name[0]}. \n${post.description}`,
+      url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${post.id}`,
+    })
+  } catch (_) {}
+  registerEvent('share_video', {
+    userId: $userProfile.principal_id,
+    video_publisher_id:
+      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
+    video_publisher_canister_id: post.publisher_canister_id,
+    video_id: post.id,
+  })
+  await individualUser(
+    post.publisher_canister_id,
+  ).update_post_increment_share_count(post.id)
+}
 </script>
 
 <svelte:head>
@@ -258,26 +308,19 @@ beforeNavigate(() => {
         <HomeFeedPlayer
           {i}
           id={video.id}
-          likeCount={Number(video.like_count)}
           displayName={video.created_by_display_name[0]}
           profileLink={video.created_by_unique_user_name[0] ??
             video.created_by_user_principal_id}
           liked={video.liked_by_me}
-          description={video.description}
           createdById={video.created_by_user_principal_id}
           videoViews={Number(video.total_view_count)}
           publisherCanisterId={video.publisher_canister_id}
           userProfileSrc={video.created_by_profile_photo_url[0]}
-          {individualUser}
           enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
             video.hot_or_not_feed_ranking_score[0] !== undefined}
           thumbnail={getThumbnailUrl(video.video_uid)}
-          on:like={() => {
-            updatePostInWatchHistory('watch', videos[i], {
-              liked_by_me: !videos[i].liked_by_me,
-            })
-            videos[i].liked_by_me = !videos[i].liked_by_me
-          }}>
+          on:like={() => handleLike(i)}
+          on:share={() => handleShare(i)}>
           <VideoPlayer
             bind:this={videoPlayers[i]}
             on:loaded={() => hideSplashScreen(500)}
