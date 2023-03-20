@@ -138,23 +138,27 @@ const handleSuccessfulUpload = debounce(
     clearInterval(videoStatusInterval)
     try {
       Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info')
-      const postId = await individualUser().add_post_v2({
+      const postRes = await individualUser().add_post_v2({
         description: videoDescription,
         hashtags,
         video_uid: videoUid,
         creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot,
       })
-      uploadedVideoId = Number(postId)
-      registerEvent('video_uploaded', {
-        type:
-          $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
-        userId: $userProfile.principal_id,
-        user_canister_id: $authState.userCanisterId,
-        video_uid: uploadedVideoId,
-      })
-      uploadStep = 'verified'
-      uploadStatus = 'uploaded'
-      Log({ postId, source: '0 handleSuccessfulUpload' }, 'info')
+      if ('Ok' in postRes) {
+        uploadedVideoId = Number(postRes.Ok)
+        registerEvent('video_uploaded', {
+          type:
+            $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+          userId: $userProfile.principal_id,
+          user_canister_id: $authState.userCanisterId,
+          video_uid: uploadedVideoId,
+        })
+        uploadStep = 'verified'
+        uploadStatus = 'uploaded'
+        Log({ postRes, source: '0 handleSuccessfulUpload' }, 'info')
+      } else {
+        throw 'Error uploading video to backend'
+      }
     } catch (e) {
       Log(
         {
@@ -179,7 +183,6 @@ const handleSuccessfulUpload = debounce(
 )
 
 async function showShareDialog() {
-  const videoLink = getVideoLink()
   try {
     await navigator.share({
       title: 'Hot or Not',
@@ -189,14 +192,12 @@ async function showShareDialog() {
   } catch (_) {}
 }
 
-function getVideoLink() {
-  const username = $userProfile.username_set
-    ? $userProfile.unique_user_name
-    : $authState.idString
-  return `/profile/${username}/post/${uploadedVideoId}`
-}
+$: username = $userProfile.username_set
+  ? $userProfile.unique_user_name
+  : $authState.idString
+$: videoLink = `/profile/${username}/post/${uploadedVideoId}`
 
-onMount(async () => {
+onMount(() => {
   if (!$fileToUpload) {
     goto('/upload')
   } else {
@@ -358,9 +359,7 @@ onDestroy(() => {
           <Button on:click={showShareDialog} type="secondary" class="w-full">
             Share Video
           </Button>
-          <Button href={getVideoLink()} preload class="w-full">
-            View Video
-          </Button>
+          <Button href={videoLink} preload class="w-full">View Video</Button>
         </div>
       {/if}
     </div>
