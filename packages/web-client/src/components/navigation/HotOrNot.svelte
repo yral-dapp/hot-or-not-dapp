@@ -156,6 +156,14 @@ function toggleBet() {
         {error}
       </div>
     </div>
+  {:else if disabled}
+    <div
+      class="absolute inset-0 bottom-0 z-50 flex items-center justify-center">
+      <div
+        class="rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
+        Coming Soon
+      </div>
+    </div>
   {/if}
   {#if betPlaced === false}
     <div
@@ -170,7 +178,7 @@ function toggleBet() {
             class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
         {/if}
         <IconButton
-          disabled={tutorialMode}
+          disabled={tutorialMode || disabled}
           on:click={(e) => {
             e.stopImmediatePropagation()
             placeBet('not')
@@ -194,7 +202,7 @@ function toggleBet() {
           },
         )}>
         <IconButton
-          disabled={selectedCoins == 100}
+          disabled={selectedCoins == 100 || disabled}
           on:click={(e) => {
             e.stopImmediatePropagation()
             increaseBet()
@@ -205,9 +213,9 @@ function toggleBet() {
           <ChevronUpIcon class="h-2" />
         </IconButton>
         <button
-          disabled={betPlaced !== false || tempPlacedBet !== false}
+          disabled={betPlaced !== false || tempPlacedBet !== false || disabled}
           on:click|stopPropagation={toggleBet}
-          class="relative h-20 w-20 select-none">
+          class="relative h-20 w-20 select-none disabled:grayscale">
           <BetCoinIcon class="h-20" />
           <div
             class="absolute inset-0 flex select-none items-center justify-center">
@@ -227,7 +235,7 @@ function toggleBet() {
             e.stopImmediatePropagation()
             decreaseBet()
           }}
-          disabled={selectedCoins == 10}
+          disabled={selectedCoins == 10 || disabled}
           class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
             invisible: betPlaced || tempPlacedBet,
           })}>
@@ -243,7 +251,7 @@ function toggleBet() {
             class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
         {/if}
         <IconButton
-          disabled={tutorialMode}
+          disabled={tutorialMode || disabled}
           on:click={(e) => {
             e.stopImmediatePropagation()
             placeBet('hot')
