@@ -1,6 +1,6 @@
 <script lang="ts">
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import { getMp4Url, getThumbnailUrl } from '$lib/utils/cloudflare'
+import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import type { PageData } from './$types'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
@@ -11,11 +11,68 @@ import { individualUser } from '$lib/helpers/backend'
 import { isiPhone } from '$lib/utils/isSafari'
 import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
 import Hls from 'hls.js/dist/hls.min'
+import { authState } from '$stores/auth'
+import { updatePostInWatchHistory } from '$lib/helpers/feed'
+import { registerEvent } from '$components/seo/GA.svelte'
+import userProfile from '$stores/userProfile'
 
 export let data: PageData
 
 const { video, me } = data
 let isIPhone = isiPhone()
+
+async function handleLike() {
+  if (!$authState.isLoggedIn) {
+    $authState.showLogin = true
+    return
+  }
+
+  if (!video) return
+
+  updatePostInWatchHistory('watch', video, {
+    liked_by_me: !video.liked_by_me,
+  })
+
+  video.liked_by_me = !video.liked_by_me
+
+  registerEvent('like_video', {
+    userId: $userProfile.principal_id,
+    video_publisher_id:
+      video.created_by_unique_user_name[0] ??
+      video.created_by_user_principal_id,
+    video_publisher_canister_id: video.publisher_canister_id,
+    video_id: video.id,
+    likes: video.like_count,
+  })
+
+  await individualUser(
+    video.publisher_canister_id,
+  ).update_post_toggle_like_status_by_caller(video.id)
+}
+
+async function handleShare() {
+  if (!video) return
+  try {
+    await navigator.share({
+      title: 'Hot or Not',
+      text: `Check out this hot video by ${video.created_by_display_name[0]}. \n${video.description}`,
+      url: `https://hotornot.wtf/feed/${video.publisher_canister_id}@${video.id}`,
+    })
+  } catch (_) {
+    //TODO
+  }
+  registerEvent('share_video', {
+    userId: $userProfile.principal_id,
+    video_publisher_id:
+      video.created_by_unique_user_name[0] ??
+      video.created_by_user_principal_id,
+    video_publisher_canister_id: video.publisher_canister_id,
+    video_id: video.id,
+  })
+  await individualUser(
+    video.publisher_canister_id,
+  ).update_post_increment_share_count(video.id)
+}
 </script>
 
 <svelte:head>
@@ -43,20 +100,19 @@ let isIPhone = isiPhone()
       <HomeFeedPlayer
         i={0}
         id={video.id}
-        likeCount={Number(video.like_count)}
         displayName={video.created_by_display_name[0]}
         profileLink={video.created_by_unique_user_name[0] ??
           video.created_by_user_principal_id}
         liked={video.liked_by_me}
-        description={video.description}
         createdById={video.created_by_user_principal_id}
         videoViews={Number(video.total_view_count)}
         publisherCanisterId={video.publisher_canister_id}
         userProfileSrc={video.created_by_profile_photo_url[0]}
-        {individualUser}
         enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
           video.hot_or_not_feed_ranking_score[0] !== undefined}
-        thumbnail={getThumbnailUrl(video.video_uid)}>
+        thumbnail={getThumbnailUrl(video.video_uid)}
+        on:like={() => handleLike()}
+        on:share={() => handleShare()}>
         <VideoPlayer
           i={0}
           playFormat="hls"
