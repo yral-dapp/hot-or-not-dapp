@@ -235,7 +235,7 @@ onMount(async () => {
                 {#each fetchedPosts as post}
                   <ProfilePost
                     id={Number(post.id)}
-                    likes={Number(post.like_count)}
+                    views={Number(post.total_view_count)}
                     imageBg={getThumbnailUrl(post.video_uid)} />
                 {/each}
               </div>
