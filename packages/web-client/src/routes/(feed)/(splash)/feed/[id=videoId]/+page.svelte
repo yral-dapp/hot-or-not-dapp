@@ -1,38 +1,37 @@
 <script lang="ts">
+import { beforeNavigate } from '$app/navigation'
+import { page } from '$app/stores'
+import Button from '$components/button/Button.svelte'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
+import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import {
   getTopPosts,
   getWatchedVideosFromCache,
+  updatePostInWatchHistory,
   type PostPopulated,
-  type PostPopulatedHistory,
 } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
+import { updateURL } from '$lib/utils/feedUrl'
+import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
-import { homeFeedVideos, playerState } from '$stores/playerState'
-import { hideSplashScreen } from '$stores/splashScreen'
-import userProfile from '$stores/userProfile'
-import { Principal } from '@dfinity/principal'
-import { onDestroy, onMount, tick } from 'svelte'
-import 'swiper/css'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
-import type { PageData } from './$types'
-import { isiPhone } from '$lib/utils/isSafari'
-import { page } from '$app/stores'
-import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js/dist/hls.min'
 import {
   joinArrayUniquely,
   updateMetadata,
   type VideoViewReport,
 } from '$lib/utils/video'
-import { updateURL } from '$lib/utils/feedUrl'
-import Button from '$components/button/Button.svelte'
-import { beforeNavigate } from '$app/navigation'
-import type { IDB } from '$lib/idb'
+import { homeFeedVideos, playerState } from '$stores/playerState'
+import { hideSplashScreen } from '$stores/splashScreen'
+import userProfile from '$stores/userProfile'
+import { Principal } from '@dfinity/principal'
+import Hls from 'hls.js/dist/hls.min'
+import { onDestroy, onMount, tick } from 'svelte'
+import 'swiper/css'
+import { Swiper, SwiperSlide } from 'swiper/svelte'
+import type { PageData } from './$types'
 
 export let data: PageData
 
@@ -49,8 +48,7 @@ let currentPlayingIndex = 0
 let fetchedVideosCount = 0
 let isIPhone = isiPhone()
 let isDocumentHidden = false
-let videoStats: Record<number, VideoViewReport> = {}
-let idb: IDB | null = null
+let videoStats: Record<string, VideoViewReport> = {}
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
@@ -118,15 +116,16 @@ async function fetchNextVideos(force = false) {
 }
 
 async function handleChange(e: CustomEvent) {
-  const index = e.detail[0].realIndex
-  currentVideoIndex = index
+  const newIndex = e.detail[0].realIndex
+  currentVideoIndex = newIndex
   Log({ currentVideoIndex, source: '0 handleChange' }, 'info')
-  updateStats(currentPlayingIndex)
-  recordView(videos[currentVideoIndex])
+  const lastVideo = videos[currentPlayingIndex]
+  lastVideo?.publisher_canister_id &&
+    updateStats(lastVideo.publisher_canister_id, Number(lastVideo.post_id))
   fetchNextVideos()
   updateURL(videos[currentVideoIndex])
   updateMetadata(videos[currentVideoIndex])
-  currentPlayingIndex = index
+  currentPlayingIndex = newIndex
 }
 
 function handleVisibilityChange() {
@@ -137,13 +136,16 @@ function handleVisibilityChange() {
   }
 }
 
-async function updateStats(oldIndex) {
-  const stats = videoStats[oldIndex] as VideoViewReport | undefined
+async function updateStats(canisterId: string, videoId: number) {
+  const stats = videoStats[`${canisterId}@${videoId}`] as
+    | VideoViewReport
+    | undefined
+
   if (!stats || (stats?.count === 0 && stats?.progress === 0)) {
     return
   }
 
-  delete videoStats[oldIndex]
+  delete videoStats[`${canisterId}@${videoId}`]
 
   if ($page.url.host.includes('t:')) return
 
@@ -160,7 +162,9 @@ async function updateStats(oldIndex) {
             watch_count: stats.count,
           },
         }
+
   Log({ from: '0 updateStats', id: stats.videoId, payload }, 'info')
+
   registerEvent('view_video', {
     userId: $userProfile.principal_id,
     video_publisher_id: stats.profileId,
@@ -174,26 +178,6 @@ async function updateStats(oldIndex) {
   ).update_post_add_view_details(stats.videoId, payload)
 }
 
-async function recordView(post?: PostPopulated) {
-  if (!post) return
-  const postHistory: PostPopulatedHistory = {
-    ...post,
-    watched_at: Date.now(),
-  }
-  try {
-    if (!idb) {
-      idb = (await import('$lib/idb')).idb
-    }
-    await idb.set(
-      'watch',
-      post.publisher_canister_id + '@' + post.post_id,
-      postHistory,
-    )
-  } catch (e) {
-    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
-  }
-}
-
 function recordStats(
   progress: number,
   canisterId: string,
@@ -201,11 +185,20 @@ function recordStats(
   profileId: string,
   score: bigint,
 ) {
-  if (videoStats[currentPlayingIndex]) {
-    videoStats[currentPlayingIndex].progress = progress
-    if (progress == 0) videoStats[currentPlayingIndex].count++
+  const id = `${canisterId}@${videoId}`
+  if (videoStats[id]) {
+    videoStats[id].progress = progress
+    if (progress == 0) {
+      videoStats[id].count++
+
+      if (videos[currentPlayingIndex]) {
+        videos[currentPlayingIndex].total_view_count =
+          videos[currentPlayingIndex].total_view_count + BigInt(1)
+        updatePostInWatchHistory('watch', videos[currentPlayingIndex])
+      }
+    }
   } else {
-    videoStats[currentPlayingIndex] = {
+    videoStats[id] = {
       progress,
       videoId,
       canisterId,
@@ -225,7 +218,7 @@ onMount(async () => {
     $homeFeedVideos = []
   } else if (data.post) {
     videos = [data.post, ...videos]
-    await recordView(data.post)
+    await updatePostInWatchHistory('watch', data.post)
   }
   await tick()
   await fetchNextVideos()
@@ -278,7 +271,13 @@ beforeNavigate(() => {
           {individualUser}
           enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
             video.hot_or_not_feed_ranking_score[0] !== undefined}
-          thumbnail={getThumbnailUrl(video.video_uid)}>
+          thumbnail={getThumbnailUrl(video.video_uid)}
+          on:like={() => {
+            updatePostInWatchHistory('watch', videos[i], {
+              liked_by_me: !videos[i].liked_by_me,
+            })
+            videos[i].liked_by_me = !videos[i].liked_by_me
+          }}>
           <VideoPlayer
             bind:this={videoPlayers[i]}
             on:loaded={() => hideSplashScreen(500)}
