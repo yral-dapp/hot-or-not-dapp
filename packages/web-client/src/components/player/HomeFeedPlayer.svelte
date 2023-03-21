@@ -35,7 +35,7 @@ const dispatch = createEventDispatcher<{
 </script>
 
 <player
-  {i}
+  data-index={i}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
   <slot />
   <img
