@@ -183,6 +183,7 @@ onDestroy(() => {
   }}
   bind:this={videoEl}
   loop
+  data-index={i}
   muted={$playerState.muted}
   disablepictureinpicture
   disableremoteplayback

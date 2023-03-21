@@ -52,6 +52,7 @@
     "c8": "7.13.0",
     "cypress": "12.8.1",
     "cypress-mochawesome-reporter": "3.3.0",
+    "dotenv": "16.0.3",
     "isomorphic-fetch": "3.0.0",
     "jsdom": "21.1.1",
     "postcss": "8.4.21",

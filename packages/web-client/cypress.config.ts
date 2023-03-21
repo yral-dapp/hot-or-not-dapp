@@ -1,5 +1,8 @@
 import { defineConfig } from 'cypress'
 import { beforeRunHook } from 'cypress-mochawesome-reporter/lib'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 export default defineConfig({
   projectId: 'uv7vm5',
