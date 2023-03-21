@@ -8,7 +8,7 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import {
-  fetchLovers,
+  fetchLovingUsers,
   loveUser,
   type UserProfileFollows,
 } from '$lib/helpers/profile'
@@ -30,7 +30,7 @@ $: userId = profile?.username_set
   ? profile?.unique_user_name
   : profile?.principal_id || $page.params.id
 
-async function loadLovers() {
+async function loadLovingUsers() {
   if (noMoreUsers) {
     return
   }
@@ -38,7 +38,7 @@ async function loadLovers() {
   loading = true
   errorWhileFetching = false
   try {
-    const res = await fetchLovers($page.params.id, fetchedUsersCount)
+    const res = await fetchLovingUsers($page.params.id, fetchedUsersCount)
 
     if (res.error) {
       errorWhileFetching = true
@@ -77,7 +77,7 @@ async function handleLove(userIndex: number, userId?: string) {
 </script>
 
 <svelte:head>
-  <title>{me ? 'Your' : "User's"} Lovers | Hot or Not</title>
+  <title>{me ? 'Your' : "User's"} Loving | Hot or Not</title>
 </svelte:head>
 
 <ProfileLayout>
@@ -132,7 +132,7 @@ async function handleLove(userIndex: number, userId?: string) {
       </div>
     {/if}
     <IntersectionObserver
-      on:intersected={loadLovers}
+      on:intersected={loadLovingUsers}
       disabled={loading || errorWhileFetching}
       threshold={0.1}
       intersect={!noMoreUsers}>

@@ -201,6 +201,43 @@ export async function fetchLovers(id: string, from: number) {
   }
 }
 
+export async function fetchLovingUsers(id: string, from: number) {
+  try {
+    const canId = await getCanisterId(id)
+
+    const res = await individualUser(
+      Principal.from(canId),
+    ).get_principals_i_follow_paginated(BigInt(from), BigInt(from + 10))
+    if ('Ok' in res) {
+      const populatedUsers = await populateProfiles(res.Ok)
+      if (populatedUsers.error) {
+        throw new Error(
+          `Error while populating, ${JSON.stringify(populatedUsers)}`,
+        )
+      }
+      return {
+        error: false,
+        lovers: populatedUsers.posts,
+        noMoreLovers: res.Ok.length < 10,
+      }
+    } else if ('Err' in res) {
+      type UnionKeyOf<U> = U extends U ? keyof U : never
+      type errors = UnionKeyOf<GetPostsOfUserProfileError>
+      const err = Object.keys(res.Err)[0] as errors
+      switch (err) {
+        case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
+        case 'InvalidBoundsPassed':
+          return { error: true }
+        case 'ReachedEndOfItemsList':
+          return { error: false, noMoreLovers: true, lovers: [] }
+      }
+    } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+  } catch (e) {
+    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    return { error: true }
+  }
+}
+
 async function populateProfiles(users: Principal[]) {
   try {
     if (!users.length) {
