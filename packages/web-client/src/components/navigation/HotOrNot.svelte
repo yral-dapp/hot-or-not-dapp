@@ -20,6 +20,7 @@ import { fade } from 'svelte/transition'
 
 export let tutorialMode = false
 export let disabled = false
+export let comingSoon = false
 export let betStatus: BettingStatus | undefined = undefined
 export let postId: bigint
 export let inView = false
@@ -32,8 +33,6 @@ let loading = false
 let tempPlacedBet: false | 'hot' | 'not' = false
 let error = ''
 let timeLeft = '59m 10s'
-
-$: console.log({ postId, betStatus, canId: $authState.userCanisterId })
 
 $: if (
   betStatus?.['BettingOpen']?.['has_this_user_participated_in_this_post']?.[0]
@@ -148,20 +147,20 @@ function toggleBet() {
 </script>
 
 <hot-or-not class="pointer-events-none block h-full w-full">
-  {#if error}
-    <div
-      class="absolute inset-0 bottom-0 z-50 flex items-center justify-center">
-      <div
-        class="rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
-        {error}
-      </div>
-    </div>
-  {:else if disabled}
+  {#if comingSoon}
     <div
       class="absolute inset-0 bottom-0 z-50 flex items-center justify-center">
       <div
         class="rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
         Coming Soon
+      </div>
+    </div>
+  {:else if error}
+    <div
+      class="absolute inset-0 bottom-0 z-50 flex items-center justify-center">
+      <div
+        class="rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
+        {error}
       </div>
     </div>
   {/if}
