@@ -62,7 +62,7 @@ describe('e2e test suite', () => {
 
     const posts = await Promise.all(
       cloudflareVideoUid.map((video_uid, i) =>
-        individualUserActor.add_post({
+        individualUserActor.add_post_v2({
           description: `Test post #${i + 1}`,
           hashtags: ['test', 'video', `${i + 1}`],
           video_uid,
