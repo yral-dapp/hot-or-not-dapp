@@ -90,55 +90,55 @@ async function handleLove(userIndex: number, userId?: string) {
     {me ? 'Your Lovers' : 'Lovers'}
   </div>
 
-  <svelte:fragment slot="content">
-    <div class="flex h-full w-full flex-col space-y-8 overflow-y-auto p-8">
-      {#each users as user, i}
-        {@const profileId = user.username_set
-          ? user.unique_user_name
-          : user.principal_id || ''}
-        <div class="flex w-full items-center justify-between text-white">
-          <a
-            href="/profile/{profileId}"
-            class="flex w-full items-center space-x-4 overflow-hidden">
-            <img
-              src={user.profile_picture_url}
-              alt="avatar"
-              class="h-10 w-10 shrink-0 rounded-full object-cover" />
-            <div class="flex grow flex-col items-start overflow-hidden">
-              <span>{user.display_name}</span>
-              <span
-                class="w-full overflow-hidden text-ellipsis whitespace-nowrap pr-4 text-sm text-white/50">
-                @{user.unique_user_name}
-              </span>
-            </div>
-          </a>
-          {#if $userProfile.principal_id !== user.principal_id}
-            <div class="w-full max-w-[5rem] shrink-0">
-              <Button
-                type={user.i_follow ? 'secondary' : 'primary'}
-                on:click={() => handleLove(i, user.principal_id)}
-                class="w-full py-1 px-4 text-sm">
-                {user.i_follow ? 'Loving' : 'Love'}
-              </Button>
-            </div>
-          {/if}
-        </div>
-      {/each}
-      {#if loading}
-        <div class="flex w-full items-center justify-center space-x-2 py-8">
-          <LoadingIcon class="h-4 w-4 animate-spin" />
-          <span>Loading</span>
-        </div>
-      {/if}
-      <IntersectionObserver
-        on:intersected={loadLovers}
-        disabled={loading || errorWhileFetching}
-        threshold={0.1}
-        intersect={!noMoreUsers}>
-        <svelte:fragment>
-          <div class="h-2 w-full" />
-        </svelte:fragment>
-      </IntersectionObserver>
-    </div>
-  </svelte:fragment>
+  <div
+    class="mx-auto flex h-full w-full max-w-7xl flex-col space-y-8 overflow-y-auto p-8"
+    slot="content">
+    {#each users as user, i}
+      {@const profileId = user.username_set
+        ? user.unique_user_name
+        : user.principal_id || ''}
+      <div class="flex w-full items-center justify-between text-white">
+        <a
+          href="/profile/{profileId}"
+          class="flex w-full items-center space-x-4 overflow-hidden">
+          <img
+            src={user.profile_picture_url}
+            alt="avatar"
+            class="h-10 w-10 shrink-0 rounded-full object-cover" />
+          <div class="flex grow flex-col items-start overflow-hidden">
+            <span>{user.display_name}</span>
+            <span
+              class="w-full overflow-hidden text-ellipsis whitespace-nowrap pr-4 text-sm text-white/50">
+              @{user.unique_user_name}
+            </span>
+          </div>
+        </a>
+        {#if $userProfile.principal_id !== user.principal_id}
+          <div class="w-full max-w-[5rem] shrink-0">
+            <Button
+              type={user.i_follow ? 'secondary' : 'primary'}
+              on:click={() => handleLove(i, user.principal_id)}
+              class="w-full py-1 px-4 text-sm">
+              {user.i_follow ? 'Loving' : 'Love'}
+            </Button>
+          </div>
+        {/if}
+      </div>
+    {/each}
+    {#if loading}
+      <div class="flex w-full items-center justify-center space-x-2 py-8">
+        <LoadingIcon class="h-4 w-4 animate-spin" />
+        <span>Loading</span>
+      </div>
+    {/if}
+    <IntersectionObserver
+      on:intersected={loadLovers}
+      disabled={loading || errorWhileFetching}
+      threshold={0.1}
+      intersect={!noMoreUsers}>
+      <svelte:fragment>
+        <div class="h-2 w-full" />
+      </svelte:fragment>
+    </IntersectionObserver>
+  </div>
 </ProfileLayout>
