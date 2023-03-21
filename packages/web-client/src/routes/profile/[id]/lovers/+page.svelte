@@ -108,11 +108,7 @@ async function handleLove(userIndex: number, userId?: string) {
               <span>{user.display_name}</span>
               <span
                 class="w-full overflow-hidden text-ellipsis whitespace-nowrap pr-4 text-sm text-white/50">
-                {#if user.username_set}
-                  @{user.unique_user_name}
-                {:else}
-                  {user.principal_id}
-                {/if}
+                @{profile.unique_user_name}
               </span>
             </div>
           </a>
