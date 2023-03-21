@@ -20,9 +20,9 @@ describe('Navigation test', () => {
   it('Navigate to user profile from the feed', () => {
     cy.get('div[aria-roledescription=video-info] > a', {
       timeout: 10_000,
-    }).then(($links) => {
-      $links[0].click()
     })
+      .first()
+      .click()
 
     expect(cy.url().should('contain', 'profile'))
   })
@@ -30,9 +30,9 @@ describe('Navigation test', () => {
   it("Navigate to user profile and then navigate to user's lovers list", () => {
     cy.get('div[aria-roledescription=video-info] > a', {
       timeout: 10_000,
-    }).then(($links) => {
-      $links[0].click()
     })
+      .first()
+      .click()
 
     cy.contains('Lovers', { timeout: 20_000 }).click()
     expect(cy.url().should('contain', 'lovers'))
@@ -41,16 +41,16 @@ describe('Navigation test', () => {
   it('Navigate to user profile and then view a post', () => {
     cy.get('div[aria-roledescription=video-info] > a', {
       timeout: 10_000,
-    }).then(($links) => {
-      $links[0].click()
     })
+      .first()
+      .click()
     cy.scrollTo('bottom')
 
-    cy.get('a[aria-roledescription=user-post]', { timeout: 20_000 }).then(
-      ($posts) => {
-        $posts[0].click()
+    cy.get('a[aria-roledescription=user-post]', { timeout: 20_000 })
+      .first()
+      .click()
+      .then(() => {
         expect(cy.url().should('contain', 'post'))
-      },
-    )
+      })
   })
 })
