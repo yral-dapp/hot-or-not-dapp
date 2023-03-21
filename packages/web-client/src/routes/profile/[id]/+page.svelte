@@ -232,7 +232,7 @@ onMount(async () => {
       <div class="flex h-full flex-col px-6 py-6">
         {#if selectedTab === 'posts'}
           {#if fetchedPosts.length}
-            <div class="grid grid-cols-3 gap-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div class="grid grid-cols-3 gap-3 md:grid-cols-4 xl:grid-cols-5">
               {#each fetchedPosts as post}
                 <ProfilePost
                   id={Number(post.id)}
