@@ -121,6 +121,7 @@ async function handleShare(videoIndex: number) {
             <HomeFeedPlayer
               {i}
               id={video.id}
+              likes={Number(video.like_count)}
               displayName={video.created_by_display_name[0]}
               profileLink={video.created_by_unique_user_name[0] ??
                 video.created_by_user_principal_id}
