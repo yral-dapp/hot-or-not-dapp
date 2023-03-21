@@ -178,9 +178,15 @@ onMount(async () => {
         <span class="text-md pt-4 font-bold">
           {profile.display_name}
         </span>
-        <span class="px-12 text-center text-sm">
-          {`@${profile.unique_user_name}`}
-        </span>
+        <div class="flex items-center space-x-2 px-12 text-sm">
+          <span class="text-white">
+            {`@${profile.unique_user_name}`}
+          </span>
+          <div class="h-1 w-1 rounded-full bg-white" />
+          <span class="text-primary">
+            {profile.profile_stats.lifetime_earnings} Earnings
+          </span>
+        </div>
       </div>
       <div
         class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
