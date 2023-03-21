@@ -168,7 +168,8 @@ onMount(async () => {
     </div>
 
     <svelte:fragment slot="content">
-      <div class="flex h-full w-full flex-col overflow-y-auto ">
+      <div
+        class="mx-auto flex h-full w-full max-w-7xl flex-col overflow-y-auto">
         <div class="flex w-full flex-col items-center justify-center py-8">
           <img
             class="h-24 w-24 rounded-full"
