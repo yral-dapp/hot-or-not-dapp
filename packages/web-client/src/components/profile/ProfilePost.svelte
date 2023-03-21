@@ -1,18 +1,13 @@
 <script lang="ts">
 import { page } from '$app/stores'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
+import { getShortNumber } from '$lib/utils/shortNumber'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 
 export let id: number
 export let imageBg: string
 export let views: number
 export let likes: number
-
-function getShortNumber(number: number) {
-  if (number > 1000) {
-    return `${Math.round((number / 1000) * 10) / 10}K`
-  } else return number
-}
 </script>
 
 <a
