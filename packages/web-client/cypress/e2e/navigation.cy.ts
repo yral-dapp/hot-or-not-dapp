@@ -17,17 +17,17 @@ describe('Navigation test', () => {
     cy.url().should('contain', 'feed')
   })
 
-  it('On a video, navigate to user profile', () => {
-    cy.get('div[aria-roledescription=video-info] > a')
+  it('Navigate to user profile from the feed', () => {
+    cy.get('player[i=0] div[aria-roledescription=video-info] > a')
       .and('be.visible')
       .click({ force: true })
-    cy.wait(1000).then(() => {
+    cy.wait(3000).then(() => {
       expect(cy.url().should('contain', 'profile'))
     })
   })
 
   it("Navigate to user profile and then navigate to user's lovers list", () => {
-    cy.get('div[aria-roledescription=video-info] > a')
+    cy.get('player[i=0] div[aria-roledescription=video-info] > a')
       .and('be.visible')
       .click({ force: true })
     cy.wait(5000).then(() => {
@@ -37,7 +37,7 @@ describe('Navigation test', () => {
   })
 
   it('Navigate to user profile and then view a post', () => {
-    cy.get('div[aria-roledescription=video-info] > a')
+    cy.get('player[i=0] div[aria-roledescription=video-info] > a')
       .and('be.visible')
       .click({ force: true })
     cy.scrollTo('bottom')
