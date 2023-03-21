@@ -22,23 +22,23 @@ let { me, profile } = data
 
 let loading = false
 let errorWhileFetching = false
-let noMoreLovers = false
-let fetchedLoversCount = 0
-let lovers: UserProfileFollows[] = []
+let noMoreUsers = false
+let fetchedUsersCount = 0
+let users: UserProfileFollows[] = []
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
   : profile?.principal_id || $page.params.id
 
 async function loadLovers() {
-  if (noMoreLovers) {
+  if (noMoreUsers) {
     return
   }
 
   loading = true
   errorWhileFetching = false
   try {
-    const res = await fetchLovers($page.params.id, fetchedLoversCount)
+    const res = await fetchLovers($page.params.id, fetchedUsersCount)
 
     if (res.error) {
       errorWhileFetching = true
@@ -50,10 +50,10 @@ async function loadLovers() {
       return
     }
 
-    lovers.push(...res.lovers)
-    lovers = lovers
-    noMoreLovers = res.noMoreLovers
-    fetchedLoversCount = lovers.length
+    users.push(...res.lovers)
+    users = users
+    noMoreUsers = res.noMoreLovers
+    fetchedUsersCount = users.length
     loading = false
   } catch (e) {
     Log({ error: e, from: '1 loadLovers' }, 'error')
@@ -70,8 +70,8 @@ async function handleLove(userIndex: number, userId?: string) {
   }
   const res = await loveUser(userId)
   if (res) {
-    lovers[userIndex].i_follow = !lovers[userIndex].i_follow
-    lovers = lovers
+    users[userIndex].i_follow = !users[userIndex].i_follow
+    users = users
   }
 }
 </script>
@@ -92,13 +92,13 @@ async function handleLove(userIndex: number, userId?: string) {
 
   <svelte:fragment slot="content">
     <div class="flex h-full w-full flex-col space-y-8 overflow-y-auto p-8">
-      {#each lovers as user, i}
-        {@const userId = user.username_set
+      {#each users as user, i}
+        {@const profileId = user.username_set
           ? user.unique_user_name
           : user.principal_id || ''}
         <div class="flex w-full items-center justify-between text-white">
           <a
-            href="/profile/{userId}"
+            href="/profile/{profileId}"
             class="flex w-full items-center space-x-4 overflow-hidden">
             <img
               src={user.profile_picture_url}
@@ -108,7 +108,7 @@ async function handleLove(userIndex: number, userId?: string) {
               <span>{user.display_name}</span>
               <span
                 class="w-full overflow-hidden text-ellipsis whitespace-nowrap pr-4 text-sm text-white/50">
-                @{profile.unique_user_name}
+                @{user.unique_user_name}
               </span>
             </div>
           </a>
@@ -134,7 +134,7 @@ async function handleLove(userIndex: number, userId?: string) {
         on:intersected={loadLovers}
         disabled={loading || errorWhileFetching}
         threshold={0.1}
-        intersect={!noMoreLovers}>
+        intersect={!noMoreUsers}>
         <svelte:fragment>
           <div class="h-2 w-full" />
         </svelte:fragment>
