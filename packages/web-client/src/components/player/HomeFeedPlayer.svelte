@@ -9,6 +9,7 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import type { IndividualUserActor } from '$lib/helpers/backend'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
+import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import type { Principal } from '@dfinity/principal'
@@ -60,7 +61,7 @@ const dispatch = createEventDispatcher<{
               filled={liked && $authState.isLoggedIn}
               class="h-8 w-8" />
           </IconButton>
-          <span>{likes}</span>
+          <span>{getShortNumber(likes)}</span>
         </div>
         <IconButton
           ariaLabel="Share this post"
