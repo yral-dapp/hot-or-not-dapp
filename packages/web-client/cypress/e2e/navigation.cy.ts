@@ -18,36 +18,39 @@ describe('Navigation test', () => {
   })
 
   it('Navigate to user profile from the feed', () => {
-    cy.get('player[i=0] div[aria-roledescription=video-info] > a')
-      .and('be.visible')
-      .click({ force: true })
-    cy.wait(3000).then(() => {
-      expect(cy.url().should('contain', 'profile'))
+    cy.get('div[aria-roledescription=video-info] > a', {
+      timeout: 10_000,
+    }).then(($links) => {
+      $links[0].click()
     })
+
+    expect(cy.url().should('contain', 'profile'))
   })
 
   it("Navigate to user profile and then navigate to user's lovers list", () => {
-    cy.get('player[i=0] div[aria-roledescription=video-info] > a')
-      .and('be.visible')
-      .click({ force: true })
-    cy.wait(5000).then(() => {
-      cy.contains('Lovers').click()
-      expect(cy.url().should('contain', 'lovers'))
+    cy.get('div[aria-roledescription=video-info] > a', {
+      timeout: 10_000,
+    }).then(($links) => {
+      $links[0].click()
     })
+
+    cy.contains('Lovers', { timeout: 20_000 }).click()
+    expect(cy.url().should('contain', 'lovers'))
   })
 
   it('Navigate to user profile and then view a post', () => {
-    cy.get('player[i=0] div[aria-roledescription=video-info] > a')
-      .and('be.visible')
-      .click({ force: true })
-    cy.scrollTo('bottom')
-    cy.wait(5000).then(() => {
-      cy.get('a[aria-roledescription=user-post]').then(($posts) => {
-        $posts[0].click()
-        cy.wait(500).then(() => {
-          expect(cy.url().should('contain', 'post'))
-        })
-      })
+    cy.get('div[aria-roledescription=video-info] > a', {
+      timeout: 10_000,
+    }).then(($links) => {
+      $links[0].click()
     })
+    cy.scrollTo('bottom')
+
+    cy.get('a[aria-roledescription=user-post]', { timeout: 20_000 }).then(
+      ($posts) => {
+        $posts[0].click()
+        expect(cy.url().should('contain', 'post'))
+      },
+    )
   })
 })
