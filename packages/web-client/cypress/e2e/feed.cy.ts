@@ -68,30 +68,31 @@ describe('Home Feed Tests', () => {
       cy.wrap(Array(SCROLL_COUNT))
         .each((_, index) => {
           cy.log('index', index)
-
-          cy.get(`player[i=${index}] > video`, { timeout: 10000 })
-            .and('have.prop', 'paused', false)
-            .and('have.prop', 'muted', false)
-            .then(() => {
-              const nextVideo = cy.get(`player[i=${index + 1}] > video`)
-              nextVideo.and('have.prop', 'paused', true)
-              if (index !== 0) {
-                cy.get(`player[i=${index - 1}] > video`, {
-                  timeout: 10000,
-                }).should('have.prop', 'paused', true)
-              }
-              if (index === 9) {
-                cy.wrap(performance.now()).then((t1) => {
-                  cy.task(
-                    'log',
-                    `Scrolling from 0 to 10 times completed in: ${
-                      t1 - t0
-                    } milliseconds.`,
-                  )
-                })
-              }
-              nextVideo.scrollIntoView()
-            })
+          cy.wait(500).then(() => {
+            cy.get(`player[i=${index}] > video`, { timeout: 10000 })
+              .and('have.prop', 'paused', false)
+              .and('have.prop', 'muted', false)
+              .then(() => {
+                const nextVideo = cy.get(`player[i=${index + 1}] > video`)
+                nextVideo.and('have.prop', 'paused', true)
+                if (index !== 0) {
+                  cy.get(`player[i=${index - 1}] > video`, {
+                    timeout: 10000,
+                  }).should('have.prop', 'paused', true)
+                }
+                if (index === 9) {
+                  cy.wrap(performance.now()).then((t1) => {
+                    cy.task(
+                      'log',
+                      `Scrolling from 0 to 10 times completed in: ${
+                        t1 - t0
+                      } milliseconds.`,
+                    )
+                  })
+                }
+                nextVideo.scrollIntoView()
+              })
+          })
         })
         .then(() => {
           cy.wrap(performance.now()).then((t1) => {
