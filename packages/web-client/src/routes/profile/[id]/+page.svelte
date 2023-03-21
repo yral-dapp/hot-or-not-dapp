@@ -199,12 +199,14 @@ onMount(async () => {
           </span>
           <span class="text-sm">Lovers</span>
         </a>
-        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+        <a
+          href={`/profile/${userId}/loving`}
+          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
           <span class="whitespace-nowrap text-xl font-bold">
             {getShortNumber(profile.following_count)}
           </span>
           <span class="text-sm">Loving</span>
-        </div>
+        </a>
         <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
           <span class="whitespace-nowrap text-xl font-bold">
             {getShortNumber(profile.profile_stats.hots_earned_count)}
