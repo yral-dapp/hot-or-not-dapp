@@ -34,8 +34,6 @@ let tempPlacedBet: false | 'hot' | 'not' = false
 let error = ''
 let timeLeft = '59m 10s'
 
-$: console.log({ postId, betStatus, canId: $authState.userCanisterId })
-
 $: if (
   betStatus?.['BettingOpen']?.['has_this_user_participated_in_this_post']?.[0]
 ) {
