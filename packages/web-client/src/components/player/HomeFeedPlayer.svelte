@@ -17,6 +17,7 @@ import { createEventDispatcher } from 'svelte'
 export let i: number
 export let id: bigint
 export let thumbnail = ''
+export let likes: number
 export let displayName = ''
 export let profileLink = ''
 export let videoViews = 254000
@@ -48,14 +49,19 @@ const dispatch = createEventDispatcher<{
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
       <div class="flex flex-col space-y-6">
-        <IconButton
-          ariaLabel="Toggle like on this post"
-          on:click={(e) => {
-            e.stopImmediatePropagation()
-            dispatch('like')
-          }}>
-          <HeartIcon filled={liked && $authState.isLoggedIn} class="h-8 w-8" />
-        </IconButton>
+        <div class="flex flex-col space-y-1">
+          <IconButton
+            ariaLabel="Toggle like on this post"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              dispatch('like')
+            }}>
+            <HeartIcon
+              filled={liked && $authState.isLoggedIn}
+              class="h-8 w-8" />
+          </IconButton>
+          <span>{likes}</span>
+        </div>
         <IconButton
           ariaLabel="Share this post"
           on:click={(e) => {
