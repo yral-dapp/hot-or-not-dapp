@@ -25,6 +25,7 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import { registerEvent } from '$components/seo/GA.svelte'
 import { handleParams } from '$lib/utils/params'
 import { authState } from '$stores/auth'
+import { getShortNumber } from '$lib/utils/shortNumber'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -178,9 +179,15 @@ onMount(async () => {
         <span class="text-md pt-4 font-bold">
           {profile.display_name}
         </span>
-        <span class="px-12 text-center text-sm">
-          {`@${profile.unique_user_name}`}
-        </span>
+        <div class="flex items-center space-x-2 px-12 text-sm">
+          <span class="text-white">
+            {`@${profile.unique_user_name}`}
+          </span>
+          <div class="h-1 w-1 rounded-full bg-white" />
+          <span class="text-primary">
+            {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
+          </span>
+        </div>
       </div>
       <div
         class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
@@ -188,25 +195,25 @@ onMount(async () => {
           href={`/profile/${userId}/lovers`}
           class="flex flex-1 flex-col items-center space-y-0.5 px-2">
           <span class="whitespace-nowrap text-xl font-bold">
-            {profile.followers_count}
+            {getShortNumber(profile.followers_count)}
           </span>
           <span class="text-sm">Lovers</span>
         </a>
         <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
           <span class="whitespace-nowrap text-xl font-bold">
-            {profile.profile_stats.lifetime_earnings}
+            {getShortNumber(profile.following_count)}
           </span>
-          <span class="text-sm">Earnings</span>
+          <span class="text-sm">Loving</span>
         </div>
         <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
           <span class="whitespace-nowrap text-xl font-bold">
-            {profile.profile_stats.hots_earned_count}
+            {getShortNumber(profile.profile_stats.hots_earned_count)}
           </span>
           <span class="text-sm">Hots</span>
         </div>
         <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
           <span class="whitespace-nowrap text-xl font-bold">
-            {profile.profile_stats.nots_earned_count}
+            {getShortNumber(profile.profile_stats.nots_earned_count)}
           </span>
           <span class="text-sm">Nots</span>
         </div>
