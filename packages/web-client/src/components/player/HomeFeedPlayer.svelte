@@ -50,7 +50,7 @@ const dispatch = createEventDispatcher<{
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
       <div class="flex flex-col space-y-6">
-        <div class="flex flex-col space-y-1">
+        <div class="flex flex-col">
           <IconButton
             ariaLabel="Toggle like on this post"
             on:click={(e) => {
@@ -61,7 +61,9 @@ const dispatch = createEventDispatcher<{
               filled={liked && $authState.isLoggedIn}
               class="h-8 w-8" />
           </IconButton>
-          <span>{getShortNumber(likes)}</span>
+          <span class="text-center text-sm drop-shadow-sm">
+            {getShortNumber(likes)}
+          </span>
         </div>
         <IconButton
           ariaLabel="Share this post"
