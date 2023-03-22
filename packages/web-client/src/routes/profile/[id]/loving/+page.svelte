@@ -87,7 +87,7 @@ async function handleLove(userIndex: number, userId?: string) {
     </IconButton>
   </svelte:fragment>
   <div slot="top-center" class="text-lg font-bold">
-    {me ? 'Your Lovers' : 'Lovers'}
+    {me ? 'Your ' : ''}Loving
   </div>
 
   <div
