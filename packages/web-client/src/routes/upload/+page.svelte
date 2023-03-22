@@ -378,8 +378,8 @@ onDestroy(async () => {
 
           <span class="font-semibold">Enable Camera Access</span>
           <span class="text-center text-white/60">
-            Please provide us access to your camera, which is required for
-            recording video
+            Please provide access to the camera, which is required for recording
+            video
           </span>
         </div>
       {:else}
