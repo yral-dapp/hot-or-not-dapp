@@ -228,7 +228,7 @@ onDestroy(() => {
   <svelte:fragment slot="top-center">Upload</svelte:fragment>
   <div
     slot="content"
-    class="flex w-full flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 lg:px-8">
+    class="mx-auto flex w-full max-w-5xl flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 lg:px-8">
     <div
       style={videoWidth && videoHeight
         ? `aspect-ratio: ${videoWidth}/${videoHeight}`
