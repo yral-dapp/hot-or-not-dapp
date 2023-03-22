@@ -375,13 +375,12 @@ onDestroy(async () => {
           transition:fade|local
           class="flex h-full flex-col items-center justify-center space-y-8 px-10">
           <CameraAccessIcon class="h-56" />
-          {#if initState == 'denied'}
-            <span class="font-semibold">Enable Camera Access</span>
-            <span class="text-center text-white/60">
-              Please provide us access to your camera, which is required for
-              recording video
-            </span>
-          {/if}
+
+          <span class="font-semibold">Enable Camera Access</span>
+          <span class="text-center text-white/60">
+            Please provide access to the camera, which is required for recording
+            video
+          </span>
         </div>
       {:else}
         <!-- svelte-ignore a11y-media-has-caption -->
