@@ -170,7 +170,7 @@ export async function fetchLovers(id: string, from: number) {
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_principals_that_follow_me_paginated(BigInt(from), BigInt(from + 10))
+    ).get_principals_that_follow_me_paginated(BigInt(from), BigInt(from + 15))
     if ('Ok' in res) {
       const populatedUsers = await populateProfiles(res.Ok)
       if (populatedUsers.error) {
@@ -207,7 +207,7 @@ export async function fetchLovingUsers(id: string, from: number) {
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_principals_i_follow_paginated(BigInt(from), BigInt(from + 10))
+    ).get_principals_i_follow_paginated(BigInt(from), BigInt(from + 15))
     if ('Ok' in res) {
       const populatedUsers = await populateProfiles(res.Ok)
       if (populatedUsers.error) {
