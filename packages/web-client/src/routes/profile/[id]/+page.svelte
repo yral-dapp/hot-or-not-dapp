@@ -26,6 +26,7 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import { handleParams } from '$lib/utils/params'
 import { authState } from '$stores/auth'
 import { getShortNumber } from '$lib/utils/shortNumber'
+import { goto } from '$app/navigation'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -141,9 +142,10 @@ onMount(async () => {
   <ProfileLayout>
     <svelte:fragment slot="top-left">
       <IconButton
-        href={$navigateBack && !$navigateBack.includes('edit')
-          ? $navigateBack
-          : '/feed'}
+        on:click={() =>
+          history.length < 3 && $navigateBack
+            ? goto($navigateBack, { replaceState: true })
+            : history.back()}
         class="shrink-0">
         <CaretLeftIcon class="h-7 w-7" />
       </IconButton>

@@ -139,18 +139,19 @@ async function saveChanges() {
       error = 'Could not save your profile. Please login again to try again.'
     }
     loading = false
-    goto(
-      `/profile/${
-        username_set ? $userProfile.unique_user_name : $userProfile.principal_id
-      }`,
-    )
-
     registerEvent('edit_my_profile', {
       userId: $userProfile.principal_id,
       display_name: displayName,
       profile_image: imgSrc,
       username: $userProfile.unique_user_name,
     })
+
+    goto(
+      `/profile/${
+        username_set ? $userProfile.unique_user_name : $userProfile.principal_id
+      }`,
+      { replaceState: true },
+    )
   } catch (e) {
     loading = false
     Log({ error: e, from: '2 saveChanges' }, 'error')
@@ -166,22 +167,27 @@ onMount(async () => {
   loading = false
   pageLoaded = true
 })
+
+$: userId = username_set
+  ? $userProfile.unique_user_name
+  : $userProfile.principal_id
 </script>
 
 <svelte:head>
   <title>Edit Profile | Hot or Not</title>
 </svelte:head>
-
+<button on:click={() => goto(`/profile/${userId}`, { replaceState: true })}>
+  click me
+</button>
 {#if pageLoaded}
   <ProfileLayout>
     <svelte:fragment slot="top-left">
       <IconButton
         disabled={loading}
-        href={`/profile/${
-          username_set
-            ? $userProfile.unique_user_name
-            : $userProfile.principal_id
-        }`}
+        on:click={() =>
+          history.length < 3
+            ? goto(`/profile/${userId}`, { replaceState: true })
+            : history.back()}
         class="shrink-0">
         <CaretLeftIcon class="h-7 w-7" />
       </IconButton>
