@@ -3,6 +3,7 @@ import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
 import FireIcon from '$components/icons/FireIcon.svelte'
+import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
@@ -50,6 +51,9 @@ const dispatch = createEventDispatcher<{
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="max-w-16 pointer-events-auto absolute right-4 bottom-20 z-[10]">
       <div class="flex flex-col space-y-6">
+        <IconButton ariaLabel="Share this post" href="/refer-earn">
+          <GiftBoxIcon class="h-8 w-8" />
+        </IconButton>
         <div class="flex flex-col">
           <IconButton
             ariaLabel="Toggle like on this post"

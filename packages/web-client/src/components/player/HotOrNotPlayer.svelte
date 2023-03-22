@@ -3,6 +3,7 @@ import type { BettingStatus } from '$canisters/individual_user_template/individu
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
+import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import PieChartIcon from '$components/icons/PieChartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
@@ -120,6 +121,9 @@ $: roomNumber = 24
         </div>
       </div>
       <div class="max-w-16 flex shrink-0 flex-col space-y-6">
+        <IconButton ariaLabel="Share this post" href="/refer-earn">
+          <GiftBoxIcon class="h-8 w-8" />
+        </IconButton>
         <IconButton
           on:click={(e) => {
             e.stopImmediatePropagation()
