@@ -18,7 +18,7 @@ import userProfile from '$stores/userProfile'
 
 export let data: PageData
 
-const { video, me } = data
+let { video, me } = data
 let isIPhone = isiPhone()
 
 async function handleLike() {
@@ -27,27 +27,44 @@ async function handleLike() {
     return
   }
 
-  if (!video) return
+  const post = Object.assign({}, video)
 
-  updatePostInWatchHistory('watch', video, {
-    liked_by_me: !video.liked_by_me,
+  updatePostInWatchHistory('watch', post, {
+    liked_by_me: !post.liked_by_me,
+    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
   })
 
-  video.liked_by_me = !video.liked_by_me
+  video = {
+    ...post,
+    liked_by_me: !post.liked_by_me,
+    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
+  }
 
   registerEvent('like_video', {
     userId: $userProfile.principal_id,
     video_publisher_id:
-      video.created_by_unique_user_name[0] ??
-      video.created_by_user_principal_id,
-    video_publisher_canister_id: video.publisher_canister_id,
-    video_id: video.id,
-    likes: video.like_count,
+      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
+    video_publisher_canister_id: post.publisher_canister_id,
+    video_id: post.id,
+    likes: post.like_count,
   })
 
-  await individualUser(
-    video.publisher_canister_id,
-  ).update_post_toggle_like_status_by_caller(video.id)
+  try {
+    await individualUser(
+      post.publisher_canister_id,
+    ).update_post_toggle_like_status_by_caller(post.id)
+  } catch (e) {
+    updatePostInWatchHistory('watch', post, {
+      liked_by_me: post.liked_by_me,
+      like_count: post.like_count,
+    })
+
+    video = {
+      ...post,
+      liked_by_me: post.liked_by_me,
+      like_count: post.like_count,
+    }
+  }
 }
 
 async function handleShare() {

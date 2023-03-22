@@ -45,8 +45,14 @@ async function handleLike(videoIndex: number) {
 
   updatePostInWatchHistory('watch', post, {
     liked_by_me: !post.liked_by_me,
+    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
   })
-  videos[videoIndex].liked_by_me = !videos[videoIndex].liked_by_me
+
+  videos[videoIndex] = {
+    ...post,
+    liked_by_me: !post.liked_by_me,
+    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
+  }
 
   registerEvent('like_video', {
     userId: $userProfile.principal_id,
@@ -57,9 +63,22 @@ async function handleLike(videoIndex: number) {
     likes: post.like_count,
   })
 
-  await individualUser(
-    post.publisher_canister_id,
-  ).update_post_toggle_like_status_by_caller(post.id)
+  try {
+    await individualUser(
+      post.publisher_canister_id,
+    ).update_post_toggle_like_status_by_caller(post.id)
+  } catch (e) {
+    updatePostInWatchHistory('watch', post, {
+      liked_by_me: post.liked_by_me,
+      like_count: post.like_count,
+    })
+
+    videos[videoIndex] = {
+      ...post,
+      liked_by_me: post.liked_by_me,
+      like_count: post.like_count,
+    }
+  }
 }
 
 async function handleShare(videoIndex: number) {
