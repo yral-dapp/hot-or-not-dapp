@@ -42,7 +42,7 @@ let fetchedPosts: PostDetailsForFrontend[] = []
 let errorWhileFetching = false
 let noMorePosts = false
 let fetchedPostsCount = 0
-let doIFollow = true
+let doIFollow: boolean | null = null
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -220,7 +220,7 @@ onMount(async () => {
           <span class="text-sm">Nots</span>
         </div>
       </div>
-      {#if !me}
+      {#if !me && doIFollow !== null}
         <div
           class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
           <Button
