@@ -169,7 +169,7 @@ onMount(async () => {
     </div>
 
     <div
-      class="mx-auto flex h-full w-full max-w-7xl flex-col overflow-y-auto"
+      class="mx-auto flex h-full w-full max-w-5xl flex-col overflow-y-auto"
       slot="content">
       <div class="flex w-full flex-col items-center justify-center py-8">
         <img
