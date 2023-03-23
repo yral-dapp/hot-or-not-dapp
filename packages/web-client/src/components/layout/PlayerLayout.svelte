@@ -7,7 +7,7 @@ import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
-import { individualUser, type IndividualUserActor } from '$lib/helpers/backend'
+import { individualUser } from '$lib/helpers/backend'
 import type { PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
@@ -52,6 +52,8 @@ async function handleShare() {
     post.publisher_canister_id,
   ).update_post_increment_share_count(post.id)
 }
+
+function handleLike() {}
 </script>
 
 <player-layout
@@ -70,10 +72,7 @@ async function handleShare() {
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="absolute bottom-40 z-[10] flex w-full space-x-2 px-4">
       <div class="flex grow flex-col space-y-4">
-        <div
-          on:click={(e) => e.stopImmediatePropagation()}
-          class="pointer-events-auto flex space-x-3"
-          on:keyup>
+        <div class="pointer-events-auto flex space-x-3">
           <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
             <Avatar
               class="h-12 w-12"
@@ -93,8 +92,7 @@ async function handleShare() {
         </div>
         <button
           class:truncate={showTruncatedDescription}
-          on:click={(e) => {
-            e.stopImmediatePropagation()
+          on:click|stopImmediatePropagation={(e) => {
             showTruncatedDescription = !showTruncatedDescription
           }}
           class="pointer-events-auto w-80 text-left text-sm">
@@ -114,6 +112,7 @@ async function handleShare() {
               ariaLabel="Toggle like on this post"
               on:click={(e) => {
                 e.stopImmediatePropagation()
+                handleLike()
               }}>
               <HeartIcon
                 filled={post.liked_by_me && $authState.isLoggedIn}
