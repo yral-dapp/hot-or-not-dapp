@@ -15,7 +15,6 @@ import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
-import { createEventDispatcher } from 'svelte'
 
 export let index: number
 export let post: PostPopulated
@@ -70,7 +69,49 @@ function recordView(percentageWatched: number) {
   }
 }
 
-function handleLike() {}
+async function handleLike() {
+  if (!$authState.isLoggedIn) {
+    $authState.showLogin = true
+    return
+  }
+
+  updatePostInWatchHistory(watchHistoryDb, post, {
+    liked_by_me: !post.liked_by_me,
+    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
+  })
+
+  post = {
+    ...post,
+    liked_by_me: !post.liked_by_me,
+    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
+  }
+
+  registerEvent('like_video', {
+    userId: $userProfile.principal_id,
+    video_publisher_id:
+      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
+    video_publisher_canister_id: post.publisher_canister_id,
+    video_id: post.id,
+    likes: post.like_count,
+  })
+
+  try {
+    await individualUser(
+      post.publisher_canister_id,
+    ).update_post_toggle_like_status_by_caller(post.id)
+  } catch (e) {
+    updatePostInWatchHistory(watchHistoryDb, post, {
+      liked_by_me: post.liked_by_me,
+      like_count: post.like_count,
+    })
+
+    post = {
+      ...post,
+      liked_by_me: post.liked_by_me,
+      like_count: post.like_count,
+    }
+  }
+}
 </script>
 
 <player-layout
