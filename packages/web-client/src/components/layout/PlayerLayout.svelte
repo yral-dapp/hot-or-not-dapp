@@ -8,13 +8,14 @@ import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
-import type { PostPopulated } from '$lib/helpers/feed'
+import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
+import { createEventDispatcher } from 'svelte'
 
 export let index: number
 export let post: PostPopulated
@@ -22,8 +23,13 @@ export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
 export let showHotOrNotButton = false
+export let watchHistoryDb: 'watch' | 'watch-hon'
 
 let showTruncatedDescription = true
+let watchProgress = {
+  totalCount: 0,
+  partialWatchedPercentage: 0,
+}
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -53,13 +59,24 @@ async function handleShare() {
   ).update_post_increment_share_count(post.id)
 }
 
+function recordView(percentageWatched: number) {
+  if (percentageWatched == 0) {
+    watchProgress.totalCount++
+    watchProgress.partialWatchedPercentage = 0
+    post.total_view_count = post.total_view_count + BigInt(1)
+    updatePostInWatchHistory(watchHistoryDb, post)
+  } else {
+    watchProgress.partialWatchedPercentage = percentageWatched
+  }
+}
+
 function handleLike() {}
 </script>
 
 <player-layout
   data-index={index}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
-  <slot />
+  <slot {recordView} />
   <img
     alt="background"
     class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
