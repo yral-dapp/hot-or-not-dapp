@@ -32,7 +32,6 @@ let videos: PostPopulated[] = []
 let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = false
-let videoPlayers: VideoPlayer[] = []
 let fetchedVideosCount = 0
 let isIPhone = isiPhone()
 let isDocumentHidden = false
@@ -172,7 +171,6 @@ beforeNavigate(() => {
           {individualUser}
           thumbnail={getThumbnailUrl(video.video_uid)}>
           <VideoPlayer
-            bind:this={videoPlayers[i]}
             on:loaded={() => hideSplashScreen(500)}
             {i}
             playFormat="hls"

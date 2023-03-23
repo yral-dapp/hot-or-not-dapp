@@ -41,7 +41,6 @@ const fetchWhenVideosLeft = 10
 const keepVideosLoadedCount: number = 3
 
 let videos: PostPopulated[] = []
-let videoPlayers: VideoPlayer[] = []
 let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = false
@@ -342,7 +341,6 @@ async function handleShare(videoIndex: number) {
           on:like={() => handleLike(i)}
           on:share={() => handleShare(i)}>
           <VideoPlayer
-            bind:this={videoPlayers[i]}
             on:loaded={() => hideSplashScreen(500)}
             on:watchedPercentage={({ detail }) =>
               recordStats(
