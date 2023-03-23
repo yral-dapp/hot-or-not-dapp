@@ -14,7 +14,7 @@ import SpeculationPost from '$components/profile/SpeculationPost.svelte'
 import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 import type { PageData } from './$types'
-import navigateBack from '$stores/navigateBack'
+import { navigateBack } from '$stores/navigation'
 import { page } from '$app/stores'
 import { doIFollowThisUser, fetchPosts, loveUser } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
@@ -26,7 +26,7 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import { handleParams } from '$lib/utils/params'
 import { authState } from '$stores/auth'
 import { getShortNumber } from '$lib/utils/shortNumber'
-import { goto } from '$app/navigation'
+import goBack from '$lib/utils/goBack'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -141,12 +141,7 @@ onMount(async () => {
 {#if !load.page}
   <ProfileLayout>
     <svelte:fragment slot="top-left">
-      <IconButton
-        on:click={() =>
-          history.length < 3 && $navigateBack
-            ? goto($navigateBack, { replaceState: true })
-            : history.back()}
-        class="shrink-0">
+      <IconButton on:click={() => goBack($navigateBack, true)} class="shrink-0">
         <CaretLeftIcon class="h-7 w-7" />
       </IconButton>
     </svelte:fragment>

@@ -15,6 +15,7 @@ import { authState } from '$stores/auth'
 import { updatePostInWatchHistory } from '$lib/helpers/feed'
 import { registerEvent } from '$components/seo/GA.svelte'
 import userProfile from '$stores/userProfile'
+import goBack from '$lib/utils/goBack'
 
 export let data: PageData
 
@@ -107,7 +108,7 @@ async function handleShare() {
     {/if}
 
     <div class="absolute top-4 left-4">
-      <IconButton href={`/profile/${$page.params.id}`} preload>
+      <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
         <CaretLeftIcon class="h-5 w-5" />
       </IconButton>
     </div>

@@ -16,6 +16,7 @@ import { authState } from '$stores/auth'
 import { goto } from '$app/navigation'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser, userIndex } from '$lib/helpers/backend'
+import goBack from '$lib/utils/goBack'
 
 export let data: PageData
 
@@ -176,18 +177,12 @@ $: userId = username_set
 <svelte:head>
   <title>Edit Profile | Hot or Not</title>
 </svelte:head>
-<button on:click={() => goto(`/profile/${userId}`, { replaceState: true })}>
-  click me
-</button>
 {#if pageLoaded}
   <ProfileLayout>
     <svelte:fragment slot="top-left">
       <IconButton
         disabled={loading}
-        on:click={() =>
-          history.length < 3
-            ? goto(`/profile/${userId}`, { replaceState: true })
-            : history.back()}
+        on:click={() => goBack(`/profile/${userId}`, true)}
         class="shrink-0">
         <CaretLeftIcon class="h-7 w-7" />
       </IconButton>

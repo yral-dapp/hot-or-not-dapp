@@ -19,6 +19,7 @@ import { authState } from '$stores/auth'
 import { registerEvent } from '$components/seo/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { individualUser } from '$lib/helpers/backend'
+import goBack from '$lib/utils/goBack'
 
 export let data: PageData
 
@@ -115,11 +116,7 @@ async function handleShare(videoIndex: number) {
     {/if}
 
     <div class="absolute top-4 left-4">
-      <IconButton
-        on:click={() =>
-          history.length > 2
-            ? history.back()
-            : goto(`/profile/${$page.params.id}`)}>
+      <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
         <CaretLeftIcon class="h-5 w-5" />
       </IconButton>
     </div>
