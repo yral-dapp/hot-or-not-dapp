@@ -17,6 +17,7 @@ import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 
 export let index: number
+export let justWatched: boolean = false
 export let post: PostPopulated
 export let showReferAndEarnLink = false
 export let showShareButton = false
@@ -111,6 +112,10 @@ async function handleLike() {
       like_count: post.like_count,
     }
   }
+}
+
+$: if (justWatched) {
+  // SEND WATCHED STATISTICS TO BACKEND
 }
 </script>
 
