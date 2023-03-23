@@ -24,18 +24,18 @@ let selectedTab = 0
 let endOfList = false
 let loading = true
 let error = false
-let history: TransactionHistory[] = []
+let txnHistory: TransactionHistory[] = []
 
 const INVITE_WIN_TOKENS = 500
 
-async function loadHistory() {
+async function loadTransactions() {
   if (endOfList || !loggedIn) {
     return
   }
 
   loading = true
   error = false
-  const res = await fetchHistory(history.length, 'Referral')
+  const res = await fetchHistory(txnHistory.length, 'Referral')
 
   if (res.error) {
     error = true
@@ -43,8 +43,8 @@ async function loadHistory() {
     return
   }
 
-  history.push(...res.history)
-  history = history
+  txnHistory.push(...res.history)
+  txnHistory = txnHistory
 
   endOfList = res.endOfList
   loading = false
@@ -75,7 +75,7 @@ async function copyLink() {
 
 onMount(() => {
   if ($authState.isLoggedIn) {
-    loadHistory()
+    loadTransactions()
     registerEvent('refer_earn_visit', {
       display_name: $userProfile.display_name,
       username: $userProfile.unique_user_name,
@@ -194,7 +194,7 @@ $: link = !loggedIn
           </div>
         </div>
       {:else if loggedIn}
-        {#each history as item, i}
+        {#each txnHistory as item, i}
           {@const date = new Date(Number(item.timestamp.secs_since_epoch))
             .toDateString()
             .substring(4)}
@@ -221,7 +221,7 @@ $: link = !loggedIn
           <div class="text-center text-sm text-red-500">
             Error fetching history.
           </div>
-        {:else if !history.length}
+        {:else if !txnHistory.length}
           <div class="text-center text-sm opacity-70">No referrals yet.</div>
         {/if}
       {:else}
