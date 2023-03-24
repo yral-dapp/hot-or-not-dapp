@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
@@ -11,6 +12,7 @@ import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
@@ -114,8 +116,53 @@ async function handleLike() {
   }
 }
 
+async function updateStats() {
+  console.log('updating stats', index)
+  if (
+    watchProgress?.totalCount === 0 &&
+    watchProgress?.partialWatchedPercentage === 0
+  ) {
+    return
+  }
+
+  if ($page.url.host.includes('t:')) return
+
+  const payload =
+    watchProgress.totalCount == 0
+      ? {
+          WatchedPartially: {
+            percentage_watched:
+              Math.ceil(watchProgress.partialWatchedPercentage) || 1,
+          },
+        }
+      : {
+          WatchedMultipleTimes: {
+            percentage_watched:
+              Math.ceil(watchProgress.partialWatchedPercentage) || 1,
+            watch_count: watchProgress.totalCount,
+          },
+        }
+
+  Log({ from: '0 updateStats', id: post.id, payload }, 'info')
+
+  registerEvent('view_video', {
+    userId: $userProfile.principal_id,
+    video_publisher_id: postPublisherId,
+    video_publisher_canister_id: post.publisher_canister_id,
+    video_id: post.id,
+    watch_count: Math.ceil(
+      watchProgress.totalCount + watchProgress.partialWatchedPercentage / 100,
+    ),
+    home_feed_score: post.score,
+  })
+  await individualUser(post.publisher_canister_id).update_post_add_view_details(
+    post.id,
+    payload,
+  )
+}
+
 $: if (justWatched) {
-  // SEND WATCHED STATISTICS TO BACKEND
+  updateStats()
 }
 </script>
 
@@ -133,8 +180,10 @@ $: if (justWatched) {
     class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
-      class="absolute bottom-40 z-[10] flex w-full space-x-2 px-4">
-      <div class="flex grow flex-col space-y-4">
+      class="absolute z-[10] flex w-full space-x-2 px-4 {$$slots.hotOrNot
+        ? 'bottom-40'
+        : 'bottom-20'}">
+      <div class="flex grow flex-col justify-end space-y-4">
         <div class="pointer-events-auto flex space-x-3">
           <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
             <Avatar
