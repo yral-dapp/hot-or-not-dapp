@@ -1,21 +1,13 @@
 <script lang="ts">
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
-import type { PageData } from './$types'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
+import { page } from '$app/stores'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import { page } from '$app/stores'
-import { individualUser } from '$lib/helpers/backend'
-import { isiPhone } from '$lib/utils/isSafari'
-import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
-import Hls from 'hls.js/dist/hls.min'
-import { authState } from '$stores/auth'
-import { updatePostInWatchHistory } from '$lib/helpers/feed'
-import { registerEvent } from '$components/seo/GA.svelte'
-import userProfile from '$stores/userProfile'
+import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
+import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
+import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import Hls from 'hls.js/dist/hls.min'
+import type { PageData } from './$types'
 
 export let data: PageData
 
