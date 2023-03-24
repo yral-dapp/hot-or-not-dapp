@@ -8,9 +8,9 @@ import { onDestroy, onMount } from 'svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
-    $playerState.visible = true
-  } else {
     $playerState.visible = false
+  } else {
+    $playerState.visible = true
   }
 }
 
