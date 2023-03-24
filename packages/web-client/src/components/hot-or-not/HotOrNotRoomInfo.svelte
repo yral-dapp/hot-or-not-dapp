@@ -7,7 +7,7 @@ $: usersInThisSlot = 48
 $: roomNumber = 24
 </script>
 
-<div class="flex items-center space-x-3 border">
+<div class="flex items-center space-x-3">
   <div
     class="flex items-center space-x-2 rounded-full bg-black/40 py-2 px-3 text-white">
     <TimerIcon class="h-4 w-4" />
