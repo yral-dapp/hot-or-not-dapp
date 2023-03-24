@@ -165,7 +165,7 @@ onDestroy(() => {
             index={i}
             playFormat="hls"
             {Hls}
-            inView={i == currentVideoIndex && !$playerState.visible}
+            inView={i == currentVideoIndex && $playerState.visible}
             uid={post.video_uid} />
         </PlayerLayout>
       {/if}
