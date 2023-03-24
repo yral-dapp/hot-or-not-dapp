@@ -1,7 +1,6 @@
 <script lang="ts">
 import 'swiper/css'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import type { PageData } from './$types'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
@@ -11,96 +10,23 @@ import { goto } from '$app/navigation'
 import { page } from '$app/stores'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
-import { isiPhone } from '$lib/utils/isSafari'
-import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
 import Hls from 'hls.js/dist/hls.min'
-import { updatePostInWatchHistory } from '$lib/helpers/feed'
-import { authState } from '$stores/auth'
-import { registerEvent } from '$components/seo/GA.svelte'
-import userProfile from '$stores/userProfile'
 import { individualUser } from '$lib/helpers/backend'
+import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 
 export let data: PageData
 
-//@ts-ignore
 const { video, me } = data
 
 let videos = [video]
 let noMoreVideos = true
-let isIPhone = isiPhone()
 let currentVideoIndex = 0
+let lastWatchedVideoIndex = -1
 
 async function handleChange(e: CustomEvent) {
+  lastWatchedVideoIndex = currentVideoIndex
   const index = e.detail[0].realIndex
   currentVideoIndex = index
-}
-
-async function handleLike(videoIndex: number) {
-  if (!$authState.isLoggedIn) {
-    $authState.showLogin = true
-    return
-  }
-  const post = videos[videoIndex]
-  if (!post) return
-
-  updatePostInWatchHistory('watch', post, {
-    liked_by_me: !post.liked_by_me,
-    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
-  })
-
-  videos[videoIndex] = {
-    ...post,
-    liked_by_me: !post.liked_by_me,
-    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
-  }
-
-  registerEvent('like_video', {
-    userId: $userProfile.principal_id,
-    video_publisher_id:
-      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
-    video_publisher_canister_id: post.publisher_canister_id,
-    video_id: post.id,
-    likes: post.like_count,
-  })
-
-  try {
-    await individualUser(
-      post.publisher_canister_id,
-    ).update_post_toggle_like_status_by_caller(post.id)
-  } catch (e) {
-    updatePostInWatchHistory('watch', post, {
-      liked_by_me: post.liked_by_me,
-      like_count: post.like_count,
-    })
-
-    videos[videoIndex] = {
-      ...post,
-      liked_by_me: post.liked_by_me,
-      like_count: post.like_count,
-    }
-  }
-}
-
-async function handleShare(videoIndex: number) {
-  const post = videos[videoIndex]
-  if (!post) return
-  try {
-    await navigator.share({
-      title: 'Hot or Not',
-      text: `Check out this hot video by ${post.created_by_display_name[0]}. \n${post.description}`,
-      url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${post.id}`,
-    })
-  } catch (_) {}
-  registerEvent('share_video', {
-    userId: $userProfile.principal_id,
-    video_publisher_id:
-      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
-    video_publisher_canister_id: post.publisher_canister_id,
-    video_id: post.id,
-  })
-  await individualUser(
-    post.publisher_canister_id,
-  ).update_post_increment_share_count(post.id)
 }
 </script>
 
@@ -134,34 +60,27 @@ async function handleShare(videoIndex: number) {
         cssMode
         spaceBetween={100}
         class="h-full w-full">
-        {#each videos as video, i (i)}
+        {#each videos as post, i (i)}
           <SwiperSlide
             class="flex h-full w-full snap-always items-center justify-center">
-            <HomeFeedPlayer
-              {i}
-              id={video.id}
-              likes={Number(video.like_count)}
-              displayName={video.created_by_display_name[0]}
-              profileLink={video.created_by_unique_user_name[0] ??
-                video.created_by_user_principal_id}
-              liked={video.liked_by_me}
-              createdById={video.created_by_user_principal_id}
-              videoViews={Number(video.total_view_count)}
-              publisherCanisterId={video.publisher_canister_id}
-              userProfileSrc={video.created_by_profile_photo_url[0]}
-              enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
-                video.hot_or_not_feed_ranking_score[0] !== undefined}
-              thumbnail={getThumbnailUrl(video.video_uid)}
-              on:like={() => handleLike(i)}
-              on:share={() => handleShare(i)}>
+            <PlayerLayout
+              bind:post
+              index={i}
+              watchHistoryDb="watch"
+              showLikeButton
+              showReferAndEarnLink
+              showShareButton
+              showHotOrNotButton
+              justWatched={lastWatchedVideoIndex === i}
+              let:recordView>
               <VideoPlayer
-                {i}
+                on:watchedPercentage={({ detail }) => recordView(detail)}
+                index={i}
                 playFormat="hls"
                 {Hls}
-                isiPhone={isIPhone}
-                inView={currentVideoIndex == i}
-                uid={video.video_uid} />
-            </HomeFeedPlayer>
+                inView
+                uid={post.video_uid} />
+            </PlayerLayout>
           </SwiperSlide>
           {#if noMoreVideos}
             <SwiperSlide class="flex h-full w-full items-center justify-center">
