@@ -167,7 +167,7 @@ function toggleBet() {
   {#if betPlaced === false}
     <div
       class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-8 px-4"
-      transition:fade>
+      transition:fade|local>
       <div
         class="relative flex flex-col items-center space-y-1 {error
           ? 'pointer-events-none'
