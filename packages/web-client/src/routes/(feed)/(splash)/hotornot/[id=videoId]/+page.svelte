@@ -155,9 +155,9 @@ beforeNavigate(() => {
             {Hls}
             inView={i == currentVideoIndex && $playerState.visible}
             uid={post.video_uid} />
-          <svelte:fragment slot="betRoomInfo">
+          <!-- <svelte:fragment slot="betRoomInfo">
             <HotOrNotRoomInfo />
-          </svelte:fragment>
+          </svelte:fragment> -->
           <svelte:fragment slot="hotOrNot">
             <HotOrNotBet
               comingSoon
