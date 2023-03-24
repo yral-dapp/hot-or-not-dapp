@@ -3,6 +3,7 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import PlayIcon from '$components/icons/PlayIcon.svelte'
 import SoundIcon from '$components/icons/SoundIcon.svelte'
 import { getHlsUrl, getMp4Url } from '$lib/utils/cloudflare'
+import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
 import { playerState } from '$stores/playerState'
 import type Hls from 'hls.js'
@@ -10,12 +11,13 @@ import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
 
 export let uid: string
-export let i: number
+export let index: number
 export let inView = false
 export let thumbnail = ''
-export let isiPhone: boolean
 export let Hls: any
 export let playFormat: 'hls' | 'mp4'
+
+let ios = isiPhone()
 
 const dispatch = createEventDispatcher<{
   watchedPercentage: number
@@ -57,7 +59,10 @@ export const stop = debounce(
         videoEl.pause()
       }
     } catch (e: any) {
-      Log({ error: e, i, uid, playFormat, inView, source: '2 play' }, 'error')
+      Log(
+        { error: e, index, uid, playFormat, inView, source: '2 play' },
+        'error',
+      )
     }
   },
   { atBegin: true },
@@ -68,7 +73,7 @@ export const play = debounce(
   async () => {
     await tick()
     if (videoEl?.paused) {
-      if (isiPhone) {
+      if (ios) {
         videoEl.volume = 0
       } else if (videoEl) {
         videoEl.muted = $playerState.muted
@@ -115,7 +120,7 @@ async function handleClick() {
     }
   } catch (e) {
     Log(
-      { error: e, i, uid, playFormat, inView, source: '1 handleClick' },
+      { error: e, index, uid, playFormat, inView, source: '1 handleClick' },
       'error',
     )
   }
@@ -137,9 +142,9 @@ $: if (!inView) {
 }
 
 onMount(() => {
-  if (playFormat === 'mp4' || isiPhone) {
+  if (playFormat === 'mp4' || ios) {
     //Force mp4 playback on iOS
-    videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
+    videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
   } else {
     const src = getHlsUrl(uid)
     if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
@@ -150,9 +155,9 @@ onMount(() => {
       hls?.attachMedia(videoEl)
     } else {
       // Fallback to mp4
-      videoEl.src = `${getMp4Url(uid)}${isiPhone ? '#t=0.1' : ''}`
+      videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
       Log(
-        { error: 'Hls not supported', i, src, source: '1 videoPlayer' },
+        { error: 'Hls not supported', index, src, source: '1 videoPlayer' },
         'warn',
       )
     }
@@ -183,14 +188,14 @@ onDestroy(() => {
   }}
   bind:this={videoEl}
   loop
-  data-index={i}
+  data-index={index}
   muted={$playerState.muted}
   disablepictureinpicture
   disableremoteplayback
   playsinline
   bind:currentTime
   bind:duration
-  preload={isiPhone ? 'metadata' : 'auto'}
+  preload={ios ? 'metadata' : 'auto'}
   poster={thumbnail}
   class="object-fit absolute z-[3] h-full w-full" />
 
