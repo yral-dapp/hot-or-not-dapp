@@ -142,7 +142,7 @@ beforeNavigate(() => {
         <PlayerLayout
           bind:post
           index={i}
-          watchHistoryDb="watch"
+          watchHistoryDb="watch-hon"
           showReferAndEarnLink
           showShareButton
           justWatched={i === lastWatchedVideoIndex}
