@@ -210,9 +210,10 @@ $: if (justWatched) {
           class="pointer-events-auto w-80 text-left text-sm">
           {post.description}
         </button>
-        <slot name="additionalInfo" />
+        <slot name="betRoomInfo" />
       </div>
-      <div class="max-w-16 flex shrink-0 flex-col space-y-6">
+      <div
+        class="max-w-16 pointer-events-auto flex shrink-0 flex-col space-y-6">
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
             <GiftBoxIcon class="h-8 w-8" />
