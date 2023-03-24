@@ -117,7 +117,6 @@ async function handleLike() {
 }
 
 async function updateStats() {
-  console.log('updating stats', index)
   if (
     watchProgress?.totalCount === 0 &&
     watchProgress?.partialWatchedPercentage === 0
