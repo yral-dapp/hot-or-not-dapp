@@ -245,7 +245,7 @@ $: if (justWatched) {
             <ShareMessageIcon class="h-6 w-6" />
           </IconButton>
         {/if}
-        {#if showHotOrNotButton}
+        {#if showHotOrNotButton && post.hot_or_not_feed_ranking_score[0] != undefined}
           <IconButton
             ariaLabel="Check out this post in Hot or Not"
             disabled={!enrolledInHotOrNot}
