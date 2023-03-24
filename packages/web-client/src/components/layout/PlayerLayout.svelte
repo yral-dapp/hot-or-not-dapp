@@ -213,7 +213,7 @@ $: if (justWatched) {
         <slot name="betRoomInfo" />
       </div>
       <div
-        class="max-w-16 pointer-events-auto flex shrink-0 flex-col space-y-6">
+        class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
             <GiftBoxIcon class="h-8 w-8" />
