@@ -179,7 +179,7 @@ $: if (justWatched) {
     class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
-      class="absolute z-[10] flex w-full space-x-2 px-4 {$$slots.hotOrNot
+      class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2 {$$slots.hotOrNot
         ? 'bottom-40'
         : 'bottom-20'}">
       <div class="flex grow flex-col justify-end space-y-4">
@@ -202,11 +202,11 @@ $: if (justWatched) {
           </div>
         </div>
         <button
-          class:truncate={showTruncatedDescription}
+          class:max-h-10={showTruncatedDescription}
           on:click|stopImmediatePropagation={(e) => {
             showTruncatedDescription = !showTruncatedDescription
           }}
-          class="pointer-events-auto w-80 text-left text-sm">
+          class="pointer-events-auto truncate text-ellipsis whitespace-normal text-left text-sm">
           {post.description}
         </button>
         <slot name="betRoomInfo" />
