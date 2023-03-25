@@ -2,27 +2,25 @@
 import { beforeNavigate } from '$app/navigation'
 import Button from '$components/button/Button.svelte'
 import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
-import HotOrNot from '$components/navigation/HotOrNot.svelte'
-import HotOrNotPlayer from '$components/player/HotOrNotPlayer.svelte'
+import PlayerLayout from '$components/layout/PlayerLayout.svelte'
+import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import { individualUser } from '$lib/helpers/backend'
 import {
   getHotOrNotPosts,
   updatePostInWatchHistory,
   type PostPopulated,
 } from '$lib/helpers/feed'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { updateURL } from '$lib/utils/feedUrl'
-import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
 import Hls from 'hls.js/dist/hls.min'
-import { onDestroy, onMount, tick } from 'svelte'
+import { onMount, tick } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
+import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -30,12 +28,10 @@ const keepVideosLoadedCount: number = 4
 
 let videos: PostPopulated[] = []
 let currentVideoIndex = 0
+let lastWatchedVideoIndex = -1
 let noMoreVideos = false
 let loading = false
-let videoPlayers: VideoPlayer[] = []
 let fetchedVideosCount = 0
-let isIPhone = isiPhone()
-let isDocumentHidden = false
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
@@ -109,14 +105,6 @@ async function handleChange(e: CustomEvent) {
   updateMetadata(videos[currentVideoIndex])
 }
 
-function handleVisibilityChange() {
-  if (document.visibilityState === 'hidden') {
-    isDocumentHidden = true
-  } else {
-    isDocumentHidden = false
-  }
-}
-
 onMount(async () => {
   updateURL()
   $playerState.initialized = false
@@ -128,16 +116,10 @@ onMount(async () => {
   await tick()
   await fetchNextVideos()
   handleParams()
-  document.addEventListener('visibilitychange', handleVisibilityChange)
-})
-
-onDestroy(() => {
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 
 beforeNavigate(() => {
   videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex))
-  isDocumentHidden = true
 })
 </script>
 
@@ -153,34 +135,37 @@ beforeNavigate(() => {
   on:slideChange={handleChange}
   spaceBetween={300}
   class="h-full w-full">
-  {#each videos as video, i (i)}
+  {#each videos as post, i (i)}
     <SwiperSlide
       class="flex h-full w-full snap-always items-center justify-center">
       {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
-        <HotOrNotPlayer
-          {i}
-          postId={video.id}
-          displayName={video.created_by_display_name[0]}
-          profileLink={video.created_by_unique_user_name[0] ??
-            video.created_by_user_principal_id}
-          description={video.description}
-          createdById={video.created_by_user_principal_id}
-          videoViews={Number(video.total_view_count)}
-          publisherCanisterId={video.publisher_canister_id}
-          userProfileSrc={video.created_by_profile_photo_url[0]}
-          betStatus={video.hot_or_not_betting_status[0]}
-          {individualUser}
-          thumbnail={getThumbnailUrl(video.video_uid)}>
+        <PlayerLayout
+          bind:post
+          index={i}
+          watchHistoryDb="watch-hon"
+          showReferAndEarnLink
+          showShareButton
+          justWatched={i === lastWatchedVideoIndex}
+          let:recordView>
           <VideoPlayer
-            bind:this={videoPlayers[i]}
             on:loaded={() => hideSplashScreen(500)}
-            {i}
+            on:watchedPercentage={({ detail }) => recordView(detail)}
+            index={i}
             playFormat="hls"
             {Hls}
-            isiPhone={isIPhone}
-            inView={i == currentVideoIndex && !isDocumentHidden}
-            uid={video.video_uid} />
-        </HotOrNotPlayer>
+            inView={i == currentVideoIndex && $playerState.visible}
+            uid={post.video_uid} />
+          <!-- <svelte:fragment slot="betRoomInfo">
+            <HotOrNotRoomInfo />
+          </svelte:fragment> -->
+          <svelte:fragment slot="hotOrNot">
+            <HotOrNotBet
+              comingSoon
+              disabled
+              postId={post.id}
+              betStatus={post.hot_or_not_betting_status[0]} />
+          </svelte:fragment>
+        </PlayerLayout>
       {/if}
     </SwiperSlide>
   {/each}
@@ -214,7 +199,7 @@ beforeNavigate(() => {
           There are no more videos to bet on
         </div>
         <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-          <HotOrNot disabled postId={0n} />
+          <HotOrNotBet disabled postId={0n} />
         </div>
       </div>
     </SwiperSlide>

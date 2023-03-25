@@ -1,96 +1,18 @@
 <script lang="ts">
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
-import type { PageData } from './$types'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
+import { page } from '$app/stores'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import { page } from '$app/stores'
-import { individualUser } from '$lib/helpers/backend'
-import { isiPhone } from '$lib/utils/isSafari'
-import HomeFeedPlayer from '$components/player/HomeFeedPlayer.svelte'
+import HomeLayout from '$components/layout/HomeLayout.svelte'
+import PlayerLayout from '$components/layout/PlayerLayout.svelte'
+import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
+import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import Hls from 'hls.js/dist/hls.min'
-import { authState } from '$stores/auth'
-import { updatePostInWatchHistory } from '$lib/helpers/feed'
-import { registerEvent } from '$components/seo/GA.svelte'
-import userProfile from '$stores/userProfile'
 import goBack from '$lib/utils/goBack'
+import type { PageData } from './$types'
 
 export let data: PageData
 
 let { video, me } = data
-let isIPhone = isiPhone()
-
-async function handleLike() {
-  if (!$authState.isLoggedIn) {
-    $authState.showLogin = true
-    return
-  }
-
-  const post = Object.assign({}, video)
-
-  updatePostInWatchHistory('watch', post, {
-    liked_by_me: !post.liked_by_me,
-    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
-  })
-
-  video = {
-    ...post,
-    liked_by_me: !post.liked_by_me,
-    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
-  }
-
-  registerEvent('like_video', {
-    userId: $userProfile.principal_id,
-    video_publisher_id:
-      post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
-    video_publisher_canister_id: post.publisher_canister_id,
-    video_id: post.id,
-    likes: post.like_count,
-  })
-
-  try {
-    await individualUser(
-      post.publisher_canister_id,
-    ).update_post_toggle_like_status_by_caller(post.id)
-  } catch (e) {
-    updatePostInWatchHistory('watch', post, {
-      liked_by_me: post.liked_by_me,
-      like_count: post.like_count,
-    })
-
-    video = {
-      ...post,
-      liked_by_me: post.liked_by_me,
-      like_count: post.like_count,
-    }
-  }
-}
-
-async function handleShare() {
-  if (!video) return
-  try {
-    await navigator.share({
-      title: 'Hot or Not',
-      text: `Check out this hot video by ${video.created_by_display_name[0]}. \n${video.description}`,
-      url: `https://hotornot.wtf/feed/${video.publisher_canister_id}@${video.id}`,
-    })
-  } catch (_) {
-    //TODO
-  }
-  registerEvent('share_video', {
-    userId: $userProfile.principal_id,
-    video_publisher_id:
-      video.created_by_unique_user_name[0] ??
-      video.created_by_user_principal_id,
-    video_publisher_canister_id: video.publisher_canister_id,
-    video_id: video.id,
-  })
-  await individualUser(
-    video.publisher_canister_id,
-  ).update_post_increment_share_count(video.id)
-}
 </script>
 
 <svelte:head>
@@ -115,31 +37,23 @@ async function handleShare() {
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
-      <HomeFeedPlayer
-        i={0}
-        id={video.id}
-        likes={Number(video.like_count)}
-        displayName={video.created_by_display_name[0]}
-        profileLink={video.created_by_unique_user_name[0] ??
-          video.created_by_user_principal_id}
-        liked={video.liked_by_me}
-        createdById={video.created_by_user_principal_id}
-        videoViews={Number(video.total_view_count)}
-        publisherCanisterId={video.publisher_canister_id}
-        userProfileSrc={video.created_by_profile_photo_url[0]}
-        enrolledInHotOrNot={video.hot_or_not_feed_ranking_score &&
-          video.hot_or_not_feed_ranking_score[0] !== undefined}
-        thumbnail={getThumbnailUrl(video.video_uid)}
-        on:like={() => handleLike()}
-        on:share={() => handleShare()}>
+      <PlayerLayout
+        bind:post={video}
+        index={0}
+        watchHistoryDb="watch"
+        showLikeButton
+        showReferAndEarnLink
+        showShareButton
+        showHotOrNotButton
+        let:recordView>
         <VideoPlayer
-          i={0}
+          on:watchedPercentage={({ detail }) => recordView(detail)}
+          index={0}
           playFormat="hls"
           {Hls}
-          isiPhone={isIPhone}
           inView
           uid={video.video_uid} />
-      </HomeFeedPlayer>
+      </PlayerLayout>
     </div>
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">

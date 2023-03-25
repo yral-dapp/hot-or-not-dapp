@@ -198,15 +198,15 @@ $: username = $userProfile.username_set
 $: videoLink = `/profile/${username}/post/${uploadedVideoId}`
 
 onMount(() => {
-  if (!$fileToUpload) {
-    goto('/upload')
-  } else {
-    videoSrc = URL.createObjectURL($fileToUpload)
-    registerEvent('video_to_upload', {
-      type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
-      userId: $userProfile.principal_id,
-    })
-  }
+  // if (!$fileToUpload) {
+  //   goto('/upload')
+  // } else {
+  //   videoSrc = URL.createObjectURL($fileToUpload)
+  //   registerEvent('video_to_upload', {
+  //     type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+  //     userId: $userProfile.principal_id,
+  //   })
+  // }
 })
 
 onDestroy(() => {
@@ -228,7 +228,7 @@ onDestroy(() => {
   <svelte:fragment slot="top-center">Upload</svelte:fragment>
   <div
     slot="content"
-    class="mx-auto flex w-full max-w-5xl flex-col items-center justify-start space-y-8 overflow-hidden overflow-y-scroll px-4 pt-10 lg:px-8">
+    class="mx-auto flex w-full max-w-5xl flex-col items-center justify-start space-y-8 px-4 pt-10 lg:px-8">
     <div
       style={videoWidth && videoHeight
         ? `aspect-ratio: ${videoWidth}/${videoHeight}`

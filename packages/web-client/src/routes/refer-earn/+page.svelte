@@ -1,4 +1,5 @@
 <script lang="ts">
+import { goto } from '$app/navigation'
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
@@ -108,7 +109,11 @@ $: link = !loggedIn
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Refer & Earn
       <div class="absolute top-4 left-4">
-        <IconButton href="/menu">
+        <IconButton
+          on:click={() =>
+            history.length < 3
+              ? goto('/menu', { replaceState: true })
+              : history.back()}>
           <CaretLeftIcon class="h-5 w-5" />
         </IconButton>
       </div>

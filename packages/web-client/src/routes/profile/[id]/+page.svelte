@@ -27,6 +27,7 @@ import { handleParams } from '$lib/utils/params'
 import { authState } from '$stores/auth'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import goBack from '$lib/utils/goBack'
+import { debounce } from 'throttle-debounce'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -34,7 +35,7 @@ let { me, profile, canId } = data
 let load = {
   page: true,
   posts: false,
-  follow: false,
+  follow: true,
 }
 
 const speculations: any = []
@@ -43,7 +44,7 @@ let fetchedPosts: PostDetailsForFrontend[] = []
 let errorWhileFetching = false
 let noMorePosts = false
 let fetchedPostsCount = 0
-let doIFollow = true
+let doIFollow: boolean = false
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -117,10 +118,15 @@ async function loadPosts() {
   }
 }
 
+const checkIFollowThisUser = debounce(200, async () => {
+  doIFollow = await doIFollowThisUser($authState.idString, canId)
+  load.follow = false
+})
+
 onMount(async () => {
-  if (!me) {
-    doIFollow = await doIFollowThisUser(profile.principal_id, canId)
-  }
+  if (!me && $authState.isLoggedIn) {
+    checkIFollowThisUser()
+  } else load.follow = false
   registerEvent(me ? 'view_my_profile' : 'view_profile', {
     userId: $userProfile.principal_id,
     profile_id: profile.principal_id,
@@ -225,7 +231,11 @@ onMount(async () => {
             disabled={load.follow}
             on:click={handleLove}
             class="mx-auto w-[10rem]">
-            {doIFollow ? 'Loving' : 'Love'}
+            {#if load.follow}
+              <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
+            {:else}
+              {doIFollow ? 'Loving' : 'Love'}
+            {/if}
           </Button>
           <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
         </div>
@@ -265,7 +275,7 @@ onMount(async () => {
           {/if}
           {#if errorWhileFetching}
             <div
-              class="flex w-full flex-col items-center justify-center space-y-2 py-8 ">
+              class="flex w-full flex-col items-center justify-center space-y-2 py-8">
               <div class="flex items-center space-x-2 text-sm text-red-500">
                 <ReportIcon class="h-4 w-4" />
                 <span>Error while fetching posts</span>
