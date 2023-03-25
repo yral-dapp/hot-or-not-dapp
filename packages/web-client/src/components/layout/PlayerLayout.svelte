@@ -242,13 +242,10 @@ $: if (justWatched) {
           </IconButton>
         {/if}
         {#if showHotOrNotButton}
-          {@const bettingClosed =
-            post.hot_or_not_betting_status[0] &&
-            'BettingClosed' in post.hot_or_not_betting_status[0]}
           <IconButton
             ariaLabel="Check out this post in Hot or Not"
             disabled={post.hot_or_not_feed_ranking_score[0] === undefined ||
-              bettingClosed}
+              true}
             href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
             class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
             <FireIcon class="h-5 w-5" />
