@@ -15,6 +15,7 @@ import { individualUser } from '$lib/helpers/backend'
 import { fetchTokenBalance } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
+import { Principal } from '@dfinity/principal'
 import c from 'clsx'
 import { fade } from 'svelte/transition'
 
@@ -23,6 +24,7 @@ export let disabled = false
 export let comingSoon = false
 export let betStatus: BettingStatus | undefined = undefined
 export let postId: bigint
+export let publisherCanisterId: string = ''
 export let inView = false
 
 let betPlaced: false | 'hot' | 'not' = false
@@ -82,12 +84,13 @@ async function placeBet(bet: 'hot' | 'not') {
       }
     }
 
-    if (!bet_direction) return
+    if (!bet_direction || !publisherCanisterId) return
 
     const betRes = await individualUser().bet_on_currently_viewing_post({
       bet_amount: BigInt(selectedCoins),
       bet_direction,
       post_id: postId,
+      post_canister_id: Principal.from(publisherCanisterId),
     })
 
     console.log({ betRes })
