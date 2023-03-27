@@ -30,7 +30,6 @@ export interface FeedScore {
 export interface HotOrNotDetails {
   'hot_or_not_feed_score' : FeedScore,
   'aggregate_stats' : AggregateStats,
-  'score' : bigint,
   'slot_history' : Array<[number, SlotDetails]>,
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
@@ -63,7 +62,6 @@ export interface Post {
   'home_feed_score' : FeedScore,
   'view_stats' : PostViewStatistics,
   'hot_or_not_details' : [] | [HotOrNotDetails],
-  'homefeed_ranking_score' : bigint,
   'creator_consent_for_inclusion_in_hot_or_not' : boolean,
 }
 export type PostStatus = { 'BannedForExplicitness' : null } |
@@ -78,7 +76,14 @@ export interface PostViewStatistics {
   'average_watch_percentage' : number,
   'threshold_view_count' : bigint,
 }
-export interface RoomDetails { 'bets_made' : Array<[Principal, BetDetails]> }
+export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
+  { 'BetOngoing' : null } |
+  { 'Draw' : null } |
+  { 'NotWon' : null };
+export interface RoomDetails {
+  'bets_made' : Array<[Principal, BetDetails]>,
+  'bet_outcome' : RoomBetPossibleOutcomes,
+}
 export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
 export interface SystemTime {
   'nanos_since_epoch' : number,

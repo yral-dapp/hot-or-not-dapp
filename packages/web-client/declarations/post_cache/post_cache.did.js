@@ -29,12 +29,6 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Vec(PostScoreIndexItem),
     'Err' : TopPostsFetchError,
   });
-  const UserAccessRole = IDL.Variant({
-    'CanisterController' : IDL.Null,
-    'ProfileOwner' : IDL.Null,
-    'CanisterAdmin' : IDL.Null,
-    'ProjectCanister' : IDL.Null,
-  });
   return IDL.Service({
     'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
@@ -46,9 +40,9 @@ export const idlFactory = ({ IDL }) => {
         [Result],
         ['query'],
       ),
-    'get_user_roles' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Vec(UserAccessRole)],
+    'get_well_known_principal_value' : IDL.Func(
+        [KnownPrincipalType],
+        [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
     'receive_top_home_feed_posts_from_publishing_canister' : IDL.Func(
@@ -62,12 +56,6 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'remove_all_feed_entries' : IDL.Func([], [], []),
-    'update_user_add_role' : IDL.Func([UserAccessRole, IDL.Principal], [], []),
-    'update_user_remove_role' : IDL.Func(
-        [UserAccessRole, IDL.Principal],
-        [],
-        [],
-      ),
   });
 };
 export const init = ({ IDL }) => {
