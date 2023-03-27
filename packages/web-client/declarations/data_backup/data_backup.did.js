@@ -77,8 +77,15 @@ export const idlFactory = ({ IDL }) => {
     'bet_direction' : BetDirection,
     'amount' : IDL.Nat64,
   });
+  const RoomBetPossibleOutcomes = IDL.Variant({
+    'HotWon' : IDL.Null,
+    'BetOngoing' : IDL.Null,
+    'Draw' : IDL.Null,
+    'NotWon' : IDL.Null,
+  });
   const RoomDetails = IDL.Record({
     'bets_made' : IDL.Vec(IDL.Tuple(IDL.Principal, BetDetails)),
+    'bet_outcome' : RoomBetPossibleOutcomes,
   });
   const SlotDetails = IDL.Record({
     'room_details' : IDL.Vec(IDL.Tuple(IDL.Nat64, RoomDetails)),
@@ -86,7 +93,6 @@ export const idlFactory = ({ IDL }) => {
   const HotOrNotDetails = IDL.Record({
     'hot_or_not_feed_score' : FeedScore,
     'aggregate_stats' : AggregateStats,
-    'score' : IDL.Nat64,
     'slot_history' : IDL.Vec(IDL.Tuple(IDL.Nat8, SlotDetails)),
   });
   const Post = IDL.Record({
@@ -101,7 +107,6 @@ export const idlFactory = ({ IDL }) => {
     'home_feed_score' : FeedScore,
     'view_stats' : PostViewStatistics,
     'hot_or_not_details' : IDL.Opt(HotOrNotDetails),
-    'homefeed_ranking_score' : IDL.Nat64,
     'creator_consent_for_inclusion_in_hot_or_not' : IDL.Bool,
   });
   const UserProfileGlobalStats = IDL.Record({
