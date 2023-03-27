@@ -162,6 +162,7 @@ beforeNavigate(() => {
             <HotOrNotBet
               comingSoon
               disabled
+              publisherCanisterId={post.publisher_canister_id}
               postId={post.id}
               betStatus={post.hot_or_not_betting_status[0]} />
           </svelte:fragment>
