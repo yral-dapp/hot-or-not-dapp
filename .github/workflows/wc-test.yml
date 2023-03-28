@@ -5,10 +5,10 @@ on:
       - main
     paths:
       - "packages/web-client/**"
-      - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
-      - ".github/workflows/webclient-test.yml"
-      - ".github/workflows/webclient-test-deploy.yml"
+      - ".github/workflows/wc-deploy.yml"
+      - ".github/workflows/wc-setup/action.yml"
+      - ".github/workflows/wc-test.yml"
+      - ".github/workflows/wc-test-deploy.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -49,7 +49,7 @@ jobs:
           submodules: "true"
           token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+        uses: ./.github/workflows/wc-setup
       - run: npm run wc:build
 
       - name: Deploy preview build
@@ -165,7 +165,7 @@ jobs:
           npm run wc:test:vi
 
       - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+        uses: ./.github/workflows/wc-setup
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5

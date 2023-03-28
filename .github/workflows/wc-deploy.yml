@@ -5,8 +5,8 @@ on:
       - main
     paths:
       - "packages/web-client/**"
-      - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
+      - ".github/workflows/wc-deploy.yml"
+      - ".github/workflows/wc-setup/action.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,7 +21,7 @@ jobs:
           submodules: "true"
           token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+        uses: ./.github/workflows/wc-setup
       - run: npm run wc:build:static
       - run: |
           set -euxo pipefail
@@ -43,7 +43,7 @@ jobs:
           submodules: "true"
           token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+        uses: ./.github/workflows/wc-setup
       - run: npm run wc:build
 
       - name: Deploy production build

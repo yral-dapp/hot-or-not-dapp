@@ -4,7 +4,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 // import { partytownVite } from '@builder.io/partytown/utils';
 
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = process.env.NODE_ENV === 'production'
 
 console.log('starting vite in', process.env.NODE_ENV, 'mode')
 
