@@ -1,0 +1,37 @@
+name: Deploy Web-client
+description: Deploy build to Internet identity canister
+
+inputs:
+  SUBMODULE_PAT:
+    description: "PAT Secret to checkout submodule repo"
+    required: true
+  CANISTER_CONTROLLER_SECRET_KEY:
+    description: "Canister controller secret"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: "true"
+        token: ${{ input.SUBMODULE_PAT }}
+    - name: Set-up env
+      uses: ./.github/actions/wc-setup
+    - run: npm run wc:build:static
+      shell: bash
+    - run: |
+        set -euxo pipefail
+        DFX_VERSION=0.13.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      shell: bash
+    - run: dfx identity list
+      shell: bash
+    - run: |
+        touch actions_identity.pem
+        echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+        dfx identity import --disable-encryption actions actions_identity.pem
+        rm actions_identity.pem
+        dfx identity use actions
+      shell: bash
+    - run: dfx deploy webclient --network ic --no-wallet
+      shell: bash

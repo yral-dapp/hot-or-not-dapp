@@ -1,0 +1,37 @@
+name: Deploy Web-client
+description: Deploy build to Cloudflare Pages
+
+inputs:
+  SUBMODULE_PAT:
+    description: "PAT Secret to checkout submodule repo"
+    required: true
+  CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN:
+    description: "Cloudflare workers API Token"
+    required: true
+  CLOUDFLARE_ACCOUNT_ID:
+    description: "Cloudflare account ID"
+    required: true
+  WRANGLER_COMMAND:
+    description: "Wrangler action command to run"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: "true"
+        token: ${{ input.SUBMODULE_PAT }}
+    - name: Set-up env
+      uses: ./.github/actions/wc-setup
+    - run: npm run wc:build
+      shell: bash
+
+    - name: Deploy production build
+      uses: cloudflare/wrangler-action@2.0.0
+      with:
+        apiToken: ${{ input.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+        workingDirectory: "packages/web-client/"
+        command: ${{input.WRANGLER_COMMAND}}
+      env:
+        CLOUDFLARE_ACCOUNT_ID: ${{input.CLOUDFLARE_ACCOUNT_ID}}

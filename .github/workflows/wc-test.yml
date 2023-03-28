@@ -6,7 +6,7 @@ on:
     paths:
       - "packages/web-client/**"
       - ".github/workflows/wc-deploy.yml"
-      - ".github/workflows/wc-setup/action.yml"
+      - ".github/actions/wc-setup/action.yml"
       - ".github/workflows/wc-test.yml"
       - ".github/workflows/wc-test-deploy.yml"
 
@@ -49,7 +49,7 @@ jobs:
           submodules: "true"
           token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
-        uses: ./.github/workflows/wc-setup
+        uses: ./.github/actions/wc-setup
       - run: npm run wc:build
 
       - name: Deploy preview build
@@ -165,7 +165,7 @@ jobs:
           npm run wc:test:vi
 
       - name: Set-up env
-        uses: ./.github/workflows/wc-setup
+        uses: ./.github/actions/wc-setup
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
