@@ -15,7 +15,7 @@ runs:
     - uses: actions/checkout@v3
       with:
         submodules: "true"
-        token: ${{ input.SUBMODULE_PAT }}
+        token: ${{ inputs.SUBMODULE_PAT }}
     - name: Set-up env
       uses: ./.github/actions/wc-setup
     - run: npm run wc:build:static
@@ -28,7 +28,7 @@ runs:
       shell: bash
     - run: |
         touch actions_identity.pem
-        echo "${{ input.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+        echo "${{ inputs.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
         dfx identity import --disable-encryption actions actions_identity.pem
         rm actions_identity.pem
         dfx identity use actions

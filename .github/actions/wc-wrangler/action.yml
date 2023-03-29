@@ -24,7 +24,7 @@ runs:
     - uses: actions/checkout@v3
       with:
         submodules: "true"
-        token: ${{ input.SUBMODULE_PAT }}
+        token: ${{ inputs.SUBMODULE_PAT }}
 
     - name: Set-up env
       uses: ./.github/actions/wc-setup
@@ -35,8 +35,8 @@ runs:
     - name: Deploy production build
       uses: cloudflare/wrangler-action@2.0.0
       with:
-        apiToken: ${{ input.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-        workingDirectory: ${{ input.WRANGLER_WORKING_DIR }}
-        command: ${{input.WRANGLER_COMMAND}}
+        apiToken: ${{ inputs.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+        workingDirectory: ${{ inputs.WRANGLER_WORKING_DIR }}
+        command: ${{ inputs.WRANGLER_COMMAND }}
       env:
-        CLOUDFLARE_ACCOUNT_ID: ${{input.CLOUDFLARE_ACCOUNT_ID}}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.CLOUDFLARE_ACCOUNT_ID }}
