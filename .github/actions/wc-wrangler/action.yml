@@ -11,6 +11,9 @@ inputs:
   CLOUDFLARE_ACCOUNT_ID:
     description: "Cloudflare account ID"
     required: true
+  WRANGLER_WORKING_DIR:
+    description: "Wrangler working directory"
+    required: true
   WRANGLER_COMMAND:
     description: "Wrangler action command to run"
     required: true
@@ -22,8 +25,10 @@ runs:
       with:
         submodules: "true"
         token: ${{ input.SUBMODULE_PAT }}
+
     - name: Set-up env
       uses: ./.github/actions/wc-setup
+
     - run: npm run wc:build
       shell: bash
 
@@ -31,7 +36,7 @@ runs:
       uses: cloudflare/wrangler-action@2.0.0
       with:
         apiToken: ${{ input.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-        workingDirectory: "packages/web-client/"
+        workingDirectory: ${{ input.WRANGLER_WORKING_DIR }}
         command: ${{input.WRANGLER_COMMAND}}
       env:
         CLOUDFLARE_ACCOUNT_ID: ${{input.CLOUDFLARE_ACCOUNT_ID}}
