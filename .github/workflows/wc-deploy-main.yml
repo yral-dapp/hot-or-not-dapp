@@ -16,6 +16,7 @@ jobs:
   web-client-deploy-dapp:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/wc-deploy-ic
         with:
           SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
@@ -24,6 +25,7 @@ jobs:
   web-client-deploy-pages:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/wc-wrangler
         with:
           SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}

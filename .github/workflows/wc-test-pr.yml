@@ -44,6 +44,7 @@ jobs:
     outputs:
       previewUrl: ${{ steps.preview-url.outputs.url }}
     steps:
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/wc-wrangler
         with:
           SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
