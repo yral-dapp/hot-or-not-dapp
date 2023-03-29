@@ -44,22 +44,13 @@ jobs:
     outputs:
       previewUrl: ${{ steps.preview-url.outputs.url }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: ./.github/actions/wc-wrangler
         with:
-          submodules: "true"
-          token: ${{ secrets.SUBMODULE_PAT }}
-      - name: Set-up env
-        uses: ./.github/actions/wc-setup
-      - run: npm run wc:build
-
-      - name: Deploy preview build
-        uses: cloudflare/wrangler-action@2.0.0
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: "packages/web-client/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true | tee url.txt
-        env:
-          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+          SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
+          CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: a209c523d2d9646cc56227dbe6ce3ede
+          WRANGLER_WORKING_DIR: packages/web-client/
+          WRANGLER_COMMAND: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-web-client --commit-dirty=true | tee url.txt
       - name: Get preview deployment URL
         id: preview-url
         working-directory: "packages/web-client/"
