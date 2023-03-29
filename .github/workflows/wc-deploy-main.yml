@@ -1,0 +1,33 @@
+name: Deploy Web-Client
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/web-client/**"
+      - ".github/workflows/wc-deploy.yml"
+      - ".github/actions/wc-setup/action.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-client-deploy-dapp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/wc-deploy-ic
+        with:
+          SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
+          CANISTER_CONTROLLER_SECRET_KEY: ${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}
+
+  web-client-deploy-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/wc-wrangler
+        with:
+          SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
+          CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: a209c523d2d9646cc56227dbe6ce3ede
+          WRANGLER_WORKING_DIR: packages/web-client/
+          WRANGLER_COMMAND: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
