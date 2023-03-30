@@ -3,7 +3,7 @@ import Log from '../utils/Log'
 
 type DBStores = 'canisters' | 'watch' | 'watch-hon' | 'bets'
 
-const dbPromise = openDB('keyval-store', 3, {
+const dbPromise = openDB('keyval-store', 4, {
   upgrade(db) {
     if (!db.objectStoreNames.contains('keyval')) {
       db.createObjectStore('keyval')
