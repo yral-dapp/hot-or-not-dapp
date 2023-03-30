@@ -82,9 +82,15 @@ export const idlFactory = ({ IDL }) => {
     'total_amount_bet' : IDL.Nat64,
     'total_number_of_hot_bets' : IDL.Nat64,
   });
+  const BetPayout = IDL.Variant({
+    'NotCalculatedYet' : IDL.Null,
+    'Calculated' : IDL.Nat64,
+  });
   const BetDetails = IDL.Record({
     'bet_direction' : BetDirection,
+    'bet_maker_canister_id' : IDL.Principal,
     'amount' : IDL.Nat64,
+    'payout' : BetPayout,
   });
   const RoomBetPossibleOutcomes = IDL.Variant({
     'HotWon' : IDL.Null,
@@ -93,7 +99,10 @@ export const idlFactory = ({ IDL }) => {
     'NotWon' : IDL.Null,
   });
   const RoomDetails = IDL.Record({
+    'total_hot_bets' : IDL.Nat64,
     'bets_made' : IDL.Vec(IDL.Tuple(IDL.Principal, BetDetails)),
+    'total_not_bets' : IDL.Nat64,
+    'room_bets_total_pot' : IDL.Nat64,
     'bet_outcome' : RoomBetPossibleOutcomes,
   });
   const SlotDetails = IDL.Record({
@@ -119,6 +128,22 @@ export const idlFactory = ({ IDL }) => {
     'creator_consent_for_inclusion_in_hot_or_not' : IDL.Bool,
   });
   const Result_2 = IDL.Variant({ 'Ok' : Post, 'Err' : IDL.Null });
+  const BetOutcomeForBetMaker = IDL.Variant({
+    'Won' : IDL.Nat64,
+    'Draw' : IDL.Nat64,
+    'Lost' : IDL.Null,
+    'AwaitingResult' : IDL.Null,
+  });
+  const PlacedBetDetail = IDL.Record({
+    'outcome_received' : BetOutcomeForBetMaker,
+    'slot_id' : IDL.Nat8,
+    'post_id' : IDL.Nat64,
+    'room_id' : IDL.Nat64,
+    'canister_id' : IDL.Principal,
+    'bet_direction' : BetDirection,
+    'amount_bet' : IDL.Nat64,
+    'bet_placed_at' : SystemTime,
+  });
   const PostDetailsForFrontend = IDL.Record({
     'id' : IDL.Nat64,
     'status' : PostStatus,
@@ -164,6 +189,7 @@ export const idlFactory = ({ IDL }) => {
     'profile_stats' : UserProfileGlobalStats,
     'followers_count' : IDL.Nat64,
   });
+  const StakeEvent = IDL.Variant({ 'BetOnHotOrNotPost' : PlaceBetArg });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
     'Referral' : IDL.Record({
@@ -171,11 +197,38 @@ export const idlFactory = ({ IDL }) => {
       'referee_user_principal_id' : IDL.Principal,
     }),
   });
+  const HotOrNotOutcomePayoutEvent = IDL.Variant({
+    'WinningsEarnedFromBet' : IDL.Record({
+      'slot_id' : IDL.Nat8,
+      'post_id' : IDL.Nat64,
+      'room_id' : IDL.Nat64,
+      'winnings_amount' : IDL.Nat64,
+    }),
+    'CommissionFromHotOrNotBet' : IDL.Record({
+      'slot_id' : IDL.Nat8,
+      'post_id' : IDL.Nat64,
+      'room_pot_total_amount' : IDL.Nat64,
+      'room_id' : IDL.Nat64,
+    }),
+  });
   const TokenEvent = IDL.Variant({
-    'Stake' : IDL.Null,
+    'Stake' : IDL.Record({
+      'timestamp' : SystemTime,
+      'details' : StakeEvent,
+      'amount' : IDL.Nat64,
+    }),
     'Burn' : IDL.Null,
-    'Mint' : IDL.Record({ 'timestamp' : SystemTime, 'details' : MintEvent }),
+    'Mint' : IDL.Record({
+      'timestamp' : SystemTime,
+      'details' : MintEvent,
+      'amount' : IDL.Nat64,
+    }),
     'Transfer' : IDL.Null,
+    'HotOrNotOutcomePayout' : IDL.Record({
+      'timestamp' : SystemTime,
+      'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : IDL.Nat64,
+    }),
   });
   const Result_5 = IDL.Variant({
     'Ok' : IDL.Vec(IDL.Tuple(IDL.Nat64, TokenEvent)),
@@ -262,6 +315,16 @@ export const idlFactory = ({ IDL }) => {
         [BettingStatus],
         ['query'],
       ),
+    'get_hot_or_not_bets_placed_by_this_profile_with_pagination' : IDL.Func(
+        [IDL.Nat64],
+        [IDL.Vec(PlacedBetDetail)],
+        ['query'],
+      ),
+    'get_individual_hot_or_not_bet_placed_by_this_profile' : IDL.Func(
+        [IDL.Principal, IDL.Nat64],
+        [IDL.Opt(PlacedBetDetail)],
+        ['query'],
+      ),
     'get_individual_post_details_by_id' : IDL.Func(
         [IDL.Nat64],
         [PostDetailsForFrontend],
@@ -307,6 +370,11 @@ export const idlFactory = ({ IDL }) => {
     'receive_bet_from_bet_makers_canister' : IDL.Func(
         [PlaceBetArg, IDL.Principal],
         [Result_1],
+        [],
+      ),
+    'receive_bet_winnings_when_distributed' : IDL.Func(
+        [IDL.Nat64, BetOutcomeForBetMaker],
+        [],
         [],
       ),
     'receive_my_created_posts_from_data_backup_canister' : IDL.Func(
