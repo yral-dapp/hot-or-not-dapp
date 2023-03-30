@@ -1,6 +1,7 @@
 import type {
   GetPostsOfUserProfileError,
   MintEvent,
+  PlacedBetDetail,
   PostDetailsForFrontend,
   SystemTime,
   TokenEvent,
@@ -23,6 +24,7 @@ import { Principal } from '@dfinity/principal'
 import { get } from 'svelte/store'
 import { individualUser } from './backend'
 import { getCanisterId } from './canisterId'
+import type { PostPopulated } from './feed'
 import { setUser } from './sentry'
 
 export interface UserProfileFollows extends UserProfile {
@@ -127,6 +129,16 @@ type ProfilePostsResponse =
       noMorePosts: boolean
     }
 
+type ProfileSpeculationsResponse =
+  | {
+      error: true
+    }
+  | {
+      error: false
+      posts: PostPopulated[]
+      noMorePosts: boolean
+    }
+
 export async function fetchPosts(
   id: string,
   from: number,
@@ -161,6 +173,77 @@ export async function fetchPosts(
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
+  }
+}
+
+export async function fetchSpeculations(
+  id: string,
+  from: number,
+): Promise<ProfileSpeculationsResponse> {
+  try {
+    const canId = await getCanisterId(id)
+
+    const res = await individualUser(
+      Principal.from(canId),
+    ).get_hot_or_not_bets_placed_by_this_profile_with_pagination(BigInt(from))
+    // if ('Ok' in res) {
+    const populatedRes = await populatePosts(res)
+    if (populatedRes.error) {
+      return { error: true }
+    }
+    return {
+      error: false,
+      posts: populatedRes.posts,
+      noMorePosts: res.length < 10,
+      // noMorePosts: res.Ok.length < 10,
+    }
+    // } else if ('Err' in res) {
+    //   type UnionKeyOf<U> = U extends U ? keyof U : never
+    //   type errors = UnionKeyOf<GetPostsOfUserProfileError>
+    //   const err = Object.keys(res.Err)[0] as errors
+    //   switch (err) {
+    //     case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
+    //     case 'InvalidBoundsPassed':
+    //       return { error: true }
+    //     case 'ReachedEndOfItemsList':
+    //       return { error: false, noMorePosts: true, posts: [] }
+    //   }
+    // } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+  } catch (e) {
+    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    return { error: true }
+  }
+}
+
+async function populatePosts(posts: PlacedBetDetail[]) {
+  try {
+    if (!posts.length) {
+      return { posts: [], error: false }
+    }
+
+    const res = await Promise.all(
+      posts.map(async (post) => {
+        try {
+          const r = await individualUser(
+            Principal.from(post.canister_id),
+          ).get_individual_post_details_by_id(post.post_id)
+          return {
+            ...r,
+            ...post,
+            created_by_user_principal_id:
+              r.created_by_user_principal_id.toText(),
+            publisher_canister_id: post.canister_id.toText(),
+            score: BigInt(0),
+          } as PostPopulated
+        } catch (_) {
+          return undefined
+        }
+      }),
+    )
+    return { posts: res.filter((o) => !!o) as PostPopulated[], error: false }
+  } catch (e) {
+    Log({ error: e, from: '11 populatePosts.feed' }, 'error')
+    return { error: true, posts: [] }
   }
 }
 
