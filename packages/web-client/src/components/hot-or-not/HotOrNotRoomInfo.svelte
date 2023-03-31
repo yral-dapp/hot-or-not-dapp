@@ -3,8 +3,9 @@ import type {
   BettingStatus,
   SystemTime,
 } from '$canisters/individual_user_template/individual_user_template.did'
-type UnionKeyOf<U> = U extends U ? keyof U : never
-type BettingCurrentStatus = UnionKeyOf<BettingStatus>
+
+type UnionValueOf<U> = U extends U ? U[keyof U] : never
+type BetStatus = UnionValueOf<BettingStatus>
 
 const systemTime: SystemTime = {
   nanos_since_epoch: 0,
@@ -19,11 +20,12 @@ import UsersIcon from '$components/icons/UsersIcon.svelte'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 
 export let bettingStatus: BettingStatus
+$: betStatus = bettingStatus[0] as BetStatus
 
-$: bettingOpen = bettingStatus['BettingOpen'] !== undefined
-$: usersInThisSlot = bettingStatus['BettingOpen']?.number_of_participants || 0
-$: onGoingSlot = bettingStatus['BettingOpen']?.ongoing_slot || 1
-$: betStartedAt = bettingStatus['BettingOpen']?.started_at || systemTime
+$: bettingOpen = !!betStatus
+$: usersInThisSlot = betStatus?.number_of_participants || 0
+$: onGoingSlot = betStatus?.ongoing_slot || 1
+$: betStartedAt = betStatus?.started_at || systemTime
 
 $: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
 </script>
