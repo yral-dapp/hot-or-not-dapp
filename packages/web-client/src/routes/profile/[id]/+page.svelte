@@ -204,7 +204,7 @@ onMount(() => {
       {#if selectedTab === 'posts'}
         <ProfilePosts {me} userId={$page.params.id} />
       {:else if selectedTab === 'speculations'}
-        <SpeculationPosts />
+        <SpeculationPosts {me} userId={$page.params.id} />
       {/if}
     </div>
   </div>
