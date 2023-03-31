@@ -41,7 +41,10 @@ $: imageBg = getThumbnailUrl(post.video_uid)
 $: username =
   post.created_by_unique_user_name[0] ||
   generateRandomName('name', post.created_by_user_principal_id)
-$: timeLeft = getMsLeftForBetResult(post.placed_bet_details)
+$: timeLeft = getMsLeftForBetResult(
+  post.placed_bet_details.slot_id,
+  post.created_at,
+)
 </script>
 
 <a
