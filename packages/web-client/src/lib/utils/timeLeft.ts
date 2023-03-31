@@ -1,13 +1,17 @@
-import type { PlacedBetDetail } from '$canisters/individual_user_template/individual_user_template.did'
+import type { SystemTime } from '$canisters/individual_user_template/individual_user_template.did'
 import { readable } from 'svelte/store'
 
-export function getMsLeftForBetResult(placedBet: PlacedBetDetail) {
-  const slotTime = new Date(
-    Number(placedBet.bet_placed_at.secs_since_epoch) * 1000,
-  )
-  slotTime.setHours(slotTime.getHours() + placedBet.slot_id)
+export function getMsLeftForBetResult(
+  betSlotNumber: number,
+  createdAt: SystemTime,
+) {
+  const betEndTime = new Date(Number(createdAt.secs_since_epoch) * 1000)
+
+  betEndTime.setHours(betEndTime.getHours() + betSlotNumber)
+
   const now = new Date()
-  const diff = slotTime.getTime() - now.getTime()
+  const diff = betEndTime.getTime() - now.getTime()
+
   if (diff > 0) {
     return readable(getTimeStringFromMs(diff), (set) => {
       let counter = 1
