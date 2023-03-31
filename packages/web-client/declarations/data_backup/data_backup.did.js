@@ -29,6 +29,15 @@ export const idlFactory = ({ IDL }) => {
     'nanos_since_epoch' : IDL.Nat32,
     'secs_since_epoch' : IDL.Nat64,
   });
+  const BetDirection = IDL.Variant({ 'Hot' : IDL.Null, 'Not' : IDL.Null });
+  const StakeEvent = IDL.Variant({
+    'BetOnHotOrNotPost' : IDL.Record({
+      'bet_amount' : IDL.Nat64,
+      'post_id' : IDL.Nat64,
+      'bet_direction' : BetDirection,
+      'post_canister_id' : IDL.Principal,
+    }),
+  });
   const MintEvent = IDL.Variant({
     'NewUserSignup' : IDL.Record({ 'new_user_principal_id' : IDL.Principal }),
     'Referral' : IDL.Record({
@@ -36,15 +45,42 @@ export const idlFactory = ({ IDL }) => {
       'referee_user_principal_id' : IDL.Principal,
     }),
   });
+  const HotOrNotOutcomePayoutEvent = IDL.Variant({
+    'WinningsEarnedFromBet' : IDL.Record({
+      'slot_id' : IDL.Nat8,
+      'post_id' : IDL.Nat64,
+      'room_id' : IDL.Nat64,
+      'winnings_amount' : IDL.Nat64,
+    }),
+    'CommissionFromHotOrNotBet' : IDL.Record({
+      'slot_id' : IDL.Nat8,
+      'post_id' : IDL.Nat64,
+      'room_pot_total_amount' : IDL.Nat64,
+      'room_id' : IDL.Nat64,
+    }),
+  });
   const TokenEvent = IDL.Variant({
-    'Stake' : IDL.Null,
+    'Stake' : IDL.Record({
+      'timestamp' : SystemTime,
+      'details' : StakeEvent,
+      'amount' : IDL.Nat64,
+    }),
     'Burn' : IDL.Null,
-    'Mint' : IDL.Record({ 'timestamp' : SystemTime, 'details' : MintEvent }),
+    'Mint' : IDL.Record({
+      'timestamp' : SystemTime,
+      'details' : MintEvent,
+      'amount' : IDL.Nat64,
+    }),
     'Transfer' : IDL.Null,
+    'HotOrNotOutcomePayout' : IDL.Record({
+      'timestamp' : SystemTime,
+      'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : IDL.Nat64,
+    }),
   });
   const TokenBalance = IDL.Record({
     'utility_token_balance' : IDL.Nat64,
-    'utility_token_transaction_history_v1' : IDL.Vec(
+    'utility_token_transaction_history' : IDL.Vec(
       IDL.Tuple(IDL.Nat64, TokenEvent)
     ),
   });
@@ -72,10 +108,15 @@ export const idlFactory = ({ IDL }) => {
     'total_amount_bet' : IDL.Nat64,
     'total_number_of_hot_bets' : IDL.Nat64,
   });
-  const BetDirection = IDL.Variant({ 'Hot' : IDL.Null, 'Not' : IDL.Null });
+  const BetPayout = IDL.Variant({
+    'NotCalculatedYet' : IDL.Null,
+    'Calculated' : IDL.Nat64,
+  });
   const BetDetails = IDL.Record({
     'bet_direction' : BetDirection,
+    'bet_maker_canister_id' : IDL.Principal,
     'amount' : IDL.Nat64,
+    'payout' : BetPayout,
   });
   const RoomBetPossibleOutcomes = IDL.Variant({
     'HotWon' : IDL.Null,
@@ -84,7 +125,10 @@ export const idlFactory = ({ IDL }) => {
     'NotWon' : IDL.Null,
   });
   const RoomDetails = IDL.Record({
+    'total_hot_bets' : IDL.Nat64,
     'bets_made' : IDL.Vec(IDL.Tuple(IDL.Principal, BetDetails)),
+    'total_not_bets' : IDL.Nat64,
+    'room_bets_total_pot' : IDL.Nat64,
     'bet_outcome' : RoomBetPossibleOutcomes,
   });
   const SlotDetails = IDL.Record({

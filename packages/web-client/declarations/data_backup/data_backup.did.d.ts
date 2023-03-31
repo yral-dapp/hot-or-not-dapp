@@ -14,10 +14,14 @@ export interface AllUserData {
 export interface BackupStatistics { 'number_of_user_entries' : bigint }
 export interface BetDetails {
   'bet_direction' : BetDirection,
+  'bet_maker_canister_id' : Principal,
   'amount' : bigint,
+  'payout' : BetPayout,
 }
 export type BetDirection = { 'Hot' : null } |
   { 'Not' : null };
+export type BetPayout = { 'NotCalculatedYet' : null } |
+  { 'Calculated' : bigint };
 export interface DataBackupInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'access_control_map' : [] | [Array<[Principal, Array<UserAccessRole>]>],
@@ -32,6 +36,22 @@ export interface HotOrNotDetails {
   'aggregate_stats' : AggregateStats,
   'slot_history' : Array<[number, SlotDetails]>,
 }
+export type HotOrNotOutcomePayoutEvent = {
+    'WinningsEarnedFromBet' : {
+      'slot_id' : number,
+      'post_id' : bigint,
+      'room_id' : bigint,
+      'winnings_amount' : bigint,
+    }
+  } |
+  {
+    'CommissionFromHotOrNotBet' : {
+      'slot_id' : number,
+      'post_id' : bigint,
+      'room_pot_total_amount' : bigint,
+      'room_id' : bigint,
+    }
+  };
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdConfiguration' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
@@ -81,22 +101,52 @@ export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
   { 'Draw' : null } |
   { 'NotWon' : null };
 export interface RoomDetails {
+  'total_hot_bets' : bigint,
   'bets_made' : Array<[Principal, BetDetails]>,
+  'total_not_bets' : bigint,
+  'room_bets_total_pot' : bigint,
   'bet_outcome' : RoomBetPossibleOutcomes,
 }
 export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
+export type StakeEvent = {
+    'BetOnHotOrNotPost' : {
+      'bet_amount' : bigint,
+      'post_id' : bigint,
+      'bet_direction' : BetDirection,
+      'post_canister_id' : Principal,
+    }
+  };
 export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
 export interface TokenBalance {
   'utility_token_balance' : bigint,
-  'utility_token_transaction_history_v1' : Array<[bigint, TokenEvent]>,
+  'utility_token_transaction_history' : Array<[bigint, TokenEvent]>,
 }
-export type TokenEvent = { 'Stake' : null } |
+export type TokenEvent = {
+    'Stake' : {
+      'timestamp' : SystemTime,
+      'details' : StakeEvent,
+      'amount' : bigint,
+    }
+  } |
   { 'Burn' : null } |
-  { 'Mint' : { 'timestamp' : SystemTime, 'details' : MintEvent } } |
-  { 'Transfer' : null };
+  {
+    'Mint' : {
+      'timestamp' : SystemTime,
+      'details' : MintEvent,
+      'amount' : bigint,
+    }
+  } |
+  { 'Transfer' : null } |
+  {
+    'HotOrNotOutcomePayout' : {
+      'timestamp' : SystemTime,
+      'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : bigint,
+    }
+  };
 export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProfileOwner' : null } |
   { 'CanisterAdmin' : null } |

@@ -14,7 +14,9 @@ export type AnotherUserFollowedMeError = {
   { 'UserTryingToFollowMeDoesNotExist' : null };
 export interface BetDetails {
   'bet_direction' : BetDirection,
+  'bet_maker_canister_id' : Principal,
   'amount' : bigint,
+  'payout' : BetPayout,
 }
 export type BetDirection = { 'Hot' : null } |
   { 'Not' : null };
@@ -25,6 +27,12 @@ export type BetOnCurrentlyViewingPostError = { 'UserPrincipalNotSet' : null } |
   { 'Unauthorized' : null } |
   { 'PostCreatorCanisterCallFailed' : null } |
   { 'UserNotLoggedIn' : null };
+export type BetOutcomeForBetMaker = { 'Won' : bigint } |
+  { 'Draw' : bigint } |
+  { 'Lost' : null } |
+  { 'AwaitingResult' : null };
+export type BetPayout = { 'NotCalculatedYet' : null } |
+  { 'Calculated' : bigint };
 export type BettingStatus = {
     'BettingOpen' : {
       'number_of_participants' : number,
@@ -60,6 +68,22 @@ export interface HotOrNotDetails {
   'aggregate_stats' : AggregateStats,
   'slot_history' : Array<[number, SlotDetails]>,
 }
+export type HotOrNotOutcomePayoutEvent = {
+    'WinningsEarnedFromBet' : {
+      'slot_id' : number,
+      'post_id' : bigint,
+      'room_id' : bigint,
+      'winnings_amount' : bigint,
+    }
+  } |
+  {
+    'CommissionFromHotOrNotBet' : {
+      'slot_id' : number,
+      'post_id' : bigint,
+      'room_pot_total_amount' : bigint,
+      'room_id' : bigint,
+    }
+  };
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'profile_owner' : [] | [Principal],
@@ -88,6 +112,16 @@ export interface PlaceBetArg {
   'post_id' : bigint,
   'bet_direction' : BetDirection,
   'post_canister_id' : Principal,
+}
+export interface PlacedBetDetail {
+  'outcome_received' : BetOutcomeForBetMaker,
+  'slot_id' : number,
+  'post_id' : bigint,
+  'room_id' : bigint,
+  'canister_id' : Principal,
+  'bet_direction' : BetDirection,
+  'amount_bet' : bigint,
+  'bet_placed_at' : SystemTime,
 }
 export interface Post {
   'id' : bigint,
@@ -171,18 +205,41 @@ export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
   { 'Draw' : null } |
   { 'NotWon' : null };
 export interface RoomDetails {
+  'total_hot_bets' : bigint,
   'bets_made' : Array<[Principal, BetDetails]>,
+  'total_not_bets' : bigint,
+  'room_bets_total_pot' : bigint,
   'bet_outcome' : RoomBetPossibleOutcomes,
 }
 export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
+export type StakeEvent = { 'BetOnHotOrNotPost' : PlaceBetArg };
 export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
-export type TokenEvent = { 'Stake' : null } |
+export type TokenEvent = {
+    'Stake' : {
+      'timestamp' : SystemTime,
+      'details' : StakeEvent,
+      'amount' : bigint,
+    }
+  } |
   { 'Burn' : null } |
-  { 'Mint' : { 'timestamp' : SystemTime, 'details' : MintEvent } } |
-  { 'Transfer' : null };
+  {
+    'Mint' : {
+      'timestamp' : SystemTime,
+      'details' : MintEvent,
+      'amount' : bigint,
+    }
+  } |
+  { 'Transfer' : null } |
+  {
+    'HotOrNotOutcomePayout' : {
+      'timestamp' : SystemTime,
+      'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : bigint,
+    }
+  };
 export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
 export type UpdateProfileSetUniqueUsernameError = {
     'UsernameAlreadyTaken' : null
@@ -232,6 +289,14 @@ export interface _SERVICE {
     [bigint],
     BettingStatus
   >,
+  'get_hot_or_not_bets_placed_by_this_profile_with_pagination' : ActorMethod<
+    [bigint],
+    Array<PlacedBetDetail>
+  >,
+  'get_individual_hot_or_not_bet_placed_by_this_profile' : ActorMethod<
+    [Principal, bigint],
+    [] | [PlacedBetDetail]
+  >,
   'get_individual_post_details_by_id' : ActorMethod<
     [bigint],
     PostDetailsForFrontend
@@ -260,6 +325,10 @@ export interface _SERVICE {
   'receive_bet_from_bet_makers_canister' : ActorMethod<
     [PlaceBetArg, Principal],
     Result_1
+  >,
+  'receive_bet_winnings_when_distributed' : ActorMethod<
+    [bigint, BetOutcomeForBetMaker],
+    undefined
   >,
   'receive_my_created_posts_from_data_backup_canister' : ActorMethod<
     [Array<Post>],
