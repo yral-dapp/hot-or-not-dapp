@@ -294,15 +294,15 @@ async function saveBetDetailToDb(betDetail: PlacedBetDetail) {
 }
 
 export async function getBetDetails(
-  publisherCanisterId: string,
   betUserPrincipalId: string,
+  publisherCanisterId: string,
   postId: number,
 ) {
   try {
     const res = await individualUser(
-      Principal.from(publisherCanisterId),
-    ).get_individual_hot_or_not_bet_placed_by_this_profile(
       Principal.from(betUserPrincipalId),
+    ).get_individual_hot_or_not_bet_placed_by_this_profile(
+      Principal.from(publisherCanisterId),
       BigInt(postId),
     )
     if (!res[0]) return { error: true }
