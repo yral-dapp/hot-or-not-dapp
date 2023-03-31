@@ -36,8 +36,6 @@ async function loadPosts() {
       return
     }
 
-    console.log('res', res)
-
     posts.push(...res.posts)
     posts = posts
     noMorePosts = res.noMorePosts
