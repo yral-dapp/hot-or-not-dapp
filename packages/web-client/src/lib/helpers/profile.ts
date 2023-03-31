@@ -31,6 +31,11 @@ export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
 }
 
+export interface PostPopulatedWithBetDetails
+  extends Omit<PostPopulated, 'score'> {
+  placed_bet_details: PlacedBetDetail
+}
+
 async function fetchProfile() {
   try {
     return await individualUser().get_profile_details()
@@ -135,7 +140,7 @@ type ProfileSpeculationsResponse =
     }
   | {
       error: false
-      posts: PostPopulated[]
+      posts: PostPopulatedWithBetDetails[]
       noMorePosts: boolean
     }
 
@@ -186,7 +191,6 @@ export async function fetchSpeculations(
     const res = await individualUser(
       Principal.from(canId),
     ).get_hot_or_not_bets_placed_by_this_profile_with_pagination(BigInt(from))
-    // if ('Ok' in res) {
     const populatedRes = await populatePosts(res)
     if (populatedRes.error) {
       return { error: true }
@@ -195,20 +199,7 @@ export async function fetchSpeculations(
       error: false,
       posts: populatedRes.posts,
       noMorePosts: res.length < 10,
-      // noMorePosts: res.Ok.length < 10,
     }
-    // } else if ('Err' in res) {
-    //   type UnionKeyOf<U> = U extends U ? keyof U : never
-    //   type errors = UnionKeyOf<GetPostsOfUserProfileError>
-    //   const err = Object.keys(res.Err)[0] as errors
-    //   switch (err) {
-    //     case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-    //     case 'InvalidBoundsPassed':
-    //       return { error: true }
-    //     case 'ReachedEndOfItemsList':
-    //       return { error: false, noMorePosts: true, posts: [] }
-    //   }
-    // } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
@@ -229,18 +220,20 @@ async function populatePosts(posts: PlacedBetDetail[]) {
           ).get_individual_post_details_by_id(post.post_id)
           return {
             ...r,
-            ...post,
+            placed_bet_details: post,
             created_by_user_principal_id:
               r.created_by_user_principal_id.toText(),
             publisher_canister_id: post.canister_id.toText(),
-            score: BigInt(0),
-          } as PostPopulated
+          } as PostPopulatedWithBetDetails
         } catch (_) {
           return undefined
         }
       }),
     )
-    return { posts: res.filter((o) => !!o) as PostPopulated[], error: false }
+    return {
+      posts: res.filter((o) => !!o) as PostPopulatedWithBetDetails[],
+      error: false,
+    }
   } catch (e) {
     Log({ error: e, from: '11 populatePosts.feed' }, 'error')
     return { error: true, posts: [] }
