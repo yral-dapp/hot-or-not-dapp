@@ -31,19 +31,39 @@ import { debounce } from 'throttle-debounce'
 export let data: PageData
 let { me, profile, canId } = data
 
-let load = {
-  page: true,
-  posts: false,
-  follow: true,
+let posts: {
+  posts: PostDetailsForFrontend[]
+  loading: boolean
+  error: boolean
+  noMorePosts: boolean
+  fetchedCount: number
+} = {
+  posts: [],
+  loading: false,
+  error: false,
+  noMorePosts: false,
+  fetchedCount: 0,
 }
 
-const speculations: any = []
+let speculations: {
+  posts: PostDetailsForFrontend[]
+  loading: boolean
+  error: boolean
+  noMorePosts: boolean
+  fetchedCount: number
+} = {
+  posts: [],
+  loading: false,
+  error: false,
+  noMorePosts: false,
+  fetchedCount: 0,
+}
 
-let fetchedPosts: PostDetailsForFrontend[] = []
-let errorWhileFetching = false
-let noMorePosts = false
-let fetchedPostsCount = 0
-let doIFollow: boolean = false
+let follow = {
+  doIFollow: false,
+  error: false,
+  loading: true,
+}
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -67,7 +87,7 @@ async function showShareDialog() {
   })
 }
 
-let selectedTab: 'posts' | 'trophy' = 'posts'
+let selectedTab: 'posts' | 'speculations' = 'posts'
 
 async function handleLove() {
   if (!profile.principal_id) return
@@ -75,64 +95,63 @@ async function handleLove() {
     $authState.showLogin = true
     return
   }
-  load.follow = true
+  follow.loading = true
   const res = await loveUser(profile.principal_id)
   if (res) {
-    if (doIFollow) {
+    if (follow.doIFollow) {
       profile.followers_count--
     } else {
       profile.followers_count++
     }
     profile = profile
-    doIFollow = !doIFollow
+    follow.doIFollow = !follow.doIFollow
   }
-  load.follow = false
+  follow.loading = false
 }
 
 async function loadPosts() {
   try {
-    if (noMorePosts) {
+    if (posts.loading) {
       return
     }
 
-    load.posts = true
-    errorWhileFetching = false
-    const res = await fetchPosts($page.params.id, fetchedPostsCount)
+    posts.loading = true
+    posts.error = false
+    const res = await fetchPosts($page.params.id, posts.fetchedCount)
 
     if (res.error) {
-      errorWhileFetching = true
-      load.posts = false
+      posts.error = true
+      posts.loading = false
       return
     }
 
-    fetchedPosts.push(...res.posts)
-    fetchedPosts = fetchedPosts
-    noMorePosts = res.noMorePosts
-    fetchedPostsCount = fetchedPosts.length
-    load.posts = false
+    posts.posts.push(...res.posts)
+    posts.noMorePosts = res.noMorePosts
+    posts.fetchedCount = posts.posts.length
+    posts.loading = false
+    posts = posts
   } catch (e) {
-    errorWhileFetching = true
-    load.posts = false
+    posts.error = true
+    posts.loading = false
     Log({ error: e, from: '1 loadPosts' }, 'error')
   }
 }
 
 const checkIFollowThisUser = debounce(200, async () => {
-  doIFollow = await doIFollowThisUser($authState.idString, canId)
-  load.follow = false
+  follow.doIFollow = await doIFollowThisUser($authState.idString, canId)
+  follow.loading = false
 })
 
-onMount(async () => {
+onMount(() => {
   if (!me && $authState.isLoggedIn) {
     checkIFollowThisUser()
-  } else load.follow = false
+  } else follow.loading = false
   registerEvent(me ? 'view_my_profile' : 'view_profile', {
     userId: $userProfile.principal_id,
     profile_id: profile.principal_id,
     profile_canister_id: canId,
     profile_username: profile.unique_user_name,
   })
-  load.page = false
   loadPosts()
   handleParams()
   Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info')
@@ -143,182 +162,181 @@ onMount(async () => {
   <title>{me ? 'Your' : "User's"} Videos | Hot or Not</title>
 </svelte:head>
 
-{#if !load.page}
-  <ProfileLayout>
-    <svelte:fragment slot="top-left">
-      <IconButton
-        href={$navigateBack && !$navigateBack.includes('edit')
-          ? $navigateBack
-          : '/feed'}
-        class="shrink-0">
-        <CaretLeftIcon class="h-7 w-7" />
+<ProfileLayout>
+  <svelte:fragment slot="top-left">
+    <IconButton
+      href={$navigateBack && !$navigateBack.includes('edit')
+        ? $navigateBack
+        : '/feed'}
+      class="shrink-0">
+      <CaretLeftIcon class="h-7 w-7" />
+    </IconButton>
+  </svelte:fragment>
+  <div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
+    <IconButton on:click={showShareDialog}>
+      <ShareArrowIcon class="h-6 w-6" />
+    </IconButton>
+    {#if me}
+      <IconButton href={`/profile/${userId}/edit`}>
+        <PencilIcon class="h-5 w-5" />
       </IconButton>
-    </svelte:fragment>
-    <div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
-      <IconButton on:click={showShareDialog}>
-        <ShareArrowIcon class="h-6 w-6" />
+    {:else}
+      <IconButton>
+        <ReportIcon class="h-5 w-5" />
       </IconButton>
-      {#if me}
-        <IconButton href={`/profile/${userId}/edit`}>
-          <PencilIcon class="h-5 w-5" />
-        </IconButton>
-      {:else}
-        <IconButton>
-          <ReportIcon class="h-5 w-5" />
-        </IconButton>
-      {/if}
-    </div>
-    <div slot="top-center" class="text-lg font-bold">
-      {#if me}
-        Your profile
-      {/if}
-    </div>
+    {/if}
+  </div>
+  <div slot="top-center" class="text-lg font-bold">
+    {#if me}
+      Your profile
+    {/if}
+  </div>
 
-    <div
-      class="mx-auto flex h-full w-full max-w-5xl flex-col overflow-y-auto"
-      slot="content">
-      <div class="flex w-full flex-col items-center justify-center py-8">
-        <img
-          class="h-24 w-24 rounded-full"
-          alt={profile.display_name}
-          src={profile.profile_picture_url} />
-        <span class="text-md pt-4 font-bold">
-          {profile.display_name}
+  <div
+    class="mx-auto flex h-full w-full max-w-5xl flex-col overflow-y-auto"
+    slot="content">
+    <div class="flex w-full flex-col items-center justify-center py-8">
+      <img
+        class="h-24 w-24 rounded-full"
+        alt={profile.display_name}
+        src={profile.profile_picture_url} />
+      <span class="text-md pt-4 font-bold">
+        {profile.display_name}
+      </span>
+      <div class="flex items-center space-x-2 px-12 text-sm">
+        <span class="text-white">
+          {`@${profile.unique_user_name}`}
         </span>
-        <div class="flex items-center space-x-2 px-12 text-sm">
-          <span class="text-white">
-            {`@${profile.unique_user_name}`}
-          </span>
-          <div class="h-1 w-1 rounded-full bg-white" />
-          <span class="text-primary">
-            {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
-          </span>
-        </div>
+        <div class="h-1 w-1 rounded-full bg-white" />
+        <span class="text-primary">
+          {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
+        </span>
       </div>
-      <div
-        class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-        <a
-          href={`/profile/${userId}/lovers`}
-          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.followers_count)}
-          </span>
-          <span class="text-sm">Lovers</span>
-        </a>
-        <a
-          href={`/profile/${userId}/loving`}
-          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.following_count)}
-          </span>
-          <span class="text-sm">Loving</span>
-        </a>
-        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.profile_stats.hots_earned_count)}
-          </span>
-          <span class="text-sm">Hots</span>
-        </div>
-        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.profile_stats.nots_earned_count)}
-          </span>
-          <span class="text-sm">Nots</span>
-        </div>
+    </div>
+    <div
+      class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
+      <a
+        href={`/profile/${userId}/lovers`}
+        class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+        <span class="whitespace-nowrap text-xl font-bold">
+          {getShortNumber(profile.followers_count)}
+        </span>
+        <span class="text-sm">Lovers</span>
+      </a>
+      <a
+        href={`/profile/${userId}/loving`}
+        class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+        <span class="whitespace-nowrap text-xl font-bold">
+          {getShortNumber(profile.following_count)}
+        </span>
+        <span class="text-sm">Loving</span>
+      </a>
+      <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+        <span class="whitespace-nowrap text-xl font-bold">
+          {getShortNumber(profile.profile_stats.hots_earned_count)}
+        </span>
+        <span class="text-sm">Hots</span>
       </div>
-      {#if !me}
-        <div
-          class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-          <Button
-            type={doIFollow ? 'secondary' : 'primary'}
-            disabled={load.follow}
-            on:click={handleLove}
-            class="mx-auto w-[10rem]">
-            {#if load.follow}
-              <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
-            {:else}
-              {doIFollow ? 'Loving' : 'Love'}
-            {/if}
-          </Button>
-          <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
-        </div>
-      {/if}
-      <div class="px-6 pt-2">
-        <ProfileTabs bind:selected={selectedTab} />
+      <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+        <span class="whitespace-nowrap text-xl font-bold">
+          {getShortNumber(profile.profile_stats.nots_earned_count)}
+        </span>
+        <span class="text-sm">Nots</span>
       </div>
-      <div class="flex h-full flex-col px-6 py-6">
-        {#if selectedTab === 'posts'}
-          {#if fetchedPosts.length}
-            <div class="grid grid-cols-3 gap-3 md:grid-cols-4 xl:grid-cols-5">
-              {#each fetchedPosts as post}
-                <ProfilePost
-                  id={Number(post.id)}
-                  views={Number(post.total_view_count)}
-                  likes={Number(post.like_count)}
-                  imageBg={getThumbnailUrl(post.video_uid)} />
-              {/each}
-            </div>
-          {:else if !load.posts && !errorWhileFetching}
-            <div
-              class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-              <NoPostsIcon class="w-52" />
-              <div class="text-center text-lg font-bold">
-                {#if me}
-                  You have not uploaded any videos yet
-                {:else}
-                  This user has not uploaded any videos yet
-                {/if}
-              </div>
+    </div>
+    {#if !me}
+      <div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
+        <Button
+          type={follow.doIFollow ? 'secondary' : 'primary'}
+          disabled={follow.loading}
+          on:click={handleLove}
+          class="mx-auto w-[10rem]">
+          {#if follow.loading}
+            <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
+          {:else}
+            {follow.doIFollow ? 'Loving' : 'Love'}
+          {/if}
+        </Button>
+        <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
+      </div>
+    {/if}
+    <div class="px-6 pt-2">
+      <ProfileTabs bind:selected={selectedTab} />
+    </div>
+    <div class="flex h-full flex-col px-6 py-6">
+      {#if selectedTab === 'posts'}
+        {#if posts.posts.length}
+          <div class="grid grid-cols-3 gap-3 md:grid-cols-4 xl:grid-cols-5">
+            {#each posts.posts as post}
+              <ProfilePost
+                id={Number(post.id)}
+                views={Number(post.total_view_count)}
+                likes={Number(post.like_count)}
+                imageBg={getThumbnailUrl(post.video_uid)} />
+            {/each}
+          </div>
+        {:else if !posts.loading && !posts.error}
+          <div
+            class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
+            <NoPostsIcon class="w-52" />
+            <div class="text-center text-lg font-bold">
               {#if me}
-                <Button href="/upload" preload class="w-full">
-                  Upload your first video
-                </Button>
+                You have not uploaded any videos yet
+              {:else}
+                This user has not uploaded any videos yet
               {/if}
             </div>
-          {/if}
-          {#if errorWhileFetching}
-            <div
-              class="flex w-full flex-col items-center justify-center space-y-2 py-8">
-              <div class="flex items-center space-x-2 text-sm text-red-500">
-                <ReportIcon class="h-4 w-4" />
-                <span>Error while fetching posts</span>
-              </div>
-              <Button
-                on:click={loadPosts}
-                type="secondary"
-                class="py-2 px-6 text-xs">
-                Try again
+            {#if me}
+              <Button href="/upload" preload class="w-full">
+                Upload your first video
               </Button>
+            {/if}
+          </div>
+        {/if}
+        {#if posts.error}
+          <div
+            class="flex w-full flex-col items-center justify-center space-y-2 py-8">
+            <div class="flex items-center space-x-2 text-sm text-red-500">
+              <ReportIcon class="h-4 w-4" />
+              <span>Error while fetching posts</span>
             </div>
-          {:else if load.posts}
-            <div class="flex w-full items-center justify-center space-x-2 py-8">
-              <LoadingIcon class="h-4 w-4 animate-spin" />
-              <span>Fetching posts</span>
-            </div>
-          {/if}
-          {#if noMorePosts && fetchedPosts.length}
-            <div
-              class="flex w-full items-center justify-center space-x-2 py-8 opacity-40">
-              <span>No more posts</span>
-            </div>
-          {/if}
+            <Button
+              on:click={loadPosts}
+              type="secondary"
+              class="px-6 py-2 text-xs">
+              Try again
+            </Button>
+          </div>
+        {:else if posts.loading}
+          <div class="flex w-full items-center justify-center space-x-2 py-8">
+            <LoadingIcon class="h-4 w-4 animate-spin" />
+            <span>Fetching posts</span>
+          </div>
+        {/if}
+        {#if posts.noMorePosts && posts.posts.length}
+          <div
+            class="flex w-full items-center justify-center space-x-2 py-8 opacity-40">
+            <span>No more posts</span>
+          </div>
+        {/if}
 
-          <IntersectionObserver
-            on:intersected={loadPosts}
-            threshold={0.1}
-            disabled={load.posts || errorWhileFetching}
-            intersect={!noMorePosts}>
-            <svelte:fragment>
-              <div class="h-4 w-full" />
-            </svelte:fragment>
-          </IntersectionObserver>
-        {:else if speculations.length}
+        <IntersectionObserver
+          on:intersected={loadPosts}
+          threshold={0.1}
+          disabled={posts.loading || posts.error}
+          intersect={!posts.noMorePosts}>
+          <svelte:fragment>
+            <div class="h-4 w-full" />
+          </svelte:fragment>
+        </IntersectionObserver>
+      {:else if selectedTab === 'speculations'}
+        {#if speculations.posts.length}
           <div class="grid grid-cols-2 gap-3">
-            {#each speculations as speculation}
+            {#each speculations.posts as speculation}
               <SpeculationPost {me} {...speculation} />
             {/each}
           </div>
-        {:else}
+        {:else if !speculations.loading && !speculations.error}
           <div
             class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
             <NoBetsIcon class="w-52" />
@@ -331,7 +349,7 @@ onMount(async () => {
             </div>
           </div>
         {/if}
-      </div>
+      {/if}
     </div>
-  </ProfileLayout>
-{/if}
+  </div>
+</ProfileLayout>
