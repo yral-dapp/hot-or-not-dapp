@@ -26,6 +26,7 @@ import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
+import { getMsLeftForBetResult, getTimeStringFromMs } from '$lib/utils/timeLeft'
 
 export let me: boolean
 export let post: PostPopulatedWithBetDetails
@@ -40,6 +41,7 @@ $: imageBg = getThumbnailUrl(post.video_uid)
 $: username =
   post.created_by_unique_user_name[0] ||
   generateRandomName('name', post.created_by_user_principal_id)
+$: timeLeft = getMsLeftForBetResult(post.placed_bet_details)
 </script>
 
 <a
@@ -77,11 +79,11 @@ $: username =
           class="flex w-full items-center justify-center rounded-full bg-green-400 py-2 text-sm text-white">
           {YOU} Won
         </div>
-      {:else}
+      {:else if BET_OUTCOME === 'AwaitingResult'}
         <div
           class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-2 text-sm text-white">
           <TimerIcon class="h-4 w-4" />
-          <span>18m 50s</span>
+          <span>{$timeLeft}</span>
         </div>
       {/if}
     </div>
