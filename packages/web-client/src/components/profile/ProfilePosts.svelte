@@ -15,7 +15,7 @@ export let me = false
 export let userId = ''
 
 let posts: PostDetailsForFrontend[] = []
-let loading = true
+let loading = false
 let error = false
 let noMorePosts = false
 let fetchedCount = 0
@@ -36,7 +36,10 @@ async function loadPosts() {
       return
     }
 
+    console.log('res', res)
+
     posts.push(...res.posts)
+    posts = posts
     noMorePosts = res.noMorePosts
     fetchedCount = posts.length
     loading = false

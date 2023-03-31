@@ -15,6 +15,12 @@ import SpeculationPost from './SpeculationPost.svelte'
 export let me = false
 export let userId = ''
 
+let posts: PostPopulatedWithBetDetails[] = []
+let loading = false
+let error = false
+let noMorePosts = false
+let fetchedCount = 0
+
 async function loadPosts() {
   try {
     if (loading) {
@@ -32,6 +38,7 @@ async function loadPosts() {
     }
 
     posts.push(...res.posts)
+    posts = posts
     noMorePosts = res.noMorePosts
     fetchedCount = posts.length
     loading = false
@@ -42,12 +49,6 @@ async function loadPosts() {
     Log({ error: e, from: '1 speculation loadPosts' }, 'error')
   }
 }
-
-let posts: PostPopulatedWithBetDetails[] = []
-let loading = true
-let error = false
-let noMorePosts = false
-let fetchedCount = 0
 
 onMount(() => loadPosts())
 </script>
