@@ -25,6 +25,7 @@ import TimerIcon from '$components/icons/TimerIcon.svelte'
 import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { generateRandomName } from '$lib/utils/randomUsername'
 
 export let me: boolean
 export let post: PostPopulatedWithBetDetails
@@ -35,48 +36,54 @@ $: BET_KEYWORD = betKeyword[BET_OUTCOME]
 $: avatarUrl =
   post.created_by_profile_photo_url[0] ||
   getDefaultImageUrl(post.created_by_user_principal_id)
+$: imageBg = getThumbnailUrl(post.video_uid)
+$: username =
+  post.created_by_unique_user_name[0] ||
+  generateRandomName('name', post.created_by_user_principal_id)
 </script>
 
 <a
   href={`speculations/${post.publisher_canister_id}@${post.id}`}
   data-sveltekit-preload-code="eager"
-  class="relative h-64 w-full cursor-pointer rounded-md bg-cover"
-  style="background-image: url('{getThumbnailUrl(post.video_uid)}')">
+  class="relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
+  <div
+    class="absolute inset-0 scale-110 bg-cover bg-center"
+    style="background-image: url('{imageBg}')" />
   <div
     style="background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);"
-    class="pointer-events-none absolute inset-0 z-[1]" />
-  <div
-    class="pointer-events-none absolute inset-x-0 bottom-2 z-[2] flex flex-col px-2">
-    <span class="text-xs font-thin uppercase">
-      {YOU}
-      {BET_KEYWORD}
-    </span>
-    <span class="pb-2 text-lg font-bold">
-      {Number(post.placed_bet_details.amount_bet)} Tokens
-    </span>
-    {#if BET_OUTCOME === 'Lost' || BET_OUTCOME === 'Draw'}
-      <div
-        class="flex w-full items-center justify-center rounded-full bg-red-600 py-2 text-sm text-white">
-        {YOU} Lost
+    class="pointer-events-none absolute inset-0 z-[2] flex flex-col justify-between p-2 md:p-4">
+    <div class="flex items-center space-x-2">
+      <Avatar class="h-6 w-6" src={avatarUrl} />
+      <div class="text-sm font-semibold">
+        {username}
       </div>
-    {:else if BET_OUTCOME === 'Won'}
-      <div
-        class="flex w-full items-center justify-center rounded-full bg-green-400 py-2 text-sm text-white">
-        {YOU} Won
-      </div>
-    {:else}
-      <div
-        class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-2 text-sm text-white">
-        <TimerIcon class="h-4 w-4" />
-        <span>18m 50s</span>
-      </div>
-    {/if}
-  </div>
-  <div
-    class="pointer-events-none absolute inset-x-0 top-2 z-[2] flex items-center space-x-1 px-2">
-    <Avatar class="h-6 w-6" src={avatarUrl} />
-    <div class="text-xs">
-      {post.created_by_unique_user_name}
+    </div>
+    <div class="flex flex-col">
+      <span class="text-xs font-thin uppercase">
+        {YOU}
+        {BET_KEYWORD}
+      </span>
+      <span class="pb-2 text-lg font-bold">
+        {Number(post.placed_bet_details.amount_bet)} Tokens
+      </span>
+
+      {#if BET_OUTCOME === 'Lost' || BET_OUTCOME === 'Draw'}
+        <div
+          class="flex w-full items-center justify-center rounded-full bg-red-600 py-2 text-sm text-white">
+          {YOU} Lost
+        </div>
+      {:else if BET_OUTCOME === 'Won'}
+        <div
+          class="flex w-full items-center justify-center rounded-full bg-green-400 py-2 text-sm text-white">
+          {YOU} Won
+        </div>
+      {:else}
+        <div
+          class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-2 text-sm text-white">
+          <TimerIcon class="h-4 w-4" />
+          <span>18m 50s</span>
+        </div>
+      {/if}
     </div>
   </div>
 </a>
