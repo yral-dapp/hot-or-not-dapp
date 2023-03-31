@@ -200,7 +200,7 @@ beforeNavigate(() => {
         <div class="text-center text-lg font-bold">
           There are no more videos to bet on
         </div>
-        <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
+        <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
           <HotOrNotBet disabled postId={0n} />
         </div>
       </div>
