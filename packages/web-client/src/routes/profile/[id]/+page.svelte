@@ -27,37 +27,11 @@ import { handleParams } from '$lib/utils/params'
 import { authState } from '$stores/auth'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { debounce } from 'throttle-debounce'
+import ProfilePosts from '$components/profile/ProfilePosts.svelte'
+import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data
-
-let posts: {
-  posts: PostDetailsForFrontend[]
-  loading: boolean
-  error: boolean
-  noMorePosts: boolean
-  fetchedCount: number
-} = {
-  posts: [],
-  loading: false,
-  error: false,
-  noMorePosts: false,
-  fetchedCount: 0,
-}
-
-let speculations: {
-  posts: PostDetailsForFrontend[]
-  loading: boolean
-  error: boolean
-  noMorePosts: boolean
-  fetchedCount: number
-} = {
-  posts: [],
-  loading: false,
-  error: false,
-  noMorePosts: false,
-  fetchedCount: 0,
-}
 
 let follow = {
   doIFollow: false,
@@ -109,34 +83,6 @@ async function handleLove() {
   follow.loading = false
 }
 
-async function loadPosts() {
-  try {
-    if (posts.loading) {
-      return
-    }
-
-    posts.loading = true
-    posts.error = false
-    const res = await fetchPosts($page.params.id, posts.fetchedCount)
-
-    if (res.error) {
-      posts.error = true
-      posts.loading = false
-      return
-    }
-
-    posts.posts.push(...res.posts)
-    posts.noMorePosts = res.noMorePosts
-    posts.fetchedCount = posts.posts.length
-    posts.loading = false
-    posts = posts
-  } catch (e) {
-    posts.error = true
-    posts.loading = false
-    Log({ error: e, from: '1 loadPosts' }, 'error')
-  }
-}
-
 const checkIFollowThisUser = debounce(200, async () => {
   follow.doIFollow = await doIFollowThisUser($authState.idString, canId)
   follow.loading = false
@@ -146,15 +92,14 @@ onMount(() => {
   if (!me && $authState.isLoggedIn) {
     checkIFollowThisUser()
   } else follow.loading = false
+
   registerEvent(me ? 'view_my_profile' : 'view_profile', {
     userId: $userProfile.principal_id,
     profile_id: profile.principal_id,
     profile_canister_id: canId,
     profile_username: profile.unique_user_name,
   })
-  loadPosts()
   handleParams()
-  Log({ from: '0 profileMount', id: $page.params.id, me, profile }, 'info')
 })
 </script>
 
@@ -265,90 +210,9 @@ onMount(() => {
     </div>
     <div class="flex h-full flex-col px-6 py-6">
       {#if selectedTab === 'posts'}
-        {#if posts.posts.length}
-          <div class="grid grid-cols-3 gap-3 md:grid-cols-4 xl:grid-cols-5">
-            {#each posts.posts as post}
-              <ProfilePost
-                id={Number(post.id)}
-                views={Number(post.total_view_count)}
-                likes={Number(post.like_count)}
-                imageBg={getThumbnailUrl(post.video_uid)} />
-            {/each}
-          </div>
-        {:else if !posts.loading && !posts.error}
-          <div
-            class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-            <NoPostsIcon class="w-52" />
-            <div class="text-center text-lg font-bold">
-              {#if me}
-                You have not uploaded any videos yet
-              {:else}
-                This user has not uploaded any videos yet
-              {/if}
-            </div>
-            {#if me}
-              <Button href="/upload" preload class="w-full">
-                Upload your first video
-              </Button>
-            {/if}
-          </div>
-        {/if}
-        {#if posts.error}
-          <div
-            class="flex w-full flex-col items-center justify-center space-y-2 py-8">
-            <div class="flex items-center space-x-2 text-sm text-red-500">
-              <ReportIcon class="h-4 w-4" />
-              <span>Error while fetching posts</span>
-            </div>
-            <Button
-              on:click={loadPosts}
-              type="secondary"
-              class="px-6 py-2 text-xs">
-              Try again
-            </Button>
-          </div>
-        {:else if posts.loading}
-          <div class="flex w-full items-center justify-center space-x-2 py-8">
-            <LoadingIcon class="h-4 w-4 animate-spin" />
-            <span>Fetching posts</span>
-          </div>
-        {/if}
-        {#if posts.noMorePosts && posts.posts.length}
-          <div
-            class="flex w-full items-center justify-center space-x-2 py-8 opacity-40">
-            <span>No more posts</span>
-          </div>
-        {/if}
-
-        <IntersectionObserver
-          on:intersected={loadPosts}
-          threshold={0.1}
-          disabled={posts.loading || posts.error}
-          intersect={!posts.noMorePosts}>
-          <svelte:fragment>
-            <div class="h-4 w-full" />
-          </svelte:fragment>
-        </IntersectionObserver>
+        <ProfilePosts {me} userId={$page.params.id} />
       {:else if selectedTab === 'speculations'}
-        {#if speculations.posts.length}
-          <div class="grid grid-cols-2 gap-3">
-            {#each speculations.posts as speculation}
-              <SpeculationPost {me} {...speculation} />
-            {/each}
-          </div>
-        {:else if !speculations.loading && !speculations.error}
-          <div
-            class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-            <NoBetsIcon class="w-52" />
-            <div class="text-center text-lg font-bold">
-              {#if me}
-                You don't have any current bets yet
-              {:else}
-                This user has not placed any bets yet
-              {/if}
-            </div>
-          </div>
-        {/if}
+        <SpeculationPosts />
       {/if}
     </div>
   </div>
