@@ -8,17 +8,19 @@ export function getMsLeftForBetResult(placedBet: PlacedBetDetail) {
   slotTime.setHours(slotTime.getHours() + placedBet.slot_id)
   const now = new Date()
   const diff = slotTime.getTime() - now.getTime()
-  return readable(diff, (set) => {
-    let counter = 1
-    const updateMs = () => set(diff - counter * 1000)
+  if (diff > 0) {
+    return readable(getTimeStringFromMs(diff), (set) => {
+      let counter = 1
+      const updateMs = () => set(getTimeStringFromMs(diff - counter * 1000))
 
-    const interval = setInterval(() => {
-      updateMs()
-      counter++
-    }, 1000)
+      const interval = setInterval(() => {
+        updateMs()
+        counter++
+      }, 1000)
 
-    return () => clearInterval(interval)
-  })
+      return () => clearInterval(interval)
+    })
+  } else return readable(0)
 }
 
 export function getTimeStringFromMs(timeMs: number) {
