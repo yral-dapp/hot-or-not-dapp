@@ -268,10 +268,12 @@ function toggleBet() {
       </div>
     </div>
   {:else}
-    <div transition:fade class="flex h-full w-full items-center space-x-8 px-4">
+    <div
+      transition:fade|local
+      class="flex h-full w-full items-center space-x-8 px-4">
       <div
         class={c('flex items-center', {
-          'translate-y-4 -space-y-8 -space-x-8': betResult !== 'pending',
+          'translate-y-4 -space-x-8 -space-y-8': betResult !== 'pending',
           'space-x-2': betResult === 'pending',
         })}>
         <div class="z-[2] shrink-0">
