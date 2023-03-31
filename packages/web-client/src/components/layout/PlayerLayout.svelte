@@ -163,6 +163,10 @@ async function updateStats() {
 $: if (justWatched) {
   updateStats()
 }
+
+$: avatarUrl =
+  post.created_by_profile_photo_url[0] ||
+  getDefaultImageUrl(post.created_by_user_principal_id)
 </script>
 
 <player-layout
@@ -185,10 +189,7 @@ $: if (justWatched) {
       <div class="flex grow flex-col justify-end space-y-4">
         <div class="pointer-events-auto flex space-x-3">
           <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
-            <Avatar
-              class="h-12 w-12"
-              src={post.created_by_profile_photo_url[0] ||
-                getDefaultImageUrl(post.created_by_user_principal_id)} />
+            <Avatar class="h-12 w-12" src={avatarUrl} />
           </a>
           <div class="flex flex-col space-y-1">
             <a href="/profile/{postPublisherId}">
