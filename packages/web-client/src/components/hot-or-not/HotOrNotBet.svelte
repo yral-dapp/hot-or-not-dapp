@@ -68,7 +68,6 @@ async function getBetDetailFromDb() {
       'bets',
       post.publisher_canister_id + '@' + post.post_id,
     )) as PlacedBetDetail
-    console.log('fetched from db', { placedBetDetail })
   } catch (e) {
     Log({ error: e, source: '2 saveBetToDb', type: 'idb' }, 'error')
     return
@@ -196,8 +195,6 @@ async function placeBet({ coins, direction }: PlaceBet) {
     }, 2000)
   }
 }
-
-$: inView && console.log({ placedBetDetail })
 
 // $: if (inView && !error && !disabled) {
 //   updatebettingStatus()
