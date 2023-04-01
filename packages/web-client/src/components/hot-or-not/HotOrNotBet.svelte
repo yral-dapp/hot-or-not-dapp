@@ -12,6 +12,7 @@ import type {
 import { individualUser } from '$lib/helpers/backend'
 import type { PostPopulated } from '$lib/helpers/feed'
 import { fetchTokenBalance } from '$lib/helpers/profile'
+import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
 import { Principal } from '@dfinity/principal'
@@ -35,8 +36,10 @@ let betPlaced: false | BetDirectionString = false
 let loadingWithDirection: false | BetDirectionString = false
 
 let error = ''
+let idb: IDB
 
 let placedBetDetail: PlacedBetDetail | undefined = undefined
+
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
@@ -46,6 +49,30 @@ $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
 
 $: if (inView && fetchPlacedBetDetail) {
   updatePlacedBetDetail()
+} else if (!fetchPlacedBetDetail) {
+  getBetDetailFromDb()
+}
+
+async function getBetDetailFromDb() {
+  if (!post) return
+  if (!idb) {
+    try {
+      idb = (await import('$lib/idb')).idb
+    } catch (e) {
+      Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+      return
+    }
+  }
+  try {
+    placedBetDetail = (await idb.get(
+      'bets',
+      post.publisher_canister_id + '@' + post.post_id,
+    )) as PlacedBetDetail
+    console.log('fetched from db', { placedBetDetail })
+  } catch (e) {
+    Log({ error: e, source: '2 saveBetToDb', type: 'idb' }, 'error')
+    return
+  }
 }
 
 async function updatePlacedBetDetail() {
@@ -58,6 +85,11 @@ async function updatePlacedBetDetail() {
         post.id,
       )
     placedBetDetail = res[0]
+    if (placedBetDetail) {
+      setBetDetailToDb(placedBetDetail)
+    } else {
+      throw 'No bet found'
+    }
   } catch (e) {
     //TODO: Add retries
     error = 'Error fetching your bet details'
@@ -70,6 +102,24 @@ async function getWalletBalance() {
     throw res.error
   } else {
     return res.balance
+  }
+}
+
+async function setBetDetailToDb(betDetail: PlacedBetDetail) {
+  if (!post) return
+  if (!idb) {
+    try {
+      idb = (await import('$lib/idb')).idb
+    } catch (e) {
+      Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+      return
+    }
+  }
+  try {
+    idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
+  } catch (e) {
+    Log({ error: e, source: '2 saveBetToDb', type: 'idb' }, 'error')
+    return
   }
 }
 
@@ -106,13 +156,14 @@ async function placeBet({ coins, direction }: PlaceBet) {
         bet_direction,
         bet_placed_at: {
           nanos_since_epoch: 1000,
-          secs_since_epoch: BigInt(new Date().getTime() / 1000),
+          secs_since_epoch: BigInt(Math.floor(new Date().getTime() / 1000)),
         },
         slot_id: bettingStatusValue?.ongoing_slot || 1,
         canister_id: Principal.from(post.publisher_canister_id),
         post_id: post.id,
         room_id: bettingStatusValue?.ongoing_room || BigInt(1),
       }
+      setBetDetailToDb(placedBetDetail)
     } else {
       const err = Object.keys(betRes.Err)[0] as BetAPIErrors
       switch (err) {
@@ -125,7 +176,8 @@ async function placeBet({ coins, direction }: PlaceBet) {
           error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
           break
         case 'UserAlreadyParticipatedInThisPost':
-          error = 'You have already bet on this post'
+          error = 'You have already bet on this post. Fetching details...'
+          updatePlacedBetDetail()
           break
         case 'UserNotLoggedIn':
           $authState.showLogin = true
@@ -145,7 +197,7 @@ async function placeBet({ coins, direction }: PlaceBet) {
   }
 }
 
-$: console.log({ placedBetDetail })
+$: inView && console.log({ placedBetDetail })
 
 // $: if (inView && !error && !disabled) {
 //   updatebettingStatus()
