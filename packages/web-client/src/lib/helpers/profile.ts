@@ -394,6 +394,7 @@ export interface TransactionHistory {
   token: number
   timestamp: SystemTime
   details: MintEvent
+  subType: string
 }
 
 type HistoryResponse =
@@ -416,11 +417,13 @@ async function transformHistoryRecords(
     const obj = o[1]
     const type = Object.keys(obj)[0] as UnionKeyOf<TokenEvent>
     const subType = Object.keys(obj[type].details)[0]
+
     if (!filter || filter === subType) {
       history.push({
         id: o[0],
         type,
-        token: subType === 'NewUserSignup' ? 1000 : 500,
+        subType,
+        token: Object.values(o[1])?.[0]?.amount || 0,
         timestamp: obj[type].timestamp as SystemTime,
         details: obj[type].details as MintEvent,
       })
