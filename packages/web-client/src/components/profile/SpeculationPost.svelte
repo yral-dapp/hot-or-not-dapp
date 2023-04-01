@@ -29,6 +29,7 @@ import { generateRandomName } from '$lib/utils/randomUsername'
 import { getMsLeftForBetResult, getTimeStringFromMs } from '$lib/utils/timeLeft'
 
 export let me: boolean
+export let userId: string
 export let post: PostPopulatedWithBetDetails
 
 $: YOU = me ? 'You' : ''
@@ -48,7 +49,7 @@ $: timeLeft = getMsLeftForBetResult(
 </script>
 
 <a
-  href={`speculations/${post.publisher_canister_id}@${post.id}`}
+  href={`/profile/${userId}/speculations/${post.publisher_canister_id}@${post.id}`}
   data-sveltekit-preload-code="eager"
   class="relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
   <div
