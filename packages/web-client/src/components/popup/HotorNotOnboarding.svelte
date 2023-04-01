@@ -5,17 +5,17 @@ import left from '$assets/decore-left.png'
 import right from '$assets/decore-right.png'
 import StarsIcon from '$components/icons/StarsIcon.svelte'
 import Button from '$components/button/Button.svelte'
-import HotOrNot from '$components/navigation/HotOrNot.svelte'
 import TutorialArrow from '$components/icons/TutorialArrow.svelte'
 import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
+import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
 
 let step: 1 | 2 | 3 = 1
 </script>
 
 {#if $showOnboarding}
   <onboarding
-    class="absolute inset-0 z-[15] flex  h-full w-full items-center justify-center bg-black/90 px-8 text-white"
+    class="absolute inset-0 z-[15] flex h-full w-full items-center justify-center bg-black/90 px-8 text-white"
     out:fade|local={{ duration: 500 }}>
     {#if step == 1}
       <div
@@ -25,7 +25,7 @@ let step: 1 | 2 | 3 = 1
           <img alt="decore" src={left} class="select-none" />
           <img alt="decore" src={right} class="select-none" />
         </div>
-        <div class="relative select-none text-center text-3xl font-bold ">
+        <div class="relative select-none text-center text-3xl font-bold">
           <StarsIcon class="absolute -left-10 -top-12 h-24" />
           A new experience
           <br />
@@ -50,10 +50,10 @@ let step: 1 | 2 | 3 = 1
             Lorem ipsum dolor sit amet, consectetur elit. sed do eiusmod Lorem
             ipsum dolor sit amet consectetur elit, sed do eiusmod.
           </div>
-          <div class="absolute top-32 left-10">
+          <div class="absolute left-10 top-32">
             <TutorialArrow class="h-64" />
           </div>
-          <div style="transform: scaleX(-1);" class="absolute top-32 right-14">
+          <div style="transform: scaleX(-1);" class="absolute right-14 top-32">
             <TutorialArrow class="h-60" />
           </div>
         </div>
@@ -63,8 +63,8 @@ let step: 1 | 2 | 3 = 1
         </button>
 
         <div
-          class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48">
-          <HotOrNot disabled tutorialMode postId={0n} />
+          class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
+          <HotOrNotBet tutorialMode />
         </div>
       </div>
     {:else if step == 3}
