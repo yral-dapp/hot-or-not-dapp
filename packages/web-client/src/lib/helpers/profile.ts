@@ -31,8 +31,7 @@ export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
 }
 
-export interface PostPopulatedWithBetDetails
-  extends Omit<PostPopulated, 'score'> {
+export interface PostPopulatedWithBetDetails extends PostPopulated {
   placed_bet_details: PlacedBetDetail
 }
 
@@ -221,6 +220,7 @@ async function populatePosts(posts: PlacedBetDetail[]) {
           return {
             ...r,
             placed_bet_details: post,
+            score: BigInt(0),
             created_by_user_principal_id:
               r.created_by_user_principal_id.toText(),
             publisher_canister_id: post.canister_id.toText(),
