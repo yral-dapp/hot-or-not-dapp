@@ -25,8 +25,7 @@ $: bettingStatusValue = Object.values(bettingStatus || {})?.[0] as BetStatus
 
 $: bettingOpen =
   bettingStatusValue !== null &&
-  bettingStatusValue.has_this_user_participated_in_this_post[0]
-$: console.log({ bettingStatusValue })
+  !bettingStatusValue.has_this_user_participated_in_this_post[0]
 $: usersInThisSlot = bettingStatusValue?.number_of_participants || 0
 $: onGoingSlot = bettingStatusValue?.ongoing_slot || 1
 $: betStartedAt = bettingStatusValue?.started_at || systemTime
