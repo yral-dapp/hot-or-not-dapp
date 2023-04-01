@@ -29,7 +29,7 @@ export let fetchPlacedBetDetail = false
 export let inView = false
 
 $: bettingStatus = post?.hot_or_not_betting_status?.[0]
-$: bettingStatusValue = Object.values(bettingStatus || {})[0]
+$: bettingStatusValue = Object.values(bettingStatus || {})?.[0]
 
 let betPlaced: false | BetDirectionString = false
 let loadingWithDirection: false | BetDirectionString = false
@@ -38,6 +38,7 @@ let error = ''
 
 let placedBetDetail: PlacedBetDetail | undefined = undefined
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
+  error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
 } else if (bettingStatusValue === null) {
   error = 'Betting has been closed'
@@ -50,6 +51,7 @@ $: if (inView && fetchPlacedBetDetail) {
 async function updatePlacedBetDetail() {
   try {
     if (!post?.publisher_canister_id) return
+    error = ''
     const res =
       await individualUser().get_individual_hot_or_not_bet_placed_by_this_profile(
         Principal.from(post.publisher_canister_id),
