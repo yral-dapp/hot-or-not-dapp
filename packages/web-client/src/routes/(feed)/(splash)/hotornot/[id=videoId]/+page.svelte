@@ -178,7 +178,10 @@ beforeNavigate(() => {
         <div class="text-center text-lg font-bold">
           Error loading posts. Please, refresh the page.
         </div>
-        <Button type="primary" on:click={(e) => e.preventDefault()} href="/">
+        <Button
+          type="primary"
+          on:click={(e) => e.preventDefault()}
+          href="/hotornot">
           Clear here to refresh
         </Button>
       </div>
