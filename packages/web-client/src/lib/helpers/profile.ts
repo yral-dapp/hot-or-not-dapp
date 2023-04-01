@@ -277,40 +277,6 @@ export async function fetchLovers(id: string, from: number) {
   }
 }
 
-async function saveBetDetailToDb(betDetail: PlacedBetDetail) {
-  try {
-    console.log(betDetail)
-    //save to bets db
-  } catch (e) {
-    console.log('error', e)
-  }
-}
-
-export async function getBetDetails(
-  betUserPrincipalId: string,
-  publisherCanisterId: string,
-  postId: number,
-) {
-  try {
-    const res = await individualUser(
-      Principal.from(betUserPrincipalId),
-    ).get_individual_hot_or_not_bet_placed_by_this_profile(
-      Principal.from(publisherCanisterId),
-      BigInt(postId),
-    )
-    if (!res[0]) return { error: true }
-    if (res[0].outcome_received['AwaitingResult'] === undefined) {
-      saveBetDetailToDb(res[0])
-    }
-    return {
-      error: false,
-      betDetail: res[0],
-    }
-  } catch (e) {
-    console.log('error', e)
-  }
-}
-
 export async function fetchLovingUsers(id: string, from: number) {
   try {
     const canId = await getCanisterId(id)
