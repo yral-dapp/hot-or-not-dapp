@@ -95,8 +95,6 @@ async function placeBet({ coins, direction }: PlaceBet) {
       post_canister_id: Principal.from(post.publisher_canister_id),
     })
 
-    console.log({ betRes })
-
     if ('Ok' in betRes) {
       betPlaced = direction
 
@@ -183,7 +181,7 @@ $: console.log({ placedBetDetail })
       </div>
     </div>
   {/if}
-  {#if betPlaced === false && !fetchPlacedBetDetail}
+  {#if betPlaced === false && !fetchPlacedBetDetail && !placedBetDetail}
     <HotOrNotBetControls
       on:placeBet={({ detail }) => placeBet(detail)}
       {tutorialMode}
