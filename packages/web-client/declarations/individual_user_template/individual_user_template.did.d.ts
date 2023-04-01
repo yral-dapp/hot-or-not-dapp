@@ -73,7 +73,9 @@ export type HotOrNotOutcomePayoutEvent = {
       'slot_id' : number,
       'post_id' : bigint,
       'room_id' : bigint,
+      'post_canister_id' : Principal,
       'winnings_amount' : bigint,
+      'event_outcome' : BetOutcomeForBetMaker,
     }
   } |
   {
@@ -82,6 +84,7 @@ export type HotOrNotOutcomePayoutEvent = {
       'post_id' : bigint,
       'room_pot_total_amount' : bigint,
       'room_id' : bigint,
+      'post_canister_id' : Principal,
     }
   };
 export interface IndividualUserTemplateInitArgs {

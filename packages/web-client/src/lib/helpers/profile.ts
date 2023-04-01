@@ -31,6 +31,10 @@ export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
 }
 
+export interface PostPopulatedWithBetDetails extends PostPopulated {
+  placed_bet_details: PlacedBetDetail
+}
+
 async function fetchProfile() {
   try {
     return await individualUser().get_profile_details()
@@ -135,7 +139,7 @@ type ProfileSpeculationsResponse =
     }
   | {
       error: false
-      posts: PostPopulated[]
+      posts: PostPopulatedWithBetDetails[]
       noMorePosts: boolean
     }
 
@@ -186,7 +190,6 @@ export async function fetchSpeculations(
     const res = await individualUser(
       Principal.from(canId),
     ).get_hot_or_not_bets_placed_by_this_profile_with_pagination(BigInt(from))
-    // if ('Ok' in res) {
     const populatedRes = await populatePosts(res)
     if (populatedRes.error) {
       return { error: true }
@@ -195,20 +198,7 @@ export async function fetchSpeculations(
       error: false,
       posts: populatedRes.posts,
       noMorePosts: res.length < 10,
-      // noMorePosts: res.Ok.length < 10,
     }
-    // } else if ('Err' in res) {
-    //   type UnionKeyOf<U> = U extends U ? keyof U : never
-    //   type errors = UnionKeyOf<GetPostsOfUserProfileError>
-    //   const err = Object.keys(res.Err)[0] as errors
-    //   switch (err) {
-    //     case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-    //     case 'InvalidBoundsPassed':
-    //       return { error: true }
-    //     case 'ReachedEndOfItemsList':
-    //       return { error: false, noMorePosts: true, posts: [] }
-    //   }
-    // } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
@@ -229,18 +219,21 @@ async function populatePosts(posts: PlacedBetDetail[]) {
           ).get_individual_post_details_by_id(post.post_id)
           return {
             ...r,
-            ...post,
+            placed_bet_details: post,
+            score: BigInt(0),
             created_by_user_principal_id:
               r.created_by_user_principal_id.toText(),
             publisher_canister_id: post.canister_id.toText(),
-            score: BigInt(0),
-          } as PostPopulated
+          } as PostPopulatedWithBetDetails
         } catch (_) {
           return undefined
         }
       }),
     )
-    return { posts: res.filter((o) => !!o) as PostPopulated[], error: false }
+    return {
+      posts: res.filter((o) => !!o) as PostPopulatedWithBetDetails[],
+      error: false,
+    }
   } catch (e) {
     Log({ error: e, from: '11 populatePosts.feed' }, 'error')
     return { error: true, posts: [] }
@@ -281,40 +274,6 @@ export async function fetchLovers(id: string, from: number) {
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
-  }
-}
-
-async function saveBetDetailToDb(betDetail: PlacedBetDetail) {
-  try {
-    console.log(betDetail)
-    //save to bets db
-  } catch (e) {
-    console.log('error', e)
-  }
-}
-
-export async function getBetDetails(
-  betUserPrincipalId: string,
-  publisherCanisterId: string,
-  postId: number,
-) {
-  try {
-    const res = await individualUser(
-      Principal.from(betUserPrincipalId),
-    ).get_individual_hot_or_not_bet_placed_by_this_profile(
-      Principal.from(publisherCanisterId),
-      BigInt(postId),
-    )
-    if (!res[0]) return { error: true }
-    if (res[0].outcome_received['AwaitingResult'] === undefined) {
-      saveBetDetailToDb(res[0])
-    }
-    return {
-      error: false,
-      betDetail: res[0],
-    }
-  } catch (e) {
-    console.log('error', e)
   }
 }
 
@@ -435,6 +394,7 @@ export interface TransactionHistory {
   token: number
   timestamp: SystemTime
   details: MintEvent
+  subType: string
 }
 
 type HistoryResponse =
@@ -457,11 +417,13 @@ async function transformHistoryRecords(
     const obj = o[1]
     const type = Object.keys(obj)[0] as UnionKeyOf<TokenEvent>
     const subType = Object.keys(obj[type].details)[0]
+
     if (!filter || filter === subType) {
       history.push({
         id: o[0],
         type,
-        token: subType === 'NewUserSignup' ? 1000 : 500,
+        subType,
+        token: Object.values(o[1])?.[0]?.amount || 0,
         timestamp: obj[type].timestamp as SystemTime,
         details: obj[type].details as MintEvent,
       })

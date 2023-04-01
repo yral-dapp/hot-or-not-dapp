@@ -21,6 +21,9 @@ import { onMount, tick } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
+import type { PageData } from './$types'
+
+export let data: PageData
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -112,6 +115,9 @@ onMount(async () => {
   if ($hotOrNotFeedVideos.length) {
     videos = $hotOrNotFeedVideos
     $hotOrNotFeedVideos = []
+  } else if (data?.post) {
+    videos = [data.post, ...videos]
+    await updatePostInWatchHistory('watch-hon', data.post)
   }
   await tick()
   await fetchNextVideos()
@@ -155,16 +161,16 @@ beforeNavigate(() => {
             {Hls}
             inView={i == currentVideoIndex && $playerState.visible}
             uid={post.video_uid} />
-          <!-- <svelte:fragment slot="betRoomInfo">
-            <HotOrNotRoomInfo />
-          </svelte:fragment> -->
+          <svelte:fragment slot="betRoomInfo">
+            {#if post.hot_or_not_betting_status[0]}
+              <HotOrNotRoomInfo
+                bettingStatus={post.hot_or_not_betting_status[0]} />
+            {/if}
+          </svelte:fragment>
           <svelte:fragment slot="hotOrNot">
             <HotOrNotBet
-              comingSoon
-              disabled
-              publisherCanisterId={post.publisher_canister_id}
-              postId={post.id}
-              betStatus={post.hot_or_not_betting_status[0]} />
+              {post}
+              inView={i == currentVideoIndex && $playerState.visible} />
           </svelte:fragment>
         </PlayerLayout>
       {/if}
@@ -177,7 +183,10 @@ beforeNavigate(() => {
         <div class="text-center text-lg font-bold">
           Error loading posts. Please, refresh the page.
         </div>
-        <Button type="primary" on:click={(e) => e.preventDefault()} href="/">
+        <Button
+          type="primary"
+          on:click={(e) => e.preventDefault()}
+          href="/hotornot">
           Clear here to refresh
         </Button>
       </div>
@@ -199,8 +208,8 @@ beforeNavigate(() => {
         <div class="text-center text-lg font-bold">
           There are no more videos to bet on
         </div>
-        <div class="absolute inset-x-0 bottom-0 z-[-1] max-h-48">
-          <HotOrNotBet disabled postId={0n} />
+        <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
+          <HotOrNotBet disabled />
         </div>
       </div>
     </SwiperSlide>

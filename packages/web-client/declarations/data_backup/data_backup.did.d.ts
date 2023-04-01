@@ -20,6 +20,10 @@ export interface BetDetails {
 }
 export type BetDirection = { 'Hot' : null } |
   { 'Not' : null };
+export type BetOutcomeForBetMaker = { 'Won' : bigint } |
+  { 'Draw' : bigint } |
+  { 'Lost' : null } |
+  { 'AwaitingResult' : null };
 export type BetPayout = { 'NotCalculatedYet' : null } |
   { 'Calculated' : bigint };
 export interface DataBackupInitArgs {
@@ -41,7 +45,9 @@ export type HotOrNotOutcomePayoutEvent = {
       'slot_id' : number,
       'post_id' : bigint,
       'room_id' : bigint,
+      'post_canister_id' : Principal,
       'winnings_amount' : bigint,
+      'event_outcome' : BetOutcomeForBetMaker,
     }
   } |
   {
@@ -50,6 +56,7 @@ export type HotOrNotOutcomePayoutEvent = {
       'post_id' : bigint,
       'room_pot_total_amount' : bigint,
       'room_id' : bigint,
+      'post_canister_id' : Principal,
     }
   };
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |

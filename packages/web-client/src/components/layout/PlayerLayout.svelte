@@ -36,9 +36,8 @@ let watchProgress = {
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
 $: displayName = post.created_by_display_name[0]
-$: bettingClosed =
-  !!post?.hot_or_not_feed_ranking_score?.[0] ||
-  !!post?.hot_or_not_betting_status?.[0]?.['BettingClosed']
+$: bettingStatus = post.hot_or_not_betting_status?.[0]
+$: bettingStatusValue = Object.values(bettingStatus || {})?.[0]
 
 async function handleShare() {
   try {
@@ -163,6 +162,10 @@ async function updateStats() {
 $: if (justWatched) {
   updateStats()
 }
+
+$: avatarUrl =
+  post.created_by_profile_photo_url[0] ||
+  getDefaultImageUrl(post.created_by_user_principal_id)
 </script>
 
 <player-layout
@@ -185,10 +188,7 @@ $: if (justWatched) {
       <div class="flex grow flex-col justify-end space-y-4">
         <div class="pointer-events-auto flex space-x-3">
           <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
-            <Avatar
-              class="h-12 w-12"
-              src={post.created_by_profile_photo_url[0] ||
-                getDefaultImageUrl(post.created_by_user_principal_id)} />
+            <Avatar class="h-12 w-12" src={avatarUrl} />
           </a>
           <div class="flex flex-col space-y-1">
             <a href="/profile/{postPublisherId}">
@@ -247,7 +247,7 @@ $: if (justWatched) {
         {#if showHotOrNotButton}
           <IconButton
             ariaLabel="Check out this post in Hot or Not"
-            disabled={bettingClosed}
+            disabled={!bettingStatusValue}
             href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
             class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
             <FireIcon class="h-5 w-5" />

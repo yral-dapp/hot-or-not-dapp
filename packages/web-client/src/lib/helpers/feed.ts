@@ -115,6 +115,25 @@ export async function getTopPosts(
   }
 }
 
+async function filterBets(
+  posts: PostScoreIndexItem[],
+): Promise<PostScoreIndexItem[]> {
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    const keys = (await idb.keys('bets')) as string[]
+    if (!keys.length) return posts
+    const filtered = posts.filter(
+      (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
+    )
+    return filtered
+  } catch (e) {
+    Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
+    return posts
+  }
+}
+
 export async function getHotOrNotPosts(
   from: number,
   numberOfPosts: number = 10,
@@ -126,7 +145,8 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const populatedRes = await populatePosts(res.Ok)
+      const filteredPosts = await filterBets(res.Ok)
+      const populatedRes = await populatePosts(filteredPosts, true)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -156,7 +176,18 @@ export async function getHotOrNotPosts(
   }
 }
 
-async function populatePosts(posts: PostScoreIndexItem[]) {
+function checkAlreadyBet(post: PostDetailsForFrontend) {
+  const bettingStatus = post.hot_or_not_betting_status?.[0]
+  const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
+  if (bettingStatusValue === null) return true
+  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) return true
+  return false
+}
+
+async function populatePosts(
+  posts: PostScoreIndexItem[],
+  filterBetPosts = false,
+) {
   try {
     if (!posts.length) {
       return { posts: [], error: false }
@@ -168,6 +199,7 @@ async function populatePosts(posts: PostScoreIndexItem[]) {
           const r = await individualUser(
             Principal.from(post.publisher_canister_id),
           ).get_individual_post_details_by_id(post.post_id)
+          if (filterBetPosts && checkAlreadyBet(r)) return undefined
           return {
             ...r,
             ...post,

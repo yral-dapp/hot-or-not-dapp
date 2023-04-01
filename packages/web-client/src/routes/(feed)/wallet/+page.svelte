@@ -114,12 +114,12 @@ $: loggedIn && init()
 				{/each}
 			</div>
 		</div> -->
-    <div class="flex justify-between px-6 pt-4 pb-1">
+    <div class="flex justify-between px-6 pb-1 pt-4">
       <div class="text-sm">Recent Transactions</div>
       <!-- <button class="text-sm opacity-50">See all</button> -->
     </div>
     <div
-      class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pt-4 pb-16">
+      class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pb-16 pt-4">
       {#if errorList}
         <div class="text-sm font-bold opacity-50">
           Error fetching transactions
@@ -128,19 +128,21 @@ $: loggedIn && init()
         <div class="text-sm font-bold opacity-50">Loading</div>
       {:else}
         {#each history as item}
-          {@const name =
-            'NewUserSignup' in item.details ? 'Signup' : 'Referral'}
           <div class="flex items-center justify-between py-4">
             <div class="flex items-center space-x-4">
               <div
                 class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
                 <div
                   class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-                  <ArrowUpIcon class="h-6 w-6" />
+                  {#if item.type === 'Burn' || item.type === 'Stake' || item.type === 'Transfer'}
+                    <ArrowUpIcon class="h-6 w-6 " />
+                  {:else}
+                    <ArrowUpIcon class="h-6 w-6 rotate-180" />
+                  {/if}
                 </div>
               </div>
               <div class="flex flex-col space-y-1">
-                <div>{name}</div>
+                <div>{item.subType?.replace(/([A-Z])/g, ' $1').trim()}</div>
                 <div class="text-sm opacity-50">{item.token} Coins</div>
               </div>
             </div>

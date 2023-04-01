@@ -1,3 +1,3 @@
-import { writable } from 'svelte-local-storage-store'
+import { persisted } from 'svelte-local-storage-store'
 
-export const showOnboarding = writable('hot-or-not-ob', true)
+export const showOnboarding = persisted('hot-or-not-ob', true)

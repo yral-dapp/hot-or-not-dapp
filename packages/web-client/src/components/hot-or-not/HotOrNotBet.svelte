@@ -1,58 +1,94 @@
+<script lang="ts" context="module">
+type UnionKeyOf<U> = U extends U ? keyof U : never
+type BetAPIErrors = UnionKeyOf<BetOnCurrentlyViewingPostError>
+</script>
+
 <script lang="ts">
 import type {
   BetDirection,
   BetOnCurrentlyViewingPostError,
-  BettingStatus,
+  PlacedBetDetail,
 } from '$canisters/individual_user_template/individual_user_template.did'
-import IconButton from '$components/button/IconButton.svelte'
-import BetCoinIcon from '$components/icons/BetCoinIcon.svelte'
-import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
-import HotIcon from '$components/icons/HotIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import NotIcon from '$components/icons/NotIcon.svelte'
-import TimerIcon from '$components/icons/TimerIcon.svelte'
 import { individualUser } from '$lib/helpers/backend'
+import type { PostPopulated } from '$lib/helpers/feed'
 import { fetchTokenBalance } from '$lib/helpers/profile'
+import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
 import { Principal } from '@dfinity/principal'
-import c from 'clsx'
-import { fade } from 'svelte/transition'
+import HotOrNotBetControls, {
+  type BetDirectionString,
+  type PlaceBet,
+} from './HotOrNotBetControls.svelte'
+import HotOrNotBetOutcome from './HotOrNotBetOutcome.svelte'
 
 export let tutorialMode = false
 export let disabled = false
 export let comingSoon = false
-export let betStatus: BettingStatus | undefined = undefined
-export let postId: bigint
-export let publisherCanisterId: string = ''
+export let post: PostPopulated | undefined = undefined
+export let fetchPlacedBetDetail = false
 export let inView = false
 
-let betPlaced: false | 'hot' | 'not' = false
-let betResult: 'pending' | 'lost' | 'won' | 'draw' = 'pending'
-let coinsBetPlaced = 10
-let selectedCoins = 10
-let loading = false
-let tempPlacedBet: false | 'hot' | 'not' = false
-let error = ''
-let timeLeft = '59m 10s'
+$: bettingStatus = post?.hot_or_not_betting_status?.[0]
+$: bettingStatusValue = Object.values(bettingStatus || {})?.[0]
 
-$: if (
-  betStatus?.['BettingOpen']?.['has_this_user_participated_in_this_post']?.[0]
-) {
-  error = 'You have already placed a bet on this post'
-} else if (betStatus && 'BettingClosed' in betStatus) {
+let betPlaced: false | BetDirectionString = false
+let loadingWithDirection: false | BetDirectionString = false
+
+let error = ''
+let idb: IDB
+
+let placedBetDetail: PlacedBetDetail | undefined = undefined
+
+$: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
+  error = 'You have already placed a bet. Fetching your bet info...'
+  updatePlacedBetDetail()
+} else if (bettingStatusValue === null) {
   error = 'Betting has been closed'
 }
 
-$: if (inView && !error && !disabled) {
-  updateBetStatus()
+$: if (inView && fetchPlacedBetDetail) {
+  updatePlacedBetDetail()
+} else if (!fetchPlacedBetDetail) {
+  getBetDetailFromDb()
 }
 
-async function updateBetStatus() {
+async function getBetDetailFromDb() {
+  if (!post) return
+  if (!idb) {
+    try {
+      idb = (await import('$lib/idb')).idb
+    } catch (e) {
+      Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+      return
+    }
+  }
   try {
-    const res = await individualUser().get_hot_or_not_bet_details_for_this_post(
-      postId,
-    )
+    placedBetDetail = (await idb.get(
+      'bets',
+      post.publisher_canister_id + '@' + post.post_id,
+    )) as PlacedBetDetail
+  } catch (e) {
+    Log({ error: e, source: '2 saveBetToDb', type: 'idb' }, 'error')
+    return
+  }
+}
+
+async function updatePlacedBetDetail() {
+  try {
+    if (!post?.publisher_canister_id) return
+    error = ''
+    const res =
+      await individualUser().get_individual_hot_or_not_bet_placed_by_this_profile(
+        Principal.from(post.publisher_canister_id),
+        post.id,
+      )
+    placedBetDetail = res[0]
+    if (placedBetDetail) {
+      setBetDetailToDb(placedBetDetail)
+    } else {
+      throw 'No bet found'
+    }
   } catch (e) {
     //TODO: Add retries
     error = 'Error fetching your bet details'
@@ -68,39 +104,67 @@ async function getWalletBalance() {
   }
 }
 
-async function placeBet(bet: 'hot' | 'not') {
-  try {
-    loading = true
-    tempPlacedBet = bet
-
-    let bet_direction: BetDirection | null = null
-    if (tempPlacedBet === 'hot') {
-      bet_direction = {
-        Hot: null,
-      }
-    } else {
-      bet_direction = {
-        Not: null,
-      }
+async function setBetDetailToDb(betDetail: PlacedBetDetail) {
+  if (!post) return
+  if (!idb) {
+    try {
+      idb = (await import('$lib/idb')).idb
+    } catch (e) {
+      Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+      return
     }
+  }
+  try {
+    idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
+  } catch (e) {
+    Log({ error: e, source: '2 saveBetToDb', type: 'idb' }, 'error')
+    return
+  }
+}
 
-    if (!bet_direction || !publisherCanisterId) return
+async function placeBet({ coins, direction }: PlaceBet) {
+  try {
+    if (loadingWithDirection) return
+    if (!$authState.isLoggedIn) {
+      $authState.showLogin = true
+      return
+    }
+    if (!post?.publisher_canister_id) return
+
+    loadingWithDirection = direction
+
+    const bet_direction = {
+      [direction]: null,
+    } as BetDirection
 
     const betRes = await individualUser().bet_on_currently_viewing_post({
-      bet_amount: BigInt(selectedCoins),
+      bet_amount: BigInt(coins),
       bet_direction,
-      post_id: postId,
-      post_canister_id: Principal.from(publisherCanisterId),
+      post_id: post.id,
+      post_canister_id: Principal.from(post.publisher_canister_id),
     })
 
-    console.log({ betRes })
-
     if ('Ok' in betRes) {
-      betPlaced = tempPlacedBet
+      betPlaced = direction
+
+      placedBetDetail = {
+        amount_bet: BigInt(coins),
+        outcome_received: {
+          AwaitingResult: null,
+        },
+        bet_direction,
+        bet_placed_at: {
+          nanos_since_epoch: 1000,
+          secs_since_epoch: BigInt(Math.floor(new Date().getTime() / 1000)),
+        },
+        slot_id: bettingStatusValue?.ongoing_slot || 1,
+        canister_id: Principal.from(post.publisher_canister_id),
+        post_id: post.id,
+        room_id: bettingStatusValue?.ongoing_room || BigInt(1),
+      }
+      setBetDetailToDb(placedBetDetail)
     } else {
-      type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<BetOnCurrentlyViewingPostError>
-      const err = Object.keys(betRes.Err)[0] as errors
+      const err = Object.keys(betRes.Err)[0] as BetAPIErrors
       switch (err) {
         case 'BettingClosed':
           disabled = true
@@ -111,7 +175,8 @@ async function placeBet(bet: 'hot' | 'not') {
           error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
           break
         case 'UserAlreadyParticipatedInThisPost':
-          error = 'You have already bet on this post'
+          error = 'You have already bet on this post. Fetching details...'
+          updatePlacedBetDetail()
           break
         case 'UserNotLoggedIn':
           $authState.showLogin = true
@@ -119,13 +184,11 @@ async function placeBet(bet: 'hot' | 'not') {
         default:
           throw ''
       }
-      tempPlacedBet = false
-      loading = false
+      loadingWithDirection = false
     }
   } catch (e) {
-    Log({ error: e, postId, from: 'placeBet 1' }, 'error')
-    tempPlacedBet = false
-    loading = false
+    Log({ error: e, postId: post?.id, from: 'placeBet 1' }, 'error')
+    loadingWithDirection = false
     error = 'Something went wrong while placing bet. Please try again'
     setTimeout(() => {
       error = ''
@@ -133,20 +196,20 @@ async function placeBet(bet: 'hot' | 'not') {
   }
 }
 
-function increaseBet() {
-  if (selectedCoins == 10) selectedCoins = 50
-  else if (selectedCoins == 50) selectedCoins = 100
-}
+// $: if (inView && !error && !disabled) {
+//   updatebettingStatus()
+// }
 
-function decreaseBet() {
-  if (selectedCoins == 50) selectedCoins = 10
-  else if (selectedCoins == 100) selectedCoins = 50
-}
-
-function toggleBet() {
-  if (selectedCoins == 100) selectedCoins = 10
-  else increaseBet()
-}
+// async function updatebettingStatus() {
+//   try {
+//     const res = await individualUser().get_hot_or_not_bet_details_for_this_post(
+//       postId,
+//     )
+//   } catch (e) {
+//     //TODO: Add retries
+//     error = 'Error fetching your bet details'
+//   }
+// }
 </script>
 
 <hot-or-not class="pointer-events-none block h-full w-full">
@@ -167,154 +230,14 @@ function toggleBet() {
       </div>
     </div>
   {/if}
-  {#if betPlaced === false}
-    <div
-      class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-8 px-4"
-      transition:fade|local>
-      <div
-        class="relative flex flex-col items-center space-y-1 {error
-          ? 'pointer-events-none'
-          : 'pointer-events-auto'}">
-        {#if tutorialMode}
-          <div
-            class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
-        {/if}
-        <IconButton
-          disabled={tutorialMode || disabled}
-          on:click={(e) => {
-            e.stopImmediatePropagation()
-            placeBet('not')
-          }}>
-          <NotIcon
-            class={c('h-24 transition-transform', {
-              'scale-110': tempPlacedBet === 'not',
-              'scale-90 grayscale': tempPlacedBet === 'hot',
-            })} />
-        </IconButton>
-        <span class="text-sm">Not</span>
-      </div>
-      <div
-        class={c(
-          'relative flex flex-col items-center',
-          tutorialMode || error
-            ? '!pointer-events-none'
-            : 'pointer-events-auto',
-          {
-            'opacity-0': tutorialMode,
-          },
-        )}>
-        <IconButton
-          disabled={selectedCoins == 100 || disabled}
-          on:click={(e) => {
-            e.stopImmediatePropagation()
-            increaseBet()
-          }}
-          class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-            invisible: betPlaced || tempPlacedBet,
-          })}>
-          <ChevronUpIcon class="h-2" />
-        </IconButton>
-        <button
-          disabled={betPlaced !== false || tempPlacedBet !== false || disabled}
-          on:click|stopPropagation={toggleBet}
-          class="relative h-20 w-20 select-none disabled:grayscale">
-          <BetCoinIcon class="h-20" />
-          <div
-            class="absolute inset-0 flex select-none items-center justify-center">
-            {#if loading}
-              <LoadingIcon class="h-8 w-8 animate-spin" />
-            {:else}
-              <span
-                style="text-shadow: 3px 3px 0 #EA9C00;"
-                class="select-none text-3xl font-extrabold text-[#FFCC00]">
-                {selectedCoins}
-              </span>
-            {/if}
-          </div>
-        </button>
-        <IconButton
-          on:click={(e) => {
-            e.stopImmediatePropagation()
-            decreaseBet()
-          }}
-          disabled={selectedCoins == 10 || disabled}
-          class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-            invisible: betPlaced || tempPlacedBet,
-          })}>
-          <ChevronUpIcon class="h-2 rotate-180" />
-        </IconButton>
-      </div>
-      <div
-        class="relative flex flex-col items-center space-y-1 {error
-          ? 'pointer-events-none'
-          : 'pointer-events-auto'}">
-        {#if tutorialMode}
-          <div
-            class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
-        {/if}
-        <IconButton
-          disabled={tutorialMode || disabled}
-          on:click={(e) => {
-            e.stopImmediatePropagation()
-            placeBet('hot')
-          }}>
-          <HotIcon
-            class={c('h-24 transition-transform', {
-              'scale-110': tempPlacedBet === 'hot',
-              'scale-90 grayscale': tempPlacedBet === 'not',
-            })} />
-        </IconButton>
-        <span class="text-sm">Hot</span>
-      </div>
-    </div>
-  {:else}
-    <div transition:fade class="flex h-full w-full items-center space-x-8 px-4">
-      <div
-        class={c('flex items-center', {
-          'translate-y-4 -space-y-8 -space-x-8': betResult !== 'pending',
-          'space-x-2': betResult === 'pending',
-        })}>
-        <div class="z-[2] shrink-0">
-          {#if betPlaced === 'hot'}
-            <HotIcon class="h-16" />
-          {:else if betPlaced === 'not'}
-            <NotIcon class="h-16" />
-          {/if}
-        </div>
-        <div class="relative z-[1] h-16 w-16 shrink-0">
-          <BetCoinIcon class="h-16" />
-          <span
-            style="text-shadow: 3px 3px 0 #EA9C00;"
-            class="absolute inset-0 flex select-none items-center justify-center text-2xl font-extrabold text-[#ffeea8]">
-            {coinsBetPlaced}
-          </span>
-        </div>
-      </div>
-      {#if betResult === 'pending'}
-        <div class="flex shrink-0 grow flex-col space-y-2">
-          <span class="text-sm">
-            Your bet: {coinsBetPlaced} coins on {betPlaced}
-          </span>
-          <div
-            class="flex grow items-center justify-center space-x-2 rounded-full bg-primary px-3 py-2 shadow-button-primary">
-            <TimerIcon class="h-5 w-5" />
-            <span class="font-bold text-white">{timeLeft}</span>
-          </div>
-        </div>
-      {:else}
-        <div class="flex shrink-0 grow flex-col space-y-2">
-          <span class="text-sm">
-            Your bet: {coinsBetPlaced} coins on {betPlaced}
-          </span>
-          <div
-            class="flex grow items-center justify-center space-x-2 rounded-full px-3 py-2 {betResult ===
-            'won'
-              ? 'bg-green-500'
-              : 'bg-red-500'}">
-            <span class="font-bold text-white">You {betResult}</span>
-          </div>
-        </div>
-      {/if}
-    </div>
+  {#if betPlaced === false && !fetchPlacedBetDetail && !placedBetDetail}
+    <HotOrNotBetControls
+      on:placeBet={({ detail }) => placeBet(detail)}
+      {tutorialMode}
+      {disabled}
+      {betPlaced}
+      {loadingWithDirection} />
+  {:else if placedBetDetail}
+    <HotOrNotBetOutcome {placedBetDetail} postCreatedAt={post?.created_at} />
   {/if}
 </hot-or-not>

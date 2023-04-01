@@ -202,13 +202,16 @@ export const idlFactory = ({ IDL }) => {
       'slot_id' : IDL.Nat8,
       'post_id' : IDL.Nat64,
       'room_id' : IDL.Nat64,
+      'post_canister_id' : IDL.Principal,
       'winnings_amount' : IDL.Nat64,
+      'event_outcome' : BetOutcomeForBetMaker,
     }),
     'CommissionFromHotOrNotBet' : IDL.Record({
       'slot_id' : IDL.Nat8,
       'post_id' : IDL.Nat64,
       'room_pot_total_amount' : IDL.Nat64,
       'room_id' : IDL.Nat64,
+      'post_canister_id' : IDL.Principal,
     }),
   });
   const TokenEvent = IDL.Variant({
