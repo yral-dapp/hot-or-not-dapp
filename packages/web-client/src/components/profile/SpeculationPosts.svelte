@@ -56,7 +56,7 @@ onMount(() => loadPosts())
 {#if posts.length}
   <div class="grid grid-cols-3 gap-3 md:grid-cols-4">
     {#each posts as post}
-      <SpeculationPost {me} {post} />
+      <SpeculationPost {userId} {me} {post} />
     {/each}
   </div>
 {:else if !loading && !error}
