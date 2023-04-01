@@ -146,7 +146,7 @@ export async function getHotOrNotPosts(
       )
     if ('Ok' in res) {
       const filteredPosts = await filterBets(res.Ok)
-      const populatedRes = await populatePosts(filteredPosts)
+      const populatedRes = await populatePosts(filteredPosts, true)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
