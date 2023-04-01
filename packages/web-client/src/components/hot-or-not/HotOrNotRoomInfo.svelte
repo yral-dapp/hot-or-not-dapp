@@ -21,23 +21,27 @@ import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 
 export let bettingStatus: BettingStatus
 
-$: betStatus = Object.values(bettingStatus)?.[0] as BetStatus
+$: bettingStatusValue = Object.values(bettingStatus || {})?.[0] as BetStatus
 
-$: bettingOpen = !!betStatus
-
-$: usersInThisSlot = betStatus?.number_of_participants || 0
-$: onGoingSlot = betStatus?.ongoing_slot || 1
-$: betStartedAt = betStatus?.started_at || systemTime
+$: bettingOpen =
+  bettingStatusValue !== null &&
+  bettingStatusValue.has_this_user_participated_in_this_post[0]
+$: console.log({ bettingStatusValue })
+$: usersInThisSlot = bettingStatusValue?.number_of_participants || 0
+$: onGoingSlot = bettingStatusValue?.ongoing_slot || 1
+$: betStartedAt = bettingStatusValue?.started_at || systemTime
 $: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
 </script>
 
 {#if bettingOpen}
   <div class="flex items-center space-x-3">
-    <div
-      class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-      <TimerIcon class="h-4 w-4" />
-      <span class="text-sm">{$timeLeft}</span>
-    </div>
+    {#if $timeLeft}
+      <div
+        class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
+        <TimerIcon class="h-4 w-4" />
+        <span class="text-sm">{$timeLeft}</span>
+      </div>
+    {/if}
     <div
       class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
       <UsersIcon class="h-4 w-4" />
