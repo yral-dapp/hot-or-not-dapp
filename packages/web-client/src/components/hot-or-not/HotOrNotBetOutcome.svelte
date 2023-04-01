@@ -73,7 +73,7 @@ $: if (placedBetDetail) {
   </div>
   {#if betOutcome === 'AwaitingResult'}
     <div class="flex shrink-0 grow flex-col space-y-2">
-      <span class="text-sm">
+      <span class="text-xs">
         You staked <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
@@ -90,8 +90,9 @@ $: if (placedBetDetail) {
   {:else}
     {@const outcomeAmount =
       Number(Object.values(placedBetDetail?.outcome_received || {})?.[0]) || 0}
-    <div class="flex shrink-0 grow flex-col space-y-2">
-      <span class="text-sm">
+    <div
+      class="flex max-w-[15rem] shrink-0 grow flex-col space-y-2 sm:max-w-full">
+      <span class="text-xs">
         You staked <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
