@@ -183,7 +183,7 @@ $: console.log({ placedBetDetail })
       </div>
     </div>
   {/if}
-  {#if betPlaced === false && !placedBetDetail}
+  {#if betPlaced === false && !fetchPlacedBetDetail}
     <HotOrNotBetControls
       on:placeBet={({ detail }) => placeBet(detail)}
       {tutorialMode}
