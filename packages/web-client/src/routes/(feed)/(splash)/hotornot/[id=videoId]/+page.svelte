@@ -21,6 +21,9 @@ import { onMount, tick } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
+import type { PageData } from './$types'
+
+export let data: PageData
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -112,6 +115,9 @@ onMount(async () => {
   if ($hotOrNotFeedVideos.length) {
     videos = $hotOrNotFeedVideos
     $hotOrNotFeedVideos = []
+  } else if (data?.post) {
+    videos = [data.post, ...videos]
+    await updatePostInWatchHistory('watch-hon', data.post)
   }
   await tick()
   await fetchNextVideos()
@@ -162,7 +168,9 @@ beforeNavigate(() => {
             {/if}
           </svelte:fragment>
           <svelte:fragment slot="hotOrNot">
-            <HotOrNotBet {post} />
+            <HotOrNotBet
+              {post}
+              inView={i == currentVideoIndex && $playerState.visible} />
           </svelte:fragment>
         </PlayerLayout>
       {/if}
