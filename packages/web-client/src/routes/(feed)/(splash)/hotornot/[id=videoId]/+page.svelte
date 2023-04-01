@@ -162,10 +162,7 @@ beforeNavigate(() => {
             {/if}
           </svelte:fragment>
           <svelte:fragment slot="hotOrNot">
-            <HotOrNotBet
-              publisherCanisterId={post.publisher_canister_id}
-              postId={post.id}
-              betStatus={post.hot_or_not_betting_status[0]} />
+            <HotOrNotBet {post} />
           </svelte:fragment>
         </PlayerLayout>
       {/if}
@@ -204,7 +201,7 @@ beforeNavigate(() => {
           There are no more videos to bet on
         </div>
         <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-          <HotOrNotBet disabled postId={0n} />
+          <HotOrNotBet disabled />
         </div>
       </div>
     </SwiperSlide>
