@@ -74,7 +74,10 @@ $: if (placedBetDetail) {
   {#if betOutcome === 'AwaitingResult'}
     <div class="flex shrink-0 grow flex-col space-y-2">
       <span class="text-sm">
-        Your bet: {amountBet} coins on {amountBet}
+        You staked <strong>{amountBet}</strong>
+        tokens on
+        <strong>{betDirection}.</strong>
+        Result is still pending.
       </span>
       {#if timeLeft}
         <div
@@ -89,8 +92,8 @@ $: if (placedBetDetail) {
       Number(Object.values(placedBetDetail?.outcome_received || {})?.[0]) || 0}
     <div class="flex shrink-0 grow flex-col space-y-2">
       <span class="text-sm">
-        Your staked <strong>{amountBet}</strong>
-        coins on
+        You staked <strong>{amountBet}</strong>
+        tokens on
         <strong>{betDirection}.</strong>
 
         {#if betOutcome === 'Won' && outcomeAmount}
