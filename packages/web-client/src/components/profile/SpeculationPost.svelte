@@ -27,6 +27,7 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getMsLeftForBetResult, getTimeStringFromMs } from '$lib/utils/timeLeft'
+import c from 'clsx'
 
 export let me: boolean
 export let userId: string
@@ -46,6 +47,9 @@ $: timeLeft = getMsLeftForBetResult(
   post.placed_bet_details.slot_id,
   post.created_at,
 )
+$: outcomeAmount =
+  Number(Object.values(post.placed_bet_details.outcome_received || {})?.[0]) ||
+  0
 </script>
 
 <a
@@ -70,18 +74,26 @@ $: timeLeft = getMsLeftForBetResult(
         {BET_KEYWORD}
       </span>
       <span class="pb-2 text-lg font-bold">
-        {Number(post.placed_bet_details.amount_bet)} Tokens
+        {#if BET_OUTCOME === 'Draw'}
+          {Number(post.placed_bet_details.amount_bet) - outcomeAmount}
+        {:else}
+          {outcomeAmount}
+        {/if}
+        Tokens
       </span>
 
-      {#if BET_OUTCOME === 'Lost' || BET_OUTCOME === 'Draw'}
+      {#if BET_OUTCOME !== 'AwaitingResult'}
         <div
-          class="flex w-full items-center justify-center rounded-full bg-red-600 py-2 text-sm text-white">
-          {YOU} Lost
-        </div>
-      {:else if BET_OUTCOME === 'Won'}
-        <div
-          class="flex w-full items-center justify-center rounded-full bg-green-400 py-2 text-sm text-white">
-          {YOU} Won
+          class={c(
+            'flex w-full items-center justify-center rounded-full  py-2 text-sm text-white',
+            {
+              'bg-red-600': BET_OUTCOME === 'Lost',
+              'bg-green-500': BET_OUTCOME === 'Won',
+              'bg-gray-600': BET_OUTCOME === 'Draw',
+            },
+          )}>
+          {BET_OUTCOME !== 'Draw' ? YOU : ''}
+          {BET_OUTCOME}
         </div>
       {:else if BET_OUTCOME === 'AwaitingResult'}
         <div
