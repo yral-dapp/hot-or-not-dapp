@@ -24,7 +24,7 @@ export function getMsLeftForBetResult(
 
       return () => clearInterval(interval)
     })
-  } else return readable('0')
+  } else return readable('')
 }
 
 export function getTimeStringFromMs(timeMs: number) {
