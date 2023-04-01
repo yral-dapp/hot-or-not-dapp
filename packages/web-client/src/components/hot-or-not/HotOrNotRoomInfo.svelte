@@ -20,13 +20,14 @@ import UsersIcon from '$components/icons/UsersIcon.svelte'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 
 export let bettingStatus: BettingStatus
-$: betStatus = bettingStatus[0] as BetStatus
+
+$: betStatus = Object.values(bettingStatus)?.[0] as BetStatus
 
 $: bettingOpen = !!betStatus
+
 $: usersInThisSlot = betStatus?.number_of_participants || 0
 $: onGoingSlot = betStatus?.ongoing_slot || 1
 $: betStartedAt = betStatus?.started_at || systemTime
-
 $: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
 </script>
 
