@@ -115,6 +115,25 @@ export async function getTopPosts(
   }
 }
 
+async function filterBets(
+  posts: PostScoreIndexItem[],
+): Promise<PostScoreIndexItem[]> {
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    const keys = (await idb.keys('bets')) as string[]
+    if (!keys.length) return posts
+    const filtered = posts.filter(
+      (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
+    )
+    return filtered
+  } catch (e) {
+    Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
+    return posts
+  }
+}
+
 export async function getHotOrNotPosts(
   from: number,
   numberOfPosts: number = 10,
@@ -126,7 +145,8 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const populatedRes = await populatePosts(res.Ok)
+      const filteredPosts = await filterBets(res.Ok)
+      const populatedRes = await populatePosts(filteredPosts)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
