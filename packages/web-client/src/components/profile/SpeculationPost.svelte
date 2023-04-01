@@ -55,7 +55,7 @@ $: outcomeAmount =
 <a
   href={`/profile/${userId}/speculations/${post.publisher_canister_id}@${post.id}`}
   data-sveltekit-preload-code="eager"
-  class="relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
+  class="relative aspect-[3/5] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
   <div
     class="absolute inset-0 scale-110 bg-cover bg-center"
     style="background-image: url('{imageBg}')" />
@@ -74,7 +74,9 @@ $: outcomeAmount =
         {BET_KEYWORD}
       </span>
       <span class="pb-2 text-lg font-bold">
-        {#if BET_OUTCOME === 'Draw'}
+        {#if BET_OUTCOME === 'AwaitingResult'}
+          {post.placed_bet_details.amount_bet}
+        {:else if BET_OUTCOME === 'Draw'}
           {Number(post.placed_bet_details.amount_bet) - outcomeAmount}
         {:else}
           {outcomeAmount}
