@@ -16,7 +16,6 @@ function getBetDirection(direction: BetDirection): BetType {
 import type {
   BetDirection,
   BetOutcomeForBetMaker,
-  BettingStatus,
   PlacedBetDetail,
   SystemTime,
 } from '$canisters/individual_user_template/individual_user_template.did'
@@ -72,8 +71,8 @@ $: if (placedBetDetail) {
     </div>
   </div>
   {#if betOutcome === 'AwaitingResult'}
-    <div class="flex shrink-0 grow flex-col space-y-2">
-      <span class="text-xs">
+    <div class="flex grow flex-col space-y-2">
+      <span class="min-w-0 whitespace-normal text-xs">
         You staked <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
