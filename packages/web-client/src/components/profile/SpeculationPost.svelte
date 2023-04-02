@@ -64,7 +64,7 @@ $: outcomeAmount =
     class="pointer-events-none absolute inset-0 z-[2] flex flex-col justify-between p-2 md:p-4">
     <div class="flex items-center space-x-2">
       <Avatar class="h-6 w-6" src={avatarUrl} />
-      <div class="text-sm font-semibold">
+      <div class="text-xs font-semibold sm:text-sm">
         {username}
       </div>
     </div>
@@ -73,7 +73,7 @@ $: outcomeAmount =
         {YOU}
         {BET_KEYWORD}
       </span>
-      <span class="pb-2 text-lg font-bold">
+      <span class="pb-2 text-sm font-bold md:text-lg">
         {#if BET_OUTCOME === 'AwaitingResult'}
           {post.placed_bet_details.amount_bet}
         {:else if BET_OUTCOME === 'Draw'}
@@ -87,7 +87,7 @@ $: outcomeAmount =
       {#if BET_OUTCOME !== 'AwaitingResult'}
         <div
           class={c(
-            'flex w-full items-center justify-center rounded-full  py-2 text-sm text-white',
+            'flex w-full items-center justify-center rounded-full py-1 text-sm text-white md:py-2',
             {
               'bg-red-600': BET_OUTCOME === 'Lost',
               'bg-green-500': BET_OUTCOME === 'Won',
@@ -99,8 +99,8 @@ $: outcomeAmount =
         </div>
       {:else if BET_OUTCOME === 'AwaitingResult'}
         <div
-          class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-2 text-sm text-white">
-          <TimerIcon class="h-4 w-4" />
+          class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-1 text-sm text-white md:py-2">
+          <TimerIcon class="h-5 w-5" />
           <span>{$timeLeft}</span>
         </div>
       {/if}
