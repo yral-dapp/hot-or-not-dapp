@@ -2,7 +2,10 @@ export const ssr = false
 
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'
-import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
+import {
+  setBetDetailToDb,
+  type PostPopulatedWithBetDetails,
+} from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import userProfile from '$stores/userProfile'
 import { Principal } from '@dfinity/principal'
@@ -60,6 +63,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
         postRes.created_by_user_principal_id.toText(),
       placed_bet_details: betDetail[0],
     }
+
+    setBetDetailToDb(post, betDetail[0])
 
     return { me, post }
   } catch (e) {
