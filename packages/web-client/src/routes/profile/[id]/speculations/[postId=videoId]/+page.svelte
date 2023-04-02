@@ -52,7 +52,11 @@ let { post, me } = data
           inView
           uid={post.video_uid} />
         <svelte:fragment slot="hotOrNot">
-          <HotOrNotBet {post} fetchPlacedBetDetail inView />
+          <HotOrNotBet
+            profileUserId={$page.params.id}
+            {post}
+            placedBetDetail={post.placed_bet_details}
+            inView />
         </svelte:fragment>
       </PlayerLayout>
     </div>

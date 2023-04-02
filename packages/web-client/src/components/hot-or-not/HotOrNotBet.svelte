@@ -10,8 +10,9 @@ import type {
   PlacedBetDetail,
 } from '$canisters/individual_user_template/individual_user_template.did'
 import { individualUser } from '$lib/helpers/backend'
+import { getCanisterId } from '$lib/helpers/canisterId'
 import type { PostPopulated } from '$lib/helpers/feed'
-import { fetchTokenBalance } from '$lib/helpers/profile'
+import { fetchTokenBalance, setBetDetailToDb } from '$lib/helpers/profile'
 import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
@@ -28,6 +29,8 @@ export let comingSoon = false
 export let post: PostPopulated | undefined = undefined
 export let fetchPlacedBetDetail = false
 export let inView = false
+export let profileUserId: string | undefined = undefined
+export let placedBetDetail: PlacedBetDetail | undefined = undefined
 
 $: bettingStatus = post?.hot_or_not_betting_status?.[0]
 $: bettingStatusValue = Object.values(bettingStatus || {})?.[0]
@@ -38,8 +41,6 @@ let loadingWithDirection: false | BetDirectionString = false
 let error = ''
 let idb: IDB
 
-let placedBetDetail: PlacedBetDetail | undefined = undefined
-
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
@@ -49,7 +50,7 @@ $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
 
 $: if (inView && fetchPlacedBetDetail) {
   updatePlacedBetDetail()
-} else if (!fetchPlacedBetDetail) {
+} else if (!fetchPlacedBetDetail && !placedBetDetail) {
   getBetDetailFromDb()
 }
 
@@ -77,20 +78,23 @@ async function getBetDetailFromDb() {
 async function updatePlacedBetDetail() {
   try {
     if (!post?.publisher_canister_id) return
+    if (profileUserId) profileUserId = await getCanisterId(profileUserId)
     error = ''
-    const res =
-      await individualUser().get_individual_hot_or_not_bet_placed_by_this_profile(
-        Principal.from(post.publisher_canister_id),
-        post.id,
-      )
+    const res = await individualUser(
+      profileUserId,
+    ).get_individual_hot_or_not_bet_placed_by_this_profile(
+      Principal.from(post.publisher_canister_id),
+      post.id,
+    )
     placedBetDetail = res[0]
     if (placedBetDetail) {
-      setBetDetailToDb(placedBetDetail)
+      setBetDetailToDb(post, placedBetDetail)
     } else {
       throw 'No bet found'
     }
   } catch (e) {
     //TODO: Add retries
+    Log({ error: e, source: '1 updatePlacedBetDetail' }, 'error')
     error = 'Error fetching your bet details'
   }
 }
@@ -101,24 +105,6 @@ async function getWalletBalance() {
     throw res.error
   } else {
     return res.balance
-  }
-}
-
-async function setBetDetailToDb(betDetail: PlacedBetDetail) {
-  if (!post) return
-  if (!idb) {
-    try {
-      idb = (await import('$lib/idb')).idb
-    } catch (e) {
-      Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
-      return
-    }
-  }
-  try {
-    idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
-  } catch (e) {
-    Log({ error: e, source: '2 saveBetToDb', type: 'idb' }, 'error')
-    return
   }
 }
 
@@ -162,7 +148,7 @@ async function placeBet({ coins, direction }: PlaceBet) {
         post_id: post.id,
         room_id: bettingStatusValue?.ongoing_room || BigInt(1),
       }
-      setBetDetailToDb(placedBetDetail)
+      setBetDetailToDb(post, placedBetDetail)
     } else {
       const err = Object.keys(betRes.Err)[0] as BetAPIErrors
       switch (err) {
