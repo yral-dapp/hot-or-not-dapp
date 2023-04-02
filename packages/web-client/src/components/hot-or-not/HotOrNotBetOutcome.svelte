@@ -16,7 +16,6 @@ function getBetDirection(direction: BetDirection): BetType {
 import type {
   BetDirection,
   BetOutcomeForBetMaker,
-  BettingStatus,
   PlacedBetDetail,
   SystemTime,
 } from '$canisters/individual_user_template/individual_user_template.did'
@@ -72,8 +71,8 @@ $: if (placedBetDetail) {
     </div>
   </div>
   {#if betOutcome === 'AwaitingResult'}
-    <div class="flex shrink-0 grow flex-col space-y-2">
-      <span class="text-xs">
+    <div class="flex grow flex-col space-y-2">
+      <span class="whitespace-normal text-xs">
         You staked <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
@@ -90,9 +89,8 @@ $: if (placedBetDetail) {
   {:else}
     {@const outcomeAmount =
       Number(Object.values(placedBetDetail?.outcome_received || {})?.[0]) || 0}
-    <div
-      class="flex max-w-[15rem] shrink-0 grow flex-col space-y-2 sm:max-w-full">
-      <span class="text-xs">
+    <div class="flex grow flex-col space-y-2">
+      <span class="whitespace-normal text-xs">
         You staked <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
@@ -111,7 +109,7 @@ $: if (placedBetDetail) {
       </span>
       <div
         class={c(
-          'flex grow items-center justify-center space-x-2 rounded-full px-3 py-2',
+          'flex items-center justify-center space-x-2 rounded-full px-3 py-2',
           {
             'bg-green-500': betOutcome === 'Won',
             'bg-red-500': betOutcome === 'Lost',
