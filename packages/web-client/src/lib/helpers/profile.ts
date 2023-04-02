@@ -433,6 +433,21 @@ async function transformHistoryRecords(
   return history
 }
 
+export async function setBetDetailToDb(
+  post: PostPopulated,
+  betDetail: PlacedBetDetail,
+) {
+  if (!post) return
+
+  try {
+    const idb = (await import('$lib/idb')).idb
+    idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
+  } catch (e) {
+    Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+    return
+  }
+}
+
 export async function fetchHistory(
   from: number,
   filter?: UnionKeyOf<MintEvent>,
