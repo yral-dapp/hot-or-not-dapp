@@ -43,8 +43,8 @@ let placedBetDetail: PlacedBetDetail | undefined = undefined
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
-} else if (bettingStatusValue === null) {
-  error = 'Betting has been closed'
+} else if (!bettingStatusValue) {
+  error = 'Betting has been closed.'
 }
 
 $: if (inView && fetchPlacedBetDetail) {
@@ -223,9 +223,9 @@ async function placeBet({ coins, direction }: PlaceBet) {
     </div>
   {:else if error}
     <div
-      class="absolute inset-0 bottom-0 z-50 flex items-center justify-center">
+      class="absolute inset-0 bottom-0 z-50 flex items-center justify-center px-4">
       <div
-        class="rounded-md bg-white p-4 text-center text-sm text-black drop-shadow-md">
+        class="rounded-md bg-white px-2 py-3 text-center text-sm text-black drop-shadow-md">
         {error}
       </div>
     </div>
@@ -234,7 +234,7 @@ async function placeBet({ coins, direction }: PlaceBet) {
     <HotOrNotBetControls
       on:placeBet={({ detail }) => placeBet(detail)}
       {tutorialMode}
-      {disabled}
+      disabled={disabled || !!error}
       {betPlaced}
       {loadingWithDirection} />
   {:else if placedBetDetail}
