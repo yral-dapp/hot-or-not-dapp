@@ -179,7 +179,7 @@ export async function getHotOrNotPosts(
 function checkAlreadyBet(post: PostDetailsForFrontend) {
   const bettingStatus = post.hot_or_not_betting_status?.[0]
   const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
-  if (bettingStatusValue === null) return true
+  if (!bettingStatusValue) return true
   if (bettingStatusValue.has_this_user_participated_in_this_post[0]) return true
   return false
 }
