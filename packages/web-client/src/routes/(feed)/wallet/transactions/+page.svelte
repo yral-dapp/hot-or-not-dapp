@@ -65,14 +65,18 @@ async function loadTransactions() {
     {:else}
       {#if transactions.length}
         {#each transactions as item}
+          {@const deducted =
+            item.type === 'Burn' ||
+            item.type === 'Stake' ||
+            item.type === 'Transfer'}
           <div class="flex items-center justify-between py-4">
             <div class="flex items-center space-x-4">
               <div
                 class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
                 <div
                   class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-                  {#if item.type === 'Burn' || item.type === 'Stake' || item.type === 'Transfer'}
-                    <ArrowUpIcon class="h-6 w-6 " />
+                  {#if deducted}
+                    <ArrowUpIcon class="h-6 w-6" />
                   {:else}
                     <ArrowUpIcon class="h-6 w-6 rotate-180" />
                   {/if}
@@ -83,7 +87,10 @@ async function loadTransactions() {
                 <div class="text-sm opacity-50">{item.token} Coins</div>
               </div>
             </div>
-            <div class="text-sm text-green-600">+ {item.token}</div>
+            <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
+              {deducted ? '-' : '+'}
+              {item.token}
+            </div>
           </div>
         {/each}
       {:else if !loading}
