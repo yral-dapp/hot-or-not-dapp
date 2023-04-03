@@ -5,7 +5,7 @@ import { authState } from '$stores/auth'
 import LoginPopup from '$components/login/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
-import navigateBack from '$stores/navigateBack'
+import { navigateBack, navigationHistory } from '$stores/navigation'
 import { registerEvent } from '$components/seo/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { initializeAuthClient } from '$lib/helpers/auth'
@@ -89,7 +89,12 @@ onMount(() => {
   }
 })
 
-beforeNavigate(({ from, to }) => {
+beforeNavigate(({ from, to, type }) => {
+  if (type === 'popstate') return
+
+  if (to?.url.pathname) {
+    $navigationHistory.push(to.url.pathname)
+  }
   if (
     ignoredPaths.some((path) => from?.url.pathname.includes(path)) ||
     ignoredPaths.some((path) => to?.url.pathname.includes(path))

@@ -6,12 +6,12 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import { goto } from '$app/navigation'
 import { page } from '$app/stores'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
 import Hls from 'hls.js/dist/hls.min'
 import { individualUser } from '$lib/helpers/backend'
+import goBack from '$lib/utils/goBack'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 
 export let data: PageData
@@ -41,11 +41,7 @@ async function handleChange(e: CustomEvent) {
     {/if}
 
     <div class="absolute top-4 left-4">
-      <IconButton
-        on:click={() =>
-          history.length > 2
-            ? history.back()
-            : goto(`/profile/${$page.params.id}`)}>
+      <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
         <CaretLeftIcon class="h-5 w-5" />
       </IconButton>
     </div>

@@ -12,6 +12,7 @@ import {
   loveUser,
   type UserProfileFollows,
 } from '$lib/helpers/profile'
+import goBack from '$lib/utils/goBack'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
@@ -82,7 +83,9 @@ async function handleLove(userIndex: number, userId?: string) {
 
 <ProfileLayout>
   <svelte:fragment slot="top-left">
-    <IconButton on:click={() => goto(`/profile/${userId}`)} class="shrink-0">
+    <IconButton
+      on:click={() => goBack(`/profile/${userId}`, true)}
+      class="shrink-0">
       <CaretLeftIcon class="h-7 w-7" />
     </IconButton>
   </svelte:fragment>

@@ -16,6 +16,7 @@ import { authState } from '$stores/auth'
 import { goto } from '$app/navigation'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser, userIndex } from '$lib/helpers/backend'
+import goBack from '$lib/utils/goBack'
 
 export let data: PageData
 
@@ -139,18 +140,19 @@ async function saveChanges() {
       error = 'Could not save your profile. Please login again to try again.'
     }
     loading = false
-    goto(
-      `/profile/${
-        username_set ? $userProfile.unique_user_name : $userProfile.principal_id
-      }`,
-    )
-
     registerEvent('edit_my_profile', {
       userId: $userProfile.principal_id,
       display_name: displayName,
       profile_image: imgSrc,
       username: $userProfile.unique_user_name,
     })
+
+    goto(
+      `/profile/${
+        username_set ? $userProfile.unique_user_name : $userProfile.principal_id
+      }`,
+      { replaceState: true },
+    )
   } catch (e) {
     loading = false
     Log({ error: e, from: '2 saveChanges' }, 'error')
@@ -166,22 +168,21 @@ onMount(async () => {
   loading = false
   pageLoaded = true
 })
+
+$: userId = username_set
+  ? $userProfile.unique_user_name
+  : $userProfile.principal_id
 </script>
 
 <svelte:head>
   <title>Edit Profile | Hot or Not</title>
 </svelte:head>
-
 {#if pageLoaded}
   <ProfileLayout>
     <svelte:fragment slot="top-left">
       <IconButton
         disabled={loading}
-        href={`/profile/${
-          username_set
-            ? $userProfile.unique_user_name
-            : $userProfile.principal_id
-        }`}
+        on:click={() => goBack(`/profile/${userId}`, true)}
         class="shrink-0">
         <CaretLeftIcon class="h-7 w-7" />
       </IconButton>

@@ -29,7 +29,7 @@ let txnHistory: TransactionHistory[] = []
 
 const INVITE_WIN_TOKENS = 500
 
-async function loadHistory() {
+async function loadTransactions() {
   if (endOfList || !loggedIn) {
     return
   }
@@ -76,7 +76,7 @@ async function copyLink() {
 
 onMount(() => {
   if ($authState.isLoggedIn) {
-    loadHistory()
+    loadTransactions()
     registerEvent('refer_earn_visit', {
       display_name: $userProfile.display_name,
       username: $userProfile.unique_user_name,

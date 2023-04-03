@@ -13,10 +13,11 @@ import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
 import { doIFollowThisUser, loveUser } from '$lib/helpers/profile'
+import goBack from '$lib/utils/goBack'
 import { handleParams } from '$lib/utils/params'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
-import navigateBack from '$stores/navigateBack'
+import { navigateBack } from '$stores/navigation'
 import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 import { debounce } from 'throttle-debounce'
@@ -101,11 +102,7 @@ onMount(() => {
 
 <ProfileLayout>
   <svelte:fragment slot="top-left">
-    <IconButton
-      href={$navigateBack && !$navigateBack.includes('edit')
-        ? $navigateBack
-        : '/feed'}
-      class="shrink-0">
+    <IconButton on:click={() => goBack($navigateBack, true)} class="shrink-0">
       <CaretLeftIcon class="h-7 w-7" />
     </IconButton>
   </svelte:fragment>
