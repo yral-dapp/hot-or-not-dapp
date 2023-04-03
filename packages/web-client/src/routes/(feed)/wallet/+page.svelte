@@ -116,7 +116,7 @@ $: loggedIn && init()
 		</div> -->
     <div class="flex justify-between px-6 pb-1 pt-4">
       <div class="text-sm">Recent Transactions</div>
-      <!-- <button class="text-sm opacity-50">See all</button> -->
+      <a href="/wallet/transactions" class="text-sm opacity-50">See all</a>
     </div>
     <div
       class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pb-16 pt-4">
