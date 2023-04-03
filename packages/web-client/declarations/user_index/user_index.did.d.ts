@@ -10,7 +10,7 @@ export interface CanisterStatusResponse {
   'cycles' : bigint,
   'settings' : DefiniteCanisterSettings,
   'idle_cycles_burned_per_day' : bigint,
-  'module_hash' : [] | [Uint8Array],
+  'module_hash' : [] | [Uint8Array | number[]],
 }
 export type CanisterStatusType = { 'stopped' : null } |
   { 'stopping' : null } |
@@ -30,7 +30,9 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdPostCache' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
-export type Result = { 'Ok' : null } |
+export type Result = { 'Ok' : CanisterStatusResponse } |
+  { 'Err' : string };
+export type Result_1 = { 'Ok' : null } |
   { 'Err' : SetUniqueUsernameError };
 export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
@@ -57,7 +59,7 @@ export interface _SERVICE {
   'backup_all_individual_user_canisters' : ActorMethod<[], undefined>,
   'get_canister_status_from_management_canister' : ActorMethod<
     [Principal],
-    CanisterStatusResponse
+    Result
   >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
@@ -73,7 +75,6 @@ export interface _SERVICE {
     [Principal],
     [] | [Principal]
   >,
-  'get_user_roles' : ActorMethod<[Principal], Array<UserAccessRole>>,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
     [] | [Principal]
@@ -85,16 +86,11 @@ export interface _SERVICE {
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
-    Result
+    Result_1
   >,
-  'update_user_add_role' : ActorMethod<[UserAccessRole, Principal], undefined>,
   'update_user_index_upgrade_user_canisters_with_latest_wasm' : ActorMethod<
     [],
     string
-  >,
-  'update_user_remove_role' : ActorMethod<
-    [UserAccessRole, Principal],
-    undefined
   >,
   'upgrade_specific_individual_user_canister_with_latest_wasm' : ActorMethod<
     [Principal, Principal, [] | [CanisterInstallMode]],

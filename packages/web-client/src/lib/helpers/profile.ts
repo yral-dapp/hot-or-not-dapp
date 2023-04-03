@@ -1,6 +1,7 @@
 import type {
   GetPostsOfUserProfileError,
   MintEvent,
+  PlacedBetDetail,
   PostDetailsForFrontend,
   SystemTime,
   TokenEvent,
@@ -23,10 +24,15 @@ import { Principal } from '@dfinity/principal'
 import { get } from 'svelte/store'
 import { individualUser } from './backend'
 import { getCanisterId } from './canisterId'
+import type { PostPopulated } from './feed'
 import { setUser } from './sentry'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
+}
+
+export interface PostPopulatedWithBetDetails extends PostPopulated {
+  placed_bet_details: PlacedBetDetail
 }
 
 async function fetchProfile() {
@@ -127,6 +133,16 @@ type ProfilePostsResponse =
       noMorePosts: boolean
     }
 
+type ProfileSpeculationsResponse =
+  | {
+      error: true
+    }
+  | {
+      error: false
+      posts: PostPopulatedWithBetDetails[]
+      noMorePosts: boolean
+    }
+
 export async function fetchPosts(
   id: string,
   from: number,
@@ -161,6 +177,66 @@ export async function fetchPosts(
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
+  }
+}
+
+export async function fetchSpeculations(
+  id: string,
+  from: number,
+): Promise<ProfileSpeculationsResponse> {
+  try {
+    const canId = await getCanisterId(id)
+
+    const res = await individualUser(
+      Principal.from(canId),
+    ).get_hot_or_not_bets_placed_by_this_profile_with_pagination(BigInt(from))
+    const populatedRes = await populatePosts(res)
+    if (populatedRes.error) {
+      return { error: true }
+    }
+    return {
+      error: false,
+      posts: populatedRes.posts,
+      noMorePosts: res.length < 10,
+    }
+  } catch (e) {
+    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    return { error: true }
+  }
+}
+
+async function populatePosts(posts: PlacedBetDetail[]) {
+  try {
+    if (!posts.length) {
+      return { posts: [], error: false }
+    }
+
+    const res = await Promise.all(
+      posts.map(async (post) => {
+        try {
+          const r = await individualUser(
+            Principal.from(post.canister_id),
+          ).get_individual_post_details_by_id(post.post_id)
+          return {
+            ...r,
+            placed_bet_details: post,
+            score: BigInt(0),
+            created_by_user_principal_id:
+              r.created_by_user_principal_id.toText(),
+            publisher_canister_id: post.canister_id.toText(),
+          } as PostPopulatedWithBetDetails
+        } catch (_) {
+          return undefined
+        }
+      }),
+    )
+    return {
+      posts: res.filter((o) => !!o) as PostPopulatedWithBetDetails[],
+      error: false,
+    }
+  } catch (e) {
+    Log({ error: e, from: '11 populatePosts.feed' }, 'error')
+    return { error: true, posts: [] }
   }
 }
 
@@ -318,6 +394,7 @@ export interface TransactionHistory {
   token: number
   timestamp: SystemTime
   details: MintEvent
+  subType: string
 }
 
 type HistoryResponse =
@@ -340,11 +417,13 @@ async function transformHistoryRecords(
     const obj = o[1]
     const type = Object.keys(obj)[0] as UnionKeyOf<TokenEvent>
     const subType = Object.keys(obj[type].details)[0]
+
     if (!filter || filter === subType) {
       history.push({
         id: o[0],
         type,
-        token: subType === 'NewUserSignup' ? 1000 : 500,
+        subType,
+        token: Object.values(o[1])?.[0]?.amount || 0,
         timestamp: obj[type].timestamp as SystemTime,
         details: obj[type].details as MintEvent,
       })
@@ -352,6 +431,21 @@ async function transformHistoryRecords(
   })
 
   return history
+}
+
+export async function setBetDetailToDb(
+  post: PostPopulated,
+  betDetail: PlacedBetDetail,
+) {
+  if (!post) return
+
+  try {
+    const idb = (await import('$lib/idb')).idb
+    idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
+  } catch (e) {
+    Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+    return
+  }
 }
 
 export async function fetchHistory(

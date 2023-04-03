@@ -3,7 +3,7 @@ import ProfileIcon from '$components/icons/ProfileIcon.svelte'
 import TrophyIcon from '$components/icons/TrophyIcon.svelte'
 import c from 'clsx'
 
-export let selected: 'posts' | 'trophy'
+export let selected: 'posts' | 'speculations'
 </script>
 
 <profile-tabs class="relative flex h-16 w-full shrink-0 justify-between">
@@ -13,9 +13,9 @@ export let selected: 'posts' | 'trophy'
     <ProfileIcon filled={selected === 'posts'} class="h-6 w-6" />
   </button>
   <button
-    on:click={() => (selected = 'trophy')}
+    on:click={() => (selected = 'speculations')}
     class="flex flex-1 items-center justify-center">
-    <TrophyIcon filled={selected === 'trophy'} class="h-6 w-6" />
+    <TrophyIcon filled={selected === 'speculations'} class="h-6 w-6" />
   </button>
   <div
     class={c(

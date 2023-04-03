@@ -14,14 +14,25 @@ export type AnotherUserFollowedMeError = {
   { 'UserTryingToFollowMeDoesNotExist' : null };
 export interface BetDetails {
   'bet_direction' : BetDirection,
+  'bet_maker_canister_id' : Principal,
   'amount' : bigint,
+  'payout' : BetPayout,
 }
 export type BetDirection = { 'Hot' : null } |
   { 'Not' : null };
-export type BetOnCurrentlyViewingPostError = { 'InsufficientBalance' : null } |
+export type BetOnCurrentlyViewingPostError = { 'UserPrincipalNotSet' : null } |
+  { 'InsufficientBalance' : null } |
   { 'UserAlreadyParticipatedInThisPost' : null } |
   { 'BettingClosed' : null } |
+  { 'Unauthorized' : null } |
+  { 'PostCreatorCanisterCallFailed' : null } |
   { 'UserNotLoggedIn' : null };
+export type BetOutcomeForBetMaker = { 'Won' : bigint } |
+  { 'Draw' : bigint } |
+  { 'Lost' : null } |
+  { 'AwaitingResult' : null };
+export type BetPayout = { 'NotCalculatedYet' : null } |
+  { 'Calculated' : bigint };
 export type BettingStatus = {
     'BettingOpen' : {
       'number_of_participants' : number,
@@ -55,9 +66,27 @@ export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
 export interface HotOrNotDetails {
   'hot_or_not_feed_score' : FeedScore,
   'aggregate_stats' : AggregateStats,
-  'score' : bigint,
   'slot_history' : Array<[number, SlotDetails]>,
 }
+export type HotOrNotOutcomePayoutEvent = {
+    'WinningsEarnedFromBet' : {
+      'slot_id' : number,
+      'post_id' : bigint,
+      'room_id' : bigint,
+      'post_canister_id' : Principal,
+      'winnings_amount' : bigint,
+      'event_outcome' : BetOutcomeForBetMaker,
+    }
+  } |
+  {
+    'CommissionFromHotOrNotBet' : {
+      'slot_id' : number,
+      'post_id' : bigint,
+      'room_pot_total_amount' : bigint,
+      'room_id' : bigint,
+      'post_canister_id' : Principal,
+    }
+  };
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'profile_owner' : [] | [Principal],
@@ -85,6 +114,17 @@ export interface PlaceBetArg {
   'bet_amount' : bigint,
   'post_id' : bigint,
   'bet_direction' : BetDirection,
+  'post_canister_id' : Principal,
+}
+export interface PlacedBetDetail {
+  'outcome_received' : BetOutcomeForBetMaker,
+  'slot_id' : number,
+  'post_id' : bigint,
+  'room_id' : bigint,
+  'canister_id' : Principal,
+  'bet_direction' : BetDirection,
+  'amount_bet' : bigint,
+  'bet_placed_at' : SystemTime,
 }
 export interface Post {
   'id' : bigint,
@@ -98,7 +138,6 @@ export interface Post {
   'home_feed_score' : FeedScore,
   'view_stats' : PostViewStatistics,
   'hot_or_not_details' : [] | [HotOrNotDetails],
-  'homefeed_ranking_score' : bigint,
   'creator_consent_for_inclusion_in_hot_or_not' : boolean,
 }
 export interface PostDetailsForFrontend {
@@ -148,30 +187,62 @@ export type Result = { 'Ok' : bigint } |
   { 'Err' : string };
 export type Result_1 = { 'Ok' : BettingStatus } |
   { 'Err' : BetOnCurrentlyViewingPostError };
-export type Result_2 = { 'Ok' : Array<PostDetailsForFrontend> } |
+export type Result_2 = { 'Ok' : Post } |
+  { 'Err' : null };
+export type Result_3 = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_3 = { 'Ok' : Array<Principal> } |
+export type Result_4 = { 'Ok' : Array<Principal> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_4 = { 'Ok' : Array<[bigint, TokenEvent]> } |
+export type Result_5 = { 'Ok' : Array<[bigint, TokenEvent]> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_5 = { 'Ok' : boolean } |
-  { 'Err' : FollowAnotherUserProfileError };
 export type Result_6 = { 'Ok' : boolean } |
+  { 'Err' : FollowAnotherUserProfileError };
+export type Result_7 = { 'Ok' : boolean } |
   { 'Err' : AnotherUserFollowedMeError };
-export type Result_7 = { 'Ok' : UserProfileDetailsForFrontend } |
+export type Result_8 = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
-export type Result_8 = { 'Ok' : null } |
+export type Result_9 = { 'Ok' : null } |
   { 'Err' : UpdateProfileSetUniqueUsernameError };
-export interface RoomDetails { 'bets_made' : Array<[Principal, BetDetails]> }
+export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
+  { 'BetOngoing' : null } |
+  { 'Draw' : null } |
+  { 'NotWon' : null };
+export interface RoomDetails {
+  'total_hot_bets' : bigint,
+  'bets_made' : Array<[Principal, BetDetails]>,
+  'total_not_bets' : bigint,
+  'room_bets_total_pot' : bigint,
+  'bet_outcome' : RoomBetPossibleOutcomes,
+}
 export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
+export type StakeEvent = { 'BetOnHotOrNotPost' : PlaceBetArg };
 export interface SystemTime {
   'nanos_since_epoch' : number,
   'secs_since_epoch' : bigint,
 }
-export type TokenEvent = { 'Stake' : null } |
+export type TokenEvent = {
+    'Stake' : {
+      'timestamp' : SystemTime,
+      'details' : StakeEvent,
+      'amount' : bigint,
+    }
+  } |
   { 'Burn' : null } |
-  { 'Mint' : { 'timestamp' : SystemTime, 'details' : MintEvent } } |
-  { 'Transfer' : null };
+  {
+    'Mint' : {
+      'timestamp' : SystemTime,
+      'details' : MintEvent,
+      'amount' : bigint,
+    }
+  } |
+  { 'Transfer' : null } |
+  {
+    'HotOrNotOutcomePayout' : {
+      'timestamp' : SystemTime,
+      'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : bigint,
+    }
+  };
 export type UpdateProfileDetailsError = { 'NotAuthorized' : null };
 export type UpdateProfileSetUniqueUsernameError = {
     'UsernameAlreadyTaken' : null
@@ -206,13 +277,13 @@ export interface UserProfileUpdateDetailsFromFrontend {
   'display_name' : [] | [string],
 }
 export interface _SERVICE {
-  'add_post' : ActorMethod<[PostDetailsFromFrontend], bigint>,
   'add_post_v2' : ActorMethod<[PostDetailsFromFrontend], Result>,
   'backup_data_to_backup_canister' : ActorMethod<
     [Principal, Principal],
     undefined
   >,
   'bet_on_currently_viewing_post' : ActorMethod<[PlaceBetArg], Result_1>,
+  'get_entire_individual_post_detail_by_id' : ActorMethod<[bigint], Result_2>,
   'get_following_status_do_i_follow_this_user' : ActorMethod<
     [Principal],
     boolean
@@ -221,30 +292,46 @@ export interface _SERVICE {
     [bigint],
     BettingStatus
   >,
+  'get_hot_or_not_bets_placed_by_this_profile_with_pagination' : ActorMethod<
+    [bigint],
+    Array<PlacedBetDetail>
+  >,
+  'get_individual_hot_or_not_bet_placed_by_this_profile' : ActorMethod<
+    [Principal, bigint],
+    [] | [PlacedBetDetail]
+  >,
   'get_individual_post_details_by_id' : ActorMethod<
     [bigint],
     PostDetailsForFrontend
   >,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_2
+    Result_3
   >,
-  'get_principals_i_follow_paginated' : ActorMethod<[bigint, bigint], Result_3>,
+  'get_principals_i_follow_paginated' : ActorMethod<[bigint, bigint], Result_4>,
   'get_principals_that_follow_me_paginated' : ActorMethod<
     [bigint, bigint],
-    Result_3
+    Result_4
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_4
+    Result_5
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
     [] | [Principal]
+  >,
+  'receive_bet_from_bet_makers_canister' : ActorMethod<
+    [PlaceBetArg, Principal],
+    Result_1
+  >,
+  'receive_bet_winnings_when_distributed' : ActorMethod<
+    [bigint, BetOutcomeForBetMaker],
+    undefined
   >,
   'receive_my_created_posts_from_data_backup_canister' : ActorMethod<
     [Array<Post>],
@@ -280,15 +367,15 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_principals_i_follow_toggle_list_with_principal_specified' : ActorMethod<
     [Principal],
-    Result_5
+    Result_6
   >,
   'update_principals_that_follow_me_toggle_list_with_specified_principal' : ActorMethod<
     [Principal],
-    Result_6
+    Result_7
   >,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_7
+    Result_8
   >,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_8>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_9>,
 }
