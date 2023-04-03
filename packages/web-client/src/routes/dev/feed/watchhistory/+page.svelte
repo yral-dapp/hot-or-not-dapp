@@ -2,7 +2,7 @@
 import type { PostPopulatedHistory } from '$lib/helpers/feed'
 import { onMount } from 'svelte'
 
-let history: PostPopulatedHistory[] = []
+let watchHistory: PostPopulatedHistory[] = []
 let error = false
 
 async function getHistory() {
@@ -10,11 +10,11 @@ async function getHistory() {
     const { idb } = await import('$lib/idb')
     const values = (await idb.values('watch')) as PostPopulatedHistory[]
     if (values.length) {
-      history = values
+      watchHistory = values
     }
   } catch (_) {
     error = true
-    history = []
+    watchHistory = []
   }
 }
 
@@ -24,7 +24,7 @@ onMount(() => getHistory())
 <div class="py-2 text-sm text-white">
   {#if error}
     Error fetching history
-  {:else if history.length}
+  {:else if watchHistory.length}
     <table class="table-auto divide-y divide-white/30 border">
       <thead>
         <tr>
@@ -35,7 +35,7 @@ onMount(() => getHistory())
         </tr>
       </thead>
       <tbody>
-        {#each history as item}
+        {#each watchHistory as item}
           <tr>
             <td>{item.id}</td>
             <td>

@@ -7,6 +7,7 @@ import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import Hls from 'hls.js/dist/hls.min'
+import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
 
 export let data: PageData
@@ -29,7 +30,7 @@ let { video, me } = data
     {/if}
 
     <div class="absolute top-4 left-4">
-      <IconButton href={`/profile/${$page.params.id}`} preload>
+      <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
         <CaretLeftIcon class="h-5 w-5" />
       </IconButton>
     </div>

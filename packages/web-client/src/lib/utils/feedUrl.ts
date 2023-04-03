@@ -1,6 +1,6 @@
 import { registerPageView } from '$components/seo/GA.svelte'
 import type { PostPopulated } from '$lib/helpers/feed'
-import navigateBack from '$stores/navigateBack'
+import { navigateBack } from '$stores/navigation'
 import { playerState } from '$stores/playerState'
 
 export function updateURL(post?: PostPopulated) {
