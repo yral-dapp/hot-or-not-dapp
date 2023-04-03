@@ -30,11 +30,14 @@ import type { Readable } from 'svelte/store'
 
 export let placedBetDetail: PlacedBetDetail | undefined = undefined
 export let postCreatedAt: SystemTime | undefined = undefined
+export let me = false
 
 let betOutcome: BetOutcome = 'AwaitingResult'
 let betDirection: BetType = 'Hot'
 let amountBet: number = 10
 let timeLeft: Readable<string>
+
+$: YOU = me ? 'You' : 'User'
 
 $: if (placedBetDetail) {
   betOutcome = getBetStatus(placedBetDetail.outcome_received)
@@ -73,7 +76,8 @@ $: if (placedBetDetail) {
   {#if betOutcome === 'AwaitingResult'}
     <div class="flex grow flex-col space-y-2">
       <span class="whitespace-normal text-xs">
-        You staked <strong>{amountBet}</strong>
+        {YOU} staked
+        <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
         Result is still pending.
@@ -91,19 +95,22 @@ $: if (placedBetDetail) {
       Number(Object.values(placedBetDetail?.outcome_received || {})?.[0]) || 0}
     <div class="flex grow flex-col space-y-2">
       <span class="whitespace-normal text-xs">
-        You staked <strong>{amountBet}</strong>
+        {YOU} staked
+        <strong>{amountBet}</strong>
         tokens on
         <strong>{betDirection}.</strong>
 
         {#if betOutcome === 'Won' && outcomeAmount}
-          You received <strong>{outcomeAmount}</strong>
+          {YOU} received
+          <strong>{outcomeAmount}</strong>
           tokens.
         {/if}
         {#if betOutcome === 'Lost'}
-          You lost {amountBet} tokens.
+          {YOU} lost {amountBet} tokens.
         {/if}
         {#if betOutcome === 'Draw' && outcomeAmount}
-          You got refunded <strong>{outcomeAmount}</strong>
+          {YOU} got refunded
+          <strong>{outcomeAmount}</strong>
           tokens after deducting commission.
         {/if}
       </span>
@@ -117,7 +124,7 @@ $: if (placedBetDetail) {
           },
         )}>
         <span class="font-bold text-white">
-          {betOutcome != 'Draw' ? 'You' : ''}
+          {betOutcome != 'Draw' && me ? 'You' : ''}
           {betOutcome}
         </span>
       </div>

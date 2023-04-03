@@ -55,6 +55,7 @@ let { post, me } = data
           <HotOrNotBet
             profileUserId={$page.params.id}
             {post}
+            {me}
             placedBetDetail={post.placed_bet_details}
             inView />
         </svelte:fragment>
