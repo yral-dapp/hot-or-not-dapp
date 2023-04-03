@@ -31,6 +31,7 @@ export let fetchPlacedBetDetail = false
 export let inView = false
 export let profileUserId: string | undefined = undefined
 export let placedBetDetail: PlacedBetDetail | undefined = undefined
+export let me = false
 
 $: bettingStatus = post?.hot_or_not_betting_status?.[0]
 $: bettingStatusValue = Object.values(bettingStatus || {})?.[0]
@@ -224,6 +225,9 @@ async function placeBet({ coins, direction }: PlaceBet) {
       {betPlaced}
       {loadingWithDirection} />
   {:else if placedBetDetail}
-    <HotOrNotBetOutcome {placedBetDetail} postCreatedAt={post?.created_at} />
+    <HotOrNotBetOutcome
+      {me}
+      {placedBetDetail}
+      postCreatedAt={post?.created_at} />
   {/if}
 </hot-or-not>
