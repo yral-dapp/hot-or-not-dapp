@@ -169,6 +169,7 @@ beforeNavigate(() => {
           </svelte:fragment>
           <svelte:fragment slot="hotOrNot">
             <HotOrNotBet
+              me
               {post}
               inView={i == currentVideoIndex && $playerState.visible} />
           </svelte:fragment>
