@@ -1,4 +1,5 @@
 <script lang="ts">
+import CloudNotAvailableIcon from '$components/icons/CloudNotAvailableIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import PlayIcon from '$components/icons/PlayIcon.svelte'
 import SoundIcon from '$components/icons/SoundIcon.svelte'
@@ -31,6 +32,7 @@ let loaded = false
 let hls: Hls | null = null
 let waiting = false
 let paused = false
+let videoUnavailable = false
 
 export const checkVideoIsPlaying = debounce(
   500,
@@ -153,6 +155,11 @@ onMount(() => {
       hls = new Hls({ maxBufferLength: 5 })
       hls?.loadSource(src)
       hls?.attachMedia(videoEl)
+      hls?.on(Hls.Events.ERROR, function (event, data) {
+        if (data?.response?.code == 404) {
+          videoUnavailable = true
+        }
+      })
     } else {
       // Fallback to mp4
       videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
@@ -199,7 +206,16 @@ onDestroy(() => {
   poster={thumbnail}
   class="object-fit absolute z-[3] h-full w-full" />
 
-{#if $playerState.muted || paused}
+{#if videoUnavailable}
+  <div
+    class="absolute inset-0 z-[6] flex flex-col items-center justify-center space-y-3 px-8">
+    <CloudNotAvailableIcon class="h-12 w-12" />
+    <div class="font-bold">Video unavailable</div>
+    <div class="text-center text-sm">
+      This video was removed due to content policy ToS
+    </div>
+  </div>
+{:else if $playerState.muted || paused}
   <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
     <div class="flex h-full items-center justify-center">
       {#if paused}
@@ -213,5 +229,5 @@ onDestroy(() => {
 
 {#if !loaded || waiting}
   <LoadingIcon
-    class="absolute top-6 right-6 z-[5] h-6 w-6 animate-spin-slow text-white" />
+    class="absolute right-6 top-6 z-[5] h-6 w-6 animate-spin-slow text-white" />
 {/if}
