@@ -54,7 +54,7 @@ onMount(() => loadPosts())
 </script>
 
 {#if posts.length}
-  <div class="grid grid-cols-3 gap-3 md:grid-cols-4">
+  <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
     {#each posts as post}
       <SpeculationPost {userId} {me} {post} />
     {/each}
