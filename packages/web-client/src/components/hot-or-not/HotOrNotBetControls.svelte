@@ -17,6 +17,7 @@ import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
 import HotIcon from '$components/icons/HotIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import NotIcon from '$components/icons/NotIcon.svelte'
+import { playerState } from '$stores/playerState'
 import c from 'clsx'
 import { createEventDispatcher } from 'svelte'
 import { fade } from 'svelte/transition'
@@ -31,27 +32,25 @@ const dispatch = createEventDispatcher<{
   placeBet: PlaceBet
 }>()
 
-let selectedCoins = 10
-
 function increaseBet() {
-  if (selectedCoins == 10) selectedCoins = 50
-  else if (selectedCoins == 50) selectedCoins = 100
+  if ($playerState.selectedCoins == 10) $playerState.selectedCoins = 50
+  else if ($playerState.selectedCoins == 50) $playerState.selectedCoins = 100
 }
 
 function decreaseBet() {
-  if (selectedCoins == 50) selectedCoins = 10
-  else if (selectedCoins == 100) selectedCoins = 50
+  if ($playerState.selectedCoins == 50) $playerState.selectedCoins = 10
+  else if ($playerState.selectedCoins == 100) $playerState.selectedCoins = 50
 }
 
 function toggleBet() {
-  if (selectedCoins == 100) selectedCoins = 10
+  if ($playerState.selectedCoins == 100) $playerState.selectedCoins = 10
   else increaseBet()
 }
 
 function placeBet(direction: 'Hot' | 'Not') {
   dispatch('placeBet', {
     direction,
-    coins: selectedCoins,
+    coins: $playerState.selectedCoins,
   })
 }
 </script>
@@ -90,7 +89,7 @@ function placeBet(direction: 'Hot' | 'Not') {
       },
     )}>
     <IconButton
-      disabled={selectedCoins == 100 || disabled}
+      disabled={$playerState.selectedCoins == 100 || disabled}
       on:click={(e) => {
         e.stopImmediatePropagation()
         increaseBet()
@@ -115,7 +114,7 @@ function placeBet(direction: 'Hot' | 'Not') {
           <span
             style="text-shadow: 3px 3px 0 #EA9C00;"
             class="select-none text-3xl font-extrabold text-[#FFCC00]">
-            {selectedCoins}
+            {$playerState.selectedCoins}
           </span>
         {/if}
       </div>
@@ -125,7 +124,7 @@ function placeBet(direction: 'Hot' | 'Not') {
         e.stopImmediatePropagation()
         decreaseBet()
       }}
-      disabled={selectedCoins == 10 || disabled}
+      disabled={$playerState.selectedCoins == 10 || disabled}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
         invisible: betPlaced || loadingWithDirection,
       })}>
