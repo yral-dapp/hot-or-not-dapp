@@ -44,6 +44,7 @@ let { post, me } = data
         watchHistoryDb="watch-hon"
         showReferAndEarnLink
         showShareButton
+        showDescription
         let:recordView>
         <VideoPlayer
           on:watchedPercentage={({ detail }) => recordView(detail)}

@@ -25,6 +25,7 @@ export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
 export let showHotOrNotButton = false
+export let showDescription = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 
 let showTruncatedDescription = true
@@ -201,14 +202,16 @@ $: avatarUrl =
             </div>
           </div>
         </div>
-        <button
-          class:max-h-10={showTruncatedDescription}
-          on:click|stopImmediatePropagation={(e) => {
-            showTruncatedDescription = !showTruncatedDescription
-          }}
-          class="pointer-events-auto truncate text-ellipsis whitespace-normal text-left text-sm">
-          {post.description}
-        </button>
+        {#if showDescription}
+          <button
+            class:max-h-10={showTruncatedDescription}
+            on:click|stopImmediatePropagation={(e) => {
+              showTruncatedDescription = !showTruncatedDescription
+            }}
+            class="pointer-events-auto truncate text-ellipsis whitespace-normal text-left text-sm">
+            {post.description}
+          </button>
+        {/if}
         <slot name="betRoomInfo" />
       </div>
       <div

@@ -23,13 +23,13 @@ let { video, me } = data
   <svelte:fragment slot="top">
     {#if me != undefined}
       <div class="flex w-full items-center justify-center pt-2">
-        <div class="rounded-full bg-black/50 py-2 px-4">
+        <div class="rounded-full bg-black/50 px-4 py-2">
           {me ? 'Your' : "User's"} Videos
         </div>
       </div>
     {/if}
 
-    <div class="absolute top-4 left-4">
+    <div class="absolute left-4 top-4">
       <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
         <CaretLeftIcon class="h-5 w-5" />
       </IconButton>
@@ -42,6 +42,7 @@ let { video, me } = data
         index={0}
         watchHistoryDb="watch"
         showLikeButton
+        showDescription
         showReferAndEarnLink
         showShareButton
         showHotOrNotButton
