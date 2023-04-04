@@ -156,6 +156,7 @@ onDestroy(() => {
           showLikeButton
           showReferAndEarnLink
           showShareButton
+          showDescription
           showHotOrNotButton
           justWatched={i === lastWatchedVideoIndex}
           let:recordView>
