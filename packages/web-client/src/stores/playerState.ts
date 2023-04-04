@@ -7,7 +7,7 @@ export const playerState = writable<{
   muted: boolean
   currentFeedUrl: string
   currentHotOrNotUrl: string
-  selectedCoins: 10 | 50 | 100
+  selectedCoins: number
 }>({
   initialized: false,
   muted: true,
