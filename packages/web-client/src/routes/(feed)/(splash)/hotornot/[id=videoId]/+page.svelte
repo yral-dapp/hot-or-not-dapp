@@ -148,6 +148,7 @@ beforeNavigate(() => {
         <PlayerLayout
           bind:post
           index={i}
+          source="hon_feed"
           watchHistoryDb="watch-hon"
           showReferAndEarnLink
           showShareButton

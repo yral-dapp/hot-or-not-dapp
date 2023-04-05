@@ -41,6 +41,7 @@ let { post, me } = data
       <PlayerLayout
         bind:post
         index={0}
+        source="speculation"
         watchHistoryDb="watch-hon"
         showReferAndEarnLink
         showShareButton
