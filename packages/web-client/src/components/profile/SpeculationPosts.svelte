@@ -62,7 +62,7 @@ onMount(() => loadPosts())
 {:else if !loading && !error}
   <div
     class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-    <NoBetsIcon class="w-52" />
+    <NoBetsIcon class="w-32" />
     <div class="text-center text-lg font-bold">
       {#if me}
         You don't have any current bets yet
