@@ -62,6 +62,7 @@ async function handleChange(e: CustomEvent) {
             <PlayerLayout
               bind:post
               index={i}
+              source="post"
               watchHistoryDb="watch"
               showLikeButton
               showReferAndEarnLink

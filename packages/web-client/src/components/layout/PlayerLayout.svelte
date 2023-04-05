@@ -27,6 +27,7 @@ export let showLikeButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
+export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
 
 let showTruncatedDescription = true
 let watchProgress = {
@@ -51,6 +52,7 @@ async function handleShare() {
     })
   } catch (_) {}
   registerEvent('share_video', {
+    source,
     userId: $userProfile.principal_id,
     video_publisher_id: postPublisherId,
     video_publisher_canister_id: post.publisher_canister_id,
@@ -90,6 +92,7 @@ async function handleLike() {
   }
 
   registerEvent('like_video', {
+    source,
     userId: $userProfile.principal_id,
     video_publisher_id:
       post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
@@ -145,6 +148,7 @@ async function updateStats() {
   Log({ from: '0 updateStats', id: post.id, payload }, 'info')
 
   registerEvent('view_video', {
+    source,
     userId: $userProfile.principal_id,
     video_publisher_id: postPublisherId,
     video_publisher_canister_id: post.publisher_canister_id,

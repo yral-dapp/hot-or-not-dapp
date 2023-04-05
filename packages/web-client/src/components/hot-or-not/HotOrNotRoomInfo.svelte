@@ -35,21 +35,21 @@ $: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
 {#if bettingOpen}
   <div class="flex items-center space-x-3">
     {#if $timeLeft}
-      <div
+      <button
         class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
         <TimerIcon class="h-4 w-4" />
         <span class="text-sm">{$timeLeft}</span>
-      </div>
+      </button>
     {/if}
-    <div
+    <button
       class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
       <UsersIcon class="h-4 w-4" />
       <span class="text-sm">{usersInThisSlot}/100</span>
-    </div>
-    <div
+    </button>
+    <button
       class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
       <PieChartIcon class="h-4 w-4" />
       <span class="text-sm">{onGoingSlot}/48</span>
-    </div>
+    </button>
   </div>
 {/if}

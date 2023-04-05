@@ -155,6 +155,7 @@ beforeNavigate(() => {
         <PlayerLayout
           bind:post
           index={i}
+          source="main_feed"
           watchHistoryDb="watch"
           showLikeButton
           showReferAndEarnLink

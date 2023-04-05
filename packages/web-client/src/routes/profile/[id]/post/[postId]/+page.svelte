@@ -40,6 +40,7 @@ let { video, me } = data
       <PlayerLayout
         bind:post={video}
         index={0}
+        source="post"
         watchHistoryDb="watch"
         showLikeButton
         showDescription
