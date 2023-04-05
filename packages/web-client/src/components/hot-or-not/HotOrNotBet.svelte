@@ -9,6 +9,7 @@ import type {
   BetOnCurrentlyViewingPostError,
   PlacedBetDetail,
 } from '$canisters/individual_user_template/individual_user_template.did'
+import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'
 import type { PostPopulated } from '$lib/helpers/feed'
@@ -149,6 +150,16 @@ async function placeBet({ coins, direction }: PlaceBet) {
         post_id: post.id,
         room_id: bettingStatusValue?.ongoing_room || BigInt(1),
       }
+
+      registerEvent('bet_placed', {
+        bet_direction: direction,
+        bet_amount: coins,
+        bet_placed_by_id: $authState.idString,
+        bet_placed_by_canister_id: $authState.userCanisterId,
+        post_publisher_canister_id: post.publisher_canister_id,
+        post_id: post.id,
+        post_uid: `${post.publisher_canister_id}@${post.id}`,
+      })
       setBetDetailToDb(post, placedBetDetail)
     } else {
       const err = Object.keys(betRes.Err)[0] as BetAPIErrors
