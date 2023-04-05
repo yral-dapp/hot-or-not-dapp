@@ -94,6 +94,9 @@ onMount(() => {
   })
   handleParams()
 })
+
+$: tab = $page.url.searchParams.get('tab')
+$: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
 </script>
 
 <svelte:head>
@@ -195,7 +198,7 @@ onMount(() => {
       </div>
     {/if}
     <div class="px-6 pt-2">
-      <ProfileTabs bind:selected={selectedTab} />
+      <ProfileTabs bind:selectedTab />
     </div>
     <div class="flex h-full flex-col px-6 py-6">
       {#if selectedTab === 'posts'}
