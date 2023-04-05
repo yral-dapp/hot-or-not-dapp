@@ -114,6 +114,7 @@ onMount(async () => {
   updateURL()
   $playerState.initialized = false
   $playerState.muted = true
+  $playerState.visible = true
   if ($homeFeedVideos.length) {
     videos = $homeFeedVideos
     $homeFeedVideos = []
@@ -126,7 +127,9 @@ onMount(async () => {
   handleParams()
 })
 
-onDestroy(() => {
+beforeNavigate(() => {
+  $playerState.visible = false
+  $playerState.muted = true
   if (loadTimeout) {
     clearTimeout(loadTimeout)
   }
