@@ -104,7 +104,9 @@ function placeBet(direction: 'Hot' | 'Not') {
         loadingWithDirection !== false ||
         disabled}
       on:click|stopPropagation={toggleBet}
-      class="relative h-20 w-20 select-none disabled:grayscale">
+      class="relative h-20 w-20 select-none {betPlaced !== false || disabled
+        ? 'grayscale'
+        : ''}">
       <BetCoinIcon class="h-20" />
       <div
         class="absolute inset-0 flex select-none items-center justify-center">
