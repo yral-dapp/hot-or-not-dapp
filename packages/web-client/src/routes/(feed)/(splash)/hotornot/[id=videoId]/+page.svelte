@@ -27,7 +27,7 @@ export let data: PageData
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
-const keepVideosLoadedCount: number = 4
+const keepVideosLoadedCount: number = 3
 
 let videos: PostPopulated[] = []
 let currentVideoIndex = 0
@@ -112,19 +112,22 @@ onMount(async () => {
   updateURL()
   $playerState.initialized = false
   $playerState.muted = true
+  $playerState.visible = true
   if ($hotOrNotFeedVideos.length) {
     videos = $hotOrNotFeedVideos
     $hotOrNotFeedVideos = []
   } else if (data?.post) {
     videos = [data.post, ...videos]
-    await updatePostInWatchHistory('watch-hon', data.post)
+    updatePostInWatchHistory('watch-hon', data.post)
   }
   await tick()
-  await fetchNextVideos()
+  fetchNextVideos()
   handleParams()
 })
 
 beforeNavigate(() => {
+  $playerState.visible = false
+  $playerState.muted = true
   videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex))
 })
 </script>
