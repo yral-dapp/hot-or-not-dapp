@@ -21,6 +21,8 @@ function preloadLinks() {
 }
 
 onMount(() => preloadLinks())
+
+$: homeIconFilled = path.includes('feed')
 </script>
 
 <bottom-nav
@@ -32,7 +34,9 @@ onMount(() => preloadLinks())
     ariaLabel="Navigate to home feed"
     href={`/feed/${feedUrl}`}
     class="relative flex items-center px-2 py-5">
-    <HomeIcon filled={path.includes('feed')} class="h-6 w-6 text-white" />
+    <HomeIcon
+      filled={homeIconFilled}
+      class="h-6 w-6 {homeIconFilled ? 'text-primary' : 'text-white'} " />
     <div
       class:hidden={!path.includes('feed')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
