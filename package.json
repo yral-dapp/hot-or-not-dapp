@@ -29,13 +29,13 @@
   },
   "devDependencies": {
     "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
-    "@types/node": "18.15.10",
-    "@typescript-eslint/eslint-plugin": "5.56.0",
-    "@typescript-eslint/parser": "5.56.0",
-    "eslint": "8.36.0",
+    "@types/node": "18.15.11",
+    "@typescript-eslint/eslint-plugin": "5.57.1",
+    "@typescript-eslint/parser": "5.57.1",
+    "eslint": "8.37.0",
     "eslint-plugin-svelte3": "4.0.0",
     "prettier": "2.8.7",
     "prettier-plugin-svelte": "2.10.0",
-    "prettier-plugin-tailwindcss": "0.2.6"
+    "prettier-plugin-tailwindcss": "0.2.7"
   }
 }
