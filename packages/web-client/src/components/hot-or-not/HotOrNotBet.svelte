@@ -154,11 +154,12 @@ async function placeBet({ coins, direction }: PlaceBet) {
       registerEvent('bet_placed', {
         bet_direction: direction,
         bet_amount: coins,
-        bet_placed_by_id: $authState.idString,
-        bet_placed_by_canister_id: $authState.userCanisterId,
-        post_publisher_canister_id: post.publisher_canister_id,
-        post_id: post.id,
-        post_uid: `${post.publisher_canister_id}@${post.id}`,
+        userId: $authState.idString,
+        user_canister_id: $authState.userCanisterId,
+        video_publisher_canister_id: post.publisher_canister_id,
+        video_publisher_id: post.created_by_user_principal_id,
+        video_id: post.id,
+        video_identifier_id: `${post.publisher_canister_id}@${post.id}`,
       })
       setBetDetailToDb(post, placedBetDetail)
     } else {
