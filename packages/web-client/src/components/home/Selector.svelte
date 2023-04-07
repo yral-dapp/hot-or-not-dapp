@@ -1,4 +1,5 @@
 <script lang="ts">
+import HomeIcon from '$components/icons/HomeIcon.svelte'
 import { playerState } from '$stores/playerState'
 import c from 'clsx'
 export let selected: 'videos' | 'hot-or-not' = 'hot-or-not'
@@ -20,7 +21,7 @@ $: hotOrNotUrl =
         'absolute inset-x-0 z-[1] h-9 rounded-full bg-primary p-4 transition-all duration-200',
         selected === 'hot-or-not'
           ? 'w-[6.5rem]  translate-x-2'
-          : 'w-20 translate-x-[6.5rem]',
+          : 'w-[5.5rem] translate-x-[6.75rem]',
       )} />
     {#if showDot === 'hot-or-not'}
       <selector-dot
@@ -39,8 +40,9 @@ $: hotOrNotUrl =
     <a
       href="/feed/{feedUrl}"
       on:click={() => (selected = 'videos')}
-      class="z-[2]">
-      Videos
+      class="z-[2] flex items-center space-x-2">
+      <HomeIcon filled class="h-3 w-3 text-white" />
+      <span>Home</span>
     </a>
   </div>
 </home-selector>
