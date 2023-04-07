@@ -83,6 +83,10 @@ export interface _SERVICE {
     [Principal, Principal, string],
     undefined
   >,
+  'retry_upgrade_for_canisters_that_failed_upgrade_with_the_latest_wasm' : ActorMethod<
+    [],
+    Array<[Principal, Principal, string]>
+  >,
   'topup_canisters_that_need_it' : ActorMethod<[], undefined>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],

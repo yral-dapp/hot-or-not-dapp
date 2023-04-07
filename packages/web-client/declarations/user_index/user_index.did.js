@@ -113,6 +113,11 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'retry_upgrade_for_canisters_that_failed_upgrade_with_the_latest_wasm' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal, IDL.Text))],
+        [],
+      ),
     'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
