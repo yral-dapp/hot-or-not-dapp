@@ -46,8 +46,12 @@ let idb: IDB
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
-} else if (!bettingStatusValue) {
+} else if (!bettingStatusValue && !placedBetDetail) {
   error = 'Betting has been closed.'
+}
+
+$: if (placedBetDetail) {
+  error = ''
 }
 
 $: if (inView && fetchPlacedBetDetail) {
