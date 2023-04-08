@@ -113,12 +113,12 @@ onMount(async () => {
   $playerState.initialized = false
   $playerState.muted = true
   $playerState.visible = true
-  if ($hotOrNotFeedVideos.length) {
-    videos = $hotOrNotFeedVideos
-    $hotOrNotFeedVideos = []
-  } else if (data?.post) {
+  if (data?.post) {
     videos = [data.post, ...videos]
     updatePostInWatchHistory('watch-hon', data.post)
+  } else if ($hotOrNotFeedVideos.length) {
+    videos = $hotOrNotFeedVideos
+    $hotOrNotFeedVideos = []
   }
   await tick()
   fetchNextVideos()
