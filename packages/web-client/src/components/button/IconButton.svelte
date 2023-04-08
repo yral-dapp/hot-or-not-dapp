@@ -34,7 +34,13 @@ $: classes = c(
     <slot />
   </a>
 {:else}
-  <button aria-label={ariaLabel} {style} on:click {disabled} class={classes}>
+  <button
+    type="button"
+    aria-label={ariaLabel}
+    {style}
+    on:click
+    {disabled}
+    class={classes}>
     <slot />
   </button>
 {/if}

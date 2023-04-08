@@ -10,5 +10,6 @@ export default function (goBackTo?: string | null, replaceState?: boolean) {
     history.back()
     navHistory.pop()
     navigationHistory.set(navHistory)
+    return false
   }
 }

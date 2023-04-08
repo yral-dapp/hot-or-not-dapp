@@ -9,7 +9,7 @@ export let selectedTab: 'posts' | 'speculations'
 <profile-tabs class="relative flex h-16 w-full shrink-0 justify-between">
   <button
     on:click={() => {
-      history.replaceState(null, '', '')
+      history.replaceState(history.state, '', '')
       selectedTab = 'posts'
     }}
     class="flex flex-1 items-center justify-center">
@@ -17,7 +17,7 @@ export let selectedTab: 'posts' | 'speculations'
   </button>
   <button
     on:click={() => {
-      history.replaceState(null, '', '?tab=speculations')
+      history.replaceState(history.state, '', '?tab=speculations')
       selectedTab = 'speculations'
     }}
     class="flex flex-1 items-center justify-center">
