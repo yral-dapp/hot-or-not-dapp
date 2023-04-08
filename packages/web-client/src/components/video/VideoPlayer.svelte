@@ -23,6 +23,7 @@ let ios = isiPhone()
 const dispatch = createEventDispatcher<{
   watchedPercentage: number
   loaded: void
+  videoUnavailable: void
 }>()
 
 let videoEl: HTMLVideoElement
@@ -158,6 +159,7 @@ onMount(() => {
       hls?.on(Hls.Events.ERROR, function (event, data) {
         if (data?.response?.code == 404) {
           videoUnavailable = true
+          dispatch('videoUnavailable')
         }
       })
     } else {
