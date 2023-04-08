@@ -33,6 +33,7 @@ let loaded = false
 let hls: Hls | null = null
 let waiting = false
 let paused = false
+let playing = true
 let videoUnavailable = false
 
 export const checkVideoIsPlaying = debounce(
@@ -40,9 +41,9 @@ export const checkVideoIsPlaying = debounce(
   async () => {
     await tick()
     if (videoEl?.paused) {
-      paused = true
+      playing = false
     } else if (videoEl) {
-      paused = false
+      playing = true
       videoEl.volume = 1
     }
   },
@@ -86,11 +87,11 @@ export const play = debounce(
           .play()
           .then(() => {
             videoEl.volume = 1
-            paused = false
+            playing = true
             checkVideoIsPlaying()
           })
           .catch(() => {
-            paused = true
+            playing = false
           })
       }
     }
@@ -109,10 +110,10 @@ async function handleClick() {
         videoEl
           .play()
           .then(() => {
-            paused = false
+            playing = true
           })
           .catch(() => {
-            paused = true
+            playing = false
           })
         $playerState.muted = false
         videoEl.muted = false
@@ -196,6 +197,7 @@ onDestroy(() => {
     inView && play()
   }}
   bind:this={videoEl}
+  bind:paused
   loop
   data-index={index}
   muted={$playerState.muted}
