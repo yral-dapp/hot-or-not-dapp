@@ -101,6 +101,11 @@ async function fetchNextVideos(force = false) {
   }
 }
 
+async function handleUnavailableVideo(index: number) {
+  videos.splice(index, 1)
+  videos = videos
+}
+
 async function handleChange(e: CustomEvent) {
   lastWatchedVideoIndex = currentVideoIndex
   const newIndex = e.detail[0].realIndex
@@ -167,6 +172,7 @@ beforeNavigate(() => {
           <VideoPlayer
             on:loaded={() => hideSplashScreen(500)}
             on:watchedPercentage={({ detail }) => recordView(detail)}
+            on:videoUnavailable={() => handleUnavailableVideo(i)}
             index={i}
             playFormat="hls"
             {Hls}
