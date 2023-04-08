@@ -22,6 +22,8 @@ import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
 import type { PageData } from './$types'
+import postcss from 'postcss'
+import { vi } from 'vitest'
 
 export let data: PageData
 
@@ -108,6 +110,11 @@ async function handleChange(e: CustomEvent) {
   updateMetadata(videos[currentVideoIndex])
 }
 
+async function handleUnavailableVideo(index: number) {
+  videos.splice(index, 1)
+  videos = videos
+}
+
 onMount(async () => {
   updateURL()
   $playerState.initialized = false
@@ -160,6 +167,7 @@ beforeNavigate(() => {
           <VideoPlayer
             on:loaded={() => hideSplashScreen(500)}
             on:watchedPercentage={({ detail }) => recordView(detail)}
+            on:videoUnavailable={() => handleUnavailableVideo(i)}
             index={i}
             playFormat="hls"
             {Hls}
