@@ -68,7 +68,6 @@ function recordView(percentageWatched: number) {
     watchProgress.totalCount++
     watchProgress.partialWatchedPercentage = 0
     post.total_view_count = post.total_view_count + BigInt(1)
-    updatePostInWatchHistory(watchHistoryDb, post)
   } else {
     watchProgress.partialWatchedPercentage = percentageWatched
   }
@@ -127,6 +126,8 @@ async function updateStats() {
     return
   }
 
+  updatePostInWatchHistory(watchHistoryDb, post)
+
   if ($page.url.host.includes('t:')) return
 
   const payload =
@@ -158,10 +159,13 @@ async function updateStats() {
     ),
     home_feed_score: post.score,
   })
-  await individualUser(post.publisher_canister_id).update_post_add_view_details(
-    post.id,
-    payload,
-  )
+  try {
+    await individualUser(
+      post.publisher_canister_id,
+    ).update_post_add_view_details(post.id, payload)
+  } catch (e) {
+    Log({ from: '1 updateStats', id: post.id, payload }, 'error')
+  }
 }
 
 $: if (justWatched) {
