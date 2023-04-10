@@ -10,8 +10,9 @@ import LoginButton from '$components/login/LoginButton.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
+import { onMount } from 'svelte'
 
-let loading = false
+let loading = true
 let errorWhileFetching = false
 let noMoreTransactions = false
 let fetchedTransactionsCount = 0
@@ -44,6 +45,8 @@ async function loadTransactions() {
 
   loading = false
 }
+
+onMount(loadTransactions)
 </script>
 
 <ProfileLayout>
