@@ -401,7 +401,7 @@ export interface TransactionHistory {
   token: number
   timestamp: SystemTime
   subType: WalletEventSubType
-  details: WalletEventSubDetails
+  details?: WalletEventSubDetails
 }
 
 type HistoryResponse =
@@ -424,9 +424,9 @@ async function transformHistoryRecords(
     const event = o[1]
     const type = Object.keys(event)[0] as UnionKeyOf<TokenEvent>
     const subType = Object.keys(event[type].details)[0] as WalletEventSubType
-    const details = Object.values(
-      (event[type] as WalletEvent)?.details[subType] || {},
-    )?.[0] as WalletEventSubDetails
+    const details = (event[type] as WalletEvent)?.details?.[
+      subType
+    ] as WalletEventSubDetails
 
     if (!filter || filter === subType) {
       history.push({
