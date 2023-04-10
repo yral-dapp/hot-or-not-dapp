@@ -1,17 +1,18 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
+import TransactionItem from '$components/wallet/TransactionItem.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
+import { onMount } from 'svelte'
 
-let loading = false
+let loading = true
 let errorWhileFetching = false
 let noMoreTransactions = false
 let fetchedTransactionsCount = 0
@@ -44,6 +45,8 @@ async function loadTransactions() {
 
   loading = false
 }
+
+onMount(loadTransactions)
 </script>
 
 <ProfileLayout>
@@ -65,33 +68,7 @@ async function loadTransactions() {
     {:else}
       {#if transactions.length}
         {#each transactions as item}
-          {@const deducted =
-            item.type === 'Burn' ||
-            item.type === 'Stake' ||
-            item.type === 'Transfer'}
-          <div class="flex items-center justify-between py-4">
-            <div class="flex items-center space-x-4">
-              <div
-                class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
-                <div
-                  class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-                  {#if deducted}
-                    <ArrowUpIcon class="h-6 w-6" />
-                  {:else}
-                    <ArrowUpIcon class="h-6 w-6 rotate-180" />
-                  {/if}
-                </div>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <div>{item.subType?.replace(/([A-Z])/g, ' $1').trim()}</div>
-                <div class="text-sm opacity-50">{item.token} Coins</div>
-              </div>
-            </div>
-            <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
-              {deducted ? '-' : '+'}
-              {item.token}
-            </div>
-          </div>
+          <TransactionItem {item} />
         {/each}
       {:else if !loading}
         <div class="flex h-full w-full grow items-center justify-center">

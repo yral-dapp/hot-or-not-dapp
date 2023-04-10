@@ -22,8 +22,6 @@ import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
 import type { PageData } from './$types'
-import postcss from 'postcss'
-import { vi } from 'vitest'
 
 export let data: PageData
 

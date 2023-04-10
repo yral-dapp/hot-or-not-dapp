@@ -1,7 +1,7 @@
 <script lang="ts">
-import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
+import TransactionItem from '$components/wallet/TransactionItem.svelte'
 import {
   fetchHistory,
   fetchTokenBalance,
@@ -128,33 +128,7 @@ $: loggedIn && init()
         <div class="text-sm font-bold opacity-50">Loading</div>
       {:else}
         {#each history as item}
-          {@const deducted =
-            item.type === 'Burn' ||
-            item.type === 'Stake' ||
-            item.type === 'Transfer'}
-          <div class="flex items-center justify-between py-4">
-            <div class="flex items-center space-x-4">
-              <div
-                class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
-                <div
-                  class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-                  {#if deducted}
-                    <ArrowUpIcon class="h-6 w-6" />
-                  {:else}
-                    <ArrowUpIcon class="h-6 w-6 rotate-180" />
-                  {/if}
-                </div>
-              </div>
-              <div class="flex flex-col space-y-1">
-                <div>{item.subType?.replace(/([A-Z])/g, ' $1').trim()}</div>
-                <div class="text-sm opacity-50">{item.token} Coins</div>
-              </div>
-            </div>
-            <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
-              {deducted ? '-' : '+'}
-              {item.token}
-            </div>
-          </div>
+          <TransactionItem {item} />
         {:else}
           <div class="flex grow h-full w-full items-center justify-center">
             <NoTransactionsIcon class="w-full max-w-sm px-10" />

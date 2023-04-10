@@ -388,13 +388,20 @@ export async function loveUser(userId: string) {
   }
 }
 
+const walletEventDetails = ({} as WalletEvent)?.details
+type UnionValueOf<U> = U extends U ? U[keyof U] : never
+type WalletEvent = UnionValueOf<TokenEvent>
+type WalletEventDetails = typeof walletEventDetails
+type WalletEventSubType = UnionKeyOf<WalletEventDetails>
+type WalletEventSubDetails = UnionValueOf<WalletEventDetails>
+
 export interface TransactionHistory {
   id: BigInt
   type: UnionKeyOf<TokenEvent>
   token: number
   timestamp: SystemTime
-  details: MintEvent
-  subType: string
+  subType: WalletEventSubType
+  details: WalletEventSubDetails
 }
 
 type HistoryResponse =
@@ -414,9 +421,12 @@ async function transformHistoryRecords(
   const history: TransactionHistory[] = []
 
   res.forEach((o) => {
-    const obj = o[1]
-    const type = Object.keys(obj)[0] as UnionKeyOf<TokenEvent>
-    const subType = Object.keys(obj[type].details)[0]
+    const event = o[1]
+    const type = Object.keys(event)[0] as UnionKeyOf<TokenEvent>
+    const subType = Object.keys(event[type].details)[0] as WalletEventSubType
+    const details = Object.values(
+      (event[type] as WalletEvent)?.details[subType] || {},
+    )?.[0] as WalletEventSubDetails
 
     if (!filter || filter === subType) {
       history.push({
@@ -424,8 +434,8 @@ async function transformHistoryRecords(
         type,
         subType,
         token: Object.values(o[1])?.[0]?.amount || 0,
-        timestamp: obj[type].timestamp as SystemTime,
-        details: obj[type].details as MintEvent,
+        timestamp: event[type].timestamp as SystemTime,
+        details,
       })
     }
   })
