@@ -41,8 +41,6 @@ $: pathname = $page.url.pathname
     <slot />
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
-    {#if !pathname.includes('hotornot')}
-      <BottomNavigation />
-    {/if}
+    <BottomNavigation />
   </div>
 </HomeLayout>
