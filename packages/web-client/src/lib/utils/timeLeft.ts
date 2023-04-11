@@ -11,20 +11,17 @@ export function getMsLeftForBetResult(
   betEndTime.setHours(betEndTime.getHours() + betSlotNumber)
 
   const now = new Date()
-  const diff = betEndTime.getTime() - now.getTime()
+  let diff = betEndTime.getTime() - now.getTime()
 
   if (diff > 0) {
     return readable(getTimeStringFromMs(diff), (set) => {
       let counter = 1
-      let newClock = false
       const updateMs = () => {
-        console.log({ counter, diff, newClock })
-        if (diff - counter * 1000 > 0 && !newClock) {
+        if (diff - counter * 1000 > 0) {
           set(getTimeStringFromMs(diff - counter * 1000))
         } else {
           counter = 1
-          newClock = true
-          set(getTimeStringFromMs(ONE_HOUR_MS - counter * 1000))
+          diff = ONE_HOUR_MS
         }
       }
 
@@ -33,9 +30,13 @@ export function getMsLeftForBetResult(
         counter++
       }, 1000)
 
-      return () => clearInterval(interval)
+      return () => {
+        clearInterval(interval)
+      }
     })
-  } else return readable('')
+  } else {
+    return readable('')
+  }
 }
 
 export function getTimeStringFromMs(timeMs: number) {
