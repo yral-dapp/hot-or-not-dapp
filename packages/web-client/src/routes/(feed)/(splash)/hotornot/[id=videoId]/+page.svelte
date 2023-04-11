@@ -9,6 +9,7 @@ import {
   getHotOrNotPosts,
   updatePostInWatchHistory,
   type PostPopulated,
+  getWatchedVideosFromCache,
 } from '$lib/helpers/feed'
 import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
@@ -83,6 +84,8 @@ async function fetchNextVideos(force = false) {
 
       if (res.noMorePosts) {
         noMoreVideos = res.noMorePosts
+        const watchedVideos = await getWatchedVideosFromCache('watch-hon')
+        videos = joinArrayUniquely(videos, watchedVideos)
       } else if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
         fetchNextVideos(true)
       }
