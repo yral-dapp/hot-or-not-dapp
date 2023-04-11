@@ -9,7 +9,7 @@ import Log from '$lib/utils/Log'
 import { playerState } from '$stores/playerState'
 import type Hls from 'hls.js'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
-import { debounce } from 'throttle-debounce'
+import { debounce, throttle } from 'throttle-debounce'
 
 export let uid: string
 export let index: number
@@ -130,8 +130,12 @@ async function handleClick() {
   }
 }
 
-$: if (inView && !videoEl?.paused) {
+const dispatchWatchedPercentage = throttle(500, () => {
   dispatch('watchedPercentage', (currentTime / duration) * 100)
+})
+
+$: if (inView && !videoEl?.paused) {
+  dispatchWatchedPercentage()
 }
 
 $: if (inView && loaded) {
