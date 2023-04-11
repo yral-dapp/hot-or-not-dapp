@@ -34,12 +34,13 @@ export type FeedResponse =
 
 async function filterPosts(
   posts: PostScoreIndexItem[],
+  dbStore: 'watch' | 'watch-hon',
 ): Promise<PostScoreIndexItem[]> {
   try {
     if (!idb) {
       idb = (await import('$lib/idb')).idb
     }
-    const keys = (await idb.keys('watch')) as string[]
+    const keys = (await idb.keys(dbStore)) as string[]
     if (!keys.length) return posts
     const filtered = posts.filter(
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
@@ -51,14 +52,14 @@ async function filterPosts(
   }
 }
 
-export async function getWatchedVideosFromCache(): Promise<
-  PostPopulatedHistory[]
-> {
+export async function getWatchedVideosFromCache(
+  dbStore: 'watch' | 'watch-hon',
+): Promise<PostPopulatedHistory[]> {
   try {
     if (!idb) {
       idb = (await import('$lib/idb')).idb
     }
-    const values = ((await idb.values('watch')) || []).slice(
+    const values = ((await idb.values(dbStore)) || []).slice(
       50,
     ) as PostPopulatedHistory[]
     if (!values.length) return []
@@ -82,7 +83,7 @@ export async function getTopPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const filteredPosts = await filterPosts(res.Ok)
+      const filteredPosts = await filterPosts(res.Ok, 'watch')
       const populatedRes = await populatePosts(
         filterViewed ? filteredPosts : res.Ok,
       )
@@ -145,7 +146,8 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const filteredPosts = await filterBets(res.Ok)
+      const filteredNonBetPosts = await filterBets(res.Ok)
+      const filteredPosts = await filterPosts(filteredNonBetPosts, 'watch-hon')
       const populatedRes = await populatePosts(filteredPosts, true)
       if (populatedRes.error) {
         throw new Error(
