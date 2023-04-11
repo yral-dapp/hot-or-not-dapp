@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ url, fetch }) => {
   if (searchParams) {
     searchParams = `?${searchParams}`
   }
-  const cachedVideos = await getWatchedVideosFromCache()
+  const cachedVideos = await getWatchedVideosFromCache('watch')
   if (cachedVideos.length) {
     throw redirect(
       307,
