@@ -73,7 +73,7 @@ function placeBet(direction: 'Hot' | 'Not') {
         placeBet('Not')
       }}>
       <NotIcon
-        class={c('h-24 transition-transform', {
+        class={c('h-20 transition-transform', {
           'scale-110': loadingWithDirection === 'Not',
           'scale-90 grayscale': loadingWithDirection === 'Hot',
         })} />
@@ -88,26 +88,15 @@ function placeBet(direction: 'Hot' | 'Not') {
         'opacity-0': tutorialMode,
       },
     )}>
-    <IconButton
-      disabled={$playerState.selectedCoins == 100 || disabled}
-      on:click={(e) => {
-        e.stopImmediatePropagation()
-        increaseBet()
-      }}
-      class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-        invisible: betPlaced || loadingWithDirection,
-      })}>
-      <ChevronUpIcon class="h-2" />
-    </IconButton>
     <button
       disabled={betPlaced !== false ||
         loadingWithDirection !== false ||
         disabled}
       on:click|stopPropagation={toggleBet}
-      class="relative h-20 w-20 select-none {betPlaced !== false || disabled
+      class="relative h-16 w-16 select-none {betPlaced !== false || disabled
         ? 'grayscale'
         : ''}">
-      <BetCoinIcon class="h-20" />
+      <BetCoinIcon class="h-16" />
       <div
         class="absolute inset-0 flex select-none items-center justify-center">
         {#if loadingWithDirection}
@@ -115,23 +104,12 @@ function placeBet(direction: 'Hot' | 'Not') {
         {:else}
           <span
             style="text-shadow: 3px 3px 0 #EA9C00;"
-            class="select-none text-3xl font-extrabold text-[#FFCC00]">
+            class="select-none text-2xl font-extrabold text-[#FFCC00]">
             {$playerState.selectedCoins}
           </span>
         {/if}
       </div>
     </button>
-    <IconButton
-      on:click={(e) => {
-        e.stopImmediatePropagation()
-        decreaseBet()
-      }}
-      disabled={$playerState.selectedCoins == 10 || disabled}
-      class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-        invisible: betPlaced || loadingWithDirection,
-      })}>
-      <ChevronUpIcon class="h-2 rotate-180" />
-    </IconButton>
   </div>
   <div
     class="relative flex flex-col items-center space-y-1 {error
@@ -147,7 +125,7 @@ function placeBet(direction: 'Hot' | 'Not') {
         placeBet('Hot')
       }}>
       <HotIcon
-        class={c('h-24 transition-transform', {
+        class={c('h-20 transition-transform', {
           'scale-110': loadingWithDirection === 'Hot',
           'scale-90 grayscale': loadingWithDirection === 'Not',
         })} />
