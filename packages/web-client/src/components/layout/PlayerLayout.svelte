@@ -192,7 +192,7 @@ $: avatarUrl =
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2 {$$slots.hotOrNot
-        ? 'bottom-40'
+        ? 'bottom-44'
         : 'bottom-20'}">
       <div class="flex grow flex-col justify-end space-y-4">
         <div class="pointer-events-auto flex space-x-3">
@@ -269,7 +269,7 @@ $: avatarUrl =
     {#if $$slots.hotOrNot}
       <div
         style="-webkit-transform: translate3d(0, 0, 0);"
-        class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
+        class="absolute inset-x-0 bottom-8 z-[5] h-40 w-full">
         <slot name="hotOrNot" />
       </div>
     {/if}
