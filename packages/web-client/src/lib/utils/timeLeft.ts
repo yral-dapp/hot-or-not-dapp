@@ -1,5 +1,6 @@
 import type { SystemTime } from '$canisters/individual_user_template/individual_user_template.did'
 import { readable } from 'svelte/store'
+const ONE_HOUR_MS = 36_00_000
 
 export function getMsLeftForBetResult(
   betSlotNumber: number,
@@ -10,21 +11,32 @@ export function getMsLeftForBetResult(
   betEndTime.setHours(betEndTime.getHours() + betSlotNumber)
 
   const now = new Date()
-  const diff = betEndTime.getTime() - now.getTime()
+  let diff = betEndTime.getTime() - now.getTime()
 
   if (diff > 0) {
     return readable(getTimeStringFromMs(diff), (set) => {
       let counter = 1
-      const updateMs = () => set(getTimeStringFromMs(diff - counter * 1000))
+      const updateMs = () => {
+        if (diff - counter * 1000 > 0) {
+          set(getTimeStringFromMs(diff - counter * 1000))
+        } else {
+          counter = 1
+          diff = ONE_HOUR_MS
+        }
+      }
 
       const interval = setInterval(() => {
         updateMs()
         counter++
       }, 1000)
 
-      return () => clearInterval(interval)
+      return () => {
+        clearInterval(interval)
+      }
     })
-  } else return readable('')
+  } else {
+    return readable('')
+  }
 }
 
 export function getTimeStringFromMs(timeMs: number) {
