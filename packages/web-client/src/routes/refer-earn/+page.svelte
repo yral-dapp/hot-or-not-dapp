@@ -108,7 +108,7 @@ $: link = !loggedIn
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Refer & Earn
-      <div class="absolute top-4 left-4">
+      <div class="absolute left-4 top-4">
         <IconButton
           on:click={() =>
             history.length < 3
@@ -129,7 +129,7 @@ $: link = !loggedIn
         <div class="shrink-0 py-4">
           <CoinsStashIcon class="h-36" />
         </div>
-        <div class="shrink-0  text-center text-2xl font-bold">
+        <div class="shrink-0 text-center text-2xl font-bold">
           Invite & Win {INVITE_WIN_TOKENS} tokens
         </div>
         {#if loggedIn}
@@ -139,11 +139,11 @@ $: link = !loggedIn
           </div>
           <div class="pt-8 text-sm uppercase">referral link</div>
           <div
-            class="relative flex w-full shrink-0 items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary py-5 px-6 pr-10">
+            class="relative flex w-full shrink-0 items-center justify-between overflow-hidden truncate rounded-full border-2 border-dashed border-primary px-6 py-5 pr-10">
             <span
               role="presentation"
               on:click={copyLink}
-              class="w-full select-all truncate whitespace-nowrap  text-xs font-thin">
+              class="w-full select-all truncate whitespace-nowrap text-xs font-thin">
               {link}
             </span>
 
@@ -168,7 +168,7 @@ $: link = !loggedIn
             </Button>
           </div>
         {/if}
-        <div class="pt-8 pb-4">How does it work?</div>
+        <div class="pb-4 pt-8">How does it work?</div>
         <div class="flex items-center space-x-8">
           <div class="flex flex-col items-center space-y-3">
             <div
@@ -203,9 +203,8 @@ $: link = !loggedIn
           {@const date = new Date(Number(item.timestamp.secs_since_epoch))
             .toDateString()
             .substring(4)}
-          {@const tokenCount = item.details['NewUserSignup']
-            ? 1000
-            : { INVITE_WIN_TOKENS }}
+          {@const tokenCount =
+            item.subType === 'NewUserSignup' ? 1000 : { INVITE_WIN_TOKENS }}
           <div class="flex w-full items-center justify-between py-2 text-white">
             <div class="flex items-center space-x-8">
               <img
