@@ -10,19 +10,23 @@ import WalletIcon from '$components/icons/WalletIcon.svelte'
 import { playerState } from '$stores/playerState'
 import { onMount } from 'svelte'
 
-$: path = $page.url.pathname
-$: showBg = !(path.includes('feed') || path.includes('post'))
+$: pathname = $page.url.pathname
+$: showBg = !(
+  pathname.includes('feed') ||
+  pathname.includes('hotornot') ||
+  pathname.includes('post')
+)
 $: feedUrl =
   $playerState.currentFeedUrl == 'no-videos' ? '' : $playerState.currentFeedUrl
 
 function preloadLinks() {
-  !path.includes('menu') && preloadData('/menu')
-  !path.includes('upload') && preloadData('/upload')
+  !pathname.includes('menu') && preloadData('/menu')
+  !pathname.includes('upload') && preloadData('/upload')
 }
 
 onMount(() => preloadLinks())
 
-$: homeIconFilled = path.includes('feed')
+$: homeIconFilled = pathname.includes('feed')
 </script>
 
 <bottom-nav
@@ -38,7 +42,7 @@ $: homeIconFilled = path.includes('feed')
       filled={homeIconFilled}
       class="h-6 w-6 {homeIconFilled ? 'text-primary' : 'text-white'} " />
     <div
-      class:hidden={!path.includes('feed')}
+      class:hidden={!pathname.includes('feed')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
   <IconButton
@@ -46,10 +50,10 @@ $: homeIconFilled = path.includes('feed')
     href="/leaderboard"
     class="relative flex items-center px-2 py-5">
     <TrophyIcon
-      filled={path.includes('leaderboard')}
+      filled={pathname.includes('leaderboard')}
       class="h-6 w-6 text-white" />
     <div
-      class:hidden={!path.includes('leaderboard')}
+      class:hidden={!pathname.includes('leaderboard')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
   <IconButton
@@ -62,9 +66,11 @@ $: homeIconFilled = path.includes('feed')
     ariaLabel="Navigate to wallet page"
     href="/wallet"
     class="relative flex items-center px-2 py-5">
-    <WalletIcon filled={path.includes('wallet')} class="h-6 w-6 text-white" />
+    <WalletIcon
+      filled={pathname.includes('wallet')}
+      class="h-6 w-6 text-white" />
     <div
-      class:hidden={!path.includes('wallet')}
+      class:hidden={!pathname.includes('wallet')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
   <IconButton
@@ -73,9 +79,11 @@ $: homeIconFilled = path.includes('feed')
     href="/menu"
     class="relative flex items-center px-2 py-5">
     <MenuIcon
-      class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
+      class="h-6 w-6 {pathname.includes('menu')
+        ? 'text-primary'
+        : 'text-white'}" />
     <div
-      class:hidden={!path.includes('menu')}
+      class:hidden={!pathname.includes('menu')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
 </bottom-nav>
