@@ -32,7 +32,6 @@ let duration = 0
 let loaded = false
 let hls: Hls | null = null
 let waiting = false
-let paused = false
 let playing = true
 let videoUnavailable = false
 
@@ -201,7 +200,6 @@ onDestroy(() => {
     inView && play()
   }}
   bind:this={videoEl}
-  bind:paused
   loop
   data-index={index}
   muted={$playerState.muted}
@@ -223,10 +221,10 @@ onDestroy(() => {
       This video was removed due to content policy ToS
     </div>
   </div>
-{:else if $playerState.muted || paused}
+{:else if $playerState.muted || !playing}
   <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
     <div class="flex h-full items-center justify-center">
-      {#if paused}
+      {#if !playing}
         <PlayIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
       {:else if $playerState.muted}
         <SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
