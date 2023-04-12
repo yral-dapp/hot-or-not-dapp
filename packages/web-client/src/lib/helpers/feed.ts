@@ -124,7 +124,7 @@ async function filterBets(
       idb = (await import('$lib/idb')).idb
     }
     const keys = (await idb.keys('bets')) as string[]
-    if (!keys.length) return posts
+    if (!keys?.length) return posts
     const filtered = posts.filter(
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
     )
@@ -178,14 +178,11 @@ export async function getHotOrNotPosts(
   }
 }
 
-function checkCanBet(post: PostDetailsForFrontend) {
+export function isBettingClosed(post: PostDetailsForFrontend) {
   const bettingStatus = post.hot_or_not_betting_status?.[0]
   const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
   if (!bettingStatusValue) {
-    return false
-  }
-  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) {
-    return false
+    return true
   }
   const betWillCloseAt = new Date(
     Number(bettingStatusValue.started_at.secs_since_epoch) * 1000,
@@ -195,6 +192,19 @@ function checkCanBet(post: PostDetailsForFrontend) {
     return false
   }
   return true
+}
+
+function canUserBet(post: PostDetailsForFrontend) {
+  const bettingStatus = post.hot_or_not_betting_status?.[0]
+  const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
+
+  if (!bettingStatusValue) {
+    return false
+  }
+  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) {
+    return false
+  }
+  return false
 }
 
 async function populatePosts(
@@ -212,7 +222,9 @@ async function populatePosts(
           const r = await individualUser(
             Principal.from(post.publisher_canister_id),
           ).get_individual_post_details_by_id(post.post_id)
-          if (filterBetPosts && checkCanBet(r)) return undefined
+          if (filterBetPosts && !canUserBet(r)) {
+            return undefined
+          }
           return {
             ...r,
             ...post,
