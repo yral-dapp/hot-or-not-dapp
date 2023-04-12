@@ -194,15 +194,15 @@ export function isBettingClosed(post: PostDetailsForFrontend) {
   return true
 }
 
-function canUserBet(post: PostDetailsForFrontend) {
+function hasUserBetOnPost(post: PostDetailsForFrontend) {
   const bettingStatus = post.hot_or_not_betting_status?.[0]
   const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
 
   if (!bettingStatusValue) {
-    return false
+    return true
   }
   if (bettingStatusValue.has_this_user_participated_in_this_post[0]) {
-    return false
+    return true
   }
   return false
 }
@@ -222,7 +222,7 @@ async function populatePosts(
           const r = await individualUser(
             Principal.from(post.publisher_canister_id),
           ).get_individual_post_details_by_id(post.post_id)
-          if (filterBetPosts && !canUserBet(r)) {
+          if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
             return undefined
           }
           return {
