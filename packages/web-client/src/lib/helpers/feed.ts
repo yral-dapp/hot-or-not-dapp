@@ -178,11 +178,22 @@ export async function getHotOrNotPosts(
   }
 }
 
-function checkAlreadyBet(post: PostDetailsForFrontend) {
+function checkCanBet(post: PostDetailsForFrontend) {
   const bettingStatus = post.hot_or_not_betting_status?.[0]
   const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
-  if (!bettingStatusValue) return true
-  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) return true
+  if (!bettingStatusValue) {
+    return true
+  }
+  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) {
+    return true
+  }
+  const betWillCloseAt = new Date(
+    Number(bettingStatusValue.started_at.secs_since_epoch) * 1000,
+  )
+  betWillCloseAt.setHours(betWillCloseAt.getHours() + 48)
+  if (betWillCloseAt.getTime() - new Date().getTime() > 0) {
+    return true
+  }
   return false
 }
 
@@ -201,7 +212,7 @@ async function populatePosts(
           const r = await individualUser(
             Principal.from(post.publisher_canister_id),
           ).get_individual_post_details_by_id(post.post_id)
-          if (filterBetPosts && checkAlreadyBet(r)) return undefined
+          if (filterBetPosts && checkCanBet(r)) return undefined
           return {
             ...r,
             ...post,
