@@ -361,15 +361,25 @@ async function populateProfiles(users: Principal[]) {
   }
 }
 
-export async function doIFollowThisUser(
-  userId?: string,
-  canId?: string | Principal,
-) {
-  if (!userId) return false
-
-  return await individualUser(canId).get_following_status_do_i_follow_this_user(
-    Principal.from(userId),
-  )
+export async function doIFollowThisUser(principalId?: string) {
+  if (!principalId) return false
+  if (!isPrincipal(principalId)) {
+    throw 'Invalid Principal ID'
+  }
+  const canisterId = await getCanisterId(principalId)
+  if (!canisterId) {
+    throw 'Could not find Canister ID'
+  }
+  try {
+    const res = await individualUser().do_i_follow_this_user({
+      followee_canister_id: Principal.from(canisterId),
+      followee_principal_id: Principal.from(principalId),
+    })
+    return !!res['Ok']
+  } catch (e) {
+    Log({ error: e, from: '1 doIFollowThisUser' }, 'error')
+    return false
+  }
 }
 
 export async function loveUser(principalId: string) {
