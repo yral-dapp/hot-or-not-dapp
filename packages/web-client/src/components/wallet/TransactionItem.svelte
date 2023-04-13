@@ -2,6 +2,8 @@
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import ExternalLinkIcon from '$components/icons/ExternalLinkIcon.svelte'
 import type { TransactionHistory } from '$lib/helpers/profile'
+import { authState } from '$stores/auth'
+import userProfile from '$stores/userProfile'
 
 export let item: TransactionHistory
 
@@ -12,6 +14,9 @@ $: eventName = item.subType?.replace(/([A-Z])/g, ' $1').trim() || ''
 $: postCanisterId = item.details?.post_canister_id?.toText() || ''
 //@ts-ignore
 $: postId = Number(item.details?.post_id) || 0
+$: userId = $userProfile.username_set
+  ? $userProfile.unique_user_name || $authState.idString
+  : $authState.idString
 </script>
 
 <div class="flex items-center justify-between py-4">
@@ -31,8 +36,12 @@ $: postId = Number(item.details?.post_id) || 0
       <div class="text-sm">{eventName}</div>
 
       {#if (item.subType === 'BetOnHotOrNotPost' || item.subType === 'WinningsEarnedFromBet' || item.subType === 'CommissionFromHotOrNotBet') && postCanisterId}
+        {@const href =
+          item.subType === 'CommissionFromHotOrNotBet'
+            ? `/hotornot/${userId}}/${postId}`
+            : `/profile/${userId}/speculations/${postCanisterId}@${postId}`}
         <a
-          href="/hotornot/{postCanisterId}@{postId}"
+          {href}
           class="flex w-min items-center space-x-1 text-white underline opacity-50">
           <span class="whitespace-nowrap text-xs">View Post</span>
           <ExternalLinkIcon class="h-3 w-3" />
