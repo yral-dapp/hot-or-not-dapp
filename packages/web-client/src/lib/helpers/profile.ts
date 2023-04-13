@@ -372,10 +372,14 @@ export async function doIFollowThisUser(
   )
 }
 
-export async function loveUser(canisterId: string, principalId: string) {
+export async function loveUser(principalId: string) {
   try {
-    if (!(isPrincipal(canisterId) && isPrincipal(principalId))) {
+    if (!isPrincipal(principalId)) {
       throw 'Invalid Principal ID'
+    }
+    const canisterId = await getCanisterId(principalId)
+    if (!canisterId) {
+      throw 'Could not find Canister ID'
     }
     const res =
       await individualUser().update_profiles_i_follow_toggle_list_with_specified_profile(
