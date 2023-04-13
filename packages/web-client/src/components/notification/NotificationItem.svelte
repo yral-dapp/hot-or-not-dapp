@@ -1,49 +1,64 @@
 <script lang="ts">
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
-import ExternalLinkIcon from '$components/icons/ExternalLinkIcon.svelte'
-import type { TransactionHistory } from '$lib/helpers/profile'
+import TrophyIcon from '$components/icons/TrophyIcon.svelte'
+import type { NotificationHistory } from '$lib/helpers/profile'
+import { authState } from '$stores/auth'
+import userProfile from '$stores/userProfile'
 
-export let item: TransactionHistory
+export let item: NotificationHistory
+
+function getNotificationMessage(item: NotificationHistory) {
+  switch (item.type) {
+    case 'CommissionFromHotOrNotBet': {
+      return `Congratulations! You've earned ${item.token} tokens from commissions on your video.`
+    }
+    case 'Referral': {
+      return `Congratulations! A user joined Hot or Not, you have received ${item.token} tokens for referring user.`
+    }
+    case 'WinningsEarnedFromBet': {
+      return `Congratulations! You won ${item.token} tokens on a video you bet.`
+    }
+  }
+}
 
 $: deducted =
   item.type === 'Burn' || item.type === 'Stake' || item.type === 'Transfer'
-$: eventName = item.subType?.replace(/([A-Z])/g, ' $1').trim() || ''
 //@ts-ignore
 $: postCanisterId = item.details?.post_canister_id?.toText() || ''
 //@ts-ignore
 $: postId = Number(item.details?.post_id) || 0
+$: userId = $userProfile.username_set
+  ? $userProfile.unique_user_name || $authState.idString
+  : $authState.idString
 </script>
 
 <div class="flex items-center justify-between py-4">
   <div class="flex items-center space-x-4">
     <div
-      class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
-      <div
-        class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-        {#if deducted}
-          <ArrowUpIcon class="h-6 w-6" />
-        {:else}
-          <ArrowUpIcon class="h-6 w-6 rotate-180" />
-        {/if}
-      </div>
-    </div>
-    <div class="flex flex-col space-y-1">
-      <div class="text-sm">{eventName}</div>
-
-      {#if (item.subType === 'BetOnHotOrNotPost' || item.subType === 'WinningsEarnedFromBet' || item.subType === 'CommissionFromHotOrNotBet') && postCanisterId}
-        <a
-          href="/hotornot/{postCanisterId}@{postId}"
-          class="flex w-min items-center space-x-1 text-white underline opacity-50">
-          <span class="whitespace-nowrap text-xs">View Post</span>
-          <ExternalLinkIcon class="h-3 w-3" />
-        </a>
+      class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 p-2">
+      {#if item.type === 'WinningsEarnedFromBet'}
+        <TrophyIcon class="h-5 w-5" filled />
       {:else}
-        <div class="text-xs opacity-50">{item.token} Coins</div>
+        <div
+          class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
+          {#if deducted}
+            <ArrowUpIcon class="h-6 w-6" />
+          {:else}
+            <ArrowUpIcon class="h-6 w-6 rotate-180" />
+          {/if}
+        </div>
       {/if}
     </div>
-  </div>
-  <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
-    {deducted ? '-' : '+'}
-    {item.token}
+    <div class="text-sm text-white">
+      {#if (item.type === 'WinningsEarnedFromBet' || item.type === 'CommissionFromHotOrNotBet') && postCanisterId}
+        <a
+          href="/profile/{userId}/speculations/{postCanisterId}@{postId}"
+          class="">
+          {getNotificationMessage(item)}
+        </a>
+      {:else}
+        <div>{getNotificationMessage(item)}</div>
+      {/if}
+    </div>
   </div>
 </div>
