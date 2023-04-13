@@ -58,6 +58,24 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : BettingStatus,
     'Err' : BetOnCurrentlyViewingPostError,
   });
+  const FolloweeArg = IDL.Record({
+    'followee_canister_id' : IDL.Principal,
+    'followee_principal_id' : IDL.Principal,
+  });
+  const FollowAnotherUserProfileError = IDL.Variant({
+    'UserToFollowDoesNotExist' : IDL.Null,
+    'UserIndexCrossCanisterCallFailed' : IDL.Null,
+    'UserITriedToFollowCrossCanisterCallFailed' : IDL.Null,
+    'UsersICanFollowListIsFull' : IDL.Null,
+    'MyCanisterIDDoesNotMatchMyPrincipalCanisterIDMappingSeenByUserITriedToFollow' : IDL.Null,
+    'UserITriedToFollowDidNotFindMe' : IDL.Null,
+    'NotAuthorized' : IDL.Null,
+    'UserITriedToFollowHasTheirFollowersListFull' : IDL.Null,
+  });
+  const Result_2 = IDL.Variant({
+    'Ok' : IDL.Bool,
+    'Err' : FollowAnotherUserProfileError,
+  });
   const PostStatus = IDL.Variant({
     'BannedForExplicitness' : IDL.Null,
     'BannedDueToUserReporting' : IDL.Null,
@@ -127,7 +145,7 @@ export const idlFactory = ({ IDL }) => {
     'hot_or_not_details' : IDL.Opt(HotOrNotDetails),
     'creator_consent_for_inclusion_in_hot_or_not' : IDL.Bool,
   });
-  const Result_2 = IDL.Variant({ 'Ok' : Post, 'Err' : IDL.Null });
+  const Result_3 = IDL.Variant({ 'Ok' : Post, 'Err' : IDL.Null });
   const BetOutcomeForBetMaker = IDL.Variant({
     'Won' : IDL.Nat64,
     'Draw' : IDL.Nat64,
@@ -167,11 +185,11 @@ export const idlFactory = ({ IDL }) => {
     'InvalidBoundsPassed' : IDL.Null,
     'ExceededMaxNumberOfItemsAllowedInOneRequest' : IDL.Null,
   });
-  const Result_3 = IDL.Variant({
+  const Result_4 = IDL.Variant({
     'Ok' : IDL.Vec(PostDetailsForFrontend),
     'Err' : GetPostsOfUserProfileError,
   });
-  const Result_4 = IDL.Variant({
+  const Result_5 = IDL.Variant({
     'Ok' : IDL.Vec(IDL.Principal),
     'Err' : GetPostsOfUserProfileError,
   });
@@ -188,6 +206,18 @@ export const idlFactory = ({ IDL }) => {
     'principal_id' : IDL.Principal,
     'profile_stats' : UserProfileGlobalStats,
     'followers_count' : IDL.Nat64,
+  });
+  const FollowEntryDetail = IDL.Record({
+    'canister_id' : IDL.Principal,
+    'principal_id' : IDL.Principal,
+  });
+  const GetFollowerOrFollowingPageError = IDL.Variant({
+    'Unauthorized' : IDL.Null,
+    'Unauthenticated' : IDL.Null,
+  });
+  const Result_6 = IDL.Variant({
+    'Ok' : IDL.Vec(IDL.Tuple(IDL.Nat64, FollowEntryDetail)),
+    'Err' : GetFollowerOrFollowingPageError,
   });
   const StakeEvent = IDL.Variant({ 'BetOnHotOrNotPost' : PlaceBetArg });
   const MintEvent = IDL.Variant({
@@ -233,7 +263,7 @@ export const idlFactory = ({ IDL }) => {
       'amount' : IDL.Nat64,
     }),
   });
-  const Result_5 = IDL.Variant({
+  const Result_7 = IDL.Variant({
     'Ok' : IDL.Vec(IDL.Tuple(IDL.Nat64, TokenEvent)),
     'Err' : GetPostsOfUserProfileError,
   });
@@ -251,27 +281,13 @@ export const idlFactory = ({ IDL }) => {
     }),
     'WatchedPartially' : IDL.Record({ 'percentage_watched' : IDL.Nat8 }),
   });
-  const FollowAnotherUserProfileError = IDL.Variant({
-    'UserToFollowDoesNotExist' : IDL.Null,
-    'UserIndexCrossCanisterCallFailed' : IDL.Null,
-    'UserITriedToFollowCrossCanisterCallFailed' : IDL.Null,
-    'UsersICanFollowListIsFull' : IDL.Null,
-    'MyCanisterIDDoesNotMatchMyPrincipalCanisterIDMappingSeenByUserITriedToFollow' : IDL.Null,
-    'UserITriedToFollowDidNotFindMe' : IDL.Null,
-    'NotAuthorized' : IDL.Null,
-    'UserITriedToFollowHasTheirFollowersListFull' : IDL.Null,
-  });
-  const Result_6 = IDL.Variant({
-    'Ok' : IDL.Bool,
-    'Err' : FollowAnotherUserProfileError,
-  });
   const AnotherUserFollowedMeError = IDL.Variant({
     'UserIndexCrossCanisterCallFailed' : IDL.Null,
     'FollowersListFull' : IDL.Null,
     'NotAuthorized' : IDL.Null,
     'UserTryingToFollowMeDoesNotExist' : IDL.Null,
   });
-  const Result_7 = IDL.Variant({
+  const Result_8 = IDL.Variant({
     'Ok' : IDL.Bool,
     'Err' : AnotherUserFollowedMeError,
   });
@@ -280,7 +296,7 @@ export const idlFactory = ({ IDL }) => {
     'display_name' : IDL.Opt(IDL.Text),
   });
   const UpdateProfileDetailsError = IDL.Variant({ 'NotAuthorized' : IDL.Null });
-  const Result_8 = IDL.Variant({
+  const Result_9 = IDL.Variant({
     'Ok' : UserProfileDetailsForFrontend,
     'Err' : UpdateProfileDetailsError,
   });
@@ -291,9 +307,13 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_9 = IDL.Variant({
+  const Result_10 = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : UpdateProfileSetUniqueUsernameError,
+  });
+  const FollowerArg = IDL.Record({
+    'follower_canister_id' : IDL.Principal,
+    'follower_principal_id' : IDL.Principal,
   });
   return IDL.Service({
     'add_post_v2' : IDL.Func([PostDetailsFromFrontend], [Result], []),
@@ -303,9 +323,10 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'bet_on_currently_viewing_post' : IDL.Func([PlaceBetArg], [Result_1], []),
+    'do_i_follow_this_user' : IDL.Func([FolloweeArg], [Result_2], ['query']),
     'get_entire_individual_post_detail_by_id' : IDL.Func(
         [IDL.Nat64],
-        [Result_2],
+        [Result_3],
         ['query'],
       ),
     'get_following_status_do_i_follow_this_user' : IDL.Func(
@@ -335,22 +356,32 @@ export const idlFactory = ({ IDL }) => {
       ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
-        [Result_3],
+        [Result_4],
         ['query'],
       ),
     'get_principals_i_follow_paginated' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
-        [Result_4],
+        [Result_5],
         ['query'],
       ),
     'get_principals_that_follow_me_paginated' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
-        [Result_4],
+        [Result_5],
         ['query'],
       ),
     'get_profile_details' : IDL.Func(
         [],
         [UserProfileDetailsForFrontend],
+        ['query'],
+      ),
+    'get_profiles_i_follow_paginated' : IDL.Func(
+        [IDL.Opt(IDL.Nat64)],
+        [Result_6],
+        ['query'],
+      ),
+    'get_profiles_that_follow_me_paginated' : IDL.Func(
+        [IDL.Opt(IDL.Nat64)],
+        [Result_6],
         ['query'],
       ),
     'get_rewarded_for_referral' : IDL.Func(
@@ -361,7 +392,7 @@ export const idlFactory = ({ IDL }) => {
     'get_rewarded_for_signing_up' : IDL.Func([], [], []),
     'get_user_utility_token_transaction_history_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
-        [Result_5],
+        [Result_7],
         ['query'],
       ),
     'get_utility_token_balance' : IDL.Func([], [IDL.Nat64], ['query']),
@@ -429,22 +460,32 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_principals_i_follow_toggle_list_with_principal_specified' : IDL.Func(
         [IDL.Principal],
-        [Result_6],
+        [Result_2],
         [],
       ),
     'update_principals_that_follow_me_toggle_list_with_specified_principal' : IDL.Func(
         [IDL.Principal],
-        [Result_7],
+        [Result_8],
         [],
       ),
     'update_profile_display_details' : IDL.Func(
         [UserProfileUpdateDetailsFromFrontend],
-        [Result_8],
+        [Result_9],
         [],
       ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
-        [Result_9],
+        [Result_10],
+        [],
+      ),
+    'update_profiles_i_follow_toggle_list_with_specified_profile' : IDL.Func(
+        [FolloweeArg],
+        [Result_2],
+        [],
+      ),
+    'update_profiles_that_follow_me_toggle_list_with_specified_profile' : IDL.Func(
+        [FollowerArg],
+        [Result_2],
         [],
       ),
   });
