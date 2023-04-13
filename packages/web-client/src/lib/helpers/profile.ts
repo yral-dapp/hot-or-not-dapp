@@ -26,6 +26,7 @@ import { individualUser } from './backend'
 import { getCanisterId } from './canisterId'
 import type { PostPopulated } from './feed'
 import { setUser } from './sentry'
+import { isPrincipal } from '$lib/utils/isPrincipal'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
@@ -371,11 +372,17 @@ export async function doIFollowThisUser(
   )
 }
 
-export async function loveUser(userId: string) {
+export async function loveUser(canisterId: string, principalId: string) {
   try {
+    if (!(isPrincipal(canisterId) && isPrincipal(principalId))) {
+      throw 'Invalid Principal ID'
+    }
     const res =
-      await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
-        Principal.from(userId),
+      await individualUser().update_profiles_i_follow_toggle_list_with_specified_profile(
+        {
+          followee_canister_id: Principal.from(canisterId),
+          followee_principal_id: Principal.from(principalId),
+        },
       )
     if ('Ok' in res) {
       return true
