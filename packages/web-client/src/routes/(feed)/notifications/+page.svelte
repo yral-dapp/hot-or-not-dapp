@@ -7,7 +7,6 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import NotificationItem from '$components/notification/NotificationItem.svelte'
-import TransactionItem from '$components/wallet/TransactionItem.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
