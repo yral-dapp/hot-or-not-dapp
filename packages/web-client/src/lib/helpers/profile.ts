@@ -1,4 +1,5 @@
 import type {
+  FollowEntryDetail,
   GetPostsOfUserProfileError,
   MintEvent,
   PlacedBetDetail,
@@ -30,6 +31,7 @@ import { isPrincipal } from '$lib/utils/isPrincipal'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
+  index_id: bigint
 }
 
 export interface PostPopulatedWithBetDetails extends PostPopulated {
@@ -241,13 +243,13 @@ async function populatePosts(posts: PlacedBetDetail[]) {
   }
 }
 
-export async function fetchLovers(id: string, from: number) {
+export async function fetchLovers(id: string, from: bigint) {
   try {
     const canId = await getCanisterId(id)
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_principals_that_follow_me_paginated(BigInt(from), BigInt(from + 15))
+    ).get_profiles_that_follow_me_paginated([from])
     if ('Ok' in res) {
       const populatedUsers = await populateProfiles(res.Ok)
       if (populatedUsers.error) {
@@ -278,13 +280,13 @@ export async function fetchLovers(id: string, from: number) {
   }
 }
 
-export async function fetchLovingUsers(id: string, from: number) {
+export async function fetchLovingUsers(id: string, from: bigint) {
   try {
     const canId = await getCanisterId(id)
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_principals_i_follow_paginated(BigInt(from), BigInt(from + 15))
+    ).get_profiles_i_follow_paginated([from])
     if ('Ok' in res) {
       const populatedUsers = await populateProfiles(res.Ok)
       if (populatedUsers.error) {
@@ -315,39 +317,42 @@ export async function fetchLovingUsers(id: string, from: number) {
   }
 }
 
-async function populateProfiles(users: Principal[]) {
+async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
   try {
-    if (!users.length) {
-      return { posts: [], error: false }
+    if (!list.length) {
+      return { users: [], error: false }
     }
 
     const authStateData = get(authState)
 
     const res = await Promise.all(
-      users.map(async (userId) => {
-        if (userId?.toText() === '2vxsx-fae') return
-        const canId = await getCanisterId(userId.toText())
-
-        if (canId) {
-          const r = await individualUser(
-            Principal.from(canId),
-          ).get_profile_details()
-
-          return {
-            ...sanitizeProfile(r, userId.toText()),
-            i_follow: authStateData.isLoggedIn
-              ? await doIFollowThisUser(userId.toText())
-              : false,
+      list.map(async ([id, detail]) => {
+        const principalId = detail?.principal_id?.toText()
+        if (!principalId) return
+        if (principalId === '2vxsx-fae') return
+        if (!detail?.canister_id) {
+          {
+            Log(
+              {
+                error: `Could not get canisterId for user: ${principalId}`,
+                from: '12 populatePosts.profile',
+              },
+              'error',
+            )
           }
-        } else {
-          Log(
-            {
-              error: `Could not get canisterId for user: ${userId.toText()}`,
-              from: '12 populatePosts.profile',
-            },
-            'error',
-          )
         }
+
+        const r = await individualUser(
+          Principal.from(detail.canister_id),
+        ).get_profile_details()
+
+        return {
+          ...sanitizeProfile(r, principalId),
+          index_id: id,
+          i_follow: authStateData.isLoggedIn
+            ? await doIFollowThisUser(principalId)
+            : false,
+        } as UserProfileFollows
       }),
     )
 
