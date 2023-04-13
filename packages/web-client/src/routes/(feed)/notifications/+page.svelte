@@ -7,16 +7,18 @@ import IntersectionObserver from '$components/intersection-observer/Intersection
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import NotificationItem from '$components/notification/NotificationItem.svelte'
-import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
+import {
+  fetchNotifications,
+  type NotificationHistory,
+} from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
-import { onMount } from 'svelte'
 
 let loading = true
 let errorWhileFetching = false
 let noMoreTransactions = false
 let fetchedTransactionsCount = 0
-let transactions: TransactionHistory[] = []
+let transactions: NotificationHistory[] = []
 
 async function loadTransactions() {
   if (noMoreTransactions) {
@@ -26,7 +28,7 @@ async function loadTransactions() {
   loading = true
   errorWhileFetching = false
   try {
-    const res = await fetchHistory(fetchedTransactionsCount)
+    const res = await fetchNotifications(fetchedTransactionsCount)
 
     if (res.error) {
       errorWhileFetching = true
@@ -34,7 +36,7 @@ async function loadTransactions() {
       return
     }
 
-    transactions.push(...res.history)
+    transactions.push(...res.notifications)
     transactions = transactions
     noMoreTransactions = res.endOfList
     fetchedTransactionsCount = transactions.length
@@ -46,7 +48,7 @@ async function loadTransactions() {
   loading = false
 }
 
-onMount(loadTransactions)
+$: $authState.isLoggedIn && loadTransactions()
 </script>
 
 <ProfileLayout>
@@ -58,7 +60,7 @@ onMount(loadTransactions)
   <div slot="top-center" class="text-lg font-bold">Notifications</div>
 
   <div
-    class="mx-auto flex h-full w-full max-w-5xl flex-col space-y-8 overflow-y-auto p-8"
+    class="mx-auto flex h-full w-full max-w-5xl flex-col space-y-4 overflow-y-auto p-4 md:p-8"
     slot="content">
     {#if !$authState.isLoggedIn}
       <div class="text-center text-sm opacity-70">
