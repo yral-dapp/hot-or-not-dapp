@@ -7,6 +7,7 @@ import FireIcon from '$components/icons/FireIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
+import WalletIcon from '$components/icons/WalletIcon.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
@@ -21,6 +22,7 @@ import userProfile from '$stores/userProfile'
 export let index: number
 export let justWatched: boolean = false
 export let post: PostPopulated
+export let showWalletLink = false
 export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
@@ -224,6 +226,11 @@ $: avatarUrl =
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
+        {#if showWalletLink}
+          <IconButton ariaLabel="Wallet" href="/wallet">
+            <WalletIcon filled class="h-8 w-8 text-white" />
+          </IconButton>
+        {/if}
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
             <GiftBoxIcon class="h-8 w-8" />
