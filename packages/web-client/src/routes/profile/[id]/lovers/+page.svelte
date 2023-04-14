@@ -23,7 +23,7 @@ let { me, profile } = data
 let loading = false
 let errorWhileFetching = false
 let noMoreUsers = false
-let fetchedUsersCount = BigInt(0)
+let fetchedUsersCount: bigint | undefined = undefined
 let users: UserProfileFollows[] = []
 
 $: userId = profile?.username_set
@@ -53,7 +53,12 @@ async function loadLovers() {
     users.push(...res.lovers)
     users = users
     noMoreUsers = res.noMoreLovers
-    fetchedUsersCount = res.lovers[res.lovers.length - 1].index_id
+    const lastEntry = res.lovers[res.lovers.length - 1]?.index_id
+    if (lastEntry) {
+      fetchedUsersCount = lastEntry
+    } else {
+      noMoreUsers = true
+    }
     loading = false
   } catch (e) {
     Log({ error: e, from: '1 loadLovers' }, 'error')
