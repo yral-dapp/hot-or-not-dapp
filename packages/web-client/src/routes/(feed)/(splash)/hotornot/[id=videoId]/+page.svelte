@@ -161,8 +161,7 @@ beforeNavigate(() => {
           index={i}
           source="hon_feed"
           watchHistoryDb="watch-hon"
-          showReferAndEarnLink
-          showShareButton
+          showWalletLink
           justWatched={i === lastWatchedVideoIndex}
           let:recordView>
           <VideoPlayer
