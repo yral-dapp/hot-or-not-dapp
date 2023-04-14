@@ -28,6 +28,7 @@ import { getCanisterId } from './canisterId'
 import type { PostPopulated } from './feed'
 import { setUser } from './sentry'
 import { isPrincipal } from '$lib/utils/isPrincipal'
+import type { GetFollowerOrFollowingPageError } from '$canisters/individual_user_template/individual_user_template.did'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
@@ -250,8 +251,9 @@ export async function fetchLovers(id: string, from?: bigint) {
     const res = await individualUser(
       Principal.from(canId),
     ).get_profiles_that_follow_me_paginated(from ? [from] : [])
+
     if ('Ok' in res) {
-      const populatedUsers = await populateProfiles(res.Ok)
+      const populatedUsers = await populateProfiles(res.Ok.slice(1))
       if (populatedUsers.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedUsers)}`,
@@ -260,18 +262,17 @@ export async function fetchLovers(id: string, from?: bigint) {
       return {
         error: false,
         lovers: populatedUsers.posts,
-        noMoreLovers: res.Ok.length < 10,
+        noMoreLovers: res.Ok.length < 9,
       }
     } else if ('Err' in res) {
       type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<GetPostsOfUserProfileError>
+      type errors = UnionKeyOf<GetFollowerOrFollowingPageError>
       const err = Object.keys(res.Err)[0] as errors
       switch (err) {
-        case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-        case 'InvalidBoundsPassed':
+        case 'Unauthorized':
+        case 'Unauthenticated':
+        default:
           return { error: true }
-        case 'ReachedEndOfItemsList':
-          return { error: false, noMoreLovers: true, lovers: [] }
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
@@ -288,7 +289,7 @@ export async function fetchLovingUsers(id: string, from?: bigint) {
       Principal.from(canId),
     ).get_profiles_i_follow_paginated(from ? [from] : [])
     if ('Ok' in res) {
-      const populatedUsers = await populateProfiles(res.Ok)
+      const populatedUsers = await populateProfiles(res.Ok.slice(1))
       if (populatedUsers.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedUsers)}`,
@@ -297,18 +298,17 @@ export async function fetchLovingUsers(id: string, from?: bigint) {
       return {
         error: false,
         lovers: populatedUsers.posts,
-        noMoreLovers: res.Ok.length < 10,
+        noMoreLovers: res.Ok.length < 9,
       }
     } else if ('Err' in res) {
       type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<GetPostsOfUserProfileError>
+      type errors = UnionKeyOf<GetFollowerOrFollowingPageError>
       const err = Object.keys(res.Err)[0] as errors
       switch (err) {
-        case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-        case 'InvalidBoundsPassed':
+        case 'Unauthorized':
+        case 'Unauthenticated':
+        default:
           return { error: true }
-        case 'ReachedEndOfItemsList':
-          return { error: false, noMoreLovers: true, lovers: [] }
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
