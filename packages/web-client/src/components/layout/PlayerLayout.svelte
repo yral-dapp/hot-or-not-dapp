@@ -227,8 +227,8 @@ $: avatarUrl =
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showWalletLink}
-          <IconButton ariaLabel="Wallet" href="/wallet">
-            <WalletIcon filled class="h-8 w-8 text-white" />
+          <IconButton class="pr-2" ariaLabel="Wallet" href="/wallet">
+            <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
           </IconButton>
         {/if}
         {#if showReferAndEarnLink}
