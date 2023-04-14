@@ -243,13 +243,13 @@ async function populatePosts(posts: PlacedBetDetail[]) {
   }
 }
 
-export async function fetchLovers(id: string, from: bigint) {
+export async function fetchLovers(id: string, from?: bigint) {
   try {
     const canId = await getCanisterId(id)
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_profiles_that_follow_me_paginated([from])
+    ).get_profiles_that_follow_me_paginated(from ? [from] : [])
     if ('Ok' in res) {
       const populatedUsers = await populateProfiles(res.Ok)
       if (populatedUsers.error) {
@@ -280,13 +280,13 @@ export async function fetchLovers(id: string, from: bigint) {
   }
 }
 
-export async function fetchLovingUsers(id: string, from: bigint) {
+export async function fetchLovingUsers(id: string, from?: bigint) {
   try {
     const canId = await getCanisterId(id)
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_profiles_i_follow_paginated([from])
+    ).get_profiles_i_follow_paginated(from ? [from] : [])
     if ('Ok' in res) {
       const populatedUsers = await populateProfiles(res.Ok)
       if (populatedUsers.error) {
