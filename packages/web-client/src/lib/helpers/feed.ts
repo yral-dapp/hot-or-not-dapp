@@ -41,7 +41,7 @@ async function filterPosts(
       idb = (await import('$lib/idb')).idb
     }
     const keys = (await idb.keys(dbStore)) as string[]
-    if (!keys.length) return posts
+    if (!keys?.length) return posts
     const filtered = posts.filter(
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
     )
