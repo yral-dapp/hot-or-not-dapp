@@ -10,7 +10,7 @@ import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
 
-let step: 1 | 2 | 3 = 1
+let step: 1 | 2 | 3 | 4 = 1
 </script>
 
 {#if $showOnboarding}
@@ -27,9 +27,9 @@ let step: 1 | 2 | 3 = 1
         </div>
         <div class="relative select-none text-center text-3xl font-bold">
           <StarsIcon class="absolute -left-10 -top-12 h-24" />
-          A new experience
+          Welcome to
           <br />
-          awaits you
+          Hot or Not
         </div>
         <div class="flex w-full flex-col space-y-6">
           <Button on:click={() => (step = 2)}>Start Tutorial</Button>
@@ -45,16 +45,13 @@ let step: 1 | 2 | 3 = 1
         class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
           class="relative flex w-full flex-col items-center justify-center space-y-6 text-center">
-          <div class="text-3xl font-bold">Place your first bet</div>
+          <div class="text-3xl font-bold">Choose your bet amount</div>
           <div>
-            Lorem ipsum dolor sit amet, consectetur elit. sed do eiusmod Lorem
-            ipsum dolor sit amet consectetur elit, sed do eiusmod.
+            Select your bet amount by clicking on the token between 10, 50, or
+            100 tokens.
           </div>
-          <div class="absolute left-10 top-32">
+          <div class="absolute left-48 top-72">
             <TutorialArrow class="h-64" />
-          </div>
-          <div style="transform: scaleX(-1);" class="absolute right-14 top-32">
-            <TutorialArrow class="h-60" />
           </div>
         </div>
         <Button class="px-12" on:click={() => (step = 3)}>Next</Button>
@@ -64,20 +61,49 @@ let step: 1 | 2 | 3 = 1
 
         <div
           class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
-          <HotOrNotBet tutorialMode />
+          <HotOrNotBet
+            tutorialMode={{ highlightCoin: true, highlightSelectors: false }} />
         </div>
       </div>
     {:else if step == 3}
       <div
+        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        <div
+          class="relative flex w-full flex-col items-center justify-center space-y-6 text-center">
+          <div class="text-3xl font-bold">Place your bet</div>
+          <div>
+            Click 'Hot' or 'Not' to predict whether a video will go viral or
+            not.
+          </div>
+          <div class="absolute left-10 top-32">
+            <TutorialArrow class="h-64" />
+          </div>
+          <div style="transform: scaleX(-1);" class="absolute right-14 top-32">
+            <TutorialArrow class="h-60" />
+          </div>
+        </div>
+        <Button class="px-12" on:click={() => (step = 4)}>Next</Button>
+        <button on:click={() => ($showOnboarding = false)} class="font-medium">
+          Skip
+        </button>
+
+        <div
+          class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
+          <HotOrNotBet
+            tutorialMode={{ highlightCoin: false, highlightSelectors: true }} />
+        </div>
+      </div>
+    {:else if step == 4}
+      <div
         class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-16">
-        <div class="text-3xl font-bold">Place your first bet</div>
+        <div class="text-3xl font-bold">Win 2X Coyn tokens</div>
         <div class="flex flex-col items-center space-y-3">
           <CoinBagIcon class="h-12 w-12" />
-          <span>You can buy coins</span>
+          <span>Win 2X Coyn tokens</span>
         </div>
         <div class="flex flex-col items-center space-y-3">
           <GiftBoxIcon outlined class="h-12 w-12" />
-          <span>Win lots of prizes</span>
+          <span>Vote with the majority and win double the tokens!</span>
         </div>
         <Button on:click={() => ($showOnboarding = false)} class="w-full">
           Let's make some money
