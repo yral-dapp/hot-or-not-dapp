@@ -62,7 +62,10 @@ $: homeIconFilled = path.includes('feed')
     ariaLabel="Navigate to wallet page"
     href="/wallet"
     class="relative flex items-center px-2 py-5">
-    <WalletIcon filled={path.includes('wallet')} class="h-6 w-6 text-white" />
+    <WalletIcon
+      filled={path.includes('wallet')}
+      class="h-6 w-6 
+    {path.includes('wallet') ? 'text-primary' : 'text-white'}" />
     <div
       class:hidden={!path.includes('wallet')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
