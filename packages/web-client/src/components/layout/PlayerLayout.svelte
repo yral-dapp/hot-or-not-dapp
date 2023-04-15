@@ -7,6 +7,7 @@ import FireIcon from '$components/icons/FireIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
+import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
@@ -34,6 +35,7 @@ let watchProgress = {
   totalCount: 0,
   partialWatchedPercentage: 0,
 }
+let showReportPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -176,6 +178,15 @@ $: avatarUrl =
   post.created_by_profile_photo_url[0] ||
   getDefaultImageUrl(post.created_by_user_principal_id)
 </script>
+
+{#if showReportPopup}
+  <ReportPopup
+    bind:show={showReportPopup}
+    reportedPostCanisterId={post.publisher_canister_id}
+    reportedPostId={post.id.toString()}
+    reportedUserId={post.created_by_user_principal_id}
+    userId={$authState.idString || '2vxsx-fae'} />
+{/if}
 
 <player-layout
   data-index={index}
