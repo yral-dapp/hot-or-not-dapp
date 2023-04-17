@@ -28,7 +28,6 @@ import { getCanisterId } from './canisterId'
 import type { PostPopulated } from './feed'
 import { setUser } from './sentry'
 import { isPrincipal } from '$lib/utils/isPrincipal'
-import type { GetFollowerOrFollowingPageError } from '$canisters/individual_user_template/individual_user_template.did'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
@@ -250,31 +249,21 @@ export async function fetchLovers(id: string, from?: bigint) {
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_profiles_that_follow_me_paginated(from ? [from] : [])
-
-    if ('Ok' in res) {
-      const populatedUsers = await populateProfiles(res.Ok.slice(1))
-      if (populatedUsers.error) {
-        throw new Error(
-          `Error while populating, ${JSON.stringify(populatedUsers)}`,
-        )
-      }
-      return {
-        error: false,
-        lovers: populatedUsers.posts,
-        noMoreLovers: res.Ok.length < 9,
-      }
-    } else if ('Err' in res) {
-      type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<GetFollowerOrFollowingPageError>
-      const err = Object.keys(res.Err)[0] as errors
-      switch (err) {
-        case 'Unauthorized':
-        case 'Unauthenticated':
-        default:
-          return { error: true }
-      }
-    } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    ).get_principals_that_follow_this_profile_paginated(from ? [from] : [])
+    if (!res) {
+      throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    }
+    const populatedUsers = await populateProfiles(res.slice(1))
+    if (populatedUsers.error) {
+      throw new Error(
+        `Error while populating, ${JSON.stringify(populatedUsers)}`,
+      )
+    }
+    return {
+      error: false,
+      lovers: populatedUsers.users,
+      noMoreLovers: res.length < 9,
+    }
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
@@ -287,30 +276,21 @@ export async function fetchLovingUsers(id: string, from?: bigint) {
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_profiles_i_follow_paginated(from ? [from] : [])
-    if ('Ok' in res) {
-      const populatedUsers = await populateProfiles(res.Ok.slice(1))
-      if (populatedUsers.error) {
-        throw new Error(
-          `Error while populating, ${JSON.stringify(populatedUsers)}`,
-        )
-      }
-      return {
-        error: false,
-        lovers: populatedUsers.posts,
-        noMoreLovers: res.Ok.length < 9,
-      }
-    } else if ('Err' in res) {
-      type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<GetFollowerOrFollowingPageError>
-      const err = Object.keys(res.Err)[0] as errors
-      switch (err) {
-        case 'Unauthorized':
-        case 'Unauthenticated':
-        default:
-          return { error: true }
-      }
-    } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    ).get_principals_this_profile_follows_paginated(from ? [from] : [])
+    if (!res) {
+      throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    }
+    const populatedUsers = await populateProfiles(res.slice(1))
+    if (populatedUsers.error) {
+      throw new Error(
+        `Error while populating, ${JSON.stringify(populatedUsers)}`,
+      )
+    }
+    return {
+      error: false,
+      lovers: populatedUsers.users,
+      noMoreLovers: res.length < 10,
+    }
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
@@ -357,12 +337,12 @@ async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
     )
 
     return {
-      posts: res.filter((o) => !!o) as UserProfileFollows[],
+      users: res.filter((o) => !!o) as UserProfileFollows[],
       error: false,
     }
   } catch (e) {
     Log({ error: e, from: '11 populatePosts.profile' }, 'error')
-    return { error: true, posts: [] }
+    return { error: true, users: [] }
   }
 }
 
