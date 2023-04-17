@@ -7,9 +7,22 @@ import userProfile from '$stores/userProfile'
 
 export let item: TransactionHistory
 
+function getEventName() {
+  switch (item.eventOutcome) {
+    case 'Draw':
+      return 'Draw outcome'
+    case 'Lost':
+      return 'Lost outcome'
+    case 'Won':
+      return 'Won outcome'
+    default:
+      return item.subType?.replace(/([A-Z])/g, ' $1').trim() || ''
+  }
+}
+
 $: deducted =
   item.type === 'Burn' || item.type === 'Stake' || item.type === 'Transfer'
-$: eventName = item.subType?.replace(/([A-Z])/g, ' $1').trim() || ''
+$: eventName = getEventName()
 //@ts-ignore
 $: postCanisterId = item.details?.post_canister_id?.toText() || ''
 //@ts-ignore
@@ -51,8 +64,10 @@ $: userId = $userProfile.username_set
       {/if}
     </div>
   </div>
-  <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
-    {deducted ? '-' : '+'}
-    {item.token}
-  </div>
+  {#if item.eventOutcome !== 'Lost'}
+    <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
+      {item.eventOutcome === 'Draw' ? '←' : deducted ? '-' : '+'}
+      {item.token}
+    </div>
+  {/if}
 </div>
