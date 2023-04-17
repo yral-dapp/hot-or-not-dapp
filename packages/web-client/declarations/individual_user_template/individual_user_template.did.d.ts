@@ -6,12 +6,6 @@ export interface AggregateStats {
   'total_amount_bet' : bigint,
   'total_number_of_hot_bets' : bigint,
 }
-export type AnotherUserFollowedMeError = {
-    'UserIndexCrossCanisterCallFailed' : null
-  } |
-  { 'FollowersListFull' : null } |
-  { 'NotAuthorized' : null } |
-  { 'UserTryingToFollowMeDoesNotExist' : null };
 export interface BetDetails {
   'bet_direction' : BetDirection,
   'bet_maker_canister_id' : Principal,
@@ -49,17 +43,12 @@ export interface FeedScore {
   'last_synchronized_score' : bigint,
 }
 export type FollowAnotherUserProfileError = {
-    'UserToFollowDoesNotExist' : null
+    'UserITriedToFollowCrossCanisterCallFailed' : null
   } |
-  { 'UserIndexCrossCanisterCallFailed' : null } |
-  { 'UserITriedToFollowCrossCanisterCallFailed' : null } |
   { 'UsersICanFollowListIsFull' : null } |
-  {
-    'MyCanisterIDDoesNotMatchMyPrincipalCanisterIDMappingSeenByUserITriedToFollow' : null
-  } |
-  { 'UserITriedToFollowDidNotFindMe' : null } |
-  { 'NotAuthorized' : null } |
-  { 'UserITriedToFollowHasTheirFollowersListFull' : null };
+  { 'Unauthorized' : null } |
+  { 'UserITriedToFollowHasTheirFollowersListFull' : null } |
+  { 'Unauthenticated' : null };
 export interface FollowEntryDetail {
   'canister_id' : Principal,
   'principal_id' : Principal,
@@ -72,8 +61,6 @@ export interface FollowerArg {
   'follower_canister_id' : Principal,
   'follower_principal_id' : Principal,
 }
-export type GetFollowerOrFollowingPageError = { 'Unauthorized' : null } |
-  { 'Unauthenticated' : null };
 export type GetPostsOfUserProfileError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
@@ -201,24 +188,18 @@ export type Result = { 'Ok' : bigint } |
   { 'Err' : string };
 export type Result_1 = { 'Ok' : BettingStatus } |
   { 'Err' : BetOnCurrentlyViewingPostError };
-export type Result_10 = { 'Ok' : null } |
-  { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type Result_2 = { 'Ok' : boolean } |
   { 'Err' : FollowAnotherUserProfileError };
 export type Result_3 = { 'Ok' : Post } |
   { 'Err' : null };
 export type Result_4 = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_5 = { 'Ok' : Array<Principal> } |
+export type Result_5 = { 'Ok' : Array<[bigint, TokenEvent]> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_6 = { 'Ok' : Array<[bigint, FollowEntryDetail]> } |
-  { 'Err' : GetFollowerOrFollowingPageError };
-export type Result_7 = { 'Ok' : Array<[bigint, TokenEvent]> } |
-  { 'Err' : GetPostsOfUserProfileError };
-export type Result_8 = { 'Ok' : boolean } |
-  { 'Err' : AnotherUserFollowedMeError };
-export type Result_9 = { 'Ok' : UserProfileDetailsForFrontend } |
+export type Result_6 = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
+export type Result_7 = { 'Ok' : null } |
+  { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
   { 'BetOngoing' : null } |
   { 'Draw' : null } |
@@ -301,10 +282,6 @@ export interface _SERVICE {
   'bet_on_currently_viewing_post' : ActorMethod<[PlaceBetArg], Result_1>,
   'do_i_follow_this_user' : ActorMethod<[FolloweeArg], Result_2>,
   'get_entire_individual_post_detail_by_id' : ActorMethod<[bigint], Result_3>,
-  'get_following_status_do_i_follow_this_user' : ActorMethod<
-    [Principal],
-    boolean
-  >,
   'get_hot_or_not_bet_details_for_this_post' : ActorMethod<
     [bigint],
     BettingStatus
@@ -325,22 +302,20 @@ export interface _SERVICE {
     [bigint, bigint],
     Result_4
   >,
-  'get_principals_i_follow_paginated' : ActorMethod<[bigint, bigint], Result_5>,
-  'get_principals_that_follow_me_paginated' : ActorMethod<
-    [bigint, bigint],
-    Result_5
+  'get_principals_that_follow_this_profile_paginated' : ActorMethod<
+    [[] | [bigint]],
+    Array<[bigint, FollowEntryDetail]>
+  >,
+  'get_principals_this_profile_follows_paginated' : ActorMethod<
+    [[] | [bigint]],
+    Array<[bigint, FollowEntryDetail]>
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
-  'get_profiles_i_follow_paginated' : ActorMethod<[[] | [bigint]], Result_6>,
-  'get_profiles_that_follow_me_paginated' : ActorMethod<
-    [[] | [bigint]],
-    Result_6
-  >,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_7
+    Result_5
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
@@ -387,19 +362,11 @@ export interface _SERVICE {
   'update_post_as_ready_to_view' : ActorMethod<[bigint], undefined>,
   'update_post_increment_share_count' : ActorMethod<[bigint], bigint>,
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
-  'update_principals_i_follow_toggle_list_with_principal_specified' : ActorMethod<
-    [Principal],
-    Result_2
-  >,
-  'update_principals_that_follow_me_toggle_list_with_specified_principal' : ActorMethod<
-    [Principal],
-    Result_8
-  >,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_9
+    Result_6
   >,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_10>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_7>,
   'update_profiles_i_follow_toggle_list_with_specified_profile' : ActorMethod<
     [FolloweeArg],
     Result_2
