@@ -2,8 +2,10 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
+import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
 import FireIcon from '$components/icons/FireIcon.svelte'
+import FlagIcon from '$components/icons/FlagIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
@@ -25,6 +27,7 @@ export let post: PostPopulated
 export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
+export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
@@ -235,6 +238,16 @@ $: avatarUrl =
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
+        {#if showReportButton}
+          <IconButton
+            ariaLabel="Report this post"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              showReportPopup = true
+            }}>
+            <FlagIcon class="h-8 w-8 text-white" />
+          </IconButton>
+        {/if}
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
             <GiftBoxIcon class="h-8 w-8" />
