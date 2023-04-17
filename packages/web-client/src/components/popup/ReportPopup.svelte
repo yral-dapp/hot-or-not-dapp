@@ -10,6 +10,7 @@ export let reportedUserId: string
 export let userId: string
 
 let loading = false
+let selectedReason = ''
 
 async function handleReport() {
   loading = true
@@ -21,7 +22,7 @@ async function handleReport() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text: `Video reported 🚨 \n Profile Link: https://hotornot.wtf/${reportedUserId}/post/${reportedPostId}\n Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n Reported by: ${userId}`,
+        text: `Video reported 🚨 \n Profile Link: https://hotornot.wtf/${reportedUserId}/post/${reportedPostId}\n Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n Reported by: ${userId} \n Reason: ${selectedReason}`,
       }),
     },
   )
@@ -33,22 +34,24 @@ async function handleReport() {
 <Popup showCloseButton bind:show>
   <div class="flex flex-col space-y-4">
     <div class="text-md pb-2 text-center text-black">Report Video</div>
-    <Button disabled={loading} on:click={handleReport}>
-      {#if loading}
-        <div class="flex items-center space-x-2">
-          <LoadingIcon class="h-4 w-4 animate-spin" />
-          <span>Reporting Video</span>
-        </div>
-      {:else}
-        Select a reason to report
-      {/if}
-    </Button>
+    <div class="text-md pb-2 text-center text-black">
+      Please select a reason why you are reporting this video
+    </div>
+    <select
+      class="rounded-sm border-0 text-black disabled:text-black/50"
+      bind:value={selectedReason}>
+      <option value="" disabled selected>Click a reason</option>
+      <option value="nudity">Nudity/Porn</option>
+      <option value="violence">Violence/Gore</option>
+      <option value="offensive">Offensive</option>
+      <option value="spam">Spam/Ad</option>
+      <option value="others">Others</option>
+    </select>
     <Button
-      on:click={() => (show = false)}
-      disabled={loading}
-      type="secondary"
-      class="border-black/50 text-black/70">
-      Go back
+      on:click={handleReport}
+      disabled={loading || !selectedReason}
+      type="primary">
+      Report
     </Button>
   </div>
 </Popup>
