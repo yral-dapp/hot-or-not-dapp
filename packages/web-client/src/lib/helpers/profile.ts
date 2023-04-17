@@ -1,4 +1,5 @@
 import type {
+  BetOutcomeForBetMaker,
   GetPostsOfUserProfileError,
   MintEvent,
   PlacedBetDetail,
@@ -42,8 +43,6 @@ async function fetchProfile() {
     Log({ error: e, from: '1 fetchProfile' }, 'error')
   }
 }
-
-type UnionKeyOf<U> = U extends U ? keyof U : never
 
 export function sanitizeProfile(
   profile: UserProfileDetailsForFrontend,
@@ -387,9 +386,10 @@ export async function loveUser(userId: string) {
     return false
   }
 }
+type UnionKeyOf<U> = U extends U ? keyof U : never
+type UnionValueOf<U> = U extends U ? U[keyof U] : never
 
 const walletEventDetails = ({} as WalletEvent)?.details
-type UnionValueOf<U> = U extends U ? U[keyof U] : never
 type WalletEvent = UnionValueOf<TokenEvent>
 type WalletEventDetails = typeof walletEventDetails
 type WalletEventSubType = UnionKeyOf<WalletEventDetails>
@@ -398,6 +398,7 @@ type NotificationEventType = Omit<
   WalletEventSubType,
   'BetOnHotOrNotPost' | 'NewUserSignup'
 >
+type EventOutcome = UnionKeyOf<BetOutcomeForBetMaker>
 
 export interface TransactionHistory {
   id: BigInt
@@ -406,6 +407,7 @@ export interface TransactionHistory {
   timestamp: SystemTime
   subType: WalletEventSubType
   details?: WalletEventSubDetails
+  eventOutcome?: EventOutcome
 }
 
 export interface NotificationHistory {
@@ -414,6 +416,7 @@ export interface NotificationHistory {
   token: number
   timestamp: SystemTime
   details?: WalletEventSubDetails
+  eventOutcome?: EventOutcome
 }
 
 type HistoryResponse =
@@ -449,15 +452,21 @@ async function transformHistoryRecords(
     const details = (event[type] as WalletEvent)?.details?.[
       subType
     ] as WalletEventSubDetails
+    const eventOutcome = Object.keys(
+      details?.['event_outcome'] || {},
+    )[0] as EventOutcome
+
+    console.log(event, details)
 
     if (!filter || filter === subType) {
       history.push({
         id: o[0],
         type,
         subType,
-        token: Object.values(o[1])?.[0]?.amount || 0,
+        token: Object.values(event)?.[0]?.amount || 0,
         timestamp: event[type].timestamp as SystemTime,
         details,
+        eventOutcome,
       })
     }
   })
@@ -525,14 +534,18 @@ async function transformNotificationRecords(res: Array<[bigint, TokenEvent]>) {
     const details = (event[type] as WalletEvent)?.details?.[
       subType
     ] as WalletEventSubDetails
+    const eventOutcome = Object.keys(
+      details?.['event_outcome'] || {},
+    )[0] as EventOutcome
 
     if (subType !== 'BetOnHotOrNotPost' && subType !== 'NewUserSignup') {
       notifications.push({
         id: o[0],
         type: subType,
-        token: Object.values(o[1])?.[0]?.amount || 0,
+        token: Object.values(event)?.[0]?.amount || 0,
         timestamp: event[type].timestamp as SystemTime,
         details,
+        eventOutcome,
       })
     }
   })
