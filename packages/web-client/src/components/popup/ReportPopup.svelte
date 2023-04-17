@@ -2,6 +2,7 @@
 import Button from '$components/button/Button.svelte'
 import Popup from './Popup.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import { saveReportedPostInDb } from '$lib/helpers/feed'
 
 export let show = false
 export let reportedPostCanisterId: string
@@ -25,6 +26,10 @@ async function handleReport() {
         text: `Video reported 🚨 \n Profile Link: https://hotornot.wtf/${reportedUserId}/post/${reportedPostId}\n Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n Reported by: ${userId} \n Reason: ${selectedReason}`,
       }),
     },
+  )
+  saveReportedPostInDb(
+    `${reportedPostCanisterId}@${reportedPostId}`,
+    selectedReason,
   )
   loading = false
   show = false
