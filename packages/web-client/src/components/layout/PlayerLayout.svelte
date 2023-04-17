@@ -245,7 +245,7 @@ $: avatarUrl =
               e.stopImmediatePropagation()
               showReportPopup = true
             }}>
-            <FlagIcon class="h-8 w-8 text-white" />
+            <FlagIcon class="h-8 w-8 text-white drop-shadow" />
           </IconButton>
         {/if}
         {#if showReferAndEarnLink}
