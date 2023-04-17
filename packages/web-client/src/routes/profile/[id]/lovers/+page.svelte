@@ -144,7 +144,7 @@ async function handleLove(userIndex: number, userId?: string) {
         <span>Loading</span>
       </div>
     {/if}
-    {#if noMoreUsers && userId.length}
+    {#if noMoreUsers && userId.length && users.length}
       <div class="flex w-full items-center justify-center space-x-2 py-8">
         <span class="text-white/50">No more users</span>
       </div>
