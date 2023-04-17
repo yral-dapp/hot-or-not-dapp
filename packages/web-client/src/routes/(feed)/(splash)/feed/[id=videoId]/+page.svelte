@@ -162,6 +162,7 @@ beforeNavigate(() => {
           index={i}
           source="main_feed"
           watchHistoryDb="watch"
+          showReportButton
           showLikeButton
           showReferAndEarnLink
           showShareButton

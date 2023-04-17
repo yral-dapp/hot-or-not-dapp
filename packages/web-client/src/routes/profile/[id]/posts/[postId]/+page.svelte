@@ -64,6 +64,7 @@ async function handleChange(e: CustomEvent) {
               index={i}
               source="post"
               watchHistoryDb="watch"
+              showReportButton
               showLikeButton
               showReferAndEarnLink
               showShareButton
