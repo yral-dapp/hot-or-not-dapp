@@ -416,6 +416,7 @@ export interface NotificationHistory {
   token: number
   timestamp: SystemTime
   details?: WalletEventSubDetails
+  eventOutcome?: EventOutcome
 }
 
 type HistoryResponse =
@@ -451,7 +452,7 @@ async function transformHistoryRecords(
     const details = (event[type] as WalletEvent)?.details?.[
       subType
     ] as WalletEventSubDetails
-    const outcome = Object.keys(
+    const eventOutcome = Object.keys(
       details?.['event_outcome'] || {},
     )[0] as EventOutcome
 
@@ -465,7 +466,7 @@ async function transformHistoryRecords(
         token: Object.values(event)?.[0]?.amount || 0,
         timestamp: event[type].timestamp as SystemTime,
         details,
-        eventOutcome: outcome,
+        eventOutcome,
       })
     }
   })
@@ -533,14 +534,18 @@ async function transformNotificationRecords(res: Array<[bigint, TokenEvent]>) {
     const details = (event[type] as WalletEvent)?.details?.[
       subType
     ] as WalletEventSubDetails
+    const eventOutcome = Object.keys(
+      details?.['event_outcome'] || {},
+    )[0] as EventOutcome
 
     if (subType !== 'BetOnHotOrNotPost' && subType !== 'NewUserSignup') {
       notifications.push({
         id: o[0],
         type: subType,
-        token: Object.values(o[1])?.[0]?.amount || 0,
+        token: Object.values(event)?.[0]?.amount || 0,
         timestamp: event[type].timestamp as SystemTime,
         details,
+        eventOutcome,
       })
     }
   })
