@@ -9,7 +9,7 @@ type DBStores =
   | 'wallet'
   | 'reported'
 
-const dbPromise = openDB('keyval-store', 6, {
+const dbPromise = openDB('keyval-store', 7, {
   upgrade(db) {
     if (!db.objectStoreNames.contains('keyval')) {
       db.createObjectStore('keyval')
@@ -28,6 +28,9 @@ const dbPromise = openDB('keyval-store', 6, {
     }
     if (!db.objectStoreNames.contains('wallet')) {
       db.createObjectStore('wallet')
+    }
+    if (!db.objectStoreNames.contains('reported')) {
+      db.createObjectStore('reported')
     }
   },
 }).catch((e) => {
