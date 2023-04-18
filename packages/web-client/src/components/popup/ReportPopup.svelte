@@ -1,7 +1,6 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import Popup from './Popup.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import { saveReportedPostInDb } from '$lib/helpers/feed'
 
 export let show = false

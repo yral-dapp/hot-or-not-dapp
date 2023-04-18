@@ -9,7 +9,6 @@ import {
   getHotOrNotPosts,
   updatePostInWatchHistory,
   type PostPopulated,
-  getWatchedVideosFromCache,
 } from '$lib/helpers/feed'
 import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
