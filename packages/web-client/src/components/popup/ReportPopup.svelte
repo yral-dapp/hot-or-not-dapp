@@ -23,7 +23,7 @@ async function handleReport() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text: `Video reported 🚨 \n Profile Link: https://hotornot.wtf/${reportedUserId}/post/${reportedPostId}\n Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n Reported by: ${userId} \n Reason: ${selectedReason}`,
+        text: `Video reported 🚨 \n Profile Link: https://hotornot.wtf/profile/${reportedUserId}/post/${reportedPostId}\n Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n Reported by: ${userId} \n Reason: ${selectedReason}`,
       }),
     },
   )
