@@ -24,7 +24,13 @@ import HotOrNotBetControls, {
 } from './HotOrNotBetControls.svelte'
 import HotOrNotBetOutcome from './HotOrNotBetOutcome.svelte'
 
-export let tutorialMode = false
+export let tutorialMode: {
+  highlightCoin: boolean
+  highlightSelectors: boolean
+} = {
+  highlightCoin: false,
+  highlightSelectors: false,
+}
 export let disabled = false
 export let comingSoon = false
 export let post: PostPopulated | undefined = undefined
@@ -46,7 +52,7 @@ let idb: IDB
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
-} else if (!bettingStatusValue && !placedBetDetail) {
+} else if (post && !bettingStatusValue && !placedBetDetail) {
   error = 'Betting has been closed.'
 }
 

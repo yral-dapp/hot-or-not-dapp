@@ -52,6 +52,23 @@ async function filterPosts(
   }
 }
 
+async function filterReportedPosts(posts: PostScoreIndexItem[]) {
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    const keys = (await idb.keys('reported')) as string[]
+    if (!keys.length) return posts
+    const filtered = posts.filter(
+      (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
+    )
+    return filtered
+  } catch (e) {
+    Log({ error: e, from: '1 filterReportedPosts', type: 'idb' }, 'error')
+    return posts
+  }
+}
+
 export async function getWatchedVideosFromCache(
   dbStore: 'watch' | 'watch-hon',
 ): Promise<PostPopulatedHistory[]> {
@@ -83,9 +100,10 @@ export async function getTopPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const filteredPosts = await filterPosts(res.Ok, 'watch')
+      const filteredReportedPosts = await filterReportedPosts(res.Ok)
+      const filteredPosts = await filterPosts(filteredReportedPosts, 'watch')
       const populatedRes = await populatePosts(
-        filterViewed ? filteredPosts : res.Ok,
+        filterViewed ? filteredPosts : filteredReportedPosts,
       )
       if (populatedRes.error) {
         throw new Error(
@@ -124,7 +142,7 @@ async function filterBets(
       idb = (await import('$lib/idb')).idb
     }
     const keys = (await idb.keys('bets')) as string[]
-    if (!keys.length) return posts
+    if (!keys?.length) return posts
     const filtered = posts.filter(
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
     )
@@ -147,8 +165,11 @@ export async function getHotOrNotPosts(
       )
     if ('Ok' in res) {
       const filteredNonBetPosts = await filterBets(res.Ok)
+      const filteredReportedPosts = await filterReportedPosts(
+        filteredNonBetPosts,
+      )
       // const filteredPosts = await filterPosts(filteredNonBetPosts, 'watch-hon')
-      const populatedRes = await populatePosts(filteredNonBetPosts, true)
+      const populatedRes = await populatePosts(filteredReportedPosts, true)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -178,11 +199,32 @@ export async function getHotOrNotPosts(
   }
 }
 
-function checkAlreadyBet(post: PostDetailsForFrontend) {
+export function isBettingClosed(post: PostDetailsForFrontend) {
   const bettingStatus = post.hot_or_not_betting_status?.[0]
   const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
-  if (!bettingStatusValue) return true
-  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) return true
+  if (!bettingStatusValue) {
+    return true
+  }
+  const betWillCloseAt = new Date(
+    Number(bettingStatusValue.started_at.secs_since_epoch) * 1000,
+  )
+  betWillCloseAt.setHours(betWillCloseAt.getHours() + 48)
+  if (betWillCloseAt.getTime() - new Date().getTime() > 0) {
+    return false
+  }
+  return true
+}
+
+function hasUserBetOnPost(post: PostDetailsForFrontend) {
+  const bettingStatus = post.hot_or_not_betting_status?.[0]
+  const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
+
+  if (!bettingStatusValue) {
+    return true
+  }
+  if (bettingStatusValue.has_this_user_participated_in_this_post[0]) {
+    return true
+  }
   return false
 }
 
@@ -201,7 +243,9 @@ async function populatePosts(
           const r = await individualUser(
             Principal.from(post.publisher_canister_id),
           ).get_individual_post_details_by_id(post.post_id)
-          if (filterBetPosts && checkAlreadyBet(r)) return undefined
+          if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
+            return undefined
+          }
           return {
             ...r,
             ...post,
@@ -241,6 +285,17 @@ export async function updatePostInWatchHistory(
       post.publisher_canister_id + '@' + post.post_id,
       postHistory,
     )
+  } catch (e) {
+    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
+  }
+}
+
+export async function saveReportedPostInDb(postId: string, reason: string) {
+  try {
+    if (!idb) {
+      idb = (await import('$lib/idb')).idb
+    }
+    await idb.set('reported', postId, reason)
   } catch (e) {
     Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
   }
