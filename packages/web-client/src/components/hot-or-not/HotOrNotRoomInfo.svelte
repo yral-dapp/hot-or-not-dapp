@@ -17,6 +17,7 @@ const systemTime: SystemTime = {
 import PieChartIcon from '$components/icons/PieChartIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import UsersIcon from '$components/icons/UsersIcon.svelte'
+import Tooltip from '$components/tooltip/Tooltip.svelte'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 
 export let bettingStatus: BettingStatus
@@ -33,23 +34,29 @@ $: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
 </script>
 
 {#if bettingOpen}
-  <div class="flex items-center space-x-3">
+  <div class="pointer-events-auto flex items-center space-x-3">
     {#if $timeLeft}
-      <button
-        class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-        <TimerIcon class="h-4 w-4" />
-        <span class="text-sm">{$timeLeft}</span>
-      </button>
+      <Tooltip text="Time Remaining for Result" position="middle">
+        <div
+          class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
+          <TimerIcon class="h-4 w-4" />
+          <span class="text-sm">{$timeLeft}</span>
+        </div>
+      </Tooltip>
     {/if}
-    <button
-      class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-      <UsersIcon class="h-4 w-4" />
-      <span class="text-sm">{usersInThisSlot}/100</span>
-    </button>
-    <button
-      class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-      <PieChartIcon class="h-4 w-4" />
-      <span class="text-sm">{onGoingSlot}/48</span>
-    </button>
+    <Tooltip text="Participants in this Slot" position="middle">
+      <div
+        class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
+        <UsersIcon class="h-4 w-4" />
+        <span class="text-sm">{usersInThisSlot}/100</span>
+      </div>
+    </Tooltip>
+    <Tooltip text="Betting Slot" position="middle">
+      <div
+        class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
+        <PieChartIcon class="h-4 w-4" />
+        <span class="text-sm">{onGoingSlot}/48</span>
+      </div>
+    </Tooltip>
   </div>
 {/if}
