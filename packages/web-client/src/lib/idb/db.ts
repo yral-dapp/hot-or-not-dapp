@@ -1,9 +1,9 @@
 import { openDB } from 'idb'
 import Log from '../utils/Log'
 
-type DBStores = 'canisters' | 'watch' | 'watch-hon' | 'bets'
+type DBStores = 'canisters' | 'watch' | 'watch-hon' | 'bets' | 'reported'
 
-const dbPromise = openDB('keyval-store', 4, {
+const dbPromise = openDB('keyval-store', 5, {
   upgrade(db) {
     if (!db.objectStoreNames.contains('keyval')) {
       db.createObjectStore('keyval')
