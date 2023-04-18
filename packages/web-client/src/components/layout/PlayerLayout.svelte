@@ -9,6 +9,7 @@ import FlagIcon from '$components/icons/FlagIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
+import WalletIcon from '$components/icons/WalletIcon.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
@@ -24,6 +25,7 @@ import userProfile from '$stores/userProfile'
 export let index: number
 export let justWatched: boolean = false
 export let post: PostPopulated
+export let showWalletLink = false
 export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
@@ -248,6 +250,7 @@ $: avatarUrl =
             <FlagIcon class="h-8 w-8 text-white drop-shadow" />
           </IconButton>
         {/if}
+
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
             <GiftBoxIcon class="h-8 w-8" />
@@ -269,6 +272,11 @@ $: avatarUrl =
               {getShortNumber(Number(post.like_count))}
             </span>
           </div>
+        {/if}
+        {#if showWalletLink}
+          <IconButton class="pr-2" ariaLabel="Wallet" href="/wallet">
+            <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
+          </IconButton>
         {/if}
         {#if showShareButton}
           <IconButton
