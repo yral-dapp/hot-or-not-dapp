@@ -22,6 +22,7 @@ import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
 import type { PageData } from './$types'
+import { getThumbnailUrl } from '$lib/utils/cloudflare'
 
 export let data: PageData
 
@@ -39,6 +40,8 @@ let fetchedVideosCount = 0
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
 let showError = false
+
+$: activePost = videos[0]
 
 async function fetchNextVideos(force = false) {
   // console.log(
@@ -141,6 +144,14 @@ beforeNavigate(() => {
 
 <svelte:head>
   <title>Hot or Not Videos | Hot or Not</title>
+  {#if activePost}
+    <meta
+      property="og:url"
+      content="https://hotornot.wtf/hotornot/{activePost.publisher_canister_id}@{activePost.id}/" />
+    <meta property="og:title" content="Hot or Not Videos" />
+    <meta property="og:description" content="${activePost.description}" />
+    <meta property="og:image" content={getThumbnailUrl(activePost.video_uid)} />
+  {/if}
 </svelte:head>
 
 <Swiper
