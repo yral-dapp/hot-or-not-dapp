@@ -24,7 +24,13 @@ import HotOrNotBetControls, {
 } from './HotOrNotBetControls.svelte'
 import HotOrNotBetOutcome from './HotOrNotBetOutcome.svelte'
 
-export let tutorialMode = false
+export let tutorialMode: {
+  highlightCoin: boolean
+  highlightSelectors: boolean
+} = {
+  highlightCoin: false,
+  highlightSelectors: false,
+}
 export let disabled = false
 export let comingSoon = false
 export let post: PostPopulated | undefined = undefined

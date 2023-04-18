@@ -22,11 +22,19 @@ import c from 'clsx'
 import { createEventDispatcher } from 'svelte'
 import { fade } from 'svelte/transition'
 
-export let tutorialMode = false
+export let tutorialMode: {
+  highlightCoin: boolean
+  highlightSelectors: boolean
+} = {
+  highlightCoin: false,
+  highlightSelectors: false,
+}
 export let loadingWithDirection: false | BetDirectionString = false
 export let disabled = false
 export let error = ''
 export let betPlaced: false | BetDirectionString = false
+
+$: _tutorialMode = tutorialMode.highlightCoin || tutorialMode.highlightSelectors
 
 const dispatch = createEventDispatcher<{
   placeBet: PlaceBet
@@ -61,13 +69,13 @@ function placeBet(direction: 'Hot' | 'Not') {
   <div
     class={c(
       'relative flex flex-col items-center space-y-1',
-      error ? 'pointer-events-none' : 'pointer-events-auto',
+      error || _tutorialMode ? '!pointer-events-none' : 'pointer-events-auto',
     )}>
-    {#if tutorialMode}
+    {#if tutorialMode.highlightSelectors}
       <div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
     <IconButton
-      disabled={tutorialMode || disabled}
+      disabled={disabled || tutorialMode.highlightCoin}
       on:click={(e) => {
         e.stopImmediatePropagation()
         placeBet('Not')
@@ -83,13 +91,10 @@ function placeBet(direction: 'Hot' | 'Not') {
   <div
     class={c(
       'relative flex flex-col items-center',
-      tutorialMode || error ? '!pointer-events-none' : 'pointer-events-auto',
-      {
-        'opacity-0': tutorialMode,
-      },
+      _tutorialMode || error ? '!pointer-events-none' : 'pointer-events-auto',
     )}>
     <IconButton
-      disabled={$playerState.selectedCoins == 100 || disabled}
+      disabled={$playerState.selectedCoins == 100 || disabled || _tutorialMode}
       on:click={(e) => {
         e.stopImmediatePropagation()
         increaseBet()
@@ -99,14 +104,18 @@ function placeBet(direction: 'Hot' | 'Not') {
       })}>
       <ChevronUpIcon class="h-2" />
     </IconButton>
+    {#if tutorialMode.highlightCoin}
+      <div class="absolute top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
+    {/if}
     <button
       disabled={betPlaced !== false ||
         loadingWithDirection !== false ||
         disabled}
       on:click|stopPropagation={toggleBet}
-      class="relative h-20 w-20 select-none {betPlaced !== false || disabled
-        ? 'grayscale'
-        : ''}">
+      class={c('relative h-20 w-20 select-none', {
+        grayscale:
+          tutorialMode.highlightSelectors || betPlaced !== false || disabled,
+      })}>
       <BetCoinIcon class="h-20" />
       <div
         class="absolute inset-0 flex select-none items-center justify-center">
@@ -126,7 +135,7 @@ function placeBet(direction: 'Hot' | 'Not') {
         e.stopImmediatePropagation()
         decreaseBet()
       }}
-      disabled={$playerState.selectedCoins == 10 || disabled}
+      disabled={$playerState.selectedCoins == 10 || disabled || _tutorialMode}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
         invisible: betPlaced || loadingWithDirection,
       })}>
@@ -134,14 +143,16 @@ function placeBet(direction: 'Hot' | 'Not') {
     </IconButton>
   </div>
   <div
-    class="relative flex flex-col items-center space-y-1 {error
-      ? 'pointer-events-none'
-      : 'pointer-events-auto'}">
-    {#if tutorialMode}
+    class={c(
+      'relative flex flex-col items-center space-y-1',
+      error || _tutorialMode ? '!pointer-events-none' : 'pointer-events-auto',
+    )}>
+    {#if tutorialMode.highlightSelectors}
       <div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
     <IconButton
-      disabled={tutorialMode || disabled}
+      class="z-2"
+      disabled={disabled || tutorialMode.highlightCoin}
       on:click={(e) => {
         e.stopImmediatePropagation()
         placeBet('Hot')
