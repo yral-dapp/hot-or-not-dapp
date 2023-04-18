@@ -7,7 +7,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
-import Hls from 'hls.js/dist/hls.min'
+import Hls from 'hls.js/dist/hls.min.js'
 import type { PageData } from './$types'
 
 export let data: PageData
