@@ -2,12 +2,15 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
+import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
 import FireIcon from '$components/icons/FireIcon.svelte'
+import FlagIcon from '$components/icons/FlagIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
+import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
@@ -26,6 +29,7 @@ export let showWalletLink = false
 export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
+export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
@@ -36,6 +40,7 @@ let watchProgress = {
   totalCount: 0,
   partialWatchedPercentage: 0,
 }
+let showReportPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -179,6 +184,15 @@ $: avatarUrl =
   getDefaultImageUrl(post.created_by_user_principal_id)
 </script>
 
+{#if showReportPopup}
+  <ReportPopup
+    bind:show={showReportPopup}
+    reportedPostCanisterId={post.publisher_canister_id}
+    reportedPostId={post.id.toString()}
+    reportedUserId={post.created_by_user_principal_id}
+    userId={$authState.idString || '2vxsx-fae'} />
+{/if}
+
 <player-layout
   data-index={index}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
@@ -226,11 +240,17 @@ $: avatarUrl =
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
-        {#if showWalletLink}
-          <IconButton class="pr-2" ariaLabel="Wallet" href="/wallet">
-            <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
+        {#if showReportButton}
+          <IconButton
+            ariaLabel="Report this post"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              showReportPopup = true
+            }}>
+            <FlagIcon class="h-8 w-8 text-white drop-shadow" />
           </IconButton>
         {/if}
+
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
             <GiftBoxIcon class="h-8 w-8" />
@@ -252,6 +272,11 @@ $: avatarUrl =
               {getShortNumber(Number(post.like_count))}
             </span>
           </div>
+        {/if}
+        {#if showWalletLink}
+          <IconButton class="pr-2" ariaLabel="Wallet" href="/wallet">
+            <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
+          </IconButton>
         {/if}
         {#if showShareButton}
           <IconButton

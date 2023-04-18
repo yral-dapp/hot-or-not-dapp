@@ -42,6 +42,7 @@ let { video, me } = data
         index={0}
         source="post"
         watchHistoryDb="watch"
+        showReportButton
         showLikeButton
         showDescription
         showReferAndEarnLink
