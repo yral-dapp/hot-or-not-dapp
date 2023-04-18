@@ -50,6 +50,7 @@ export function individualUser(
       ? principal
       : Principal.from(principal)
     : (authStateData.userCanisterId as string)
+  if (!canisterId) throw "Can't find canisterId"
   return createIndividualUserActor(canisterId, {
     agentOptions: { identity: authHelperData?.identity, host, fetch },
   }) as IndividualUserActor

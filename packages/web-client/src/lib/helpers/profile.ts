@@ -1,4 +1,5 @@
 import type {
+  BetOutcomeForBetMaker,
   GetPostsOfUserProfileError,
   MintEvent,
   PlacedBetDetail,
@@ -42,8 +43,6 @@ async function fetchProfile() {
     Log({ error: e, from: '1 fetchProfile' }, 'error')
   }
 }
-
-type UnionKeyOf<U> = U extends U ? keyof U : never
 
 export function sanitizeProfile(
   profile: UserProfileDetailsForFrontend,
@@ -387,13 +386,19 @@ export async function loveUser(userId: string) {
     return false
   }
 }
+type UnionKeyOf<U> = U extends U ? keyof U : never
+type UnionValueOf<U> = U extends U ? U[keyof U] : never
 
 const walletEventDetails = ({} as WalletEvent)?.details
-type UnionValueOf<U> = U extends U ? U[keyof U] : never
 type WalletEvent = UnionValueOf<TokenEvent>
 type WalletEventDetails = typeof walletEventDetails
 type WalletEventSubType = UnionKeyOf<WalletEventDetails>
 type WalletEventSubDetails = UnionValueOf<WalletEventDetails>
+type NotificationEventType = Omit<
+  WalletEventSubType,
+  'BetOnHotOrNotPost' | 'NewUserSignup'
+>
+type EventOutcome = UnionKeyOf<BetOutcomeForBetMaker>
 
 export interface TransactionHistory {
   id: BigInt
@@ -402,6 +407,16 @@ export interface TransactionHistory {
   timestamp: SystemTime
   subType: WalletEventSubType
   details?: WalletEventSubDetails
+  eventOutcome?: EventOutcome
+}
+
+export interface NotificationHistory {
+  id: BigInt
+  type: NotificationEventType
+  token: number
+  timestamp: SystemTime
+  details?: WalletEventSubDetails
+  eventOutcome?: EventOutcome
 }
 
 type HistoryResponse =
@@ -411,6 +426,16 @@ type HistoryResponse =
   | {
       error: false
       history: TransactionHistory[]
+      endOfList: boolean
+    }
+
+type NotificationResponse =
+  | {
+      error: true
+    }
+  | {
+      error: false
+      notifications: NotificationHistory[]
       endOfList: boolean
     }
 
@@ -427,15 +452,21 @@ async function transformHistoryRecords(
     const details = (event[type] as WalletEvent)?.details?.[
       subType
     ] as WalletEventSubDetails
+    const eventOutcome = Object.keys(
+      details?.['event_outcome'] || {},
+    )[0] as EventOutcome
+
+    console.log(event, details)
 
     if (!filter || filter === subType) {
       history.push({
         id: o[0],
         type,
         subType,
-        token: Object.values(o[1])?.[0]?.amount || 0,
+        token: Object.values(event)?.[0]?.amount || 0,
         timestamp: event[type].timestamp as SystemTime,
         details,
+        eventOutcome,
       })
     }
   })
@@ -488,6 +519,68 @@ export async function fetchHistory(
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
     Log({ error: e, from: '11 fetchHistory' }, 'error')
+    return { error: true }
+  }
+  return { error: true }
+}
+
+async function transformNotificationRecords(res: Array<[bigint, TokenEvent]>) {
+  const notifications: NotificationHistory[] = []
+
+  res.forEach((o) => {
+    const event = o[1]
+    const type = Object.keys(event)[0] as UnionKeyOf<TokenEvent>
+    const subType = Object.keys(event[type].details)[0] as WalletEventSubType
+    const details = (event[type] as WalletEvent)?.details?.[
+      subType
+    ] as WalletEventSubDetails
+    const eventOutcome = Object.keys(
+      details?.['event_outcome'] || {},
+    )[0] as EventOutcome
+
+    if (subType !== 'BetOnHotOrNotPost' && subType !== 'NewUserSignup') {
+      notifications.push({
+        id: o[0],
+        type: subType,
+        token: Object.values(event)?.[0]?.amount || 0,
+        timestamp: event[type].timestamp as SystemTime,
+        details,
+        eventOutcome,
+      })
+    }
+  })
+  return notifications
+}
+
+export async function fetchNotifications(
+  from: number,
+): Promise<NotificationResponse> {
+  try {
+    const res =
+      await individualUser().get_user_utility_token_transaction_history_with_pagination(
+        BigInt(from),
+        BigInt(from + 20),
+      )
+    if ('Ok' in res) {
+      const notifications = await transformNotificationRecords(res.Ok)
+
+      return {
+        error: false,
+        notifications,
+        endOfList: history.length < 10,
+      }
+    } else if ('Err' in res) {
+      type errors = UnionKeyOf<GetPostsOfUserProfileError>
+      const err = Object.keys(res.Err)[0] as errors
+      switch (err) {
+        case 'InvalidBoundsPassed':
+          return { error: true }
+        case 'ReachedEndOfItemsList':
+          return { error: false, endOfList: true, notifications: [] }
+      }
+    } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+  } catch (e) {
+    Log({ error: e, from: '11 fetchNotifications' }, 'error')
     return { error: true }
   }
   return { error: true }
