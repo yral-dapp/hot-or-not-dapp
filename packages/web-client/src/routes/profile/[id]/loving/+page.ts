@@ -9,7 +9,7 @@ import { Principal } from '@dfinity/principal'
 import { get } from 'svelte/store'
 import type { PageLoad } from './$types'
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
   const id = params.id
   const userProfileData = get(userProfile)
   if (
@@ -26,6 +26,7 @@ export const load: PageLoad = async ({ params }) => {
     Log({ canId, from: '0 canId' }, 'info')
     const fetchedProfile = await individualUser(
       Principal.from(canId),
+      fetch,
     ).get_profile_details()
     const profile = sanitizeProfile(fetchedProfile, id)
     return { me: false, profile }

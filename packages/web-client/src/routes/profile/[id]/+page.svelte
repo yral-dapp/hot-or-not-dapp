@@ -77,7 +77,7 @@ async function handleLove() {
 }
 
 const checkIFollowThisUser = debounce(200, async () => {
-  follow.doIFollow = await doIFollowThisUser($authState.idString, canId)
+  follow.doIFollow = await doIFollowThisUser(profile.principal_id)
   follow.loading = false
 })
 

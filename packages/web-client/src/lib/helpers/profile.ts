@@ -1,4 +1,5 @@
 import type {
+  FollowEntryDetail,
   BetOutcomeForBetMaker,
   GetPostsOfUserProfileError,
   MintEvent,
@@ -27,9 +28,11 @@ import { individualUser } from './backend'
 import { getCanisterId } from './canisterId'
 import type { PostPopulated } from './feed'
 import { setUser } from './sentry'
+import { isPrincipal } from '$lib/utils/isPrincipal'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
+  index_id: bigint
 }
 
 export interface PostPopulatedWithBetDetails extends PostPopulated {
@@ -239,142 +242,145 @@ async function populatePosts(posts: PlacedBetDetail[]) {
   }
 }
 
-export async function fetchLovers(id: string, from: number) {
+export async function fetchLovers(id: string, from?: bigint) {
   try {
     const canId = await getCanisterId(id)
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_principals_that_follow_me_paginated(BigInt(from), BigInt(from + 15))
-    if ('Ok' in res) {
-      const populatedUsers = await populateProfiles(res.Ok)
-      if (populatedUsers.error) {
-        throw new Error(
-          `Error while populating, ${JSON.stringify(populatedUsers)}`,
-        )
-      }
-      return {
-        error: false,
-        lovers: populatedUsers.posts,
-        noMoreLovers: res.Ok.length < 10,
-      }
-    } else if ('Err' in res) {
-      type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<GetPostsOfUserProfileError>
-      const err = Object.keys(res.Err)[0] as errors
-      switch (err) {
-        case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-        case 'InvalidBoundsPassed':
-          return { error: true }
-        case 'ReachedEndOfItemsList':
-          return { error: false, noMoreLovers: true, lovers: [] }
-      }
-    } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    ).get_principals_that_follow_this_profile_paginated(from ? [from] : [])
+    if (!res) {
+      throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    }
+    const populatedUsers = await populateProfiles(res.slice(1))
+    if (populatedUsers.error) {
+      throw new Error(
+        `Error while populating, ${JSON.stringify(populatedUsers)}`,
+      )
+    }
+    return {
+      error: false,
+      lovers: populatedUsers.users,
+      noMoreLovers: res.length < 9,
+    }
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
   }
 }
 
-export async function fetchLovingUsers(id: string, from: number) {
+export async function fetchLovingUsers(id: string, from?: bigint) {
   try {
     const canId = await getCanisterId(id)
 
     const res = await individualUser(
       Principal.from(canId),
-    ).get_principals_i_follow_paginated(BigInt(from), BigInt(from + 15))
-    if ('Ok' in res) {
-      const populatedUsers = await populateProfiles(res.Ok)
-      if (populatedUsers.error) {
-        throw new Error(
-          `Error while populating, ${JSON.stringify(populatedUsers)}`,
-        )
-      }
-      return {
-        error: false,
-        lovers: populatedUsers.posts,
-        noMoreLovers: res.Ok.length < 10,
-      }
-    } else if ('Err' in res) {
-      type UnionKeyOf<U> = U extends U ? keyof U : never
-      type errors = UnionKeyOf<GetPostsOfUserProfileError>
-      const err = Object.keys(res.Err)[0] as errors
-      switch (err) {
-        case 'ExceededMaxNumberOfItemsAllowedInOneRequest':
-        case 'InvalidBoundsPassed':
-          return { error: true }
-        case 'ReachedEndOfItemsList':
-          return { error: false, noMoreLovers: true, lovers: [] }
-      }
-    } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    ).get_principals_this_profile_follows_paginated(from ? [from] : [])
+    if (!res) {
+      throw new Error(`Unknown response, ${JSON.stringify(res)}`)
+    }
+    const populatedUsers = await populateProfiles(res.slice(1))
+    if (populatedUsers.error) {
+      throw new Error(
+        `Error while populating, ${JSON.stringify(populatedUsers)}`,
+      )
+    }
+    return {
+      error: false,
+      lovers: populatedUsers.users,
+      noMoreLovers: res.length < 10,
+    }
   } catch (e) {
     Log({ error: e, from: '11 fetchPosts' }, 'error')
     return { error: true }
   }
 }
 
-async function populateProfiles(users: Principal[]) {
+async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
   try {
-    if (!users.length) {
-      return { posts: [], error: false }
+    if (!list.length) {
+      return { users: [], error: false }
     }
 
     const authStateData = get(authState)
 
     const res = await Promise.all(
-      users.map(async (userId) => {
-        if (userId?.toText() === '2vxsx-fae') return
-        const canId = await getCanisterId(userId.toText())
-
-        if (canId) {
-          const r = await individualUser(
-            Principal.from(canId),
-          ).get_profile_details()
-
-          return {
-            ...sanitizeProfile(r, userId.toText()),
-            i_follow: authStateData.isLoggedIn
-              ? await doIFollowThisUser(userId.toText())
-              : false,
+      list.map(async ([id, detail]) => {
+        const principalId = detail?.principal_id?.toText()
+        if (!principalId) return
+        if (principalId === '2vxsx-fae') return
+        if (!detail?.canister_id) {
+          {
+            Log(
+              {
+                error: `Could not get canisterId for user: ${principalId}`,
+                from: '12 populatePosts.profile',
+              },
+              'error',
+            )
           }
-        } else {
-          Log(
-            {
-              error: `Could not get canisterId for user: ${userId.toText()}`,
-              from: '12 populatePosts.profile',
-            },
-            'error',
-          )
         }
+
+        const r = await individualUser(
+          Principal.from(detail.canister_id),
+        ).get_profile_details()
+
+        return {
+          ...sanitizeProfile(r, principalId),
+          index_id: id,
+          i_follow: authStateData.isLoggedIn
+            ? await doIFollowThisUser(principalId)
+            : false,
+        } as UserProfileFollows
       }),
     )
 
     return {
-      posts: res.filter((o) => !!o) as UserProfileFollows[],
+      users: res.filter((o) => !!o) as UserProfileFollows[],
       error: false,
     }
   } catch (e) {
     Log({ error: e, from: '11 populatePosts.profile' }, 'error')
-    return { error: true, posts: [] }
+    return { error: true, users: [] }
   }
 }
 
-export async function doIFollowThisUser(
-  userId?: string,
-  canId?: string | Principal,
-) {
-  if (!userId) return false
-
-  return await individualUser(canId).get_following_status_do_i_follow_this_user(
-    Principal.from(userId),
-  )
+export async function doIFollowThisUser(principalId?: string) {
+  if (!principalId) return false
+  if (!isPrincipal(principalId)) {
+    throw 'Invalid Principal ID'
+  }
+  const canisterId = await getCanisterId(principalId)
+  if (!canisterId) {
+    throw 'Could not find Canister ID'
+  }
+  try {
+    const res = await individualUser().do_i_follow_this_user({
+      followee_canister_id: Principal.from(canisterId),
+      followee_principal_id: Principal.from(principalId),
+    })
+    return !!res['Ok']
+  } catch (e) {
+    Log({ error: e, from: '1 doIFollowThisUser' }, 'error')
+    return false
+  }
 }
 
-export async function loveUser(userId: string) {
+export async function loveUser(principalId: string) {
   try {
+    if (!isPrincipal(principalId)) {
+      throw 'Invalid Principal ID'
+    }
+    const canisterId = await getCanisterId(principalId)
+    if (!canisterId) {
+      throw 'Could not find Canister ID'
+    }
     const res =
-      await individualUser().update_principals_i_follow_toggle_list_with_principal_specified(
-        Principal.from(userId),
+      await individualUser().update_profiles_i_follow_toggle_list_with_specified_profile(
+        {
+          followee_canister_id: Principal.from(canisterId),
+          followee_principal_id: Principal.from(principalId),
+        },
       )
     if ('Ok' in res) {
       return true

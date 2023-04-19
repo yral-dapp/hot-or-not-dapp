@@ -24,7 +24,7 @@ let { me, profile } = data
 let loading = false
 let errorWhileFetching = false
 let noMoreUsers = false
-let fetchedUsersCount = 0
+let fetchedUsersCount: bigint | undefined = undefined
 let users: UserProfileFollows[] = []
 
 $: userId = profile?.username_set
@@ -54,7 +54,12 @@ async function loadLovingUsers() {
     users.push(...res.lovers)
     users = users
     noMoreUsers = res.noMoreLovers
-    fetchedUsersCount = users.length
+    const lastEntry = res.lovers[res.lovers.length - 1]?.index_id
+    if (lastEntry) {
+      fetchedUsersCount = lastEntry
+    } else {
+      noMoreUsers = true
+    }
     loading = false
   } catch (e) {
     Log({ error: e, from: '1 loadLovers' }, 'error')
@@ -122,7 +127,7 @@ async function handleLove(userIndex: number, userId?: string) {
               <Button
                 type={user.i_follow ? 'secondary' : 'primary'}
                 on:click={() => handleLove(i, user.principal_id)}
-                class="w-full py-1 px-4 text-sm">
+                class="w-full px-4 py-1 text-sm">
                 {user.i_follow ? 'Loving' : 'Love'}
               </Button>
             </div>
@@ -141,7 +146,7 @@ async function handleLove(userIndex: number, userId?: string) {
         <span>Loading</span>
       </div>
     {/if}
-    {#if noMoreUsers && userId.length}
+    {#if noMoreUsers && userId.length && users.length}
       <div class="flex w-full items-center justify-center space-x-2 py-8">
         <span class="text-white/50">No more users</span>
       </div>
