@@ -5,6 +5,7 @@ import Selector from '$components/home/Selector.svelte'
 import { page } from '$app/stores'
 import { playerState } from '$stores/playerState'
 import { onDestroy, onMount } from 'svelte'
+import NotificationIcon from '$components/icons/NotificationIcon.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -30,6 +31,11 @@ $: pathname = $page.url.pathname
     {#if pathname.includes('feed') || pathname.includes('hotornot')}
       <Selector
         selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
+      <a
+        href="/notifications"
+        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center">
+        <NotificationIcon showDot class="h-6 w-6" />
+      </a>
     {:else if pathname.includes('menu')}
       <div
         class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">

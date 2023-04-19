@@ -24,7 +24,13 @@ import HotOrNotBetControls, {
 } from './HotOrNotBetControls.svelte'
 import HotOrNotBetOutcome from './HotOrNotBetOutcome.svelte'
 
-export let tutorialMode = false
+export let tutorialMode: {
+  highlightCoin: boolean
+  highlightSelectors: boolean
+} = {
+  highlightCoin: false,
+  highlightSelectors: false,
+}
 export let disabled = false
 export let comingSoon = false
 export let post: PostPopulated | undefined = undefined
@@ -198,21 +204,6 @@ async function placeBet({ coins, direction }: PlaceBet) {
     }, 2000)
   }
 }
-
-// $: if (inView && !error && !disabled) {
-//   updatebettingStatus()
-// }
-
-// async function updatebettingStatus() {
-//   try {
-//     const res = await individualUser().get_hot_or_not_bet_details_for_this_post(
-//       postId,
-//     )
-//   } catch (e) {
-//     //TODO: Add retries
-//     error = 'Error fetching your bet details'
-//   }
-// }
 </script>
 
 <hot-or-not class="pointer-events-none block h-full w-full">

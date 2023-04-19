@@ -235,5 +235,5 @@ onDestroy(() => {
 
 {#if !loaded || waiting}
   <LoadingIcon
-    class="absolute right-6 top-6 z-[5] h-6 w-6 animate-spin-slow text-white" />
+    class="absolute left-6 top-6 z-[5] h-6 w-6 animate-spin-slow text-white" />
 {/if}

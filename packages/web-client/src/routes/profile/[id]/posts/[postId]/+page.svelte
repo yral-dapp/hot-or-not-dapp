@@ -9,7 +9,7 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import { page } from '$app/stores'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
-import Hls from 'hls.js/dist/hls.min'
+import Hls from 'hls.js/dist/hls.min.js'
 import { individualUser } from '$lib/helpers/backend'
 import goBack from '$lib/utils/goBack'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
@@ -64,6 +64,7 @@ async function handleChange(e: CustomEvent) {
               index={i}
               source="post"
               watchHistoryDb="watch"
+              showReportButton
               showLikeButton
               showReferAndEarnLink
               showShareButton

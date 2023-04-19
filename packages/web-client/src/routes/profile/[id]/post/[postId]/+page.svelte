@@ -6,7 +6,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import Hls from 'hls.js/dist/hls.min'
+import Hls from 'hls.js/dist/hls.min.js'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
 
@@ -42,6 +42,7 @@ let { video, me } = data
         index={0}
         source="post"
         watchHistoryDb="watch"
+        showReportButton
         showLikeButton
         showDescription
         showReferAndEarnLink

@@ -17,7 +17,7 @@ import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/splashScreen'
-import Hls from 'hls.js/dist/hls.min'
+import Hls from 'hls.js/dist/hls.min.js'
 import { onMount, tick } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
@@ -161,8 +161,8 @@ beforeNavigate(() => {
           index={i}
           source="hon_feed"
           watchHistoryDb="watch-hon"
-          showReferAndEarnLink
-          showShareButton
+          showWalletLink
+          showReportButton
           justWatched={i === lastWatchedVideoIndex}
           let:recordView>
           <VideoPlayer
