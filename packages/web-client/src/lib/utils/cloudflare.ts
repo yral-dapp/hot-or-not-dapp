@@ -4,6 +4,10 @@ export function getThumbnailUrl(uid: string) {
   return `${host}/${uid}/thumbnails/thumbnail.jpg`
 }
 
+export function getAnimtedThumbnailUrl(uid: string) {
+  return `${host}/${uid}/thumbnails/thumbnail.gif?duration=3s`
+}
+
 export function getMp4Url(uid: string) {
   return `${host}/${uid}/downloads/default.mp4`
 }
