@@ -198,15 +198,15 @@ $: username = $userProfile.username_set
 $: videoLink = `/profile/${username}/post/${uploadedVideoId}`
 
 onMount(() => {
-  // if (!$fileToUpload) {
-  //   goto('/upload')
-  // } else {
-  //   videoSrc = URL.createObjectURL($fileToUpload)
-  //   registerEvent('video_to_upload', {
-  //     type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
-  //     userId: $userProfile.principal_id,
-  //   })
-  // }
+  if (!$fileToUpload) {
+    goto('/upload')
+  } else {
+    videoSrc = URL.createObjectURL($fileToUpload)
+    registerEvent('video_to_upload', {
+      type: $fileToUpload instanceof File ? 'file_selected' : 'video_recorded',
+      userId: $userProfile.principal_id,
+    })
+  }
 })
 
 onDestroy(() => {
@@ -345,7 +345,7 @@ onDestroy(() => {
         </div>
       </div>
     {/if}
-    <div class="pt-16 pb-24">
+    <div class="pb-24 pt-16">
       <div class="pb-4">
         <span class="text-primary">Note:</span>
         Once the video is uploaded on the server it can't be deleted.
