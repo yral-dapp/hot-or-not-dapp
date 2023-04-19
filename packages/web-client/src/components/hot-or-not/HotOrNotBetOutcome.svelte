@@ -27,6 +27,7 @@ import c from 'clsx'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 import type { Readable } from 'svelte/store'
+import { pluralize } from '$lib/utils/pluralize'
 
 export let placedBetDetail: PlacedBetDetail | undefined = undefined
 export let postCreatedAt: SystemTime | undefined = undefined
@@ -97,21 +98,21 @@ $: if (placedBetDetail) {
       <span class="whitespace-normal text-xs">
         {YOU} staked
         <strong>{amountBet}</strong>
-        tokens on
+        {pluralize('token', outcomeAmount)} on
         <strong>{betDirection}.</strong>
 
         {#if betOutcome === 'Won' && outcomeAmount}
           {YOU} received
           <strong>{outcomeAmount}</strong>
-          tokens.
+          {pluralize('token', outcomeAmount)}.
         {/if}
         {#if betOutcome === 'Lost'}
-          {YOU} lost {amountBet} tokens.
+          {YOU} lost {amountBet} {pluralize('token', outcomeAmount)}.
         {/if}
         {#if betOutcome === 'Draw' && outcomeAmount}
           {YOU} got refunded
           <strong>{outcomeAmount}</strong>
-          tokens after deducting commission.
+          {pluralize('token', outcomeAmount)} after deducting commission.
         {/if}
       </span>
       <div

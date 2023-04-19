@@ -25,6 +25,7 @@ import TimerIcon from '$components/icons/TimerIcon.svelte'
 import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { pluralize } from '$lib/utils/pluralize'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getMsLeftForBetResult, getTimeStringFromMs } from '$lib/utils/timeLeft'
 import c from 'clsx'
@@ -81,7 +82,7 @@ $: outcomeAmount =
         {:else}
           {outcomeAmount}
         {/if}
-        Tokens
+        {pluralize('Token', outcomeAmount)}
       </span>
 
       {#if BET_OUTCOME !== 'AwaitingResult'}
