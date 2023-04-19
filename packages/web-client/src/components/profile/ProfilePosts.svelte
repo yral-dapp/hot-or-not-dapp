@@ -6,7 +6,7 @@ import NoPostsIcon from '$components/icons/NoPostsIcon.svelte'
 import ReportIcon from '$components/icons/ReportIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import { fetchPosts } from '$lib/helpers/profile'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
+import { getAnimtedThumbnailUrl } from '$lib/utils/cloudflare'
 import Log from '$lib/utils/Log'
 import { onMount } from 'svelte'
 import ProfilePost from './ProfilePost.svelte'
@@ -59,7 +59,7 @@ onMount(() => loadPosts())
         id={Number(post.id)}
         views={Number(post.total_view_count)}
         likes={Number(post.like_count)}
-        imageBg={getThumbnailUrl(post.video_uid)} />
+        imageBg={getAnimtedThumbnailUrl(post.video_uid)} />
     {/each}
   </div>
 {:else if !loading && !error}

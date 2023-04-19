@@ -23,7 +23,7 @@ function getBetOutcome(betDetails: PlacedBetDetail): OutcomeStatus {
 import Avatar from '$components/avatar/Avatar.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
+import { getAnimtedThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { pluralize } from '$lib/utils/pluralize'
 import { generateRandomName } from '$lib/utils/randomUsername'
@@ -40,7 +40,7 @@ $: BET_KEYWORD = betKeyword[BET_OUTCOME]
 $: avatarUrl =
   post.created_by_profile_photo_url[0] ||
   getDefaultImageUrl(post.created_by_user_principal_id)
-$: imageBg = getThumbnailUrl(post.video_uid)
+$: imageBg = getAnimtedThumbnailUrl(post.video_uid)
 $: username =
   post.created_by_unique_user_name[0] ||
   generateRandomName('name', post.created_by_user_principal_id)
