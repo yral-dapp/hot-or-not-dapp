@@ -144,13 +144,14 @@ beforeNavigate(() => {
 
 <svelte:head>
   <title>Hot or Not Videos | Hot or Not</title>
-  {#if activePost}
+  {#if activePost || data.post}
+    {@const post = activePost || data.post}
     <meta
       property="og:url"
-      content="https://hotornot.wtf/hotornot/{activePost.publisher_canister_id}@{activePost.id}/" />
+      content="https://hotornot.wtf/hotornot/{post.publisher_canister_id}@{post.id}/" />
     <meta property="og:title" content="Hot or Not Videos" />
-    <meta property="og:description" content="${activePost.description}" />
-    <meta property="og:image" content={getThumbnailUrl(activePost.video_uid)} />
+    <meta property="og:description" content="${post.description}" />
+    <meta property="og:image" content={getThumbnailUrl(post.video_uid)} />
   {/if}
 </svelte:head>
 
