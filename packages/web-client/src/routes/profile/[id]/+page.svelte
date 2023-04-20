@@ -37,8 +37,29 @@ let follow = {
   loading: true,
 }
 
-let profilePosts: PostDetailsForFrontend[] = []
-let speculationPosts: PostPopulatedWithBetDetails[] = []
+let posts: {
+  profile: {
+    posts: PostDetailsForFrontend[]
+    noMorePosts: boolean
+    fetchedCount: number
+  }
+  speculation: {
+    posts: PostPopulatedWithBetDetails[]
+    noMorePosts: boolean
+    fetchedCount: number
+  }
+} = {
+  profile: {
+    posts: [],
+    noMorePosts: false,
+    fetchedCount: 0,
+  },
+  speculation: {
+    posts: [],
+    noMorePosts: false,
+    fetchedCount: 0,
+  },
+}
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -210,10 +231,17 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
     </div>
     <div class="flex h-full flex-col px-6 py-6">
       {#if selectedTab === 'posts'}
-        <ProfilePosts bind:posts={profilePosts} {me} userId={$page.params.id} />
+        <ProfilePosts
+          bind:posts={posts.profile.posts}
+          bind:noMorePosts={posts.profile.noMorePosts}
+          bind:fetchedCount={posts.profile.fetchedCount}
+          {me}
+          userId={$page.params.id} />
       {:else if selectedTab === 'speculations'}
         <SpeculationPosts
-          bind:posts={speculationPosts}
+          bind:posts={posts.speculation.posts}
+          bind:noMorePosts={posts.speculation.noMorePosts}
+          bind:fetchedCount={posts.speculation.fetchedCount}
           {me}
           userId={$page.params.id} />
       {/if}
