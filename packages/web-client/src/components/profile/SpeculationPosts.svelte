@@ -14,8 +14,8 @@ import SpeculationPost from './SpeculationPost.svelte'
 
 export let me = false
 export let userId = ''
+export let posts: PostPopulatedWithBetDetails[] = []
 
-let posts: PostPopulatedWithBetDetails[] = []
 let loading = false
 let error = false
 let noMorePosts = false

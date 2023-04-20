@@ -13,8 +13,8 @@ import ProfilePost from './ProfilePost.svelte'
 
 export let me = false
 export let userId = ''
+export let posts: PostDetailsForFrontend[] = []
 
-let posts: PostDetailsForFrontend[] = []
 let loading = false
 let error = false
 let noMorePosts = false
