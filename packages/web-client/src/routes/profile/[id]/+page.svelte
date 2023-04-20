@@ -129,83 +129,84 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
     {/if}
   </div>
 
-  <div
-    class="hide-scrollbar mx-auto flex h-full w-full max-w-5xl flex-col overflow-y-auto"
-    slot="content">
-    <div class="flex w-full flex-col items-center justify-center py-8">
-      <img
-        class="h-24 w-24 rounded-full"
-        alt={profile.display_name}
-        src={profile.profile_picture_url} />
-      <span class="text-md pt-4 font-bold">
-        {profile.display_name}
-      </span>
-      <div class="flex items-center space-x-2 px-12 text-sm">
-        <span class="text-white">
-          {`@${profile.unique_user_name}`}
+  <div class="hide-scrollbar h-full w-full overflow-y-auto" slot="content">
+    <div class="mx-auto flex max-w-5xl flex-col">
+      <div class="flex w-full flex-col items-center justify-center py-8">
+        <img
+          class="h-24 w-24 rounded-full"
+          alt={profile.display_name}
+          src={profile.profile_picture_url} />
+        <span class="text-md pt-4 font-bold">
+          {profile.display_name}
         </span>
-        <div class="h-1 w-1 rounded-full bg-white" />
-        <span class="text-primary">
-          {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
-        </span>
+        <div class="flex items-center space-x-2 px-12 text-sm">
+          <span class="text-white">
+            {`@${profile.unique_user_name}`}
+          </span>
+          <div class="h-1 w-1 rounded-full bg-white" />
+          <span class="text-primary">
+            {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
+          </span>
+        </div>
       </div>
-    </div>
-    <div
-      class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-      <a
-        href={`/profile/${userId}/lovers`}
-        class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-        <span class="whitespace-nowrap text-xl font-bold">
-          {getShortNumber(profile.followers_count)}
-        </span>
-        <span class="text-sm">Lovers</span>
-      </a>
-      <a
-        href={`/profile/${userId}/loving`}
-        class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-        <span class="whitespace-nowrap text-xl font-bold">
-          {getShortNumber(profile.following_count)}
-        </span>
-        <span class="text-sm">Loving</span>
-      </a>
-      <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-        <span class="whitespace-nowrap text-xl font-bold">
-          {getShortNumber(profile.profile_stats.hots_earned_count)}
-        </span>
-        <span class="text-sm">Hots</span>
+      <div
+        class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
+        <a
+          href={`/profile/${userId}/lovers`}
+          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+          <span class="whitespace-nowrap text-xl font-bold">
+            {getShortNumber(profile.followers_count)}
+          </span>
+          <span class="text-sm">Lovers</span>
+        </a>
+        <a
+          href={`/profile/${userId}/loving`}
+          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+          <span class="whitespace-nowrap text-xl font-bold">
+            {getShortNumber(profile.following_count)}
+          </span>
+          <span class="text-sm">Loving</span>
+        </a>
+        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+          <span class="whitespace-nowrap text-xl font-bold">
+            {getShortNumber(profile.profile_stats.hots_earned_count)}
+          </span>
+          <span class="text-sm">Hots</span>
+        </div>
+        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+          <span class="whitespace-nowrap text-xl font-bold">
+            {getShortNumber(profile.profile_stats.nots_earned_count)}
+          </span>
+          <span class="text-sm">Nots</span>
+        </div>
       </div>
-      <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-        <span class="whitespace-nowrap text-xl font-bold">
-          {getShortNumber(profile.profile_stats.nots_earned_count)}
-        </span>
-        <span class="text-sm">Nots</span>
-      </div>
-    </div>
-    {#if !me}
-      <div class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-        <Button
-          type={follow.doIFollow ? 'secondary' : 'primary'}
-          disabled={follow.loading}
-          on:click={handleLove}
-          class="mx-auto w-[10rem]">
-          {#if follow.loading}
-            <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
-          {:else}
-            {follow.doIFollow ? 'Loving' : 'Love'}
-          {/if}
-        </Button>
-        <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
-      </div>
-    {/if}
-    <div class="px-6 pt-2">
-      <ProfileTabs bind:selectedTab />
-    </div>
-    <div class="flex h-full flex-col px-6 py-6">
-      {#if selectedTab === 'posts'}
-        <ProfilePosts {me} userId={$page.params.id} />
-      {:else if selectedTab === 'speculations'}
-        <SpeculationPosts {me} userId={$page.params.id} />
+      {#if !me}
+        <div
+          class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
+          <Button
+            type={follow.doIFollow ? 'secondary' : 'primary'}
+            disabled={follow.loading}
+            on:click={handleLove}
+            class="mx-auto w-[10rem]">
+            {#if follow.loading}
+              <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
+            {:else}
+              {follow.doIFollow ? 'Loving' : 'Love'}
+            {/if}
+          </Button>
+          <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
+        </div>
       {/if}
+      <div class="px-6 pt-2">
+        <ProfileTabs bind:selectedTab />
+      </div>
+      <div class="flex h-full flex-col px-6 py-6">
+        {#if selectedTab === 'posts'}
+          <ProfilePosts {me} userId={$page.params.id} />
+        {:else if selectedTab === 'speculations'}
+          <SpeculationPosts {me} userId={$page.params.id} />
+        {/if}
+      </div>
     </div>
   </div>
 </ProfileLayout>

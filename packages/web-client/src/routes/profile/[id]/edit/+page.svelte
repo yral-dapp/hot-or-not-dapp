@@ -192,7 +192,7 @@ $: userId = username_set
 
     <svelte:fragment slot="content">
       <div
-        class="flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-auto p-8">
+        class="flex h-full w-full flex-col items-center justify-start space-y-8 overflow-y-auto p-3 md:p-8">
         <ProfileImageSelector
           bind:src={values.imageSrc}
           bind:error

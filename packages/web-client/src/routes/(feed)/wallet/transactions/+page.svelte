@@ -57,46 +57,46 @@ onMount(loadTransactions)
   </svelte:fragment>
   <div slot="top-center" class="text-lg font-bold">All transactions</div>
 
-  <div
-    class="mx-auto flex h-full w-full max-w-5xl flex-col space-y-8 overflow-y-auto p-8"
-    slot="content">
-    {#if !$authState.isLoggedIn}
-      <div class="text-center text-sm opacity-70">
-        Please login to access your wallet
-      </div>
-      <LoginButton />
-    {:else}
-      {#if transactions.length}
-        {#each transactions as item}
-          <TransactionItem {item} />
-        {/each}
-      {:else if !loading}
-        <div class="flex h-full w-full grow items-center justify-center">
-          <NoTransactionsIcon class="w-full max-w-sm px-10" />
+  <div class="hide-scrollbar h-full w-full overflow-y-auto" slot="content">
+    <div class="mx-auto flex max-w-5xl flex-col space-y-8 p-3 md:p-8">
+      {#if !$authState.isLoggedIn}
+        <div class="text-center text-sm opacity-70">
+          Please login to access your wallet
         </div>
-        <div class="pt-4 text-center opacity-70">No transactions yet</div>
-      {/if}
+        <LoginButton />
+      {:else}
+        {#if transactions.length}
+          {#each transactions as item}
+            <TransactionItem {item} />
+          {/each}
+        {:else if !loading}
+          <div class="flex h-full w-full grow items-center justify-center">
+            <NoTransactionsIcon class="w-full max-w-sm px-10" />
+          </div>
+          <div class="pt-4 text-center opacity-70">No transactions yet</div>
+        {/if}
 
-      {#if loading}
-        <div class="flex w-full items-center justify-center space-x-2 py-8">
-          <LoadingIcon class="h-4 w-4 animate-spin" />
-          <span>Loading</span>
-        </div>
+        {#if loading}
+          <div class="flex w-full items-center justify-center space-x-2 py-8">
+            <LoadingIcon class="h-4 w-4 animate-spin" />
+            <span>Loading</span>
+          </div>
+        {/if}
+        {#if noMoreTransactions}
+          <div class="flex w-full items-center justify-center space-x-2 py-8">
+            <span class="text-white/50">End of list</span>
+          </div>
+        {/if}
+        <IntersectionObserver
+          on:intersected={loadTransactions}
+          disabled={loading || errorWhileFetching}
+          threshold={0.1}
+          intersect={!noMoreTransactions}>
+          <svelte:fragment>
+            <div class="h-2 w-full" />
+          </svelte:fragment>
+        </IntersectionObserver>
       {/if}
-      {#if noMoreTransactions}
-        <div class="flex w-full items-center justify-center space-x-2 py-8">
-          <span class="text-white/50">End of list</span>
-        </div>
-      {/if}
-      <IntersectionObserver
-        on:intersected={loadTransactions}
-        disabled={loading || errorWhileFetching}
-        threshold={0.1}
-        intersect={!noMoreTransactions}>
-        <svelte:fragment>
-          <div class="h-2 w-full" />
-        </svelte:fragment>
-      </IntersectionObserver>
-    {/if}
+    </div>
   </div>
 </ProfileLayout>
