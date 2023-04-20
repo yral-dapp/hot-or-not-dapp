@@ -11,12 +11,12 @@ const dispatch = createEventDispatcher<{
 
 let observer: IntersectionObserver
 let intersectionWrapperEl: HTMLElement
+let clientHeight: number
 
 function selectListElementAndWatch() {
   try {
-    const el = intersectionWrapperEl.children[0]
-    if (el) {
-      observer.observe(el)
+    if (intersectionWrapperEl) {
+      observer.observe(intersectionWrapperEl)
     }
   } catch (error) {
     console.error(error)
@@ -38,11 +38,25 @@ function initIntersectionObserver() {
   )
 }
 
+function checkStillVisible() {
+  if (!intersectionWrapperEl) return
+  const { top } = intersectionWrapperEl.getBoundingClientRect()
+  if (top < clientHeight) {
+    dispatch('intersected')
+  }
+}
+
+$: if (!disabled) {
+  checkStillVisible()
+}
+
 onMount(() => {
   initIntersectionObserver()
   selectListElementAndWatch()
 })
 </script>
+
+<svelte:window bind:outerHeight={clientHeight} />
 
 <intersection-observer bind:this={intersectionWrapperEl}>
   <slot />
