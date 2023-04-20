@@ -12,7 +12,11 @@ import ProfilePosts from '$components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
-import { doIFollowThisUser, loveUser } from '$lib/helpers/profile'
+import {
+  doIFollowThisUser,
+  loveUser,
+  type PostPopulatedWithBetDetails,
+} from '$lib/helpers/profile'
 import goBack from '$lib/utils/goBack'
 import { handleParams } from '$lib/utils/params'
 import { getShortNumber } from '$lib/utils/shortNumber'
@@ -22,6 +26,7 @@ import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
+import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -31,6 +36,9 @@ let follow = {
   error: false,
   loading: true,
 }
+
+let profilePosts: PostDetailsForFrontend[] = []
+let speculationPosts: PostPopulatedWithBetDetails[] = []
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -202,9 +210,12 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
     </div>
     <div class="flex h-full flex-col px-6 py-6">
       {#if selectedTab === 'posts'}
-        <ProfilePosts {me} userId={$page.params.id} />
+        <ProfilePosts bind:posts={profilePosts} {me} userId={$page.params.id} />
       {:else if selectedTab === 'speculations'}
-        <SpeculationPosts {me} userId={$page.params.id} />
+        <SpeculationPosts
+          bind:posts={speculationPosts}
+          {me}
+          userId={$page.params.id} />
       {/if}
     </div>
   </div>
