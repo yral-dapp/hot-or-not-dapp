@@ -2,7 +2,6 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
 import FireIcon from '$components/icons/FireIcon.svelte'
 import FlagIcon from '$components/icons/FlagIcon.svelte'
