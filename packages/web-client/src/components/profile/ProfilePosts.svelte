@@ -14,11 +14,11 @@ import ProfilePost from './ProfilePost.svelte'
 export let me = false
 export let userId = ''
 export let posts: PostDetailsForFrontend[] = []
+export let noMorePosts = false
+export let fetchedCount = 0
 
 let loading = false
 let error = false
-let noMorePosts = false
-let fetchedCount = 0
 
 async function loadPosts() {
   try {
