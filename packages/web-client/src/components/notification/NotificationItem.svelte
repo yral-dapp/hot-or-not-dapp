@@ -2,6 +2,7 @@
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import TrophyIcon from '$components/icons/TrophyIcon.svelte'
 import type { NotificationHistory } from '$lib/helpers/profile'
+import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import c from 'clsx'
@@ -38,6 +39,7 @@ $: postId = Number(item.details?.post_id) || 0
 $: userId = $userProfile.username_set
   ? $userProfile.unique_user_name || $authState.idString
   : $authState.idString
+$: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
 </script>
 
 <div class="flex items-center justify-between py-4">
@@ -63,7 +65,7 @@ $: userId = $userProfile.username_set
         </div>
       {/if}
     </div>
-    <div class="text-sm text-white">
+    <div class="flex flex-col text-sm text-white">
       {#if (item.type === 'WinningsEarnedFromBet' || item.type === 'CommissionFromHotOrNotBet') && postCanisterId}
         <a
           href="/profile/{userId}/speculations/{postCanisterId}@{postId}"
@@ -73,6 +75,7 @@ $: userId = $userProfile.username_set
       {:else}
         <div>{getNotificationMessage(item)}</div>
       {/if}
+      <span class="text-xs text-white/50">{timeDiff}</span>
     </div>
   </div>
 </div>
