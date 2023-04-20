@@ -2,6 +2,7 @@
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
 import ExternalLinkIcon from '$components/icons/ExternalLinkIcon.svelte'
 import type { TransactionHistory } from '$lib/helpers/profile'
+import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 
@@ -30,6 +31,7 @@ $: postId = Number(item.details?.post_id) || 0
 $: userId = $userProfile.username_set
   ? $userProfile.unique_user_name || $authState.idString
   : $authState.idString
+$: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
 </script>
 
 <div class="flex items-center justify-between py-4">
@@ -45,27 +47,28 @@ $: userId = $userProfile.username_set
         {/if}
       </div>
     </div>
-    <div class="flex flex-col space-y-1">
+    <div class="flex flex-col">
       <div class="text-sm">{eventName}</div>
-
-      {#if (item.subType === 'BetOnHotOrNotPost' || item.subType === 'WinningsEarnedFromBet' || item.subType === 'CommissionFromHotOrNotBet') && postCanisterId}
-        {@const href =
-          item.subType === 'CommissionFromHotOrNotBet'
-            ? `/hotornot/${userId}}/${postId}`
-            : `/profile/${userId}/speculations/${postCanisterId}@${postId}`}
-        <a
-          {href}
-          class="flex w-min items-center space-x-1 text-white underline opacity-50">
-          <span class="whitespace-nowrap text-xs">View Post</span>
-          <ExternalLinkIcon class="h-3 w-3" />
-        </a>
-      {:else}
-        <div class="text-xs opacity-50">{item.token} Coins</div>
-      {/if}
+      <div class="flex items-center space-x-1 text-xs text-white/50">
+        {#if (item.subType === 'BetOnHotOrNotPost' || item.subType === 'WinningsEarnedFromBet' || item.subType === 'CommissionFromHotOrNotBet') && postCanisterId}
+          {@const href =
+            item.subType === 'CommissionFromHotOrNotBet'
+              ? `/hotornot/${userId}}/${postId}`
+              : `/profile/${userId}/speculations/${postCanisterId}@${postId}`}
+          <a {href} class="underline">
+            <span class="whitespace-nowrap">View Post</span>
+          </a>
+        {:else}
+          <span>{item.token} Coins</span>
+        {/if}
+        <span>•</span>
+        <span>{timeDiff}</span>
+      </div>
     </div>
   </div>
   {#if item.eventOutcome !== 'Lost'}
-    <div class="text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
+    <div
+      class="shrink-0 text-sm {deducted ? 'text-red-600' : 'text-green-600'}">
       {item.eventOutcome === 'Draw' ? '←' : deducted ? '-' : '+'}
       {item.token}
     </div>
