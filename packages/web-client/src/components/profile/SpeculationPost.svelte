@@ -21,6 +21,7 @@ function getBetOutcome(betDetails: PlacedBetDetail): OutcomeStatus {
 
 <script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte'
+import CloudNotAvailableIcon from '$components/icons/CloudNotAvailableIcon.svelte'
 import TimerIcon from '$components/icons/TimerIcon.svelte'
 import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
@@ -29,10 +30,23 @@ import { pluralize } from '$lib/utils/pluralize'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getMsLeftForBetResult, getTimeStringFromMs } from '$lib/utils/timeLeft'
 import c from 'clsx'
+import { onMount } from 'svelte'
 
 export let me: boolean
 export let userId: string
 export let post: PostPopulatedWithBetDetails
+
+let _img = ''
+let notAvailable = false
+
+function loadImg() {
+  const image = new Image()
+  image.addEventListener('load', () => (_img = imageBg))
+  image.addEventListener('error', () => {
+    notAvailable = true
+  })
+  image.src = imageBg
+}
 
 $: YOU = me ? 'You' : ''
 $: BET_OUTCOME = getBetOutcome(post.placed_bet_details)
@@ -51,15 +65,25 @@ $: timeLeft = getMsLeftForBetResult(
 $: outcomeAmount =
   Number(Object.values(post.placed_bet_details.outcome_received || {})?.[0]) ||
   0
+
+onMount(loadImg)
 </script>
 
 <a
   href={`/profile/${userId}/speculations/${post.publisher_canister_id}@${post.id}`}
   data-sveltekit-preload-code="eager"
   class="relative aspect-[3/5] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
-  <div
-    class="absolute inset-0 scale-110 bg-cover bg-center"
-    style="background-image: url('{imageBg}')" />
+  {#if _img}
+    <div
+      class="absolute inset-0 scale-110 bg-cover bg-center"
+      style="background-image: url('{_img}')" />
+  {:else if notAvailable}
+    <div
+      class="gap- absolute inset-0 flex flex-col items-center justify-center">
+      <CloudNotAvailableIcon class="h-8 w-8" />
+      <span class="text-xs">Not Available</span>
+    </div>
+  {/if}
   <div
     style="background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);"
     class="pointer-events-none absolute inset-0 z-[2] flex flex-col justify-between p-2 md:p-4">
