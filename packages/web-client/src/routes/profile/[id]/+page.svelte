@@ -24,6 +24,7 @@ import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
 import { slide } from 'svelte/transition'
 import CopyButton from '$components/profile/CopyButton.svelte'
+import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -152,15 +153,9 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
         <span class="text-primary">
           {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
         </span>
-        <button
-          on:click={() => (showMoreInfo = !showMoreInfo)}
-          class="rounded-sm border border-white/20 px-3 py-1">
-          <CaretLeftIcon
-            class="h-4 w-4 transition-transform {showMoreInfo
-              ? 'rotate-90'
-              : '-rotate-90'}" />
-        </button>
+        <ShowMoreButton bind:show={showMoreInfo} class="hidden md:block" />
       </div>
+      <ShowMoreButton bind:show={showMoreInfo} class="my-1 block md:hidden" />
       {#if showMoreInfo}
         <div
           transition:slide
