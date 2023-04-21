@@ -14,10 +14,12 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import DotTabs from '$components/tabs/DotTabs.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import goBack from '$lib/utils/goBack'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
+import { navigateBack } from '$stores/navigation'
 import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 
@@ -110,11 +112,9 @@ $: link = !loggedIn
       Refer & Earn
       <div class="absolute left-4 top-4">
         <IconButton
-          on:click={() =>
-            history.length < 3
-              ? goto('/menu', { replaceState: true })
-              : history.back()}>
-          <CaretLeftIcon class="h-5 w-5" />
+          on:click={() => goBack($navigateBack || '/menu', true)}
+          class="shrink-0">
+          <CaretLeftIcon class="h-7 w-7" />
         </IconButton>
       </div>
     </div>
