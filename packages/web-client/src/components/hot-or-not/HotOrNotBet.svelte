@@ -49,10 +49,7 @@ let loadingWithDirection: false | BetDirectionString = false
 let error = ''
 let idb: IDB
 
-$: if (
-  !error &&
-  bettingStatusValue?.has_this_user_participated_in_this_post?.[0]
-) {
+$: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
 } else if (!error && post && !bettingStatusValue && !placedBetDetail) {
