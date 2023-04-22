@@ -252,7 +252,7 @@ export async function fetchLovers(id: string, from?: bigint) {
     if (!res) {
       throw new Error(`Unknown response, ${JSON.stringify(res)}`)
     }
-    const populatedUsers = await populateProfiles(res.slice(1))
+    const populatedUsers = await populateProfiles(from ? res.slice(1) : res)
     if (populatedUsers.error) {
       throw new Error(
         `Error while populating, ${JSON.stringify(populatedUsers)}`,
@@ -279,7 +279,7 @@ export async function fetchLovingUsers(id: string, from?: bigint) {
     if (!res) {
       throw new Error(`Unknown response, ${JSON.stringify(res)}`)
     }
-    const populatedUsers = await populateProfiles(res.slice(1))
+    const populatedUsers = await populateProfiles(from ? res.slice(1) : res)
     if (populatedUsers.error) {
       throw new Error(
         `Error while populating, ${JSON.stringify(populatedUsers)}`,
