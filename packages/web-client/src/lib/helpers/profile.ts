@@ -462,8 +462,6 @@ async function transformHistoryRecords(
       details?.['event_outcome'] || {},
     )[0] as EventOutcome
 
-    console.log(event, details)
-
     if (!filter || filter === subType) {
       history.push({
         id: o[0],

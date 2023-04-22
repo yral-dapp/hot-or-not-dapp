@@ -1,6 +1,5 @@
 <script lang="ts">
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
-import ExternalLinkIcon from '$components/icons/ExternalLinkIcon.svelte'
 import type { TransactionHistory } from '$lib/helpers/profile'
 import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$stores/auth'
@@ -34,7 +33,7 @@ $: userId = $userProfile.username_set
 $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
 $: href =
   item.subType === 'CommissionFromHotOrNotBet'
-    ? `/hotornot/${userId}}/${postId}`
+    ? `/hotornot/${userId}/${postId}`
     : `/profile/${userId}/speculations/${postCanisterId}@${postId}`
 $: hrefTypeEl =
   (item.subType === 'BetOnHotOrNotPost' ||
