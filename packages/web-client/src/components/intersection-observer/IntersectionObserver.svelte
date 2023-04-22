@@ -46,7 +46,7 @@ function checkStillVisible() {
   }
 }
 
-$: if (!disabled) {
+$: if (!disabled && intersect) {
   checkStillVisible()
 }
 
