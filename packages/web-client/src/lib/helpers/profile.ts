@@ -493,6 +493,22 @@ export async function setBetDetailToDb(
   }
 }
 
+export async function transactionHistoryProxy(from: number) {
+  try {
+    const idb = (await import('$lib/idb')).idb
+    if (!idb) throw 'Cannot load IDB'
+    const idbTransactions = idb.keys('wallet')
+    const res =
+      await individualUser().get_user_utility_token_transaction_history_with_pagination(
+        BigInt(from),
+        BigInt(from + 10),
+      )
+  } catch (e) {
+    Log({ error: e, source: '1 transactionHistoryProxy' }, 'error')
+    return
+  }
+}
+
 export async function fetchHistory(
   from: number,
   filter?: UnionKeyOf<MintEvent>,
