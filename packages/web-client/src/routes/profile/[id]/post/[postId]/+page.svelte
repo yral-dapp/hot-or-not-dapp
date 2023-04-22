@@ -13,6 +13,7 @@ import type { PageData } from './$types'
 export let data: PageData
 
 let { video, me } = data
+let unavailable = false
 </script>
 
 <svelte:head>
@@ -48,8 +49,10 @@ let { video, me } = data
         showReferAndEarnLink
         showShareButton
         showHotOrNotButton
+        {unavailable}
         let:recordView>
         <VideoPlayer
+          on:videoUnavailable={() => (unavailable = true)}
           on:watchedPercentage={({ detail }) => recordView(detail)}
           index={0}
           playFormat="hls"
