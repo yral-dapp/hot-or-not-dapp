@@ -49,10 +49,13 @@ let loadingWithDirection: false | BetDirectionString = false
 let error = ''
 let idb: IDB
 
-$: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
+$: if (
+  !error &&
+  bettingStatusValue?.has_this_user_participated_in_this_post?.[0]
+) {
   error = 'You have already placed a bet. Fetching your bet info...'
   updatePlacedBetDetail()
-} else if (post && !bettingStatusValue && !placedBetDetail) {
+} else if (!error && post && !bettingStatusValue && !placedBetDetail) {
   error = 'Betting has been closed.'
 }
 
@@ -67,6 +70,7 @@ $: if (inView && fetchPlacedBetDetail) {
 }
 
 async function getBetDetailFromDb() {
+  console.log('getBetDetailFromDb')
   if (!post) return
   if (!idb) {
     try {
@@ -88,6 +92,7 @@ async function getBetDetailFromDb() {
 }
 
 async function updatePlacedBetDetail() {
+  console.log('updatePlacedBetDetail')
   try {
     if (!post?.publisher_canister_id) return
     if (profileUserId) profileUserId = await getCanisterId(profileUserId)
