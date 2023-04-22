@@ -22,6 +22,9 @@ import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
+import { slide } from 'svelte/transition'
+import CopyButton from '$components/profile/CopyButton.svelte'
+import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -31,6 +34,8 @@ let follow = {
   error: false,
   loading: true,
 }
+
+let showMoreInfo = false
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -148,7 +153,31 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
         <span class="text-primary">
           {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
         </span>
+        <ShowMoreButton bind:show={showMoreInfo} class="hidden md:block" />
       </div>
+      <ShowMoreButton bind:show={showMoreInfo} class="my-1 block md:hidden" />
+      {#if showMoreInfo}
+        <div
+          transition:slide
+          class="mt-6 flex flex-col gap-4 rounded-md bg-white/5 p-8">
+          <div class="flex items-center justify-between space-x-8">
+            <div class="flex flex-col">
+              <span class="text-sm">Principal ID:</span>
+              <span class="text-xs text-white/70">{$authState.idString}</span>
+            </div>
+            <CopyButton textToCopy={$authState.idString} />
+          </div>
+          <div class="flex items-center justify-between space-x-8">
+            <div class="flex flex-col">
+              <span class="text-sm">Canister ID:</span>
+              <span class="text-xs text-white/70">
+                {$authState.userCanisterId}
+              </span>
+            </div>
+            <CopyButton textToCopy={$authState.userCanisterId} />
+          </div>
+        </div>
+      {/if}
     </div>
     <div
       class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
