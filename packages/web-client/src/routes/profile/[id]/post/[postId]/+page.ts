@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
     const id = params.id
     let me = false
     if (!pid || isNaN(Number(pid))) {
-      Log({ from: '1 posts/[vid] load', pid, id }, 'warn')
+      Log({ from: '1 post/[vid] load', pid, id }, 'warn')
       throw redirect(307, '/profile')
     }
 
@@ -50,7 +50,15 @@ export const load: PageLoad = async ({ params, fetch }) => {
     }
     return { me, video }
   } catch (e) {
-    Log({ from: '1 posts/[vid] load', error: e }, 'warn')
+    Log(
+      {
+        from: '1 post/[vid] load',
+        id: params.id,
+        postId: params.postId,
+        error: e,
+      },
+      'warn',
+    )
     throw redirect(307, '/profile')
   }
 }
