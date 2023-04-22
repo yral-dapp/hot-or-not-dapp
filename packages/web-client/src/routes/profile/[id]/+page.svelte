@@ -12,7 +12,11 @@ import ProfilePosts from '$components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
-import { doIFollowThisUser, loveUser } from '$lib/helpers/profile'
+import {
+  doIFollowThisUser,
+  loveUser,
+  type PostPopulatedWithBetDetails,
+} from '$lib/helpers/profile'
 import goBack from '$lib/utils/goBack'
 import { handleParams } from '$lib/utils/params'
 import { getShortNumber } from '$lib/utils/shortNumber'
@@ -22,6 +26,7 @@ import userProfile from '$stores/userProfile'
 import { onMount } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
+import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
 import { slide } from 'svelte/transition'
 import CopyButton from '$components/profile/CopyButton.svelte'
 import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
@@ -35,6 +40,29 @@ let follow = {
   loading: true,
 }
 
+let posts: {
+  profile: {
+    posts: PostDetailsForFrontend[]
+    noMorePosts: boolean
+    fetchedCount: number
+  }
+  speculation: {
+    posts: PostPopulatedWithBetDetails[]
+    noMorePosts: boolean
+    fetchedCount: number
+  }
+} = {
+  profile: {
+    posts: [],
+    noMorePosts: false,
+    fetchedCount: 0,
+  },
+  speculation: {
+    posts: [],
+    noMorePosts: false,
+    fetchedCount: 0,
+  },
+}
 let showMoreInfo = false
 
 $: userId = profile?.username_set
@@ -231,9 +259,19 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
       </div>
       <div class="flex h-full flex-col px-6 py-6">
         {#if selectedTab === 'posts'}
-          <ProfilePosts {me} userId={$page.params.id} />
+          <ProfilePosts
+            bind:posts={posts.profile.posts}
+            bind:noMorePosts={posts.profile.noMorePosts}
+            bind:fetchedCount={posts.profile.fetchedCount}
+            {me}
+            userId={$page.params.id} />
         {:else if selectedTab === 'speculations'}
-          <SpeculationPosts {me} userId={$page.params.id} />
+          <SpeculationPosts
+            bind:posts={posts.speculation.posts}
+            bind:noMorePosts={posts.speculation.noMorePosts}
+            bind:fetchedCount={posts.speculation.fetchedCount}
+            {me}
+            userId={$page.params.id} />
         {/if}
       </div>
     </div>
