@@ -138,7 +138,9 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
 
 <ProfileLayout>
   <svelte:fragment slot="top-left">
-    <IconButton on:click={() => goBack($navigateBack, true)} class="shrink-0">
+    <IconButton
+      on:click={() => goBack($navigateBack || '/menu', true)}
+      class="shrink-0">
       <CaretLeftIcon class="h-7 w-7" />
     </IconButton>
   </svelte:fragment>
