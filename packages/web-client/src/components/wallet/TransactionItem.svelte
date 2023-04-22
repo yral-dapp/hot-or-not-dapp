@@ -32,9 +32,21 @@ $: userId = $userProfile.username_set
   ? $userProfile.unique_user_name || $authState.idString
   : $authState.idString
 $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
+$: href =
+  item.subType === 'CommissionFromHotOrNotBet'
+    ? `/hotornot/${userId}}/${postId}`
+    : `/profile/${userId}/speculations/${postCanisterId}@${postId}`
+$: hrefTypeEl =
+  (item.subType === 'BetOnHotOrNotPost' ||
+    item.subType === 'WinningsEarnedFromBet' ||
+    item.subType === 'CommissionFromHotOrNotBet') &&
+  postCanisterId
 </script>
 
-<div class="flex items-center justify-between py-4">
+<svelte:element
+  this={hrefTypeEl ? 'a' : 'div'}
+  {href}
+  class="flex items-center justify-between py-4">
   <div class="flex items-center space-x-4">
     <div
       class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
@@ -50,14 +62,8 @@ $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
     <div class="flex flex-col">
       <div class="text-sm">{eventName}</div>
       <div class="flex items-center space-x-1 text-xs text-white/50">
-        {#if (item.subType === 'BetOnHotOrNotPost' || item.subType === 'WinningsEarnedFromBet' || item.subType === 'CommissionFromHotOrNotBet') && postCanisterId}
-          {@const href =
-            item.subType === 'CommissionFromHotOrNotBet'
-              ? `/hotornot/${userId}}/${postId}`
-              : `/profile/${userId}/speculations/${postCanisterId}@${postId}`}
-          <a {href} class="underline">
-            <span class="whitespace-nowrap">View Post</span>
-          </a>
+        {#if hrefTypeEl}
+          <span class="whitespace-nowrap underline">View Post</span>
         {:else}
           <span>{item.token} Coins</span>
         {/if}
@@ -73,4 +79,4 @@ $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
       {item.token}
     </div>
   {/if}
-</div>
+</svelte:element>
