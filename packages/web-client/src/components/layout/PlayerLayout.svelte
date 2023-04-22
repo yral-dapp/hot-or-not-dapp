@@ -31,6 +31,7 @@ export let showLikeButton = false
 export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
+export let unavailable = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
 
@@ -196,10 +197,12 @@ $: avatarUrl =
   data-index={index}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
   <slot {recordView} />
-  <img
-    alt="background"
-    class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-    src={getThumbnailUrl(post.video_uid)} />
+  {#if !unavailable}
+    <img
+      alt="background"
+      class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
+      src={getThumbnailUrl(post.video_uid)} />
+  {/if}
 
   <div
     style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
