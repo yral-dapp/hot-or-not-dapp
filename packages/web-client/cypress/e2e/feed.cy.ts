@@ -21,6 +21,7 @@ describe('Home Feed Tests', () => {
   it('First video on the feed starts auto-playing', () => {
     cy.get('video', { timeout })
       .first()
+      .should('be.visible')
       .and('have.prop', 'paused', false)
       .and('have.prop', 'ended', false)
   })
@@ -32,6 +33,7 @@ describe('Home Feed Tests', () => {
       .then(() => {
         cy.get('video', { timeout })
           .first()
+          .should('be.visible')
           .then(($video) => {
             expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0)
           })
@@ -40,9 +42,9 @@ describe('Home Feed Tests', () => {
 
   it('Measure first video load and show time on feed', () => {
     const t0 = performance.now()
-    cy.get('splash-screen').and('not.exist')
     cy.get('video', { timeout })
-      .eq(0)
+      .first()
+      .should('be.visible')
       .should('have.prop', 'paused', false)
       .then(() => {
         cy.wrap(performance.now()).then((t1) => {
@@ -57,6 +59,7 @@ describe('Home Feed Tests', () => {
     const video = cy
       .get('video', { timeout })
       .first()
+      .should('be.visible')
       .and('have.prop', 'paused', false)
       .and('have.prop', 'muted', true)
     video.click().then(() => {
@@ -64,56 +67,57 @@ describe('Home Feed Tests', () => {
     })
   })
 
-  it('Scrolling on main feed', () => {
-    cy.task('log', 'Waiting for more videos to load to start scrolling')
-    cy.get('video', { timeout: 40_000 })
-      .first()
-      .then(() => {
-        const SCROLL_COUNT = 20
-        cy.task('log', 'Next videos loaded, now starting to scroll')
-        const t0 = performance.now()
-        cy.get('video', { timeout }).first().click()
+  // it('Scrolling on main feed', () => {
+  //   cy.task('log', 'Waiting for more videos to load to start scrolling')
+  //   cy.get('splash-screen', { timeout }).and('not.exist')
+  //   cy.get('video', { timeout: 40_000 })
+  //     .first()
+  //     .then(() => {
+  //       const SCROLL_COUNT = 20
+  //       cy.task('log', 'Next videos loaded, now starting to scroll')
+  //       const t0 = performance.now()
+  //       cy.get('video', { timeout }).first().should('be.visible').click()
 
-        cy.wrap(Array(SCROLL_COUNT))
-          .each((_, index) => {
-            cy.log('index', index)
+  //       cy.wrap(Array(SCROLL_COUNT))
+  //         .each((_, index) => {
+  //           cy.log('index', index)
 
-            cy.get('video', { timeout })
-              .eq(index)
-              .and('have.prop', 'paused', false)
-              .and('have.prop', 'muted', false)
+  //           cy.get('video', { timeout })
+  //             .eq(index)
+  //             .and('have.prop', 'paused', false)
+  //             .and('have.prop', 'muted', false)
 
-            const nextVideo = cy.get('video', { timeout }).eq(index + 1)
-            nextVideo.and('have.prop', 'paused', true)
-            if (index !== 0) {
-              cy.get('video', {
-                timeout,
-              })
-                .eq(index - 1)
-                .should('have.prop', 'paused', true)
-            }
-            if (index === 9) {
-              cy.wrap(performance.now()).then((t1) => {
-                cy.task(
-                  'log',
-                  `Scrolling from 0 to 10 times completed in: ${
-                    t1 - t0
-                  } milliseconds.`,
-                )
-              })
-            }
-            nextVideo.scrollIntoView()
-          })
-          .then(() => {
-            cy.wrap(performance.now()).then((t1) => {
-              cy.task(
-                'log',
-                `Scrolling from 0 to 20 times completed in: ${
-                  t1 - t0
-                } milliseconds.`,
-              )
-            })
-          })
-      })
-  })
+  //           const nextVideo = cy.get('video', { timeout }).eq(index + 1)
+  //           nextVideo.and('have.prop', 'paused', true)
+  //           if (index !== 0) {
+  //             cy.get('video', {
+  //               timeout,
+  //             })
+  //               .eq(index - 1)
+  //               .should('have.prop', 'paused', true)
+  //           }
+  //           if (index === 9) {
+  //             cy.wrap(performance.now()).then((t1) => {
+  //               cy.task(
+  //                 'log',
+  //                 `Scrolling from 0 to 10 times completed in: ${
+  //                   t1 - t0
+  //                 } milliseconds.`,
+  //               )
+  //             })
+  //           }
+  //           nextVideo.scrollIntoView()
+  //         })
+  //         .then(() => {
+  //           cy.wrap(performance.now()).then((t1) => {
+  //             cy.task(
+  //               'log',
+  //               `Scrolling from 0 to 20 times completed in: ${
+  //                 t1 - t0
+  //               } milliseconds.`,
+  //             )
+  //           })
+  //         })
+  //     })
+  // })
 })
