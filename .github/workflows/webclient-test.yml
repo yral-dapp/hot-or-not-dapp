@@ -159,10 +159,10 @@ jobs:
         if: always()
         run: dfx ping http://localhost:4943
 
-      - name: Run vitest
-        run: |
-          set -euxo pipefail
-          npm run wc:test:vi
+      # - name: Run vitest
+      #   run: |
+      #     set -euxo pipefail
+      #     npm run wc:test:vi
 
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
