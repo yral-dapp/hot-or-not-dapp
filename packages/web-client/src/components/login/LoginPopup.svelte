@@ -27,6 +27,7 @@ import userProfile from '$stores/userProfile'
 import { goto } from '$app/navigation'
 import { tick } from 'svelte'
 import { get } from 'svelte/store'
+import GoogleIcon from '$components/icons/GoogleIcon.svelte'
 
 export let hideNfid = false
 
@@ -114,17 +115,22 @@ function handleError(type: LoginType, e?: string) {
       <Button
         disabled={loading}
         on:click={async () => await handleLogin('ii')}
-        class="w-full space-x-2 py-3">
-        <span>Internet Identity</span>
+        class="h-12 w-full space-x-2 py-3"
+        type="secondary">
         <DfinityIcon class="w-8" />
+        <span>Internet Identity</span>
       </Button>
       {#if !hideNfid}
         <Button
           disabled={loading}
           on:click={async () => await handleLogin('nfid')}
-          type="secondary"
-          class="w-full py-3">
-          Google via NFID
+          type="primary"
+          class="flex h-12 w-full items-center space-x-3">
+          <div
+            class="flex items-center justify-center rounded-full bg-white p-2">
+            <GoogleIcon class="h-4 w-4" />
+          </div>
+          <span>Continue with Google</span>
         </Button>
       {/if}
 
@@ -137,7 +143,7 @@ function handleError(type: LoginType, e?: string) {
       {/if}
     </div>
   </div>
-  <div class="absolute top-4 right-4">
+  <div class="absolute right-4 top-4">
     <IconButton
       disabled={loading}
       on:click={() => ($authState.showLogin = false)}>
