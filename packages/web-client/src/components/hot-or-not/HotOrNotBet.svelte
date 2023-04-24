@@ -67,7 +67,6 @@ $: if (inView && fetchPlacedBetDetail) {
 }
 
 async function getBetDetailFromDb() {
-  console.log('getBetDetailFromDb')
   if (!post) return
   if (!idb) {
     try {
@@ -89,7 +88,6 @@ async function getBetDetailFromDb() {
 }
 
 async function updatePlacedBetDetail() {
-  console.log('updatePlacedBetDetail')
   try {
     if (!post?.publisher_canister_id) return
     if (profileUserId) profileUserId = await getCanisterId(profileUserId)
