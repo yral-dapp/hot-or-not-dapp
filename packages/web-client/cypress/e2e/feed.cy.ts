@@ -11,7 +11,7 @@ describe('Home Feed Tests', () => {
   })
 
   beforeEach(() => {
-    cy.visit(TEST_HOST)
+    cy.visit(TEST_HOST + '/feed')
   })
 
   it('First video on feed has a valid source', () => {
