@@ -112,14 +112,6 @@ function handleError(type: LoginType, e?: string) {
     <span class="text-3xl font-bold">Join Hot or Not</span>
     <div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
       <span>Create an account using</span>
-      <Button
-        disabled={loading}
-        on:click={async () => await handleLogin('ii')}
-        class="h-12 w-full space-x-2 py-3"
-        type="secondary">
-        <DfinityIcon class="w-8" />
-        <span>Internet Identity</span>
-      </Button>
       {#if !hideNfid}
         <Button
           disabled={loading}
@@ -133,6 +125,14 @@ function handleError(type: LoginType, e?: string) {
           <span>Continue with Google</span>
         </Button>
       {/if}
+      <Button
+        disabled={loading}
+        on:click={async () => await handleLogin('ii')}
+        class="h-12 w-full space-x-2 py-3"
+        type="secondary">
+        <DfinityIcon class="w-8" />
+        <span>Internet Identity</span>
+      </Button>
 
       {#if error}
         <div class="text-xs text-red-600">
