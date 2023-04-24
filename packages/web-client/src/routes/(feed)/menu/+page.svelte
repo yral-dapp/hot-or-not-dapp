@@ -21,8 +21,15 @@ import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
 import { loadingAuthStatus } from '$stores/loading'
 import SaveIcon from '$components/icons/SaveIcon.svelte'
+import HotIcon from '$components/icons/HotIcon.svelte'
 
 $: links = [
+  {
+    icon: HotIcon,
+    title: 'Airdrop',
+    class: 'w-5 h-5',
+    href: '/airdrop',
+  },
   {
     icon: CoinBagIcon,
     title: 'Refer and Earn',
@@ -90,7 +97,7 @@ onMount(() => {
 <LogoutPopup bind:show={showLogoutPopup} />
 
 <div
-  class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
+  class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto px-8 py-20">
   <div class="flex w-full shrink-0 flex-col space-y-10">
     {#if $authState.isLoggedIn && !$loadingAuthStatus}
       <div class="sticky flex w-full items-center space-x-4 pb-2">
