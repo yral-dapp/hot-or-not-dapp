@@ -128,6 +128,7 @@ export interface SystemTime {
   'secs_since_epoch' : bigint,
 }
 export interface TokenBalance {
+  'lifetime_earnings' : bigint,
   'utility_token_balance' : bigint,
   'utility_token_transaction_history' : Array<[bigint, TokenEvent]>,
 }
@@ -174,8 +175,8 @@ export interface UserProfile {
 }
 export interface UserProfileGlobalStats {
   'lifetime_earnings' : bigint,
-  'hots_earned_count' : bigint,
-  'nots_earned_count' : bigint,
+  'hot_bets_received' : bigint,
+  'not_bets_received' : bigint,
 }
 export interface _SERVICE {
   'get_current_backup_statistics' : ActorMethod<[], BackupStatistics>,
