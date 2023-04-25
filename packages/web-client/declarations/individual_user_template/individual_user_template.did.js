@@ -192,11 +192,12 @@ export const idlFactory = ({ IDL }) => {
   });
   const UserProfileGlobalStats = IDL.Record({
     'lifetime_earnings' : IDL.Nat64,
-    'hots_earned_count' : IDL.Nat64,
-    'nots_earned_count' : IDL.Nat64,
+    'hot_bets_received' : IDL.Nat64,
+    'not_bets_received' : IDL.Nat64,
   });
   const UserProfileDetailsForFrontend = IDL.Record({
     'unique_user_name' : IDL.Opt(IDL.Text),
+    'lifetime_earnings' : IDL.Nat64,
     'following_count' : IDL.Nat64,
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
