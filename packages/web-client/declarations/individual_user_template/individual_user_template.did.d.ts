@@ -257,6 +257,7 @@ export interface UserProfile {
 }
 export interface UserProfileDetailsForFrontend {
   'unique_user_name' : [] | [string],
+  'lifetime_earnings' : bigint,
   'following_count' : bigint,
   'profile_picture_url' : [] | [string],
   'display_name' : [] | [string],
@@ -266,8 +267,8 @@ export interface UserProfileDetailsForFrontend {
 }
 export interface UserProfileGlobalStats {
   'lifetime_earnings' : bigint,
-  'hots_earned_count' : bigint,
-  'nots_earned_count' : bigint,
+  'hot_bets_received' : bigint,
+  'not_bets_received' : bigint,
 }
 export interface UserProfileUpdateDetailsFromFrontend {
   'profile_picture_url' : [] | [string],

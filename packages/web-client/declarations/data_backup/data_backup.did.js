@@ -88,6 +88,7 @@ export const idlFactory = ({ IDL }) => {
     }),
   });
   const TokenBalance = IDL.Record({
+    'lifetime_earnings' : IDL.Nat64,
     'utility_token_balance' : IDL.Nat64,
     'utility_token_transaction_history' : IDL.Vec(
       IDL.Tuple(IDL.Nat64, TokenEvent)
@@ -164,8 +165,8 @@ export const idlFactory = ({ IDL }) => {
   });
   const UserProfileGlobalStats = IDL.Record({
     'lifetime_earnings' : IDL.Nat64,
-    'hots_earned_count' : IDL.Nat64,
-    'nots_earned_count' : IDL.Nat64,
+    'hot_bets_received' : IDL.Nat64,
+    'not_bets_received' : IDL.Nat64,
   });
   const UserProfile = IDL.Record({
     'unique_user_name' : IDL.Opt(IDL.Text),

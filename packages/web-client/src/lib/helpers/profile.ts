@@ -62,9 +62,9 @@ export function sanitizeProfile(
     followers_count: Number(profile.followers_count),
     following_count: Number(profile.followers_count),
     profile_stats: {
-      hots_earned_count: Number(profile.profile_stats.hots_earned_count) || 0,
-      lifetime_earnings: Number(profile.profile_stats.hots_earned_count) || 0,
-      nots_earned_count: Number(profile.profile_stats.hots_earned_count) || 0,
+      hots_earned_count: Number(profile.profile_stats.hot_bets_received) || 0,
+      lifetime_earnings: Number(profile.profile_stats.not_bets_received) || 0,
+      nots_earned_count: Number(profile.profile_stats.lifetime_earnings) || 0,
     },
     updated_at: Date.now(),
   }
