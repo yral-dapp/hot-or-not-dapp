@@ -14,7 +14,7 @@ describe('Google analytics tests', () => {
 
   beforeEach(() => {
     cy.intercept({ hostname: 'www.google-analytics.com' }, { statusCode: 503 })
-    cy.visit(TEST_HOST)
+    cy.visit(TEST_HOST + '/feed')
   })
 
   it('Ensure GA is loaded and configured correctly', () => {

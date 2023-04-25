@@ -11,7 +11,7 @@ describe('Navigation test', () => {
   })
 
   beforeEach(() => {
-    cy.visit(TEST_HOST)
+    cy.visit(TEST_HOST + '/feed')
   })
 
   it('On load, should be navigated to home feed', () => {
