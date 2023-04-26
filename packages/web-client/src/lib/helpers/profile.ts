@@ -584,7 +584,7 @@ export async function fetchNotifications(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 fetchNotifications' }, 'error')
+    Log({ error: e, from: '11 fetchNotifications' }, 'warn')
     return { error: true }
   }
   return { error: true }
