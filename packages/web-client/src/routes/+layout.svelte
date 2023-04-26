@@ -71,7 +71,7 @@ async function initializeGA() {
 function listenForUnhandledRejections() {
   window.addEventListener('unhandledrejection', (e) => {
     // Handle app-crash level errors here
-    Log(e, 'error')
+    Log({ e, type: 'unhandled' }, 'error')
   })
 }
 

@@ -87,11 +87,11 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
             authStateData.userCanisterId,
           )
         } catch (e) {
-          Log({ error: e, from: '1 updateProfile', type: 'idb' }, 'error')
+          Log({ error: e, from: '1 updateProfile', type: 'idb' }, 'warn')
         }
       }
     } else {
-      Log({ error: 'No profile found', from: '1 updateProfile' }, 'error')
+      Log({ error: 'No profile found', from: '1 updateProfile' }, 'warn')
     }
   } else {
     userProfile.set(emptyProfileValues)
@@ -584,7 +584,7 @@ export async function fetchNotifications(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 fetchNotifications' }, 'error')
+    Log({ error: e, from: '11 fetchNotifications' }, 'warn')
     return { error: true }
   }
   return { error: true }
