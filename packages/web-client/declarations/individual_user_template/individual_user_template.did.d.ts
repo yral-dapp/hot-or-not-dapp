@@ -266,7 +266,6 @@ export interface UserProfileDetailsForFrontend {
   'followers_count' : bigint,
 }
 export interface UserProfileGlobalStats {
-  'lifetime_earnings' : bigint,
   'hot_bets_received' : bigint,
   'not_bets_received' : bigint,
 }

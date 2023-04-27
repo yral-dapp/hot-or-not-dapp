@@ -164,7 +164,6 @@ export const idlFactory = ({ IDL }) => {
     'creator_consent_for_inclusion_in_hot_or_not' : IDL.Bool,
   });
   const UserProfileGlobalStats = IDL.Record({
-    'lifetime_earnings' : IDL.Nat64,
     'hot_bets_received' : IDL.Nat64,
     'not_bets_received' : IDL.Nat64,
   });
