@@ -174,7 +174,6 @@ export interface UserProfile {
   'profile_stats' : UserProfileGlobalStats,
 }
 export interface UserProfileGlobalStats {
-  'lifetime_earnings' : bigint,
   'hot_bets_received' : bigint,
   'not_bets_received' : bigint,
 }
