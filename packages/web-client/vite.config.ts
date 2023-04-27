@@ -24,7 +24,7 @@ try {
 }
 
 // Generate canister ids, required by the generated canister code in .dfx/local/canisters/*
-// This strange way of JSON.stringifying the value is required by vite
+// This strange way of JSON.stringify the value is required by vite
 const canisterDefinitions = Object.entries(canisterIds).reduce(
   (acc, [key, val]) => ({
     ...acc,

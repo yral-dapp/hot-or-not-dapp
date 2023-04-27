@@ -63,8 +63,8 @@ export function sanitizeProfile(
     following_count: Number(profile.followers_count),
     profile_stats: {
       hots_earned_count: Number(profile.profile_stats.hot_bets_received) || 0,
-      lifetime_earnings: Number(profile.profile_stats.not_bets_received) || 0,
-      nots_earned_count: Number(profile.profile_stats.lifetime_earnings) || 0,
+      nots_earned_count: Number(profile.profile_stats.not_bets_received) || 0,
+      lifetime_earnings: Number(profile.lifetime_earnings) || 0,
     },
     updated_at: Date.now(),
   }
@@ -87,11 +87,11 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
             authStateData.userCanisterId,
           )
         } catch (e) {
-          Log({ error: e, from: '1 updateProfile', type: 'idb' }, 'error')
+          Log({ error: e, from: '1 updateProfile', type: 'idb' }, 'warn')
         }
       }
     } else {
-      Log({ error: 'No profile found', from: '1 updateProfile' }, 'error')
+      Log({ error: 'No profile found', from: '1 updateProfile' }, 'warn')
     }
   } else {
     userProfile.set(emptyProfileValues)
@@ -584,7 +584,7 @@ export async function fetchNotifications(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 fetchNotifications' }, 'error')
+    Log({ error: e, from: '11 fetchNotifications' }, 'warn')
     return { error: true }
   }
   return { error: true }

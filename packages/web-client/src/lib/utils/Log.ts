@@ -1,7 +1,7 @@
 import { browser } from '$app/environment'
 import * as Sentry from '@sentry/svelte'
 
-function replaceErrors(_, value) {
+function replaceErrors(_v: any, value) {
   if (typeof value === 'bigint') {
     return Number(value)
   } else if (value instanceof Error) {

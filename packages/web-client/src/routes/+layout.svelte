@@ -30,6 +30,7 @@ async function initSentry() {
       /Error in compression worker/i, // Replay Error
       /e.getLastBreadcrumb/i, // Sentry error
       /chrome-extension/i, // Chrome extensions error
+      /_ is not defined/i, //Unknown error
     ],
     beforeSend: $page.url.host.includes('t:')
       ? (event) => {
@@ -71,7 +72,7 @@ async function initializeGA() {
 function listenForUnhandledRejections() {
   window.addEventListener('unhandledrejection', (e) => {
     // Handle app-crash level errors here
-    Log(e, 'error')
+    Log({ e, type: 'unhandled' }, 'error')
   })
 }
 
