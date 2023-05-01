@@ -5,7 +5,6 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
 import WaitlistForm from '$components/waitlist-form/WaitlistForm.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
-import { confetti } from '@neoconfetti/svelte'
 
 let participated = false
 </script>
