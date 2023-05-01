@@ -9,6 +9,7 @@ export let reportedPostCanisterId: string
 export let reportedPostId: string
 export let reportedUserId: string
 export let userId: string
+export let videoUid: string
 
 let loading = false
 let selectedReason = ''
@@ -23,7 +24,13 @@ async function handleReport() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text: `Video reported 🚨 \n Profile Link: https://hotornot.wtf/profile/${reportedUserId}/post/${reportedPostId}\n Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n Reported by: ${userId} \n Reason: ${selectedReason}`,
+        text: `
+        Video reported 🚨 \n 
+        Profile Link: https://hotornot.wtf/profile/${reportedUserId}/post/${reportedPostId}\n
+        Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n
+        Reported Video Cloudflare UID: ${videoUid} \n
+        Reported by: ${userId} \n
+        Reason: ${selectedReason}`,
       }),
     },
   )
