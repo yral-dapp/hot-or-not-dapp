@@ -5,18 +5,22 @@ import InfoIcon from '$components/icons/InfoIcon.svelte'
 import TrophyIcon from '$components/icons/TrophyIcon.svelte'
 import UsersIcon from '$components/icons/UsersIcon.svelte'
 import Input from '$components/input/Input.svelte'
+import { confetti } from '@neoconfetti/svelte'
 
+export let participated = false
 let loading = true
-let participated = false
 const backgroundUrl =
   'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*JCirrVIiqLPa14NEBRx_6A.jpeg'
 </script>
 
 <waitlist-form
-  class="mx-auto block w-full max-w-2xl overflow-hidden rounded-md bg-slate-900 shadow-md shadow-white/5">
+  class="relative mx-auto block w-full max-w-2xl rounded-md bg-slate-900 shadow-md shadow-white/5">
+  {#if participated}
+    <div use:confetti class="absolute inset-0 h-1 w-1" />
+  {/if}
   <div
     style="background-image: url('{backgroundUrl}');"
-    class="h-36 w-full bg-center md:h-48" />
+    class="h-36 w-full rounded-md bg-center md:h-48" />
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
     {#if !participated}
       <div class="text-2xl font-bold md:text-4xl">
