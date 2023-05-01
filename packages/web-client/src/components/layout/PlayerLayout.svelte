@@ -187,6 +187,7 @@ $: avatarUrl =
 {#if showReportPopup}
   <ReportPopup
     bind:show={showReportPopup}
+    videoUid={post.video_uid}
     reportedPostCanisterId={post.publisher_canister_id}
     reportedPostId={post.id.toString()}
     reportedUserId={post.created_by_user_principal_id}
