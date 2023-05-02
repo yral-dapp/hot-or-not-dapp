@@ -1,5 +1,6 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
+import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
 import InfoIcon from '$components/icons/InfoIcon.svelte'
 import TrophyIcon from '$components/icons/TrophyIcon.svelte'
@@ -11,31 +12,49 @@ export let participated = false
 let loading = true
 const backgroundUrl =
   'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*JCirrVIiqLPa14NEBRx_6A.jpeg'
+const rewardTierUrl = 'https://app.questn.com/quest/762209652021325987'
 </script>
 
-<waitlist-form
-  class="relative mx-auto block w-full max-w-2xl rounded-md bg-slate-900 shadow-md shadow-white/5">
+<waitlist-form class="relative mx-auto block w-full max-w-2xl">
   {#if participated}
     <div use:confetti class="absolute inset-0 h-1 w-1" />
   {/if}
   <div
-    style="background-image: url('{backgroundUrl}');"
-    class="h-36 w-full rounded-md bg-center md:h-48" />
+    class="relative mx-auto flex w-fit flex-col items-center gap-4 rounded-md bg-center">
+    <Coin3dIcon class="absolute -left-8 -top-4 h-5 w-5 rotate-[280deg]" />
+    <Coin3dIcon class="absolute -right-8 -top-8 h-8 w-8 rotate-[15deg]" />
+    <Coin3dIcon class="absolute -left-14 bottom-0 h-10 w-10 rotate-[15deg]" />
+    <Coin3dIcon class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
+    <span class="text-xl font-bold">Hot or Not's</span>
+    <span class="text-5xl font-bold text-primary">$ 250,000</span>
+    <span class="text-xl font-bold">Airdrop is here</span>
+  </div>
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
     {#if !participated}
-      <div class="text-2xl font-bold md:text-4xl">
-        Join the hot or not airdrops to get coyn tokens!
+      <div class="text-sm">
+        <span>
+          Hot or Not is all set to take over TikTok and we are taking you along
+          with us. Fill out the form below to register for our pre-SNS airdrop!
+        </span>
+        <br />
+        <br />
+        <span>
+          Learn about our reward tires at
+          <a href={rewardTierUrl} class="text-primary">{rewardTierUrl}</a>
+        </span>
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-md text-white">Email:</span>
         <Input
           placeholder="Enter your email"
-          class="flex-1 rounded-md border-0 bg-black/50 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-md text-white">Tweet Link:</span>
-        <div class="flex items-center gap-1 text-white/70">
-          <InfoIcon class="h-4 w-4" />
+        <div class="flex items-start gap-1 text-white/70">
+          <span class="shrink-0 pt-0.5">
+            <InfoIcon class="h-4 w-4" />
+          </span>
           <span class="text-sm">
             You need to tweet with the hashtag #hotornot and paste your tweet's
             link
@@ -43,12 +62,14 @@ const backgroundUrl =
         </div>
         <Input
           placeholder="Enter your tweet link"
-          class="flex-1 rounded-md border-0 bg-black/50 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-md text-white">Connect NNS ID:</span>
-        <div class="flex items-center gap-1 text-white/70">
-          <InfoIcon class="h-4 w-4" />
+        <div class="flex items-start gap-1 text-white/70">
+          <span class="shrink-0 pt-0.5">
+            <InfoIcon class="h-4 w-4" />
+          </span>
           <span class="text-sm">
             You need to connect your wallet for airdrop tokens
           </span>
@@ -66,7 +87,7 @@ const backgroundUrl =
       </div>
       <div class="">
         <Button on:click={() => (participated = true)} class="w-full">
-          Submit Airdrop
+          Join Waitlist
         </Button>
       </div>
       <div class="text-center text-xs text-white/70">
