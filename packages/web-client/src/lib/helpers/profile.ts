@@ -60,7 +60,7 @@ export function sanitizeProfile(
     display_name: profile.display_name[0] || generateRandomName('name', userId),
     principal_id: profile.principal_id.toText(),
     followers_count: Number(profile.followers_count),
-    following_count: Number(profile.followers_count),
+    following_count: Number(profile.following_count),
     profile_stats: {
       hots_earned_count: Number(profile.profile_stats.hot_bets_received) || 0,
       nots_earned_count: Number(profile.profile_stats.not_bets_received) || 0,
