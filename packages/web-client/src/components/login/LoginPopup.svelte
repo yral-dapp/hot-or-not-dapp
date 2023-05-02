@@ -111,17 +111,15 @@ function handleError(type: LoginType, e?: string) {
     class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
     <span class="text-3xl font-bold">Join Hot or Not</span>
     <div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
-      <span>Create an account using</span>
+      <div class="py-4">Create an account using</div>
       {#if !hideNfid}
         <Button
           disabled={loading}
           on:click={async () => await handleLogin('nfid')}
           type="primary"
-          class="flex h-12 w-full items-center space-x-3">
-          <div
-            class="flex items-center justify-center rounded-full bg-white p-2">
-            <GoogleIcon class="h-4 w-4" />
-          </div>
+          class="flex h-12 w-full items-center space-x-3 !bg-white font-normal !text-black">
+          <GoogleIcon class="h-6 w-6" />
+
           <span>Continue with Google</span>
         </Button>
       {/if}
