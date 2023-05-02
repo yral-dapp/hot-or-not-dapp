@@ -120,7 +120,7 @@ function handleError(type: LoginType, e?: string) {
           class="flex h-12 w-full items-center space-x-3 !bg-white font-normal !text-black">
           <GoogleIcon class="h-6 w-6" />
 
-          <span>Continue with Google</span>
+          <span>Login with Google</span>
         </Button>
       {/if}
       <Button
