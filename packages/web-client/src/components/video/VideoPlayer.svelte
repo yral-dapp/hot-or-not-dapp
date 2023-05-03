@@ -129,12 +129,12 @@ async function handleClick() {
   }
 }
 
-const dispatchWatchedPercentage = throttle(500, () => {
-  dispatch('watchedPercentage', (currentTime / duration) * 100)
+const dispatchWatchedPercentage = throttle(500, (progress: number) => {
+  dispatch('watchedPercentage', progress)
 })
 
 $: if (inView && !videoEl?.paused) {
-  dispatchWatchedPercentage()
+  dispatchWatchedPercentage((currentTime / duration) * 100)
 }
 
 $: if (inView && loaded) {
