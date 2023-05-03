@@ -9,7 +9,6 @@ import {
   getHotOrNotPosts,
   updatePostInWatchHistory,
   type PostPopulated,
-  getWatchedVideosFromCache,
 } from '$lib/helpers/feed'
 import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
@@ -102,11 +101,10 @@ async function fetchNextVideos(force = false) {
 }
 
 async function handleChange(e: CustomEvent) {
-  const index = e.detail[0].realIndex
-  currentVideoIndex = index
-  Log({ currentVideoIndex, source: '0 handleChange' }, 'info')
+  lastWatchedVideoIndex = currentVideoIndex
+  const newIndex = e.detail[0].realIndex
+  currentVideoIndex = newIndex
   fetchNextVideos()
-  updatePostInWatchHistory('watch-hon', videos[currentVideoIndex])
   updateURL(videos[currentVideoIndex])
   updateMetadata(videos[currentVideoIndex])
 }
