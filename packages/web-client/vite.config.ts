@@ -59,11 +59,7 @@ export default defineConfig(() => ({
     fs: {
       allow: ['../'],
     },
-    hmr: process.env.CI
-      ? false
-      : {
-          port: 443,
-        },
+    hmr: process.env.CI ? false : undefined,
     proxy: {
       // This proxies all http requests made to /api to our running dfx instance
       '/api': {
