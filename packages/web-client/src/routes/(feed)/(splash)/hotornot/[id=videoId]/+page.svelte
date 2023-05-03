@@ -161,9 +161,10 @@ beforeNavigate(() => {
           watchHistoryDb="watch-hon"
           showWalletLink
           showReportButton
-          justWatched={i === lastWatchedVideoIndex}
-          let:recordView>
+          let:recordView
+          let:updateStats>
           <VideoPlayer
+            on:watchComplete={updateStats}
             on:loaded={() => hideSplashScreen(500)}
             on:watchedPercentage={({ detail }) => recordView(detail)}
             on:videoUnavailable={() => handleUnavailableVideo(i)}
