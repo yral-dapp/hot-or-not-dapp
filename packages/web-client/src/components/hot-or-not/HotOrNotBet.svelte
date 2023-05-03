@@ -120,6 +120,16 @@ async function getWalletBalance() {
   }
 }
 
+async function increaseParticipants() {
+  if (
+    post?.hot_or_not_betting_status?.[0]?.['BettingOpen']
+      ?.number_of_participants !== undefined
+  ) {
+    post.hot_or_not_betting_status[0]['BettingOpen'].number_of_participants++
+    post = post
+  }
+}
+
 async function placeBet({ coins, direction }: PlaceBet) {
   try {
     if (loadingWithDirection) return
@@ -172,6 +182,7 @@ async function placeBet({ coins, direction }: PlaceBet) {
         video_identifier_id: `${post.publisher_canister_id}@${post.id}`,
       })
       setBetDetailToDb(post, placedBetDetail)
+      increaseParticipants()
     } else {
       const err = Object.keys(betRes.Err)[0] as BetAPIErrors
       switch (err) {
