@@ -1,5 +1,6 @@
-import { resolve } from 'path'
+//@ts-ignore
 import { sveltekit } from '@sveltejs/kit/vite'
+import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 // import { partytownVite } from '@builder.io/partytown/utils';
