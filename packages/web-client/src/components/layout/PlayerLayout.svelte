@@ -23,7 +23,6 @@ import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
 
 export let index: number
-export let justWatched: boolean = false
 export let post: PostPopulated
 export let showWalletLink = false
 export let showReferAndEarnLink = false
