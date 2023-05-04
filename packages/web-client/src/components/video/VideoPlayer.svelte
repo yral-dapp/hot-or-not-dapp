@@ -24,6 +24,7 @@ const dispatch = createEventDispatcher<{
   watchedPercentage: number
   loaded: void
   videoUnavailable: void
+  watchComplete: void
 }>()
 
 let videoEl: HTMLVideoElement
@@ -34,6 +35,8 @@ let hls: Hls | null = null
 let waiting = false
 let playing = true
 let videoUnavailable = false
+let watchingNow = false
+let watchedDispatchLock = true
 
 export const checkVideoIsPlaying = debounce(
   500,
@@ -129,12 +132,15 @@ async function handleClick() {
   }
 }
 
-const dispatchWatchedPercentage = throttle(500, () => {
-  dispatch('watchedPercentage', (currentTime / duration) * 100)
+const dispatchWatchedPercentage = throttle(250, (progress: number) => {
+  dispatch('watchedPercentage', progress)
 })
 
-$: if (inView && !videoEl?.paused) {
-  dispatchWatchedPercentage()
+$: watchedPercentage = (currentTime / duration) * 100
+$: watchedPercentage > 2 && watchedDispatchLock && (watchedDispatchLock = false)
+
+$: if (inView && !videoEl?.paused && !watchedDispatchLock) {
+  dispatchWatchedPercentage(watchedPercentage)
 }
 
 $: if (inView && loaded) {
@@ -142,10 +148,18 @@ $: if (inView && loaded) {
   if (videoEl?.paused) {
     play()
   }
+  if (!watchingNow) {
+    watchingNow = true
+  }
 }
 
 $: if (!inView) {
   stop()
+  if (watchingNow) {
+    watchingNow = false
+    watchedDispatchLock = true
+    dispatch('watchComplete')
+  }
 }
 
 onMount(() => {

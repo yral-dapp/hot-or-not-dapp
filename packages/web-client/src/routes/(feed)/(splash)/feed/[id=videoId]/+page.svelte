@@ -31,7 +31,6 @@ const keepVideosLoadedCount: number = 3
 
 let videos: PostPopulated[] = []
 let currentVideoIndex = 0
-let lastWatchedVideoIndex = -1
 let noMoreVideos = false
 let loading = false
 let fetchedVideosCount = 0
@@ -107,7 +106,6 @@ async function handleUnavailableVideo(index: number) {
 }
 
 async function handleChange(e: CustomEvent) {
-  lastWatchedVideoIndex = currentVideoIndex
   const newIndex = e.detail[0].realIndex
   currentVideoIndex = newIndex
   fetchNextVideos()
@@ -168,9 +166,10 @@ beforeNavigate(() => {
           showShareButton
           showDescription
           showHotOrNotButton
-          justWatched={i === lastWatchedVideoIndex}
-          let:recordView>
+          let:recordView
+          let:updateStats>
           <VideoPlayer
+            on:watchComplete={updateStats}
             on:loaded={() => hideSplashScreen(500)}
             on:watchedPercentage={({ detail }) => recordView(detail)}
             on:videoUnavailable={() => handleUnavailableVideo(i)}

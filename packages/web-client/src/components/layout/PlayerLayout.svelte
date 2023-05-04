@@ -20,9 +20,9 @@ import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
+import { debounce } from 'throttle-debounce'
 
 export let index: number
-export let justWatched: boolean = false
 export let post: PostPopulated
 export let showWalletLink = false
 export let showReferAndEarnLink = false
@@ -71,14 +71,18 @@ async function handleShare() {
 }
 
 function recordView(percentageWatched: number) {
-  if (percentageWatched == 0) {
-    watchProgress.totalCount++
-    watchProgress.partialWatchedPercentage = 0
-    post.total_view_count = post.total_view_count + BigInt(1)
+  if (percentageWatched < 2) {
+    increaseWatchCount()
   } else {
     watchProgress.partialWatchedPercentage = percentageWatched
   }
 }
+
+const increaseWatchCount = debounce(500, () => {
+  watchProgress.totalCount++
+  watchProgress.partialWatchedPercentage = 0
+  post.total_view_count = post.total_view_count + BigInt(1)
+})
 
 async function handleLike() {
   if (!$authState.isLoggedIn) {
@@ -135,8 +139,6 @@ async function updateStats() {
 
   updatePostInWatchHistory(watchHistoryDb, post)
 
-  if ($page.url.host.includes('t:')) return
-
   const payload =
     watchProgress.totalCount == 0
       ? {
@@ -153,7 +155,9 @@ async function updateStats() {
           },
         }
 
-  Log({ from: '0 updateStats', id: post.id, payload }, 'info')
+  Log({ from: '0 updateStats', id: post.id, i: index, payload }, 'info')
+
+  if ($page.url.host.includes('t:')) return
 
   registerEvent('view_video', {
     source,
@@ -175,10 +179,6 @@ async function updateStats() {
   }
 }
 
-$: if (justWatched) {
-  updateStats()
-}
-
 $: avatarUrl =
   post.created_by_profile_photo_url[0] ||
   getDefaultImageUrl(post.created_by_user_principal_id)
@@ -197,7 +197,7 @@ $: avatarUrl =
 <player-layout
   data-index={index}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
-  <slot {recordView} />
+  <slot {recordView} {updateStats} />
   {#if !unavailable}
     <img
       alt="background"
