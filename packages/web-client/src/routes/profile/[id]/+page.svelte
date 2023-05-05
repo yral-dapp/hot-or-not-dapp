@@ -174,7 +174,7 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
         <span class="text-md pt-4 font-bold">
           {profile.display_name}
         </span>
-        <div class="flex items-center space-x-2 px-12 text-sm">
+        <div class="flex items-center space-x-2 px-2 text-sm md:px-12">
           <span class="text-white">
             {`@${profile.unique_user_name}`}
           </span>
