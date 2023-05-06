@@ -1,21 +1,60 @@
+<script lang="ts" context="module">
+type ReportType = 'profile' | 'post'
+
+type PostReportData = {
+  postCanisterId: string
+  postUploadedByUserId: string
+  postId: string
+  reportedByUserId: string
+  videoUid: string
+}
+
+type ProfileReportData = {
+  reportedByUserId: string
+  userId: string
+}
+
+type ReportData<ReportType> = ReportType extends 'profile'
+  ? ProfileReportData
+  : PostReportData
+</script>
+
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import Popup from './Popup.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import { saveReportedPostInDb } from '$lib/helpers/feed'
 
 export let show = false
-export let reportedPostCanisterId: string
-export let reportedPostId: string
-export let reportedUserId: string
-export let userId: string
-export let videoUid: string
+export let type: ReportType
+export let reportData: ReportData<ReportType>
 
 let loading = false
 let selectedReason = ''
 
 async function handleReport() {
   loading = true
+  let text = ''
+  if (type === 'post') {
+    const data = reportData as PostReportData
+    text = `🎞️ Video reported 🚨  
+    Profile Link: https://hotornot.wtf/profile/${data.postUploadedByUserId}/post/${data.postId}
+    Reported Video ID: ${data.postCanisterId}@${data.postId} 
+    Reported Video Cloudflare UID: ${data.videoUid} 
+    Reported by: ${data.reportedByUserId} 
+    Reason: ${selectedReason}`
+
+    // Save post to DB
+    saveReportedPostInDb(
+      `${data.postCanisterId}@${data.postId}`,
+      selectedReason,
+    )
+  } else {
+    const data = reportData as ProfileReportData
+    text = `👮 Profile reported 🚨
+    Profile Link: https://hotornot.wtf/profile/${data.userId}
+    Reported by: ${data.reportedByUserId} 
+    Reason: ${selectedReason}`
+  }
   await fetch(
     'https://chat.googleapis.com/v1/spaces/AAAAHzDmNaM/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=nUnkgIqr0tLjDV5lWRge9tqEN5Nq9YX14wU9e9HUCiU%3D',
     {
@@ -24,20 +63,11 @@ async function handleReport() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text: `
-        Video reported 🚨 \n 
-        Profile Link: https://hotornot.wtf/profile/${reportedUserId}/post/${reportedPostId}\n
-        Reported Video ID: ${reportedPostCanisterId}@${reportedPostId} \n
-        Reported Video Cloudflare UID: ${videoUid} \n
-        Reported by: ${userId} \n
-        Reason: ${selectedReason}`,
+        text,
       }),
     },
   )
-  saveReportedPostInDb(
-    `${reportedPostCanisterId}@${reportedPostId}`,
-    selectedReason,
-  )
+
   loading = false
   show = false
 }
