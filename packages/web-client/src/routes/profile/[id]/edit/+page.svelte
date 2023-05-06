@@ -198,7 +198,7 @@ $: userId = username_set
           bind:error
           bind:loading />
         <div class="flex w-full flex-col space-y-2">
-          <span class="text-white/60">Your name</span>
+          <span class="text-white/60">Your name *</span>
           <Input
             disabled={loading}
             bind:value={values.name}
@@ -208,7 +208,7 @@ $: userId = username_set
             class="w-full rounded-md bg-white/10 py-4" />
         </div>
         <div class="flex w-full flex-col space-y-2">
-          <span class="text-white/60">Username</span>
+          <span class="text-white/60">Username *</span>
           <Input
             disabled={loading || username_set}
             bind:value={values.username}
@@ -216,7 +216,7 @@ $: userId = username_set
             type="text"
             maxlength={20}
             placeholder="Enter your username here"
-            class="placeholder:norma w-full rounded-md bg-white/10 py-4 lowercase" />
+            class="placeholder:norma w-full rounded-md bg-white/10 py-4 lowercase placeholder:normal-case" />
           {#if usernameSetFirstTime}
             <span class="text-xs opacity-50">
               You have already set your username, it cannot be changed now. You
