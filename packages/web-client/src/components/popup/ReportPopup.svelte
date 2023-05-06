@@ -10,13 +10,9 @@ type PostReportData = {
 }
 
 type ProfileReportData = {
-  reportedByUserId: string
   userId: string
+  reportedByUserId: string
 }
-
-type ReportData<ReportType> = ReportType extends 'profile'
-  ? ProfileReportData
-  : PostReportData
 </script>
 
 <script lang="ts">
@@ -26,7 +22,7 @@ import { saveReportedPostInDb } from '$lib/helpers/feed'
 
 export let show = false
 export let type: ReportType
-export let reportData: ReportData<ReportType>
+export let reportData: PostReportData | ProfileReportData
 
 let loading = false
 let selectedReason = ''
