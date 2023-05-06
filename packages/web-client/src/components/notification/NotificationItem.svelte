@@ -39,7 +39,7 @@ $: postId = Number(item.details?.post_id) || 0
 $: userId = $userProfile.username_set
   ? $userProfile.unique_user_name || $authState.idString
   : $authState.idString
-$: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
+$: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000, {showTime: true})
 </script>
 
 <div class="flex items-center justify-between py-4">
