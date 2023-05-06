@@ -187,11 +187,14 @@ $: avatarUrl =
 {#if showReportPopup}
   <ReportPopup
     bind:show={showReportPopup}
-    videoUid={post.video_uid}
-    reportedPostCanisterId={post.publisher_canister_id}
-    reportedPostId={post.id.toString()}
-    reportedUserId={post.created_by_user_principal_id}
-    userId={$authState.idString || '2vxsx-fae'} />
+    type="post"
+    reportData={{
+      postCanisterId: post.publisher_canister_id,
+      postId: post.id.toString(),
+      videoUid: post.video_uid,
+      postUploadedByUserId: post.created_by_user_principal_id,
+      reportedByUserId: $authState.idString || '2vxsx-fae',
+    }} />
 {/if}
 
 <player-layout
