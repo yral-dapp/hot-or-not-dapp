@@ -91,9 +91,6 @@ onMount(() => {
 })
 
 $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
-$: userId = $userProfile.username_set
-  ? $userProfile.unique_user_name || $userProfile.principal_id
-  : $userProfile.principal_id
 
 $: link = !loggedIn
   ? ''
@@ -103,7 +100,7 @@ $: link = !loggedIn
     }.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${
       $userProfile.principal_id
     }&login=true`
-  : `https://${$page.url.host}/profile/${userId}?refId=${$userProfile.principal_id}&login=true`
+  : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
 </script>
 
 <svelte:head>
