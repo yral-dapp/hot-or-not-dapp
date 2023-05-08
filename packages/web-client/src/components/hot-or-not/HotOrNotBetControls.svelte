@@ -64,7 +64,7 @@ function placeBet(direction: 'Hot' | 'Not') {
 </script>
 
 <div
-  class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-8 px-4"
+  class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-12 px-4"
   transition:fade|local>
   <div
     class={c(

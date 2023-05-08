@@ -90,7 +90,7 @@ onMount(() => {
 <LogoutPopup bind:show={showLogoutPopup} />
 
 <div
-  class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto py-20 px-8">
+  class="flex h-full w-full flex-col justify-between space-y-16 overflow-hidden overflow-y-auto px-8 py-20">
   <div class="flex w-full shrink-0 flex-col space-y-10">
     {#if $authState.isLoggedIn && !$loadingAuthStatus}
       <div class="sticky flex w-full items-center space-x-4 pb-2">
@@ -140,18 +140,24 @@ onMount(() => {
   <div class="flex flex-col items-center justify-center space-y-4">
     <div class="text-sm text-white/50">Follow us on</div>
     <div class="flex items-center space-x-4">
-      <div
+      <a
+        href="https://t.me/+c-LTX0Cp-ENmMzI1"
+        target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
         <TelegramIcon class="h-5 w-5 -translate-x-[1px]" />
-      </div>
-      <div
+      </a>
+      <a
+        href="https://discord.gg/KwxCpeQB"
+        target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
         <DiscordIcon class="h-5 w-5" />
-      </div>
-      <div
+      </a>
+      <a
+        href="https://twitter.com/hotornot_dapp"
+        target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
         <TwitterIcon class="h-4 w-4" />
-      </div>
+      </a>
       {#if !$page.url.host.includes('ic0.app')}
         <a
           href={`https://${

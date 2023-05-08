@@ -27,6 +27,7 @@ import userProfile from '$stores/userProfile'
 import { goto } from '$app/navigation'
 import { tick } from 'svelte'
 import { get } from 'svelte/store'
+import GoogleIcon from '$components/icons/GoogleIcon.svelte'
 
 export let hideNfid = false
 
@@ -110,23 +111,26 @@ function handleError(type: LoginType, e?: string) {
     class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
     <span class="text-3xl font-bold">Join Hot or Not</span>
     <div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
-      <span>Create an account using</span>
-      <Button
-        disabled={loading}
-        on:click={async () => await handleLogin('ii')}
-        class="w-full space-x-2 py-3">
-        <span>Internet Identity</span>
-        <DfinityIcon class="w-8" />
-      </Button>
+      <div class="py-4">Create an account using</div>
       {#if !hideNfid}
         <Button
           disabled={loading}
           on:click={async () => await handleLogin('nfid')}
-          type="secondary"
-          class="w-full py-3">
-          Google via NFID
+          type="primary"
+          class="flex h-12 w-full items-center space-x-3 !bg-white font-normal !text-black">
+          <GoogleIcon class="h-6 w-6" />
+
+          <span>Login with Google</span>
         </Button>
       {/if}
+      <Button
+        disabled={loading}
+        on:click={async () => await handleLogin('ii')}
+        class="h-12 w-full space-x-2 py-3"
+        type="secondary">
+        <DfinityIcon class="w-8" />
+        <span>Internet Identity</span>
+      </Button>
 
       {#if error}
         <div class="text-xs text-red-600">
@@ -137,7 +141,7 @@ function handleError(type: LoginType, e?: string) {
       {/if}
     </div>
   </div>
-  <div class="absolute top-4 right-4">
+  <div class="absolute right-4 top-4">
     <IconButton
       disabled={loading}
       on:click={() => ($authState.showLogin = false)}>

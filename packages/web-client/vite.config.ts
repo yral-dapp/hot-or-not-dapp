@@ -1,8 +1,8 @@
-import { resolve } from 'path'
+//@ts-ignore
 import { sveltekit } from '@sveltejs/kit/vite'
+import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
-// import { partytownVite } from '@builder.io/partytown/utils';
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -59,11 +59,7 @@ export default defineConfig(() => ({
     fs: {
       allow: ['../'],
     },
-    hmr: process.env.CI
-      ? false
-      : {
-          port: 443,
-        },
+    hmr: process.env.CI ? false : undefined,
     proxy: {
       // This proxies all http requests made to /api to our running dfx instance
       '/api': {
