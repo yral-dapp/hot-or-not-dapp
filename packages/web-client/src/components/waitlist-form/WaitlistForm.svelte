@@ -10,6 +10,7 @@ import { confetti } from '@neoconfetti/svelte'
 
 export let participated = false
 let loading = true
+let checked = false
 const backgroundUrl =
   'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*JCirrVIiqLPa14NEBRx_6A.jpeg'
 const rewardTierUrl = 'https://app.questn.com/quest/762209652021325987'
@@ -65,21 +66,24 @@ const rewardTierUrl = 'https://app.questn.com/quest/762209652021325987'
           class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-md text-white">Connect NNS ID:</span>
-        <div class="flex items-start gap-1 text-white/70">
-          <span class="shrink-0 pt-0.5">
-            <InfoIcon class="h-4 w-4" />
-          </span>
-          <span class="text-sm">
-            You need to connect your wallet for airdrop tokens
-          </span>
+        <span class="text-md text-white">Addtional Information:</span>
+        <div class="flex items-center gap-3">
+          <input
+            bind:checked
+            type="checkbox"
+            class="h-5 w-5 rounded border-gray-700 bg-transparent text-orange-500 focus:ring-2 focus:ring-orange-500" />
+          <label for="orange-checkbox" class="text-white">
+            I have NFTs in my Plug Wallet
+          </label>
         </div>
-        <Button type="secondary" class="rounded-lg bg-black/30">
-          Connect to Wallet
-        </Button>
+        {#if checked}
+          <Input
+            placeholder="Enter your SNS ID"
+            class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+        {/if}
       </div>
       <div>
-        <span class="text-sm text-white/70">
+        <span class="text-xs text-white/70">
           Note: Every email ID can only be associated with one login account. If
           the same email is used with multiple airdrop entries, the previous
           entries will be overwritten
