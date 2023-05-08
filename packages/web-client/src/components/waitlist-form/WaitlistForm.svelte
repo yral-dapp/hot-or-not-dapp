@@ -6,14 +6,38 @@ import InfoIcon from '$components/icons/InfoIcon.svelte'
 import TrophyIcon from '$components/icons/TrophyIcon.svelte'
 import UsersIcon from '$components/icons/UsersIcon.svelte'
 import Input from '$components/input/Input.svelte'
+import DotSeparator from '$components/layout/DotSeparator.svelte'
+import { fetchTokenBalance } from '$lib/helpers/profile'
+import { authState } from '$stores/auth'
 import { confetti } from '@neoconfetti/svelte'
+import { onMount } from 'svelte/internal'
 
 export let participated = false
+let wallet = {
+  balance: 0,
+  loading: true,
+  error: false,
+}
+
+async function refreshTokenBalance() {
+  wallet.loading = true
+  wallet.error = false
+  const res = await fetchTokenBalance()
+  if (res.error) {
+    wallet.error = true
+  } else {
+    wallet.balance = res.balance
+  }
+  wallet.loading = false
+}
+
 let loading = true
 let checked = false
 const backgroundUrl =
   'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*JCirrVIiqLPa14NEBRx_6A.jpeg'
 const rewardTierUrl = 'https://app.questn.com/quest/762209652021325987'
+
+$: $authState.isLoggedIn && refreshTokenBalance()
 </script>
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
@@ -39,10 +63,34 @@ const rewardTierUrl = 'https://app.questn.com/quest/762209652021325987'
         </span>
         <br />
         <br />
-        <span>
-          Learn about our reward tires at
-          <a href={rewardTierUrl} class="text-primary">{rewardTierUrl}</a>
-        </span>
+        <a href={rewardTierUrl} class="text-primary underline">
+          Learn more about the airdrop here
+        </a>
+      </div>
+      <DotSeparator />
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
+        <span>{$authState.idString}</span>
+      </div>
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-bold text-primary">Your Current Wallet Balance</span>
+        {#if wallet.error}
+          <div>
+            <button
+              class="mx-2 inline rounded-sm bg-primary px-2 py-1 outline-1 outline-white">
+              Reload
+            </button>
+            <span class="text-red-700">Error fetching balance.</span>
+          </div>
+        {:else if wallet.loading}
+          <span>Loading</span>
+        {:else}
+          <span>{wallet.balance} Coyns</span>
+          <span class="text-xs text-white/70">
+            Note: final balance at the end of 30 days will be considered for
+            airdrop allotment
+          </span>
+        {/if}
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-md text-white">Email:</span>
