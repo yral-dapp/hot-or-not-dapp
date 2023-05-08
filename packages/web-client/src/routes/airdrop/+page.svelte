@@ -10,14 +10,14 @@ let participated = false
 </script>
 
 <svelte:head>
-  <title>Waitlist | Hot or Not</title>
+  <title>Airdrop | Hot or Not</title>
 </svelte:head>
 
 <HomeLayout>
   <svelte:fragment slot="top">
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
-      Waitlist
+      Airdrop
       <div class="absolute left-4 top-4">
         <IconButton
           on:click={() => goBack($navigateBack || '/menu', true)}
