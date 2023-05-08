@@ -30,6 +30,7 @@ import type { PostDetailsForFrontend } from '$canisters/individual_user_template
 import { slide } from 'svelte/transition'
 import CopyButton from '$components/profile/CopyButton.svelte'
 import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
+import ReportPopup from '$components/popup/ReportPopup.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -63,7 +64,9 @@ let posts: {
     fetchedCount: 0,
   },
 }
+
 let showMoreInfo = false
+let showReportPopup = false
 
 $: userId = profile?.username_set
   ? profile?.unique_user_name
@@ -136,6 +139,16 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
   <title>{me ? 'Your' : "User's"} Videos | Hot or Not</title>
 </svelte:head>
 
+{#if showReportPopup}
+  <ReportPopup
+    bind:show={showReportPopup}
+    type="profile"
+    reportData={{
+      userId: profile.principal_id || '',
+      reportedByUserId: $authState.idString || '2vxsx-fae',
+    }} />
+{/if}
+
 <ProfileLayout>
   <svelte:fragment slot="top-left">
     <IconButton
@@ -152,8 +165,8 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
       <IconButton href={`/profile/${userId}/edit`}>
         <PencilIcon class="h-5 w-5" />
       </IconButton>
-    {:else}
-      <IconButton>
+    {:else if profile.principal_id}
+      <IconButton on:click={() => (showReportPopup = true)}>
         <ReportIcon class="h-5 w-5" />
       </IconButton>
     {/if}
