@@ -160,6 +160,7 @@ beforeNavigate(() => {
           source="hon_feed"
           watchHistoryDb="watch-hon"
           showWalletLink
+          showAirdropButton
           showReportButton
           let:recordView
           let:updateStats>
