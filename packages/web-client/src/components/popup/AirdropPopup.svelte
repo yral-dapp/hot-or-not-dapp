@@ -12,7 +12,7 @@ import AirdropCountdown from './AirdropCountdown.svelte'
 
 export let show = false
 let loading = false
-let completed = true
+let completed = false
 </script>
 
 <airdrop

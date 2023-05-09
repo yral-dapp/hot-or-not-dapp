@@ -1,5 +1,4 @@
 <script lang="ts">
-export let filled = false
 export { exportClass as class }
 let exportClass: any = ''
 </script>
