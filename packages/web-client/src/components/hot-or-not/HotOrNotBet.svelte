@@ -50,7 +50,7 @@ let error = ''
 let idb: IDB
 
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
-  error = 'You have already placed a bet. Fetching your bet info...'
+  error = 'You have already placed a vote. Fetching your vote info...'
   updatePlacedBetDetail()
 } else if (!error && post && !bettingStatusValue && !placedBetDetail) {
   error = 'Betting has been closed.'
@@ -102,12 +102,12 @@ async function updatePlacedBetDetail() {
     if (placedBetDetail) {
       setBetDetailToDb(post, placedBetDetail)
     } else {
-      throw 'No bet found'
+      throw 'No vote found'
     }
   } catch (e) {
     //TODO: Add retries
     Log({ error: e, source: '1 updatePlacedBetDetail' }, 'error')
-    error = 'Error fetching your bet details'
+    error = 'Error fetching your vote details'
   }
 }
 
@@ -192,10 +192,10 @@ async function placeBet({ coins, direction }: PlaceBet) {
           break
         case 'InsufficientBalance':
           const balance = await getWalletBalance()
-          error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
+          error = `You do not have enough tokens to vote. Your wallet balance is ${balance} tokens.`
           break
         case 'UserAlreadyParticipatedInThisPost':
-          error = 'You have already bet on this post. Fetching details...'
+          error = 'You have already vote on this post. Fetching details...'
           updatePlacedBetDetail()
           break
         case 'UserNotLoggedIn':
@@ -209,7 +209,7 @@ async function placeBet({ coins, direction }: PlaceBet) {
   } catch (e) {
     Log({ error: e, postId: post?.id, from: 'placeBet 1' }, 'error')
     loadingWithDirection = false
-    error = 'Something went wrong while placing bet. Please try again'
+    error = 'Something went wrong while placing vote. Please try again'
     setTimeout(() => {
       error = ''
     }, 2000)
