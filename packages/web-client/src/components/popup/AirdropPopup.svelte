@@ -5,10 +5,11 @@ import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.s
 import AirdropGraphic from '$components/icons/AirdropGraphic.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import AirdropCountdown from './AirdropCountdown.svelte'
 
 export let show = false
-let loading = true
-let completed = true
+let loading = false
+let completed = false
 </script>
 
 <airdrop
@@ -40,19 +41,23 @@ let completed = true
         </a>
       </div>
     {:else}
-      <AirdropGraphic class="max-w-80 h-max max-h-80 w-max px-10" />
+      <div class="max-w-80 max-w-80 max-h mt-10 max-h-80 w-max px-10">
+        <AirdropGraphic class="h-full w-full" />
+      </div>
       <div class="flex w-full max-w-md flex-col items-center space-y-4 px-16">
-        <div class="text-5xl font-bold uppercase text-transparent">
-          <h1 class="smooth">Airdrop</h1>
-          <div class="text-white">Airdrop</div>
-          <h1 class="smooth">Airdrop</h1>
+        <div class="text-5xl font-bold uppercase text-transparent text-white">
+          Airdrop
         </div>
-        <div class="py-4 text-xs">
-          Lorem ipsum dolor sit amet, consectetur elit. sed do eiusmod Lorem
-          ipsum dolor sit amet consectetur elit, sed do eiusmod.
+        <div class="text-md py-4 text-center">
+          Join the whitelist and receive free HOT tokens
         </div>
-        <Button class="w-full">Join airdrop</Button>
-        <button class="w-full bg-transparent py-2">Later</button>
+        <div class="py-4">
+          <AirdropCountdown />
+        </div>
+        <Button on:click={() => (show = false)} href="/airdrop" class="w-full">
+          Register
+        </Button>
+        <a href="/airdrop-guide" class="text-sm">Learn more</a>
       </div>
     {/if}
   </div>
