@@ -29,29 +29,54 @@ let participated = false
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
-    <div class="h-full w-full overflow-y-auto px-2 py-24">
+    <div class="h-full w-full overflow-y-auto px-4 py-20">
       <div class="relative mx-auto block w-full max-w-2xl">
-        <p>A Comprehensive Guide to the HOT Token Airdrop</p>
+        <h4 class="text-lg font-bold">Guide</h4>
+        <p>
+          Hot or Not is a social media platform for short videos, similar to
+          TikTok but on Web3. It integrates gamification with social media and
+          is built on a ground-breaking Level-1 blockchain called the <a
+            href="https://medium.com/dfinity/the-internet-computer-for-geeks-a-new-dfinity-white-paper-ecb075b2d525"
+            target="_blank">
+            Internet Computer Protocol
+          </a>
+          .
+        </p>
+        <p>
+          Hot or Not is conducting a decentralization sale (
+          <a
+            href="https://internetcomputer.org/docs/current/developer-docs/integrations/sns/"
+            target="_blank">
+            SNS
+          </a>
+          sale) of its governance tokens, HOT. The sale aims to give users ownership
+          of the platform, placing them at the center of the ecosystem. Users will
+          have an active role in steering the ecosystem while receiving rewards for
+          their participation.
+        </p>
+        <p>
+          To recognize the support of its users and early adopters, Hot or Not
+          is airdropping 10 million HOT tokens (1% of the initial token supply)
+          for free. This presents a unique opportunity for users to join the
+          growing community and receive free tokens. It's important to note that
+          HOT tokens are governance tokens on the platform, while COYN is the
+          in-app utility token. COYN is not listed, while HOT tokens will be
+          listed once the sale is completed.
+        </p>
         <p>
           Are you interested in participating in the upcoming HOT token airdrop?
-          Look no further - We've compiled all the information you need to know
+          Look no further -- We've compiled all the information you need to know
           to register and be eligible for the airdrop.
         </p>
-        <p>
-          Hot or Not is airdropping 10,000,000 HOT tokens (1% of the initial
-          token supply) for its users and early adopters. This is a unique
-          opportunity to receive free tokens and become a part of our growing
-          community.
-        </p>
-        <p>Registration and Eligibility</p>
+        <h4>Registration and Eligibility</h4>
         <p>To be eligible for the airdrop, you must register here:</p>
-        <a href="#" class="text-primary underline">Register Now</a>
+        <a href="/airdrop" class="py-2 text-primary underline">Register Now</a>
         <p>To register, applicants must provide the following information:</p>
-        <ul>
-          <li>Email</li>
-          <li>Tweet with the hashtag #hotornot and paste link</li>
-          <li>Follow HotorNot on socials</li>
-        </ul>
+
+        <li>Email</li>
+        <li>Tweet with the hashtag #hotornot and paste link</li>
+        <li>Follow HotorNot on socials</li>
+
         <p>
           Additional information that will be taken automatically by virtue of
           login:
@@ -61,21 +86,21 @@ let participated = false
           Current wallet balance (final balance at the end of 30 days will be
           considered for airdrop allotment)
         </li>
-        <p>Rewards</p>
+        <h4>Rewards</h4>
         <p>
           The number of HOT tokens allocated to one whitelisted/ waitlisted
           applicant is calculated based on their wallet balance on the cut-off
           date using the following formula:
         </p>
-        <p class="rounded-md bg-primary p-2 text-center">
+        <p class="rounded-md bg-primary p-2 text-center !text-white">
           Wallet Balance of the Applicant / Total Wallet Balance of all
           Applicants * 10,000,000
         </p>
-        <table>
+        <table class="border-1 my-4 text-sm text-white/70">
           <thead>
             <tr>
               <th>Category of Applicant</th>
-              <th>Wallet Balance considered on Cutoff Date</th>
+              <th>Wallet Balance considered on cutoff date</th>
             </tr>
           </thead>
           <tbody>
@@ -137,14 +162,14 @@ let participated = false
       </div>
       <div>
         <div
-          class="relative mx-auto flex w-fit flex-col items-center gap-4 rounded-md bg-center">
-          <Coin3dIcon class="absolute -left-8 -top-4 h-5 w-5 rotate-[280deg]" />
-          <Coin3dIcon class="absolute -right-8 -top-8 h-8 w-8 rotate-[15deg]" />
+          class="relative mx-auto mt-8 flex w-full flex-col items-center gap-4 overflow-hidden rounded-md bg-center p-8">
+          <Coin3dIcon class="absolute left-2 top-4 h-5 w-5 rotate-[280deg]" />
+          <Coin3dIcon class="absolute right-4 top-2 h-8 w-8 rotate-[15deg]" />
           <Coin3dIcon
-            class="absolute -left-14 bottom-0 h-10 w-10 rotate-[15deg]" />
+            class="absolute bottom-0 left-10 h-10 w-10 rotate-[15deg]" />
           <Coin3dIcon
-            class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
-          <span>
+            class="absolute bottom-0 right-8 h-6 w-6 rotate-[320deg]" />
+          <span class="text-center">
             Don't miss this opportunity to become a part of our growing
             community and receive free tokens!
           </span>
@@ -153,3 +178,34 @@ let participated = false
     </div>
   </svelte:fragment>
 </HomeLayout>
+
+<style lang="postcss">
+p {
+  @apply py-2 text-sm text-white/70;
+}
+h4 {
+  @apply py-2 text-lg text-white;
+}
+
+li {
+  @apply marker:text-primary;
+  @apply text-sm text-white/70;
+}
+
+th {
+  @apply p-1 text-left text-white;
+  @apply border-[1px];
+  @apply border-white/50;
+  @apply bg-white/10;
+}
+
+td {
+  @apply border-[1px];
+  @apply p-1;
+  @apply border-white/50;
+}
+
+tr:nth-child(even) {
+  @apply bg-white/10;
+}
+</style>
