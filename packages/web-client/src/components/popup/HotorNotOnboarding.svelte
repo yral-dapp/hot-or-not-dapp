@@ -25,11 +25,14 @@ let step: 1 | 2 | 3 | 4 = 1
           <img alt="decore" src={left} class="select-none" />
           <img alt="decore" src={right} class="select-none" />
         </div>
-        <div class="relative select-none text-center text-3xl font-bold">
-          <StarsIcon class="absolute -left-10 -top-12 h-24" />
+        <div class="relative w-full select-none text-center text-3xl font-bold">
+          <div
+            class="absolute inset-0 bottom-16 flex items-center justify-center">
+            <StarsIcon class="h-36" />
+          </div>
           Welcome to
           <br />
-          Hot or Not
+          HotorNot!
         </div>
         <div class="flex w-full flex-col space-y-6">
           <Button on:click={() => (step = 2)}>Start Tutorial</Button>
@@ -42,17 +45,17 @@ let step: 1 | 2 | 3 | 4 = 1
       </div>
     {:else if step == 2}
       <div
-        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
-          class="relative flex w-full flex-col items-center justify-center space-y-6 text-center">
-          <div class="text-3xl font-bold">Choose your bet amount</div>
+          class="flex w-full flex-col items-center justify-center space-y-6 text-center">
+          <div class="text-3xl font-bold">Choose your voting amount</div>
           <div>
-            Select your bet amount by clicking on the token between 10, 50, or
-            100 tokens.
+            Select your voting amount by clicking on the token between 10, 50,
+            or 100 tokens.
           </div>
-          <div class="absolute left-48 top-72">
-            <TutorialArrow class="h-64" />
-          </div>
+        </div>
+        <div class="absolute bottom-32 -translate-x-full">
+          <TutorialArrow class="h-48" />
         </div>
         <Button class="px-12" on:click={() => (step = 3)}>Next</Button>
         <button on:click={() => ($showOnboarding = false)} class="font-medium">
@@ -67,20 +70,20 @@ let step: 1 | 2 | 3 | 4 = 1
       </div>
     {:else if step == 3}
       <div
-        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
-          class="relative flex w-full flex-col items-center justify-center space-y-6 text-center">
-          <div class="text-3xl font-bold">Place your bet</div>
+          class="flex w-full flex-col items-center justify-center space-y-6 text-center">
+          <div class="text-3xl font-bold">Place your vote</div>
           <div>
             Click 'Hot' or 'Not' to predict whether a video will go viral or
             not.
           </div>
-          <div class="absolute left-10 top-32">
-            <TutorialArrow class="h-64" />
-          </div>
-          <div style="transform: scaleX(-1);" class="absolute right-14 top-32">
-            <TutorialArrow class="h-60" />
-          </div>
+        </div>
+        <div class="absolute bottom-40 left-10">
+          <TutorialArrow class="h-52" />
+        </div>
+        <div style="transform: scaleX(-1);" class="absolute bottom-40 right-14">
+          <TutorialArrow class="h-56" />
         </div>
         <Button class="px-12" on:click={() => (step = 4)}>Next</Button>
         <button on:click={() => ($showOnboarding = false)} class="font-medium">
