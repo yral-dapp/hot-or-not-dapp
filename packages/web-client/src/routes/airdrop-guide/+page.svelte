@@ -3,7 +3,6 @@ import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
-import WaitlistForm from '$components/waitlist-form/WaitlistForm.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
 
