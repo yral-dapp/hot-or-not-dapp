@@ -265,7 +265,7 @@ onDestroy(() => {
     </div>
     {#if uploadStatus === 'to-upload'}
       <InputBox
-        placeholder="Write your description here ..."
+        placeholder="Add post description ..."
         bind:value={videoDescription}
         class="shrink-0 rounded-xl bg-white/10" />
       {#if descriptionError}
