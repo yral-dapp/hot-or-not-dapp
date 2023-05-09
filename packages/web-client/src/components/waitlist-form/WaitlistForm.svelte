@@ -35,7 +35,6 @@ let loading = true
 let checked = false
 const backgroundUrl =
   'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*JCirrVIiqLPa14NEBRx_6A.jpeg'
-const rewardTierUrl = 'https://app.questn.com/quest/762209652021325987'
 
 $: $authState.isLoggedIn && refreshTokenBalance()
 </script>
@@ -63,7 +62,7 @@ $: $authState.isLoggedIn && refreshTokenBalance()
         </span>
         <br />
         <br />
-        <a href={rewardTierUrl} class="text-primary underline">
+        <a href="/airdrop-guide" class="text-primary underline">
           Learn more about the airdrop here
         </a>
       </div>
