@@ -16,14 +16,14 @@ import { fade } from 'svelte/transition'
     src="https://beebom.com/wp-content/uploads/2022/02/Featured.jpg?w=730&h=487&crop=1&quality=75" />
   <div class="text-3xl font-bold">Congrats! You win</div>
   <div class="text-center text-white/80">
-    You won 50 tokens on the bet you placed on video “Dance with me”
+    You won 50 tokens on the vote you placed on video “Dance with me”
   </div>
   <div class="flex flex-col items-center">
     <div class="text-white/80">Your rank</div>
     <div class="text-3xl">220</div>
   </div>
   <div class="flex w-full flex-col items-center space-y-2">
-    <Button class="w-full">Place a new bet</Button>
+    <Button class="w-full">Place a new vote</Button>
     <Button type="secondary" class="w-full">Check balance</Button>
   </div>
 </bet-win>

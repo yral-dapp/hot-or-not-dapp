@@ -20,11 +20,11 @@ function getNotificationMessage(item: NotificationHistory) {
     case 'WinningsEarnedFromBet': {
       switch (item.eventOutcome) {
         case 'Draw':
-          return 'The Result was a draw on a video you bet'
+          return 'The Result was a draw on a video you vote'
         case 'Lost':
-          return `You lost on a video you bet`
+          return `You lost on a video you vote`
         case 'Won':
-          return `Congratulations! You won ${item.token} tokens on a video you bet.`
+          return `Congratulations! You won ${item.token} tokens on a video you vote.`
       }
     }
   }
@@ -39,7 +39,10 @@ $: postId = Number(item.details?.post_id) || 0
 $: userId = $userProfile.username_set
   ? $userProfile.unique_user_name || $authState.idString
   : $authState.idString
-$: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000, {showTime: true})
+$: timeDiff = getTimeDifference(
+  Number(item.timestamp.secs_since_epoch) * 1000,
+  { showTime: true },
+)
 </script>
 
 <div class="flex items-center justify-between py-4">
