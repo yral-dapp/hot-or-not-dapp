@@ -21,11 +21,18 @@ import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
 import { loadingAuthStatus } from '$stores/loading'
 import SaveIcon from '$components/icons/SaveIcon.svelte'
+import QuestionIcon from '$components/icons/QuestionIcon.svelte'
 
 $: links = [
   {
     icon: CoinBagIcon,
-    title: 'Refer and Earn',
+    title: 'Airdrop Guide',
+    class: 'w-5 h-5',
+    href: '/airdrop-guide',
+  },
+  {
+    icon: QuestionIcon,
+    title: 'How to Earn',
     class: 'w-5 h-5',
     href: '/refer-earn',
   },
