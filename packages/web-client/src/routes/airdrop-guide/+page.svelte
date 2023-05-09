@@ -167,7 +167,7 @@ let participated = false
           <Coin3dIcon
             class="absolute bottom-0 left-10 h-10 w-10 rotate-[15deg]" />
           <Coin3dIcon
-            class="absolute bottom-0 right-8 h-6 w-6 rotate-[320deg]" />
+            class="absolute bottom-0 right-9 h-6 w-6 rotate-[320deg]" />
           <span class="text-center">
             Don't miss this opportunity to become a part of our growing
             community and receive free tokens!
