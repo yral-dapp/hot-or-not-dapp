@@ -53,7 +53,7 @@ $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
   error = 'You have already placed a vote. Fetching your vote info...'
   updatePlacedBetDetail()
 } else if (!error && post && !bettingStatusValue && !placedBetDetail) {
-  error = 'Betting has been closed.'
+  error = 'Voting has been closed.'
 }
 
 $: if (placedBetDetail) {
@@ -188,11 +188,11 @@ async function placeBet({ coins, direction }: PlaceBet) {
       switch (err) {
         case 'BettingClosed':
           disabled = true
-          error = 'Betting has been closed'
+          error = 'Voting has been closed'
           break
         case 'InsufficientBalance':
           const balance = await getWalletBalance()
-          error = `You do not have enough tokens to vote. Your wallet balance is ${balance} tokens.`
+          error = `You do not have enough tokens to participate. Your wallet balance is ${balance} tokens.`
           break
         case 'UserAlreadyParticipatedInThisPost':
           error = 'You have already vote on this post. Fetching details...'

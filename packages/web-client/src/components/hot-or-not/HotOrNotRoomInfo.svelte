@@ -44,14 +44,14 @@ $: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
         </div>
       </Tooltip>
     {/if}
-    <Tooltip text="Participants in this Slot" position="middle">
+    <Tooltip text="Participants" position="middle">
       <div
         class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
         <UsersIcon class="h-4 w-4" />
         <span class="text-sm">{usersInThisSlot}/100</span>
       </div>
     </Tooltip>
-    <Tooltip text="Betting Slot" position="middle">
+    <Tooltip text="Hours since upload" position="middle">
       <div
         class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
         <PieChartIcon class="h-4 w-4" />
