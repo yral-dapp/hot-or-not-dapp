@@ -2,6 +2,7 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
+import AirdropIcon from '$components/icons/AirdropIcon.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
 import FireIcon from '$components/icons/FireIcon.svelte'
 import FlagIcon from '$components/icons/FlagIcon.svelte'
@@ -9,6 +10,7 @@ import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
+import AirdropPopup from '$components/popup/AirdropPopup.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
@@ -32,6 +34,7 @@ export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let unavailable = false
+export let showAirdropButton = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
 
@@ -41,6 +44,7 @@ let watchProgress = {
   partialWatchedPercentage: 0,
 }
 let showReportPopup = false
+let showAirdropPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -197,6 +201,10 @@ $: avatarUrl =
     }} />
 {/if}
 
+{#if showAirdropPopup}
+  <AirdropPopup bind:show={showAirdropPopup} />
+{/if}
+
 <player-layout
   data-index={index}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
@@ -246,6 +254,16 @@ $: avatarUrl =
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
+        {#if showAirdropButton}
+          <IconButton
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              showAirdropPopup = true
+            }}
+            ariaLabel="Join airdrop">
+            <AirdropIcon class="h-16 drop-shadow-md" />
+          </IconButton>
+        {/if}
         {#if showReportButton}
           <IconButton
             ariaLabel="Report this post"
@@ -280,7 +298,7 @@ $: avatarUrl =
           </div>
         {/if}
         {#if showWalletLink}
-          <IconButton class="pr-2" ariaLabel="Wallet" href="/wallet">
+          <IconButton ariaLabel="Wallet" href="/wallet">
             <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
           </IconButton>
         {/if}
