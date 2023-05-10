@@ -34,7 +34,9 @@ let participated = false
         <p>
           Hot or Not is a social media platform for short videos, similar to
           TikTok but on Web3. It integrates gamification with social media and
-          is built on a ground-breaking Level-1 blockchain called the <a
+          is built on a ground-breaking Level-1 blockchain called the
+          <a
+            class="underline"
             href="https://medium.com/dfinity/the-internet-computer-for-geeks-a-new-dfinity-white-paper-ecb075b2d525"
             target="_blank">
             Internet Computer Protocol
@@ -44,6 +46,7 @@ let participated = false
         <p>
           Hot or Not is conducting a decentralization sale (
           <a
+            class="underline"
             href="https://internetcomputer.org/docs/current/developer-docs/integrations/sns/"
             target="_blank">
             SNS
