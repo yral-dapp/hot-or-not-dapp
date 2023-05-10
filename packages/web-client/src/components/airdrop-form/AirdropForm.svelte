@@ -260,7 +260,8 @@ async function validateData() {
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-sm text-white">
-          Do you own any of the following assets? Please select all that apply:
+          Do you own any of the following assets? Please select all that apply
+          for additional rewards:
         </span>
         <OptionalInput
           bind:checked={formData.sns1Token.checked}
