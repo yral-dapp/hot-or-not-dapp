@@ -18,7 +18,7 @@ let completed = false
 <airdrop
   class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
   <div
-    class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
+    class="flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto py-8">
     {#if loading}
       <div class="flex h-full w-full items-center justify-center">
         <LoadingIcon class="h-5 w-5 animate-spin-slow" />
@@ -69,17 +69,17 @@ let completed = false
         </div>
       </div>
     {:else}
-      <div class="max-w-80 max-w-80 max-h mt-10 max-h-80 w-max px-10">
+      <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
         <AirdropGraphic class="h-full w-full" />
       </div>
       <div class="flex w-full max-w-md flex-col items-center space-y-4 px-16">
         <div class="text-5xl font-bold uppercase text-transparent text-white">
           Airdrop
         </div>
-        <div class="text-md py-4 text-center">
+        <div class="text-md text-center">
           Join the whitelist and receive free HOT tokens
         </div>
-        <div class="py-4">
+        <div class="md:y-4 py-2">
           <AirdropCountdown />
         </div>
         <Button on:click={() => (show = false)} href="/airdrop" class="w-full">
