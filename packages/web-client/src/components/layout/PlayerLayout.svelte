@@ -256,12 +256,13 @@ $: avatarUrl =
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showAirdropButton}
           <IconButton
+            class="transition-transform active:scale-90"
             on:click={(e) => {
               e.stopImmediatePropagation()
               showAirdropPopup = true
             }}
             ariaLabel="Join airdrop">
-            <AirdropIcon class="h-16 drop-shadow-md" />
+            <AirdropIcon class="animate-wobble h-16 drop-shadow-md" />
           </IconButton>
         {/if}
         {#if showReportButton}
@@ -331,3 +332,27 @@ $: avatarUrl =
     {/if}
   </div>
 </player-layout>
+
+<style>
+:global(.animate-wobble) {
+  animation: 6s ease 1s wobble infinite;
+}
+@keyframes wobble {
+  30% {
+    transform: scale(1.2);
+  }
+  40%,
+  60% {
+    transform: rotate(-10deg) scale(1.2);
+  }
+  50% {
+    transform: rotate(10deg) scale(1.2);
+  }
+  70% {
+    transform: rotate(0deg) scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
