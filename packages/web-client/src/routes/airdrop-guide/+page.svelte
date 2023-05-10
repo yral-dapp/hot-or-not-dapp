@@ -74,13 +74,22 @@ let participated = false
 
         <li>Email</li>
         <li>Tweet with the hashtag #hotornot and paste link</li>
-        <li>Follow HotorNot on socials</li>
+        <li>
+          Account ID holding the below specified assets if the user wants to be
+          eligible for additional airdrop:
+          <div class="pl-4 pt-1">
+            <li>GobGob</li>
+            <li>Funded NFTs</li>
+            <li>SNS-1 Token</li>
+            <li>Chat Token"</li>
+          </div>
+        </li>
 
         <p>
           Additional information that will be taken automatically by virtue of
           login:
         </p>
-        <li>Profile ID (HotOrNot)</li>
+        <li>Principal ID (HotOrNot)</li>
         <li>
           Current wallet balance (final balance at the end of 30 days will be
           considered for airdrop allotment)
