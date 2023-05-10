@@ -39,11 +39,11 @@ export const registerEvent = (
 
 <script lang="ts">
 import { page } from '$app/stores'
-import { splashScreen } from '$stores/splashScreen'
+import { splashScreenPopup } from '$stores/popups'
 
 let configured = false
 $: href = $page?.url?.href
-$: shown = !$splashScreen?.show
+$: shown = !$splashScreenPopup?.show
 
 $: if (href || shown) {
   if (!configured) {
