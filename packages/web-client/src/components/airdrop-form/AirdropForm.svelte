@@ -142,12 +142,14 @@ $: $authState.isLoggedIn && refreshTokenBalance()
           inputLabel="Please submit your Plug wallet principal ID"
           inputPlaceholder="Enter Principal ID" />
       </div>
-      <div>
-        <span class="text-xs text-white/70">
-          Note: Every email ID can only be associated with one login account. If
-          the same email is used with multiple airdrop entries, the previous
-          entries will be overwritten
-        </span>
+      <div class="text-xs text-white/70">
+        Note: Every email ID can only be associated with one login account. If
+        the same mail is used with multiple airdrop entries, the previous
+        entries will be overwritten
+      </div>
+      <div class="text-xs text-white/70">
+        <span class="text-lg">*</span>
+        Subject to full SNS subscription & ICP price
       </div>
       <div class="">
         <Button on:click={() => (participated = true)} class="w-full">
