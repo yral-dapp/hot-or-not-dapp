@@ -4,7 +4,7 @@ import HotorNotOnboarding from '$components/popup/HotorNotOnboarding.svelte'
 </script>
 
 <!-- Disabled -->
-<HotorNotOnboarding />
+<!-- <HotorNotOnboarding /> -->
 
 <svelte:head>
   <title>Hot or Not Feed | Hot or Not</title>
