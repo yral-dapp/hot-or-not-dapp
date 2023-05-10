@@ -35,7 +35,7 @@ function validateWithRegex(regex: 'url' | 'email', str: string) {
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    // participated = await isFormFilled($authState.idString)
+    participated = await isFormFilled($authState.idString)
   }
   loading = false
 }
