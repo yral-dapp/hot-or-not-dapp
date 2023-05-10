@@ -335,8 +335,8 @@ async function validateData() {
         </a>
       </div>
     {:else}
-      <div class="-mt-14 flex h-full w-full flex-col">
-        <AirdropCompleted />
+      <div class="flex h-full w-full flex-col items-center overflow-hidden">
+        <AirdropCompleted adjustTopMargin />
       </div>
     {/if}
   </div>
