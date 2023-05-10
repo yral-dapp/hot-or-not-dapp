@@ -57,8 +57,9 @@ $: $authState.isLoggedIn && refreshTokenBalance()
     {#if !participated}
       <div class="text-sm">
         <span>
-          Hot or Not is all set to take over TikTok and we are taking you along
-          with us. Fill out the form below to register for our pre-SNS airdrop!
+          Join us at Hot or Not as we take over TikTok! Register for the
+          whitelist to receive "HOT" governance tokens in our decentralization
+          sale.
         </span>
         <br />
         <br />
