@@ -95,12 +95,11 @@ let participated = false
         </li>
         <p>
           Optional information for additional rewards:
-          <div class="pl-4 pt-1">
-            <li>Plug Principal ID holding Gob-Gob NFT</li>
-            <li>Plug Principal ID holding Hot or Not Funded NFT</li>
-            <li>NNS Principal ID holding SNS-1 Token</li>
-            <li>NNS Principal ID holding Chat Token</li>
-          </div>
+
+          <li>Plug Principal ID holding Gob-Gob NFT</li>
+          <li>Plug Principal ID holding Hot or Not Funded NFT</li>
+          <li>NNS Principal ID holding SNS-1 Token</li>
+          <li>NNS Principal ID holding Chat Token</li>
         </p>
 
         <h4>Rewards</h4>
