@@ -16,7 +16,6 @@ let participated = false
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    // const filled = await isFormFilled($authState.idString)
     participated = await isFormFilled($authState.idString)
     $showAirdropPopup = !participated
   }
@@ -24,7 +23,7 @@ async function checkIfCompleted() {
 }
 
 $: if (!$loadingAuthStatus) {
-  if (!$authState.isLoggedIn) {
+  if ($authState.isLoggedIn) {
     checkIfCompleted()
   } else {
     loading = false
@@ -39,7 +38,9 @@ $: if (!$loadingAuthStatus) {
     <div
       class="flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto py-8">
       {#if participated}
-        <AirdropCompleted on:click={() => ($showAirdropPopup = false)} />
+        <div class="flex h-full w-full flex-col items-center overflow-hidden">
+          <AirdropCompleted on:click={() => ($showAirdropPopup = false)} />
+        </div>
       {:else}
         <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
           <AirdropGraphic class="h-full w-full" />
