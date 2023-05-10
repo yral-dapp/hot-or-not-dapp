@@ -27,9 +27,7 @@ export function getTimeLeft(startTime: Date, endTime: Date) {
         }
       }
 
-      const interval = setInterval(() => {
-        updateMs
-      }, 1000)
+      const interval = setInterval(updateMs, 1000)
 
       return () => {
         clearInterval(interval)
