@@ -103,7 +103,7 @@ let participated = false
           applicant is calculated based on their wallet balance on the cut-off
           date using the following formula:
         </p>
-        <p class="rounded-md bg-primary p-2 text-center !text-white">
+        <p class="rounded-md bg-primary px-2 py-3 text-center !text-white">
           Wallet Balance of the Applicant / Total Wallet Balance of all
           Applicants * 10,000,000
         </p>
@@ -169,6 +169,13 @@ let participated = false
           verification of NFT (if any) and the completion of proof of humanity
           by the applicant. The details would be shared with the registered
           applicants at a later date.
+        </p>
+        <p>
+          The maximum reward per participant is 10,000 HOT tokens, regardless of
+          their wallet balance, to prevent excessive token allocation and ensure
+          fairness. Additionally, this measure prevents bots from taking over
+          and monopolizing the airdrop, making it more accessible to genuine
+          human participants.
         </p>
       </div>
       <div>
