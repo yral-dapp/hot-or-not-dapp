@@ -28,7 +28,7 @@ let participated = false
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
-    <div class="h-full w-full overflow-y-auto px-2 py-24">
+    <div class="h-full w-full overflow-y-auto px-2 pb-12 pt-24">
       <AirdropForm bind:participated />
     </div>
   </svelte:fragment>
