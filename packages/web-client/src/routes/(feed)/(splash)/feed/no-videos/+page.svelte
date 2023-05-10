@@ -1,7 +1,7 @@
 <script lang="ts">
 import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
 import { handleParams } from '$lib/utils/params'
-import { hideSplashScreen } from '$stores/splashScreen'
+import { hideSplashScreen } from '$stores/popups'
 import { onMount, tick } from 'svelte'
 
 onMount(async () => {
