@@ -165,17 +165,17 @@ let participated = false
           wallet balance would be considered as 100 COYNs on the cutoff date.
         </p>
         <p>
-          The allocation of the HOT tokens from the airdrop is subject to the
-          verification of NFT (if any) and the completion of proof of humanity
-          by the applicant. The details would be shared with the registered
-          applicants at a later date.
-        </p>
-        <p>
           The maximum reward per participant is 10,000 HOT tokens, regardless of
           their wallet balance, to prevent excessive token allocation and ensure
           fairness. Additionally, this measure prevents bots from taking over
           and monopolizing the airdrop, making it more accessible to genuine
           human participants.
+        </p>
+        <p>
+          The allocation of the HOT tokens from the airdrop is subject to the
+          verification of NFT (if any) and the completion of proof of humanity
+          by the applicant. The details would be shared with the registered
+          applicants at a later date.
         </p>
       </div>
       <div>
