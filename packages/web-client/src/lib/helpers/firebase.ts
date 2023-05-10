@@ -30,7 +30,7 @@ export function initFirebase() {
   }
 }
 
-export async function setData(data: object): Promise<boolean> {
+export async function uploadForm(data: object): Promise<boolean> {
   try {
     initFirebase()
     if (!app || !db) throw 'Initialization failed'
@@ -55,7 +55,7 @@ export async function isFormFilled(principalId: string): Promise<boolean> {
 
     const q = query(
       collection(db, 'form'),
-      where('principal_id', '==', principalId),
+      where('principalId', '==', principalId),
     )
 
     const querySnapshot = await getDocs(q)
