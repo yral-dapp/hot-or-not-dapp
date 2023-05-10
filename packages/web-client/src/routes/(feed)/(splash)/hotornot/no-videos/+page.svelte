@@ -1,6 +1,6 @@
 <script lang="ts">
 import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
-import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
+import NoVotesIcon from '$components/icons/NoVotesIcon.svelte'
 import { hideSplashScreen } from '$stores/splashScreen'
 import { onMount, tick } from 'svelte'
 
@@ -12,7 +12,7 @@ onMount(async () => {
 
 <div
   class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8">
-  <NoBetsIcon class="w-56" />
+  <NoVotesIcon class="w-56" />
   <div class="text-center text-lg font-bold">
     There are no videos to vote on
   </div>

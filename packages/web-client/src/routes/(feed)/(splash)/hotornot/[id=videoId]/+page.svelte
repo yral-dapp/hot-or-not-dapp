@@ -1,7 +1,7 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
 import Button from '$components/button/Button.svelte'
-import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
+import NoVotesIcon from '$components/icons/NoVotesIcon.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
@@ -217,7 +217,7 @@ beforeNavigate(() => {
     <SwiperSlide class="relative h-full w-full items-center justify-center">
       <div
         class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8">
-        <NoBetsIcon class="w-56" />
+        <NoVotesIcon class="w-56" />
         <div class="text-center text-lg font-bold">
           There are no more videos to vote on
         </div>

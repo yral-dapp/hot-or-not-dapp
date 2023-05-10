@@ -12,7 +12,7 @@ export type PlaceBet = {
 
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import BetCoinIcon from '$components/icons/BetCoinIcon.svelte'
+import VoteCoinIcon from '$components/icons/VoteCoinIcon.svelte'
 import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
 import HotIcon from '$components/icons/HotIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
@@ -116,7 +116,7 @@ function placeBet(direction: 'Hot' | 'Not') {
         grayscale:
           tutorialMode.highlightSelectors || betPlaced !== false || disabled,
       })}>
-      <BetCoinIcon class="h-20" />
+      <VoteCoinIcon class="h-20" />
       <div
         class="absolute inset-0 flex select-none items-center justify-center">
         {#if loadingWithDirection}
