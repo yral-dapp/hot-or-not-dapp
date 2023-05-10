@@ -5,11 +5,32 @@ import IconButton from '$components/button/IconButton.svelte'
 import AirdropGraphic from '$components/icons/AirdropGraphic.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import { isFormFilled } from '$lib/helpers/firebase'
+import { authState } from '$stores/auth'
+import { loadingAuthStatus } from '$stores/loading'
 import { showAirdropPopup, splashScreenPopup } from '$stores/popups'
 import AirdropCountdown from './AirdropCountdown.svelte'
 
-let loading = false
-let completed = false
+let loading = true
+let participated = false
+
+async function checkIfCompleted() {
+  if ($authState.idString) {
+    // const filled = await isFormFilled($authState.idString)
+    participated = await isFormFilled($authState.idString)
+    $showAirdropPopup = !participated
+  }
+  loading = false
+}
+
+$: if (!$loadingAuthStatus) {
+  if (!$authState.isLoggedIn) {
+    checkIfCompleted()
+  } else {
+    loading = false
+    $showAirdropPopup = true
+  }
+}
 </script>
 
 {#if $showAirdropPopup && !$splashScreenPopup.show}
@@ -17,11 +38,7 @@ let completed = false
     class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
     <div
       class="flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto py-8">
-      {#if loading}
-        <div class="flex h-full w-full items-center justify-center">
-          <LoadingIcon class="h-5 w-5 animate-spin-slow" />
-        </div>
-      {:else if completed}
+      {#if participated}
         <AirdropCompleted on:click={() => ($showAirdropPopup = false)} />
       {:else}
         <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
@@ -37,11 +54,17 @@ let completed = false
           <div class="md:y-4 py-2">
             <AirdropCountdown />
           </div>
+
           <Button
             on:click={() => ($showAirdropPopup = false)}
+            disabled={loading}
             href="/airdrop"
             class="w-full">
-            Register
+            {#if loading}
+              <LoadingIcon class="h-4 w-4 animate-spin-slow" />
+            {:else}
+              Register
+            {/if}
           </Button>
           <a href="/airdrop-guide" class="text-sm">Learn more</a>
         </div>
