@@ -45,9 +45,9 @@ $: $authState.isLoggedIn && refreshTokenBalance()
   {/if}
   <div
     class="relative mx-auto flex w-fit flex-col items-center gap-4 rounded-md bg-center">
-    <Coin3dIcon class="absolute -left-8 -top-4 h-5 w-5 rotate-[280deg]" />
-    <Coin3dIcon class="absolute -right-8 -top-8 h-8 w-8 rotate-[15deg]" />
-    <Coin3dIcon class="absolute -left-14 bottom-0 h-10 w-10 rotate-[15deg]" />
+    <Coin3dIcon class="absolute -left-4 -top-4 h-5 w-5 rotate-[280deg]" />
+    <Coin3dIcon class="absolute -top-4 right-0 h-8 w-8 rotate-[15deg]" />
+    <Coin3dIcon class="absolute -left-10 bottom-0 h-10 w-10 rotate-[15deg]" />
     <Coin3dIcon class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
     <span class="text-xl font-bold">Hot or Not's</span>
     <span class="text-5xl font-bold text-primary">
