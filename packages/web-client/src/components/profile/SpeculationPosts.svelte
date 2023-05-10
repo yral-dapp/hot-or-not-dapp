@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import NoBetsIcon from '$components/icons/NoBetsIcon.svelte'
+import NoVotesIcon from '$components/icons/NoVotesIcon.svelte'
 import ReportIcon from '$components/icons/ReportIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import {
@@ -62,7 +62,7 @@ onMount(() => loadPosts())
 {:else if !loading && !error}
   <div
     class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-    <NoBetsIcon class="w-32" />
+    <NoVotesIcon class="w-32" />
     <div class="text-center text-lg font-bold">
       {#if me}
         You don't have any current bets yet

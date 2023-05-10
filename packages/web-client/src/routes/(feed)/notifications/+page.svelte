@@ -62,10 +62,12 @@ $: $authState.isLoggedIn && loadTransactions()
   <div class="hide-scrollbar h-full w-full overflow-y-auto" slot="content">
     <div class="mx-auto flex h-full max-w-5xl flex-col space-y-4 p-3 md:p-8">
       {#if !$authState.isLoggedIn}
-        <div class="text-center text-sm opacity-70">
-          Please login to view your notifications
+        <div class="flex h-full w-full flex-col items-center justify-center">
+          <div class="text-center text-sm opacity-70">
+            Please login to view your notifications
+          </div>
+          <LoginButton />
         </div>
-        <LoginButton />
       {:else}
         {#if transactions.length}
           {#each transactions as item}

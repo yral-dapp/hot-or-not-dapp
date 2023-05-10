@@ -1,7 +1,7 @@
 <script lang="ts">
 import { page } from '$app/stores'
 import IconButton from '$components/button/IconButton.svelte'
-import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
+import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
@@ -59,7 +59,7 @@ let unavailable = false
           inView
           uid={post.video_uid} />
         <svelte:fragment slot="hotOrNot">
-          <HotOrNotBet
+          <HotOrNotVote
             profileUserId={$page.params.id}
             {post}
             {me}
