@@ -11,7 +11,7 @@ export const splashScreenPopup = writable<{
   shown: false,
 })
 
-export const showAirdropPopup = writable<boolean>(true)
+export const showAirdropPopup = writable<boolean>(false)
 
 let splashScreenTimeOut: NodeJS.Timeout
 
