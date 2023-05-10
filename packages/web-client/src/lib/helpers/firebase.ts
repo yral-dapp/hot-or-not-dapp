@@ -21,6 +21,7 @@ const firebaseConfig = {
 
 let app: FirebaseApp
 let db: Firestore
+const collectionName = 'airdrop-entries'
 
 export function initFirebase() {
   if (!app) {
@@ -36,7 +37,7 @@ export async function uploadForm(data: object): Promise<boolean> {
     initFirebase()
     if (!app || !db) throw 'Initialization failed'
 
-    const docRef = await addDoc(collection(db, 'airdrop-entries'), {
+    const docRef = await addDoc(collection(db, collectionName), {
       ...data,
     })
 
@@ -55,7 +56,7 @@ export async function isFormFilled(principalId: string): Promise<boolean> {
     if (principalId === '2vxsx-fae') return false
 
     const q = query(
-      collection(db, 'form'),
+      collection(db, collectionName),
       where('principalId', '==', principalId),
     )
 
