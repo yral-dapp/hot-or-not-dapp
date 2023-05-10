@@ -24,7 +24,7 @@ let loading = true
 let participated = false
 
 const validationRegex = {
-  url: /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/,
+  url: /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
   email:
     /^(([a-zA-Z0-9]+)|([a-zA-Z0-9]+((?:\_[a-zA-Z0-9]+)|(?:\.[a-zA-Z0-9]+))*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-zA-Z]{2,6}(?:\.[a-zA-Z]{2})?)$)/,
 }
@@ -35,7 +35,7 @@ function validateWithRegex(regex: 'url' | 'email', str: string) {
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isFormFilled($authState.idString)
+    // participated = await isFormFilled($authState.idString)
   }
   loading = false
 }
