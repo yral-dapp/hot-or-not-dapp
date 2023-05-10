@@ -11,6 +11,8 @@ export const splashScreenPopup = writable<{
   shown: false,
 })
 
+export const showAirdropPopup = writable<boolean>(true)
+
 let splashScreenTimeOut: NodeJS.Timeout
 
 export function hideSplashScreen(timeoutMs: number = 2000) {
