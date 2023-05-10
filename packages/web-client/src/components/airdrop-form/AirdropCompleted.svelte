@@ -3,13 +3,18 @@ import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.s
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
+
+export let adjustTopMargin = false
 </script>
 
-<div class="max-w-80 -mt-16 h-full max-h-80 w-full px-16">
+<div
+  class="max-w-80 h-max max-h-80 w-max px-32 md:px-24
+  {adjustTopMargin ? '-mt-40' : '-mt-12'}">
   <AirdropCompleteGraphics class="h-full w-full" />
 </div>
 <div
-  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 pt-2 md:space-y-4 md:px-16">
+  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 md:space-y-4 md:px-16
+  {adjustTopMargin ? 'pt-24' : 'pt-4'}">
   <div class="text-3xl font-bold uppercase text-transparent text-white">
     Congratulations
   </div>
