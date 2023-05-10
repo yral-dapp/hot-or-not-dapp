@@ -73,18 +73,33 @@ let participated = false
         <h4>Registration and Eligibility</h4>
         <p>To be eligible for the airdrop, you must register here:</p>
         <a href="/airdrop" class="py-2 text-primary underline">Register Now</a>
-        <p>To register, applicants must provide the following information:</p>
+        <p>Registration process:</p>
 
-        <li>Email</li>
-        <li>Tweet with the hashtag #hotornot and paste link</li>
+        <li>Login through Google or Internet Identity</li>
         <li>
-          Account ID holding the below specified assets if the user wants to be
-          eligible for additional airdrop:
+          The following information will be taken automatically upon login:
           <div class="pl-4 pt-1">
-            <li>GobGob</li>
-            <li>Funded NFTs</li>
-            <li>SNS-1 Token</li>
-            <li>Chat Token"</li>
+            <li>Principal ID (HotOrNot)</li>
+            <li>
+              Current wallet balance (final balance on 10th June, 2023 12PM UTC
+              will be considered for airdrop allotment)
+            </li>
+          </div>
+        </li>
+        <li>
+          Tweet with the hashtag #hotornot and paste link
+          <div class="pl-4 pt-1">
+            <li>Email</li>
+            <li>A tweet with the hashtag #hotornot and paste link</li>
+          </div>
+        </li>
+        <li>
+          Optional information for additional rewards:
+          <div class="pl-4 pt-1">
+            <li>Plug Principal ID holding Gob-Gob NFT</li>
+            <li>Plug Principal ID holding Hot or Not Funded NFT</li>
+            <li>NNS Principal ID holding SNS-1 Token</li>
+            <li>NNS Principal ID holding Chat Token</li>
           </div>
         </li>
 
