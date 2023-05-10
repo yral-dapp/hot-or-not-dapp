@@ -87,13 +87,13 @@ let participated = false
           </div>
         </li>
         <li>
-          Tweet with the hashtag #hotornot and paste link
+          Fill out the airdrop form with the following details:
           <div class="pl-4 pt-1">
             <li>Email</li>
             <li>A tweet with the hashtag #hotornot and paste link</li>
           </div>
         </li>
-        <li>
+        <p>
           Optional information for additional rewards:
           <div class="pl-4 pt-1">
             <li>Plug Principal ID holding Gob-Gob NFT</li>
@@ -101,17 +101,8 @@ let participated = false
             <li>NNS Principal ID holding SNS-1 Token</li>
             <li>NNS Principal ID holding Chat Token</li>
           </div>
-        </li>
-
-        <p>
-          Additional information that will be taken automatically by virtue of
-          login:
         </p>
-        <li>Principal ID (HotOrNot)</li>
-        <li>
-          Current wallet balance (final balance at the end of 30 days will be
-          considered for airdrop allotment)
-        </li>
+
         <h4>Rewards</h4>
         <p>
           The number of HOT tokens allocated to one whitelisted/ waitlisted
