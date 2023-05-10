@@ -8,12 +8,12 @@ export const splashScreenPopup = writable<{
   shown: false,
 })
 
-let timeout
+let splashScreenTimeOut: NodeJS.Timeout
 
 export function hideSplashScreen(timeoutMs: number = 2000) {
   if (get(splashScreenPopup).shown) return
-  if (timeout) clearTimeout(timeout)
-  timeout = setTimeout(() => {
+  if (splashScreenTimeOut) clearTimeout(splashScreenTimeOut)
+  splashScreenTimeOut = setTimeout(() => {
     splashScreenPopup.set({ show: false, shown: true })
   }, timeoutMs)
 }
