@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store'
 
-export const splashScreen = writable<{
+export const splashScreenPopup = writable<{
   show: boolean
   shown: boolean
 }>({
@@ -11,9 +11,9 @@ export const splashScreen = writable<{
 let timeout
 
 export function hideSplashScreen(timeoutMs: number = 2000) {
-  if (get(splashScreen).shown) return
+  if (get(splashScreenPopup).shown) return
   if (timeout) clearTimeout(timeout)
   timeout = setTimeout(() => {
-    splashScreen.set({ show: false, shown: true })
+    splashScreenPopup.set({ show: false, shown: true })
   }, timeoutMs)
 }
