@@ -2,13 +2,9 @@
 import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
 import AirdropGraphic from '$components/icons/AirdropGraphic.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
-import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import TelegramIcon from '$components/icons/TelegramIcon.svelte'
-import TwitterIcon from '$components/icons/TwitterIcon.svelte'
 import { showAirdropPopup, splashScreenPopup } from '$stores/popups'
 import AirdropCountdown from './AirdropCountdown.svelte'
 
