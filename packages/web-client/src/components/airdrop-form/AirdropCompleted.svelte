@@ -5,15 +5,15 @@ import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
 </script>
 
-<div class="max-w-80 max-w-80 h-full max-h-80 w-full px-10">
+<div class="max-w-80 -mt-16 h-full max-h-80 w-full px-16">
   <AirdropCompleteGraphics class="h-full w-full" />
 </div>
 <div
-  class="flex w-full max-w-md flex-col items-center space-y-4 px-8 pt-4 md:px-16">
+  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 pt-2 md:space-y-4 md:px-16">
   <div class="text-3xl font-bold uppercase text-transparent text-white">
     Congratulations
   </div>
-  <div class="text-md py-4 text-center">
+  <div class="md:text-md py-4 text-center text-sm">
     Your Profile has been registered for the airdrop. You can claim your airdrop
     on 31 May, 2023.
   </div>
