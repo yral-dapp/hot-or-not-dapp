@@ -1,8 +1,8 @@
 <script lang="ts">
+import AirdropForm from '$components/airdrop-form/AirdropForm.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
-import WaitlistForm from '$components/waitlist-form/WaitlistForm.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
 
@@ -29,7 +29,7 @@ let participated = false
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="h-full w-full overflow-y-auto px-2 py-24">
-      <WaitlistForm bind:participated />
+      <AirdropForm bind:participated />
     </div>
   </svelte:fragment>
 </HomeLayout>
