@@ -10,12 +10,13 @@ import {
 } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCeK4AxhDiOYUnLcgDy-i9ixTvyQeWkwrc',
-  authDomain: 'airdrop-test-f73eb.firebaseapp.com',
-  projectId: 'airdrop-test-f73eb',
-  storageBucket: 'airdrop-test-f73eb.appspot.com',
-  messagingSenderId: '83823863266',
-  appId: '1:83823863266:web:99df1237c2ae398af145bb',
+  apiKey: 'AIzaSyDMe27WJxn-joIKf0WpTX8VGHuBFk5UCZ8',
+  authDomain: 'hot-or-not-aad91.firebaseapp.com',
+  projectId: 'hot-or-not-aad91',
+  storageBucket: 'hot-or-not-aad91.appspot.com',
+  messagingSenderId: '806664083728',
+  appId: '1:806664083728:web:91248647826d45493e6d95',
+  measurementId: 'G-EMSVJKZCYZ',
 }
 
 let app: FirebaseApp
@@ -35,7 +36,7 @@ export async function uploadForm(data: object): Promise<boolean> {
     initFirebase()
     if (!app || !db) throw 'Initialization failed'
 
-    const docRef = await addDoc(collection(db, 'form'), {
+    const docRef = await addDoc(collection(db, 'airdrop-entries'), {
       ...data,
     })
 
