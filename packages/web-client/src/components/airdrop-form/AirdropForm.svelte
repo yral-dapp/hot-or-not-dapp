@@ -6,8 +6,9 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
-import { isFormFilled } from '$lib/helpers/firebase'
+import { isFormFilled, uploadForm } from '$lib/helpers/firebase'
 import { fetchTokenBalance } from '$lib/helpers/profile'
+import { isPrincipal } from '$lib/utils/isPrincipal'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
 import AirdropCompleted from './AirdropCompleted.svelte'
@@ -18,19 +19,28 @@ let wallet = {
   loading: true,
   error: false,
 }
-let loading = false
+
+let loading = true
 let participated = false
+
+const validationRegex = {
+  url: /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/,
+  email:
+    /^(([a-zA-Z0-9]+)|([a-zA-Z0-9]+((?:\_[a-zA-Z0-9]+)|(?:\.[a-zA-Z0-9]+))*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-zA-Z]{2,6}(?:\.[a-zA-Z]{2})?)$)/,
+}
+
+function validateWithRegex(regex: 'url' | 'email', str: string) {
+  return validationRegex[regex].test(str)
+}
 
 async function checkIfCompleted() {
   if ($authState.idString) {
     participated = await isFormFilled($authState.idString)
-    // participated = await isFormFilled('1234')
   }
   loading = false
 }
 
 async function refreshTokenBalance() {
-  console.log('checlking balance')
   wallet.loading = true
   wallet.error = false
   const res = await fetchTokenBalance()
@@ -43,14 +53,114 @@ async function refreshTokenBalance() {
 }
 
 $: authorized = $authState.isLoggedIn && !$loadingAuthStatus
-$: if (!$loadingAuthStatus) {
-  if (!$authState.isLoggedIn) {
-    checkIfCompleted()
-  } else {
-    loading = false
+$: authorized && checkIfCompleted()
+$: authorized && !participated && refreshTokenBalance()
+
+let formErrors: string[] = []
+let formLoading = false
+
+let formData = {
+  email: '',
+  tweetLink: '',
+  sns1Token: {
+    checked: false,
+    principalId: '',
+  },
+  chatToken: {
+    checked: false,
+    principalId: '',
+  },
+  fundedNft: {
+    checked: false,
+    principalId: '',
+  },
+  gobGobNft: {
+    checked: false,
+    principalId: '',
+  },
+}
+
+async function saveFormData() {
+  try {
+    const res = uploadForm({
+      principalId: $authState.idString,
+      walletBalance: wallet.balance,
+      ...formData,
+    })
+    if (!res) throw 'Something went wrong'
+    participated = true
+  } catch (e) {
+    console.error('Failed while saving data', e)
+    formErrors = ['Could not join waitlist. Please try again.']
   }
 }
-$: authorized && !participated && refreshTokenBalance()
+
+async function validateData() {
+  if (formLoading) return
+  formLoading = true
+  formErrors = []
+
+  if (wallet.error || wallet.loading) {
+    formErrors = ['Could not fetch wallet balance. Please refresh the page']
+    return
+  }
+
+  const email = formData.email.trim()
+  if (!email) {
+    formErrors.push('Email is required')
+  } else if (!validateWithRegex('email', email)) {
+    formErrors.push('Email is invalid')
+  }
+
+  const url = formData.tweetLink.trim()
+  if (!url) {
+    formErrors.push('Tweet link is required')
+  } else if (!validateWithRegex('url', url)) {
+    formErrors.push('Tweet link is invalid')
+  }
+
+  if (formData.sns1Token.checked) {
+    const principal = formData.sns1Token.principalId.trim()
+    if (!principal) {
+      formErrors.push('Principal ID for SNS-1 Token is required')
+    } else if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for SNS-1 Token is invalid')
+    }
+  }
+
+  if (formData.chatToken.checked) {
+    const principal = formData.chatToken.principalId.trim()
+    if (!principal) {
+      formErrors.push('Principal ID for Chat Token is required')
+    } else if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for Chat Token is invalid')
+    }
+  }
+
+  if (formData.fundedNft.checked) {
+    const principal = formData.fundedNft.principalId.trim()
+    if (!principal) {
+      formErrors.push('Principal ID for Funded NFT is required')
+    } else if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for Funded NFT is invalid')
+    }
+  }
+
+  if (formData.gobGobNft.checked) {
+    const principal = formData.gobGobNft.principalId.trim()
+    if (!principal) {
+      formErrors.push('Principal ID for Gob Gob NFT is required')
+    } else if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for Gob Gob NFT is invalid')
+    }
+  }
+
+  formErrors = formErrors
+  if (formErrors.length === 0) {
+    await saveFormData()
+  }
+  formLoading = false
+}
 </script>
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
@@ -90,7 +200,9 @@ $: authorized && !participated && refreshTokenBalance()
         <LoginButton />
       </div>
     {:else if loading}
-      <LoadingIcon class="h-5 w-5 animate-spin-slow" />
+      <div class="flex w-full justify-center pt-8">
+        <LoadingIcon class="h-8 w-8 animate-spin-slow" />
+      </div>
     {:else if !participated}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
@@ -122,6 +234,8 @@ $: authorized && !participated && refreshTokenBalance()
           <sub class="align-super text-primary">*</sub>
         </span>
         <Input
+          bind:value={formData.email}
+          type="email"
           placeholder="Enter your email"
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
@@ -140,6 +254,7 @@ $: authorized && !participated && refreshTokenBalance()
           </span>
         </div>
         <Input
+          bind:value={formData.tweetLink}
           placeholder="Enter your tweet link"
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
@@ -148,18 +263,26 @@ $: authorized && !participated && refreshTokenBalance()
           Do you own any of the following assets? Please select all that apply:
         </span>
         <OptionalInput
+          bind:checked={formData.sns1Token.checked}
+          bind:value={formData.sns1Token.principalId}
           checkboxLabel="SNS-1 Token"
           inputLabel="Please submit your NNS principal ID"
           inputPlaceholder="Enter Principal ID" />
         <OptionalInput
+          bind:checked={formData.chatToken.checked}
+          bind:value={formData.chatToken.principalId}
           checkboxLabel="Chat Token"
           inputLabel="Please submit your NNS principal ID"
           inputPlaceholder="Enter Principal ID" />
         <OptionalInput
+          bind:checked={formData.fundedNft.checked}
+          bind:value={formData.fundedNft.principalId}
           checkboxLabel="Hot or Not Funded NFT"
           inputLabel="Please submit your Plug wallet principal ID"
           inputPlaceholder="Enter Principal ID" />
         <OptionalInput
+          bind:checked={formData.gobGobNft.checked}
+          bind:value={formData.gobGobNft.principalId}
           checkboxLabel="Gob-Gob NFT"
           inputLabel="Please submit your Plug wallet principal ID"
           inputPlaceholder="Enter Principal ID" />
@@ -173,9 +296,24 @@ $: authorized && !participated && refreshTokenBalance()
         <span class="text-lg">*</span>
         Subject to full SNS subscription & ICP price
       </div>
-      <div class="">
-        <Button on:click={() => (participated = true)} class="w-full">
-          Join Waitlist
+      {#if formErrors.length}
+        <div class="flex flex-col gap-1">
+          <span>Error(s):</span>
+          {#each formErrors as err, i (i)}
+            <li class="text-xs text-red-600">{err}</li>
+          {/each}
+        </div>
+      {/if}
+      <div>
+        <Button
+          disabled={formLoading}
+          on:click={() => validateData()}
+          class="w-full">
+          {#if formLoading}
+            <LoadingIcon class="h-6 w-6 animate-spin-slow" />
+          {:else}
+            Join waitlist
+          {/if}
         </Button>
       </div>
       <div class="text-center text-xs text-white/70">
@@ -197,7 +335,7 @@ $: authorized && !participated && refreshTokenBalance()
         </a>
       </div>
     {:else}
-      <div class="-mt-40 flex h-full w-full flex-col">
+      <div class="-mt-14 flex h-full w-full flex-col">
         <AirdropCompleted />
       </div>
     {/if}
