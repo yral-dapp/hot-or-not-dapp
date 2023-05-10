@@ -1,26 +1,36 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
-import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
 import InfoIcon from '$components/icons/InfoIcon.svelte'
-import TrophyIcon from '$components/icons/TrophyIcon.svelte'
-import UsersIcon from '$components/icons/UsersIcon.svelte'
+import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
+import LoginButton from '$components/login/LoginButton.svelte'
+import { isFormFilled } from '$lib/helpers/firebase'
 import { fetchTokenBalance } from '$lib/helpers/profile'
 import { authState } from '$stores/auth'
-import { confetti } from '@neoconfetti/svelte'
-import OptionalInput from './OptionalInput.svelte'
+import { loadingAuthStatus } from '$stores/loading'
 import AirdropCompleted from './AirdropCompleted.svelte'
+import OptionalInput from './OptionalInput.svelte'
 
-export let participated = false
 let wallet = {
   balance: 0,
   loading: true,
   error: false,
 }
+let loading = false
+let participated = false
+
+async function checkIfCompleted() {
+  if ($authState.idString) {
+    participated = await isFormFilled($authState.idString)
+    // participated = await isFormFilled('1234')
+  }
+  loading = false
+}
 
 async function refreshTokenBalance() {
+  console.log('checlking balance')
   wallet.loading = true
   wallet.error = false
   const res = await fetchTokenBalance()
@@ -32,12 +42,15 @@ async function refreshTokenBalance() {
   wallet.loading = false
 }
 
-let loading = true
-let checked = false
-const backgroundUrl =
-  'https://miro.medium.com/v2/resize:fit:4800/format:webp/1*JCirrVIiqLPa14NEBRx_6A.jpeg'
-
-$: $authState.isLoggedIn && refreshTokenBalance()
+$: authorized = $authState.isLoggedIn && !$loadingAuthStatus
+$: if (!$loadingAuthStatus) {
+  if (!$authState.isLoggedIn) {
+    checkIfCompleted()
+  } else {
+    loading = false
+  }
+}
+$: authorized && !participated && refreshTokenBalance()
 </script>
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
@@ -70,6 +83,15 @@ $: $authState.isLoggedIn && refreshTokenBalance()
         </a>
       </div>
       <DotSeparator />
+    {/if}
+
+    {#if !authorized}
+      <div class="flex w-full justify-center">
+        <LoginButton />
+      </div>
+    {:else if loading}
+      <LoadingIcon class="h-5 w-5 animate-spin-slow" />
+    {:else if !participated}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
