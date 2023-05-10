@@ -10,7 +10,6 @@ import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HeartIcon from '$components/icons/HeartIcon.svelte'
 import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
 import WalletIcon from '$components/icons/WalletIcon.svelte'
-import AirdropPopup from '$components/popup/AirdropPopup.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
@@ -21,6 +20,7 @@ import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
+import { showAirdropPopup } from '$stores/popups'
 import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
 
@@ -44,7 +44,6 @@ let watchProgress = {
   partialWatchedPercentage: 0,
 }
 let showReportPopup = false
-let showAirdropPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -201,10 +200,6 @@ $: avatarUrl =
     }} />
 {/if}
 
-{#if showAirdropPopup}
-  <AirdropPopup bind:show={showAirdropPopup} />
-{/if}
-
 <player-layout
   data-index={index}
   class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
@@ -259,7 +254,7 @@ $: avatarUrl =
             class="transition-transform active:scale-90"
             on:click={(e) => {
               e.stopImmediatePropagation()
-              showAirdropPopup = true
+              $showAirdropPopup = true
             }}
             ariaLabel="Join airdrop">
             <AirdropIcon class="animate-wobble h-16 drop-shadow-md" />
