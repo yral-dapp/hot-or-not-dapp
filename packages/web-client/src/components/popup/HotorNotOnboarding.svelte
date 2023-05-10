@@ -8,7 +8,7 @@ import Button from '$components/button/Button.svelte'
 import TutorialArrow from '$components/icons/TutorialArrow.svelte'
 import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
 import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
-import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
+import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 
 let step: 1 | 2 | 3 | 4 = 1
 </script>
@@ -64,7 +64,7 @@ let step: 1 | 2 | 3 | 4 = 1
 
         <div
           class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
-          <HotOrNotBet
+          <HotOrNotVote
             tutorialMode={{ highlightCoin: true, highlightSelectors: false }} />
         </div>
       </div>
@@ -92,7 +92,7 @@ let step: 1 | 2 | 3 | 4 = 1
 
         <div
           class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
-          <HotOrNotBet
+          <HotOrNotVote
             tutorialMode={{ highlightCoin: false, highlightSelectors: true }} />
         </div>
       </div>

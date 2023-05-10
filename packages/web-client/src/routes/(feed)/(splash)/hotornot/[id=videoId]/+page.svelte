@@ -3,7 +3,7 @@ import { beforeNavigate } from '$app/navigation'
 import Button from '$components/button/Button.svelte'
 import NoVotesIcon from '$components/icons/NoVotesIcon.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import HotOrNotBet from '$components/hot-or-not/HotOrNotBet.svelte'
+import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import {
   getHotOrNotPosts,
@@ -180,7 +180,7 @@ beforeNavigate(() => {
             {/if}
           </svelte:fragment>
           <svelte:fragment slot="hotOrNot">
-            <HotOrNotBet
+            <HotOrNotVote
               me
               bind:post
               inView={i == currentVideoIndex && $playerState.visible} />
@@ -222,7 +222,7 @@ beforeNavigate(() => {
           There are no more videos to vote on
         </div>
         <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-          <HotOrNotBet disabled />
+          <HotOrNotVote disabled />
         </div>
       </div>
     </SwiperSlide>

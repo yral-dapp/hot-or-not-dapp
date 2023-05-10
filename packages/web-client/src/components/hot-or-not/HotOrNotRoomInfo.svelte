@@ -29,8 +29,8 @@ $: bettingOpen =
   !bettingStatusValue.has_this_user_participated_in_this_post[0]
 $: usersInThisSlot = bettingStatusValue?.number_of_participants || 0
 $: onGoingSlot = bettingStatusValue?.ongoing_slot || 1
-$: betStartedAt = bettingStatusValue?.started_at || systemTime
-$: timeLeft = getMsLeftForBetResult(onGoingSlot, betStartedAt)
+$: startTime = bettingStatusValue?.started_at || systemTime
+$: timeLeft = getMsLeftForBetResult(onGoingSlot, startTime)
 </script>
 
 {#if bettingOpen}
