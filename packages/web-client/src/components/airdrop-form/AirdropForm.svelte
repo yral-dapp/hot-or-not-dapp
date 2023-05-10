@@ -10,7 +10,7 @@ import DotSeparator from '$components/layout/DotSeparator.svelte'
 import { fetchTokenBalance } from '$lib/helpers/profile'
 import { authState } from '$stores/auth'
 import { confetti } from '@neoconfetti/svelte'
-import { onMount } from 'svelte/internal'
+import OptionalInput from './OptionalInput.svelte'
 
 export let participated = false
 let wallet = {
@@ -50,7 +50,9 @@ $: $authState.isLoggedIn && refreshTokenBalance()
     <Coin3dIcon class="absolute -left-14 bottom-0 h-10 w-10 rotate-[15deg]" />
     <Coin3dIcon class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
     <span class="text-xl font-bold">Hot or Not's</span>
-    <span class="text-5xl font-bold text-primary">$ 250,000</span>
+    <span class="text-5xl font-bold text-primary">
+      $ 250,000 <sub class="align-super text-white">*</sub>
+    </span>
     <span class="text-xl font-bold">Airdrop is here</span>
   </div>
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
@@ -83,7 +85,7 @@ $: $authState.isLoggedIn && refreshTokenBalance()
             <span class="text-red-700">Error fetching balance.</span>
           </div>
         {:else if wallet.loading}
-          <span>Loading</span>
+          <pre class="text-xs">Loading ...</pre>
         {:else}
           <span>{wallet.balance} Coyns</span>
           <span class="text-xs text-white/70">
@@ -93,42 +95,52 @@ $: $authState.isLoggedIn && refreshTokenBalance()
         {/if}
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-md text-white">Email:</span>
+        <span class="text-sm text-white">
+          Email
+          <sub class="align-super text-primary">*</sub>
+        </span>
         <Input
           placeholder="Enter your email"
-          class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-md text-white">Tweet Link:</span>
+        <span class="text-sm text-white">
+          Tweet Link
+          <sub class="align-super text-primary">*</sub>
+        </span>
         <div class="flex items-start gap-1 text-white/70">
           <span class="shrink-0 pt-0.5">
-            <InfoIcon class="h-4 w-4" />
+            <InfoIcon class="h-3 w-3" />
           </span>
-          <span class="text-sm">
+          <span class="text-xs">
             You need to tweet with the hashtag #hotornot and paste your tweet's
             link
           </span>
         </div>
         <Input
           placeholder="Enter your tweet link"
-          class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-md text-white">Addtional Information:</span>
-        <div class="flex items-center gap-3">
-          <input
-            bind:checked
-            type="checkbox"
-            class="h-5 w-5 rounded border-gray-700 bg-transparent text-orange-500 focus:ring-2 focus:ring-orange-500" />
-          <label for="orange-checkbox" class="text-white">
-            I have NFTs in my Plug Wallet
-          </label>
-        </div>
-        {#if checked}
-          <Input
-            placeholder="Enter your SNS ID"
-            class="flex-1 rounded-md border-0 bg-white/10 p-2 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
-        {/if}
+        <span class="text-sm text-white">
+          Do you own any of the following assets? Please select any that apply:
+        </span>
+        <OptionalInput
+          checkboxLabel="SNS-1 Token"
+          inputLabel="Please submit your NNS principal ID"
+          inputPlaceholder="Enter Principal ID" />
+        <OptionalInput
+          checkboxLabel="Chat Token"
+          inputLabel="Please submit your NNS principal ID"
+          inputPlaceholder="Enter Principal ID" />
+        <OptionalInput
+          checkboxLabel="Hot or Not Funded NFT"
+          inputLabel="Please submit your Plug wallet principal ID"
+          inputPlaceholder="Enter Principal ID" />
+        <OptionalInput
+          checkboxLabel="Gob-Gob NFT"
+          inputLabel="Please submit your Plug wallet principal ID"
+          inputPlaceholder="Enter Principal ID" />
       </div>
       <div>
         <span class="text-xs text-white/70">
