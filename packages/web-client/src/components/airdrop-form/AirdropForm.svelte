@@ -11,6 +11,7 @@ import { fetchTokenBalance } from '$lib/helpers/profile'
 import { authState } from '$stores/auth'
 import { confetti } from '@neoconfetti/svelte'
 import OptionalInput from './OptionalInput.svelte'
+import AirdropCompleted from './AirdropCompleted.svelte'
 
 export let participated = false
 let wallet = {
@@ -40,23 +41,22 @@ $: $authState.isLoggedIn && refreshTokenBalance()
 </script>
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
-  {#if participated}
-    <div use:confetti class="absolute inset-0 h-1 w-1" />
-  {/if}
-  <div
-    class="relative mx-auto flex w-fit flex-col items-center gap-4 rounded-md bg-center">
-    <Coin3dIcon class="absolute -left-4 -top-4 h-5 w-5 rotate-[280deg]" />
-    <Coin3dIcon class="absolute -top-4 right-0 h-8 w-8 rotate-[15deg]" />
-    <Coin3dIcon class="absolute -left-10 bottom-0 h-10 w-10 rotate-[15deg]" />
-    <Coin3dIcon class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
-    <span class="text-xl font-bold">Hot or Not's</span>
-    <span class="text-5xl font-bold text-primary">
-      $ 250,000 <sub class="align-super text-white">*</sub>
-    </span>
-    <span class="text-xl font-bold">Airdrop is here</span>
-  </div>
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
     {#if !participated}
+      <div
+        class="relative mx-auto flex w-fit flex-col items-center gap-4 rounded-md bg-center">
+        <Coin3dIcon class="absolute -left-4 -top-4 h-5 w-5 rotate-[280deg]" />
+        <Coin3dIcon class="absolute -top-4 right-0 h-8 w-8 rotate-[15deg]" />
+        <Coin3dIcon
+          class="absolute -left-10 bottom-0 h-10 w-10 rotate-[15deg]" />
+        <Coin3dIcon
+          class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
+        <span class="text-xl font-bold">Hot or Not's</span>
+        <span class="text-5xl font-bold text-primary">
+          $ 250,000 <sub class="align-super text-white">*</sub>
+        </span>
+        <span class="text-xl font-bold">Airdrop is here</span>
+      </div>
       <div class="text-sm">
         <span>
           Join us at Hot or Not as we take over TikTok! Register for the
@@ -175,25 +175,8 @@ $: $authState.isLoggedIn && refreshTokenBalance()
         </a>
       </div>
     {:else}
-      <div class="text-2xl font-bold md:text-4xl">
-        🎉 You're on the waitlist!
-      </div>
-      <div class="flex items-center justify-between">
-        <div class="flex flex-col items-center gap-2 p-8 text-white">
-          <TrophyIcon class="h-8 w-8" />
-          <span class="text-sm">Position</span>
-          <span class="text-lg font-bold">#4</span>
-        </div>
-        <div class="flex flex-col items-center gap-2 p-8 text-white">
-          <CoinBagIcon class="h-8 w-8" />
-          <span class="text-sm">Points</span>
-          <span class="text-lg font-bold">30</span>
-        </div>
-        <div class="flex flex-col items-center gap-2 p-8 text-white">
-          <UsersIcon class="h-8 w-8" />
-          <span class="text-sm">Referrals</span>
-          <span class="text-lg font-bold">2</span>
-        </div>
+      <div class="-mt-40 flex h-full w-full flex-col">
+        <AirdropCompleted />
       </div>
     {/if}
   </div>
