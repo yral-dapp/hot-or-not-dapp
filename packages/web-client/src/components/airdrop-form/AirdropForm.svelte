@@ -85,6 +85,7 @@ async function saveFormData() {
     const res = uploadForm({
       principalId: $authState.idString,
       walletBalance: wallet.balance,
+      canisterId: $authState.userCanisterId,
       ...formData,
     })
     if (!res) throw 'Something went wrong'
