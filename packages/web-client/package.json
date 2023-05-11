@@ -33,7 +33,6 @@
     "@sentry/tracing": "7.51.0",
     "buffer": "6.0.3",
     "clsx": "1.2.1",
-    "firebase": "^9.21.0",
     "hls.js": "1.4.1",
     "idb": "7.1.1",
     "svelte-local-storage-store": "0.4.0",
