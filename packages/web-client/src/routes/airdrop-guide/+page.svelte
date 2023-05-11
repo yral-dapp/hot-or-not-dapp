@@ -5,8 +5,6 @@ import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
-
-let participated = false
 </script>
 
 <svelte:head>
