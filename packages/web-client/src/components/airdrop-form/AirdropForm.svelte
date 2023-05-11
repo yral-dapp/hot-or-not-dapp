@@ -6,7 +6,11 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
-import { isFormFilled, uploadForm } from '$lib/helpers/firebase'
+import {
+  isFormFilled,
+  uploadForm,
+  type AirdropFormData,
+} from '$lib/helpers/airdrop'
 import { fetchTokenBalance } from '$lib/helpers/profile'
 import { isPrincipal } from '$lib/utils/isPrincipal'
 import { authState } from '$stores/auth'
@@ -59,7 +63,10 @@ $: authorized && !participated && refreshTokenBalance()
 let formErrors: string[] = []
 let formLoading = false
 
-let formData = {
+let formData: Omit<
+  AirdropFormData,
+  'principalId' | 'walletBalance' | 'canisterId'
+> = {
   email: '',
   tweetLink: '',
   sns1Token: {
@@ -82,16 +89,19 @@ let formData = {
 
 async function saveFormData() {
   try {
-    const res = uploadForm({
-      principalId: $authState.idString,
+    formLoading = true
+    const res = await uploadForm({
+      principalId: $authState.idString || '',
       walletBalance: wallet.balance,
-      canisterId: $authState.userCanisterId,
+      canisterId: $authState.userCanisterId || '',
       ...formData,
     })
     if (!res) throw 'Something went wrong'
+    formLoading = false
     participated = true
   } catch (e) {
     console.error('Failed while saving data', e)
+    formLoading = false
     formErrors = ['Could not join waitlist. Please try again.']
   }
 }
