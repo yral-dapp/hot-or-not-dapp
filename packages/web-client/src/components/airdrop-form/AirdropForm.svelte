@@ -187,7 +187,7 @@ async function validateData() {
           class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
         <span class="text-xl font-bold">Hot or Not's</span>
         <span class="text-5xl font-bold text-primary">
-          $ 250,000 <sub class="align-super text-white">*</sub>
+          $ 300,000 <sub class="align-super text-white">*</sub>
         </span>
         <span class="text-xl font-bold">Airdrop is here</span>
       </div>
