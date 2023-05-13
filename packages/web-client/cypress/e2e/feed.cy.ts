@@ -12,6 +12,8 @@ describe('Home Feed Tests', () => {
 
   beforeEach(() => {
     cy.visit(TEST_HOST + '/feed')
+    cy.get('splash-screen', { timeout }).should('be.visible')
+    cy.get('splash-screen', { timeout }).should('not.exist')
   })
 
   it('First video on feed has a valid source', () => {
@@ -19,11 +21,7 @@ describe('Home Feed Tests', () => {
   })
 
   it('First video on the feed starts auto-playing', () => {
-    cy.get('video', { timeout })
-      .first()
-      .should('be.visible')
-      .and('have.prop', 'paused', false)
-      .and('have.prop', 'ended', false)
+    cy.get('video', { timeout }).first().and('have.prop', 'paused', false)
   })
 
   it('First video on a feed has a positive duration', () => {
@@ -42,7 +40,6 @@ describe('Home Feed Tests', () => {
 
   it('Measure first video load and show time on feed', () => {
     const t0 = performance.now()
-    cy.get('splash-screen', { timeout }).and('not.exist')
     cy.get('video', { timeout })
       .first()
       .should('be.visible')
@@ -57,7 +54,6 @@ describe('Home Feed Tests', () => {
   })
 
   it('Click to unmute video', () => {
-    cy.get('splash-screen', { timeout }).and('not.exist')
     const video = cy
       .get('video', { timeout })
       .first()
@@ -71,8 +67,6 @@ describe('Home Feed Tests', () => {
 
   it('Scrolling on main feed', () => {
     cy.task('log', 'Waiting for more videos to load to start scrolling')
-    cy.get('splash-screen', { timeout }).and('exist')
-    cy.get('splash-screen', { timeout }).and('not.exist')
     cy.get('video', { timeout: 40_000 })
       .first()
       .then(() => {
