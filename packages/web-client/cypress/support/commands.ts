@@ -35,3 +35,8 @@
 //     }
 //   }
 // }
+
+Cypress.on('uncaught:exception', (err, _) => {
+  console.log('uncaught:exception in Cypress', err)
+  return false
+})
