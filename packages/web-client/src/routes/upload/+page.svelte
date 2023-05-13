@@ -423,10 +423,10 @@ onDestroy(async () => {
     class="pointer-events-auto relative flex w-full items-start justify-end px-5"
     slot="top">
     {#if recording}
-      <div class="absolute top-4 left-4 right-4 h-2 rounded-full bg-white px-5">
+      <div class="absolute left-4 right-4 top-4 h-2 rounded-full bg-white px-5">
         <div
           style="width: {$recordingProgress}%"
-          class="absolute top-0 left-0 h-full max-w-full rounded-full bg-primary" />
+          class="absolute left-0 top-0 h-full max-w-full rounded-full bg-primary" />
       </div>
     {:else}
       <IconButton
@@ -560,13 +560,15 @@ onDestroy(async () => {
       ? 'opacity-0'
       : ''}"
     slot="bottom-navigation">
-    <button class="focus:outline-none" on:click={() => inputEl.click()}>
+    <button
+      class="pb-2 focus:outline-none active:border-b-4 active:border-primary active:pb-1"
+      on:click={() => inputEl.click()}>
       Gallery
     </button>
     <div class="relative">
-      <button class="focus:outline-none">Camera</button>
-      <div
-        class="absolute inset-x-0 -bottom-2 h-0.5 w-full rounded-full bg-primary" />
+      <button class="border-b-4 border-primary pb-1 focus:outline-none">
+        Camera
+      </button>
     </div>
   </div>
 </CameraLayout>

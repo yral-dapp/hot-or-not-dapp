@@ -18,11 +18,11 @@ import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { authState } from '$stores/auth'
 import { Principal } from '@dfinity/principal'
-import HotOrNotBetControls, {
-  type BetDirectionString,
-  type PlaceBet,
-} from './HotOrNotBetControls.svelte'
-import HotOrNotBetOutcome from './HotOrNotBetOutcome.svelte'
+import HotOrNotVoteControls, {
+  type VoteDirectionString,
+  type PlaceVote,
+} from './HotOrNotVoteControls.svelte'
+import HotOrNotVoteOutcome from './HotOrNotVoteOutcome.svelte'
 
 export let tutorialMode: {
   highlightCoin: boolean
@@ -43,17 +43,17 @@ export let me = false
 $: bettingStatus = post?.hot_or_not_betting_status?.[0]
 $: bettingStatusValue = Object.values(bettingStatus || {})?.[0]
 
-let betPlaced: false | BetDirectionString = false
-let loadingWithDirection: false | BetDirectionString = false
+let votePlaced: false | VoteDirectionString = false
+let loadingWithDirection: false | VoteDirectionString = false
 
 let error = ''
 let idb: IDB
 
 $: if (bettingStatusValue?.has_this_user_participated_in_this_post?.[0]) {
-  error = 'You have already placed a bet. Fetching your bet info...'
+  error = 'You have already placed a vote. Fetching your vote info...'
   updatePlacedBetDetail()
 } else if (!error && post && !bettingStatusValue && !placedBetDetail) {
-  error = 'Betting has been closed.'
+  error = 'Voting has been closed.'
 }
 
 $: if (placedBetDetail) {
@@ -102,12 +102,12 @@ async function updatePlacedBetDetail() {
     if (placedBetDetail) {
       setBetDetailToDb(post, placedBetDetail)
     } else {
-      throw 'No bet found'
+      throw 'No vote found'
     }
   } catch (e) {
     //TODO: Add retries
     Log({ error: e, source: '1 updatePlacedBetDetail' }, 'error')
-    error = 'Error fetching your bet details'
+    error = 'Error fetching your vote details'
   }
 }
 
@@ -120,7 +120,17 @@ async function getWalletBalance() {
   }
 }
 
-async function placeBet({ coins, direction }: PlaceBet) {
+async function increaseParticipants() {
+  if (
+    post?.hot_or_not_betting_status?.[0]?.['BettingOpen']
+      ?.number_of_participants !== undefined
+  ) {
+    post.hot_or_not_betting_status[0]['BettingOpen'].number_of_participants++
+    post = post
+  }
+}
+
+async function placeVote({ coins, direction }: PlaceVote) {
   try {
     if (loadingWithDirection) return
     if (!$authState.isLoggedIn) {
@@ -143,7 +153,7 @@ async function placeBet({ coins, direction }: PlaceBet) {
     })
 
     if ('Ok' in betRes) {
-      betPlaced = direction
+      votePlaced = direction
 
       placedBetDetail = {
         amount_bet: BigInt(coins),
@@ -172,19 +182,20 @@ async function placeBet({ coins, direction }: PlaceBet) {
         video_identifier_id: `${post.publisher_canister_id}@${post.id}`,
       })
       setBetDetailToDb(post, placedBetDetail)
+      increaseParticipants()
     } else {
       const err = Object.keys(betRes.Err)[0] as BetAPIErrors
       switch (err) {
         case 'BettingClosed':
           disabled = true
-          error = 'Betting has been closed'
+          error = 'Voting has been closed'
           break
         case 'InsufficientBalance':
           const balance = await getWalletBalance()
-          error = `You do not have enough tokens to bet. Your wallet balance is ${balance} tokens.`
+          error = `You do not have enough tokens to participate. Your wallet balance is ${balance} tokens.`
           break
         case 'UserAlreadyParticipatedInThisPost':
-          error = 'You have already bet on this post. Fetching details...'
+          error = 'You have already vote on this post. Fetching details...'
           updatePlacedBetDetail()
           break
         case 'UserNotLoggedIn':
@@ -196,9 +207,9 @@ async function placeBet({ coins, direction }: PlaceBet) {
       loadingWithDirection = false
     }
   } catch (e) {
-    Log({ error: e, postId: post?.id, from: 'placeBet 1' }, 'error')
+    Log({ error: e, postId: post?.id, from: 'placeVote 1' }, 'error')
     loadingWithDirection = false
-    error = 'Something went wrong while placing bet. Please try again'
+    error = 'Something went wrong while placing vote. Please try again'
     setTimeout(() => {
       error = ''
     }, 2000)
@@ -224,15 +235,15 @@ async function placeBet({ coins, direction }: PlaceBet) {
       </div>
     </div>
   {/if}
-  {#if betPlaced === false && !fetchPlacedBetDetail && !placedBetDetail}
-    <HotOrNotBetControls
-      on:placeBet={({ detail }) => placeBet(detail)}
+  {#if votePlaced === false && !fetchPlacedBetDetail && !placedBetDetail}
+    <HotOrNotVoteControls
+      on:placeVote={({ detail }) => placeVote(detail)}
       {tutorialMode}
       disabled={disabled || !!error}
-      {betPlaced}
+      {votePlaced}
       {loadingWithDirection} />
   {:else if placedBetDetail}
-    <HotOrNotBetOutcome
+    <HotOrNotVoteOutcome
       {me}
       {placedBetDetail}
       postCreatedAt={post?.created_at} />

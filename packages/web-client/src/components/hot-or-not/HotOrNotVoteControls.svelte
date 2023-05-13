@@ -2,17 +2,17 @@
 import type { BetDirection } from '$canisters/individual_user_template/individual_user_template.did'
 
 type UnionKeyOf<U> = U extends U ? keyof U : never
-export type BetDirectionString = UnionKeyOf<BetDirection>
+export type VoteDirectionString = UnionKeyOf<BetDirection>
 
-export type PlaceBet = {
+export type PlaceVote = {
   coins: number
-  direction: BetDirectionString
+  direction: VoteDirectionString
 }
 </script>
 
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import BetCoinIcon from '$components/icons/BetCoinIcon.svelte'
+import VoteCoinIcon from '$components/icons/VoteCoinIcon.svelte'
 import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
 import HotIcon from '$components/icons/HotIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
@@ -29,34 +29,34 @@ export let tutorialMode: {
   highlightCoin: false,
   highlightSelectors: false,
 }
-export let loadingWithDirection: false | BetDirectionString = false
+export let loadingWithDirection: false | VoteDirectionString = false
 export let disabled = false
 export let error = ''
-export let betPlaced: false | BetDirectionString = false
+export let votePlaced: false | VoteDirectionString = false
 
 $: _tutorialMode = tutorialMode.highlightCoin || tutorialMode.highlightSelectors
 
 const dispatch = createEventDispatcher<{
-  placeBet: PlaceBet
+  placeVote: PlaceVote
 }>()
 
-function increaseBet() {
+function increaseCoins() {
   if ($playerState.selectedCoins == 10) $playerState.selectedCoins = 50
   else if ($playerState.selectedCoins == 50) $playerState.selectedCoins = 100
 }
 
-function decreaseBet() {
+function decreaseCoins() {
   if ($playerState.selectedCoins == 50) $playerState.selectedCoins = 10
   else if ($playerState.selectedCoins == 100) $playerState.selectedCoins = 50
 }
 
-function toggleBet() {
+function toggleVote() {
   if ($playerState.selectedCoins == 100) $playerState.selectedCoins = 10
-  else increaseBet()
+  else increaseCoins()
 }
 
-function placeBet(direction: 'Hot' | 'Not') {
-  dispatch('placeBet', {
+function placeVote(direction: 'Hot' | 'Not') {
+  dispatch('placeVote', {
     direction,
     coins: $playerState.selectedCoins,
   })
@@ -64,7 +64,7 @@ function placeBet(direction: 'Hot' | 'Not') {
 </script>
 
 <div
-  class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-8 px-4"
+  class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-12 px-4"
   transition:fade|local>
   <div
     class={c(
@@ -78,7 +78,7 @@ function placeBet(direction: 'Hot' | 'Not') {
       disabled={disabled || tutorialMode.highlightCoin}
       on:click={(e) => {
         e.stopImmediatePropagation()
-        placeBet('Not')
+        placeVote('Not')
       }}>
       <NotIcon
         class={c('h-24 transition-transform', {
@@ -97,10 +97,10 @@ function placeBet(direction: 'Hot' | 'Not') {
       disabled={$playerState.selectedCoins == 100 || disabled || _tutorialMode}
       on:click={(e) => {
         e.stopImmediatePropagation()
-        increaseBet()
+        increaseCoins()
       }}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-        invisible: betPlaced || loadingWithDirection,
+        invisible: votePlaced || loadingWithDirection,
       })}>
       <ChevronUpIcon class="h-2" />
     </IconButton>
@@ -108,15 +108,15 @@ function placeBet(direction: 'Hot' | 'Not') {
       <div class="absolute top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
     <button
-      disabled={betPlaced !== false ||
+      disabled={votePlaced !== false ||
         loadingWithDirection !== false ||
         disabled}
-      on:click|stopPropagation={toggleBet}
+      on:click|stopPropagation={toggleVote}
       class={c('relative h-20 w-20 select-none', {
         grayscale:
-          tutorialMode.highlightSelectors || betPlaced !== false || disabled,
+          tutorialMode.highlightSelectors || votePlaced !== false || disabled,
       })}>
-      <BetCoinIcon class="h-20" />
+      <VoteCoinIcon class="h-20" />
       <div
         class="absolute inset-0 flex select-none items-center justify-center">
         {#if loadingWithDirection}
@@ -133,11 +133,11 @@ function placeBet(direction: 'Hot' | 'Not') {
     <IconButton
       on:click={(e) => {
         e.stopImmediatePropagation()
-        decreaseBet()
+        decreaseCoins()
       }}
       disabled={$playerState.selectedCoins == 10 || disabled || _tutorialMode}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
-        invisible: betPlaced || loadingWithDirection,
+        invisible: votePlaced || loadingWithDirection,
       })}>
       <ChevronUpIcon class="h-2 rotate-180" />
     </IconButton>
@@ -155,7 +155,7 @@ function placeBet(direction: 'Hot' | 'Not') {
       disabled={disabled || tutorialMode.highlightCoin}
       on:click={(e) => {
         e.stopImmediatePropagation()
-        placeBet('Hot')
+        placeVote('Hot')
       }}>
       <HotIcon
         class={c('h-24 transition-transform', {

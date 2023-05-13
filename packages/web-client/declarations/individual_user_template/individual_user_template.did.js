@@ -191,7 +191,6 @@ export const idlFactory = ({ IDL }) => {
     'principal_id' : IDL.Principal,
   });
   const UserProfileGlobalStats = IDL.Record({
-    'lifetime_earnings' : IDL.Nat64,
     'hot_bets_received' : IDL.Nat64,
     'not_bets_received' : IDL.Nat64,
   });

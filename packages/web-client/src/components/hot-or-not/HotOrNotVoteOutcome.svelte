@@ -19,7 +19,7 @@ import type {
   PlacedBetDetail,
   SystemTime,
 } from '$canisters/individual_user_template/individual_user_template.did'
-import BetCoinIcon from '$components/icons/BetCoinIcon.svelte'
+import VoteCoinIcon from '$components/icons/VoteCoinIcon.svelte'
 import HotIcon from '$components/icons/HotIcon.svelte'
 import NotIcon from '$components/icons/NotIcon.svelte'
 import { fade } from 'svelte/transition'
@@ -66,7 +66,7 @@ $: if (placedBetDetail) {
       {/if}
     </div>
     <div class="relative z-[1] h-16 w-16 shrink-0">
-      <BetCoinIcon class="h-16" />
+      <VoteCoinIcon class="h-16" />
       <span
         style="text-shadow: 3px 3px 0 #EA9C00;"
         class="absolute inset-0 flex select-none items-center justify-center text-2xl font-extrabold text-[#ffeea8]">

@@ -60,22 +60,25 @@ $: $authState.isLoggedIn && loadTransactions()
   <div slot="top-center" class="text-lg font-bold">Notifications</div>
 
   <div class="hide-scrollbar h-full w-full overflow-y-auto" slot="content">
-    <div class="mx-auto flex max-w-5xl flex-col space-y-4 p-3 md:p-8">
+    <div class="mx-auto flex h-full max-w-5xl flex-col space-y-4 p-3 md:p-8">
       {#if !$authState.isLoggedIn}
-        <div class="text-center text-sm opacity-70">
-          Please login to view your notifications
+        <div class="flex h-full w-full flex-col items-center justify-center">
+          <div class="text-center text-sm opacity-70">
+            Please login to view your notifications
+          </div>
+          <LoginButton />
         </div>
-        <LoginButton />
       {:else}
         {#if transactions.length}
           {#each transactions as item}
             <NotificationItem {item} />
           {/each}
         {:else if !loading}
-          <div class="flex h-full w-full grow items-center justify-center">
+          <div
+            class="flex h-full w-full grow flex-col items-center justify-center gap-4">
             <NoTransactionsIcon class="w-full max-w-sm px-10" />
+            <div class="pt-4 text-center opacity-70">No notifications yet</div>
           </div>
-          <div class="pt-4 text-center opacity-70">No notifications yet</div>
         {/if}
 
         {#if loading}
@@ -84,7 +87,7 @@ $: $authState.isLoggedIn && loadTransactions()
             <span>Loading</span>
           </div>
         {/if}
-        {#if noMoreTransactions}
+        {#if noMoreTransactions && transactions.length}
           <div class="flex w-full items-center justify-center space-x-2 py-8">
             <span class="text-white/50">End of list</span>
           </div>

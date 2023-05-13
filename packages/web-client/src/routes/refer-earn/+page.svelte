@@ -54,7 +54,10 @@ async function loadTransactions() {
 
 async function shareLink() {
   try {
-    await navigator.share?.({
+    if (!navigator.share) {
+      throw 'Share not supported'
+    }
+    await navigator.share({
       url: link,
     })
   } catch (e) {
