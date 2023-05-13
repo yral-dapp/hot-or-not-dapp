@@ -82,7 +82,7 @@ describe('Home Feed Tests', () => {
         cy.get('video[data-index=0]', { timeout }).should('be.visible').click()
 
         cy.wrap(Array(SCROLL_COUNT))
-          .each((_, index) => {
+          .each((el, index) => {
             cy.log('Checking video with index:', index)
 
             const video = cy.get(`video[data-index=${index}]`, { timeout })
