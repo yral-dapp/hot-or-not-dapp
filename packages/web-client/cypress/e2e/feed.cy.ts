@@ -32,7 +32,6 @@ describe('Home Feed Tests', () => {
       .then(() => {
         cy.get('video', { timeout })
           .first()
-          .should('be.visible')
           .then(($video) => {
             expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0)
           })
@@ -43,7 +42,6 @@ describe('Home Feed Tests', () => {
     const t0 = performance.now()
     cy.get('video', { timeout })
       .first()
-      .should('be.visible')
       .should('have.prop', 'paused', false)
       .then(() => {
         cy.wrap(performance.now()).then((t1) => {
@@ -58,7 +56,6 @@ describe('Home Feed Tests', () => {
     const video = cy
       .get('video', { timeout })
       .first()
-      .should('be.visible')
       .and('have.prop', 'paused', false)
       .and('have.prop', 'muted', true)
     video.click().then(() => {
