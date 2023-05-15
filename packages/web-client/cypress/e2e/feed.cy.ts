@@ -14,6 +14,7 @@ describe('Home Feed Tests', () => {
     cy.visit(TEST_HOST + '/feed')
     cy.get('splash-screen', { timeout }).should('be.visible')
     cy.get('splash-screen', { timeout }).should('not.exist')
+    cy.wait(500)
   })
 
   it('First video on feed has a valid source', () => {
