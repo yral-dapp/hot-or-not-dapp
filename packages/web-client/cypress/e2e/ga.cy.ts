@@ -1,6 +1,5 @@
 describe('Google analytics tests', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
-  const IC0_HOST = 'https://ic0.app'
 
   Cypress.on('window:before:load', (win) => {
     //@ts-ignore
@@ -8,7 +7,7 @@ describe('Google analytics tests', () => {
   })
 
   before(() => {
-    cy.log('Running tests on host:', TEST_HOST, 'with ic0 host:', IC0_HOST)
+    cy.log('Running tests on host:', TEST_HOST)
     cy.log('env', JSON.stringify(Cypress.env()))
   })
 

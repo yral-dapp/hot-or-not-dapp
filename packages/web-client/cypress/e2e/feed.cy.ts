@@ -1,20 +1,16 @@
 describe('Home Feed Tests', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
-  const IC0_HOST = 'https://ic0.app'
   const timeout = 20_000
 
   before(() => {
-    cy.task(
-      'log',
-      'Running tests on host: ' + TEST_HOST + ' with ic0 host: ' + IC0_HOST,
-    )
+    cy.task('log', 'Running tests on host: ' + TEST_HOST)
   })
 
   beforeEach(() => {
     cy.visit(TEST_HOST + '/feed')
     cy.get('splash-screen', { timeout }).should('be.visible')
     cy.get('splash-screen', { timeout }).should('not.exist')
-    cy.wait(500)
+    cy.wait(2000)
   })
 
   it('First video on feed has a valid source', () => {
@@ -38,6 +34,17 @@ describe('Home Feed Tests', () => {
       })
   })
 
+  it('Click to unmute video', () => {
+    const video = cy
+      .get('video', { timeout })
+      .first()
+      .and('have.prop', 'paused', false)
+      .and('have.prop', 'muted', true)
+    video.click().then(() => {
+      video.should('have.prop', 'muted', false)
+    })
+  })
+
   it('Measure first video load and show time on feed', () => {
     const t0 = performance.now()
     cy.get('video', { timeout })
@@ -50,17 +57,6 @@ describe('Home Feed Tests', () => {
           )
         })
       })
-  })
-
-  it('Click to unmute video', () => {
-    const video = cy
-      .get('video', { timeout })
-      .first()
-      .and('have.prop', 'paused', false)
-      .and('have.prop', 'muted', true)
-    video.click().then(() => {
-      video.should('have.prop', 'muted', false)
-    })
   })
 
   it('Scrolling on main feed', () => {

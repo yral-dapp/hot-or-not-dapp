@@ -1,13 +1,9 @@
 describe('Navigation test', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
-  const IC0_HOST = 'https://ic0.app'
   const timeout = 20_000
 
   before(() => {
-    cy.task(
-      'log',
-      'Running tests on host: ' + TEST_HOST + ' with ic0 host: ' + IC0_HOST,
-    )
+    cy.task('log', 'Running tests on host: ' + TEST_HOST)
   })
 
   beforeEach(() => {
