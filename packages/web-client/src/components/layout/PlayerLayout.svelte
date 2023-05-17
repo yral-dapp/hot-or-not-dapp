@@ -175,7 +175,7 @@ async function updateStats() {
       post.publisher_canister_id,
     ).update_post_add_view_details(post.id, payload)
   } catch (e) {
-    Log({ from: '1 updateStats', id: post.id, payload }, 'error')
+    Log({ from: '1 updateStats', i: index, payload, e }, 'error')
   }
 }
 
