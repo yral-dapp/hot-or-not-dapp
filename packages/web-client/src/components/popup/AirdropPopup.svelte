@@ -8,7 +8,7 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import { isFormFilled } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
-import { showAirdropPopup, splashScreenPopup } from '$stores/popups'
+import { showAirdropPopup } from '$stores/popups'
 import AirdropCountdown from './AirdropCountdown.svelte'
 
 let loading = true
@@ -32,7 +32,7 @@ $: if (!$loadingAuthStatus) {
 }
 </script>
 
-{#if $showAirdropPopup && !$splashScreenPopup.show}
+{#if $showAirdropPopup}
   <airdrop
     class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
     <div
