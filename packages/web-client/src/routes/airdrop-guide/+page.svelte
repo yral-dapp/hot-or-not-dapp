@@ -4,6 +4,7 @@ import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
+import AirdropPopupOnlyCountdown from '$components/popup/AirdropPopupOnlyCountdown.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
 import { showAirdropPopup } from '$stores/popups'
@@ -12,6 +13,8 @@ import { showAirdropPopup } from '$stores/popups'
 <svelte:head>
   <title>Airdrop Guide | Hot or Not</title>
 </svelte:head>
+
+<AirdropPopupOnlyCountdown />
 
 <HomeLayout>
   <svelte:fragment slot="top">
@@ -216,7 +219,7 @@ import { showAirdropPopup } from '$stores/popups'
       <Button
         on:click={() => ($showAirdropPopup = true)}
         class="w-full max-w-md !py-3">
-        Register now
+        Notify me
       </Button>
     </div>
   </svelte:fragment>
