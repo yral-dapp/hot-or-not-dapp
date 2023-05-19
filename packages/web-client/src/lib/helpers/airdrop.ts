@@ -73,7 +73,7 @@ export async function isInWaitlist(principalId: string): Promise<boolean> {
     if (principalId === '2vxsx-fae') return false
 
     const res = await fetch(
-      `https://entryexists-5nps3y6y6a-uc.a.run.app/?principalId=${principalId}`,
+      `https://isinwaitlist-5nps3y6y6a-uc.a.run.app?principalId=${principalId}`,
       {
         mode: 'cors',
       },
@@ -96,14 +96,21 @@ export async function registerForWaitlist(
   try {
     if (principalId === '2vxsx-fae') return true
 
-    const res = await fetch('https://submitentry-5nps3y6y6a-uc.a.run.app', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      'https://registerforwaitlist-5nps3y6y6a-uc.a.run.app',
+      {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          principalId,
+          email,
+          uid: x(principalId + email),
+        }),
       },
-      body: JSON.stringify({ principalId, email, uid: x(principalId + email) }),
-    })
+    )
 
     const body = await res.json()
 
