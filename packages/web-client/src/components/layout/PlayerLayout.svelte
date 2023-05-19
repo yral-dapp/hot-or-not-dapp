@@ -2,6 +2,7 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
+import AirdropIcon from '$components/icons/AirdropIcon.svelte'
 import EyeIcon from '$components/icons/EyeIcon.svelte'
 import FireIcon from '$components/icons/FireIcon.svelte'
 import FlagIcon from '$components/icons/FlagIcon.svelte'
@@ -19,6 +20,7 @@ import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
+import { showAirdropPopup } from '$stores/popups'
 import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
 
@@ -32,6 +34,7 @@ export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let unavailable = false
+export let showAirdropButton = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
 
@@ -246,6 +249,17 @@ $: avatarUrl =
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
+        {#if showAirdropButton}
+          <IconButton
+            class="transition-transform active:scale-90"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              $showAirdropPopup = true
+            }}
+            ariaLabel="Join airdrop">
+            <AirdropIcon class="animate-wobble h-16 drop-shadow-md" />
+          </IconButton>
+        {/if}
         {#if showReportButton}
           <IconButton
             ariaLabel="Report this post"
@@ -280,7 +294,7 @@ $: avatarUrl =
           </div>
         {/if}
         {#if showWalletLink}
-          <IconButton class="pr-2" ariaLabel="Wallet" href="/wallet">
+          <IconButton ariaLabel="Wallet" href="/wallet">
             <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
           </IconButton>
         {/if}
@@ -313,3 +327,27 @@ $: avatarUrl =
     {/if}
   </div>
 </player-layout>
+
+<style>
+:global(.animate-wobble) {
+  animation: 6s ease 1s wobble infinite;
+}
+@keyframes wobble {
+  30% {
+    transform: scale(1.2);
+  }
+  40%,
+  60% {
+    transform: rotate(-10deg) scale(1.2);
+  }
+  50% {
+    transform: rotate(10deg) scale(1.2);
+  }
+  70% {
+    transform: rotate(0deg) scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>

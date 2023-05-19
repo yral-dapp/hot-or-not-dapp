@@ -28,6 +28,7 @@
     "@dfinity/identity": "0.15.6",
     "@dfinity/identity-secp256k1": "0.15.6",
     "@dfinity/principal": "0.15.6",
+    "@neoconfetti/svelte": "^1.0.0",
     "@sentry/svelte": "7.51.0",
     "@sentry/tracing": "7.51.0",
     "buffer": "6.0.3",

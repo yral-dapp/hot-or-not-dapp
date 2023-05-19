@@ -20,11 +20,11 @@ function getNotificationMessage(item: NotificationHistory) {
     case 'WinningsEarnedFromBet': {
       switch (item.eventOutcome) {
         case 'Draw':
-          return 'The Result was a draw on a video you vote'
+          return 'The Result was a draw on a video you voted on'
         case 'Lost':
-          return `You lost on a video you vote`
+          return `You lost on a video you voted on`
         case 'Won':
-          return `Congratulations! You won ${item.token} tokens on a video you vote.`
+          return `Congratulations! You won ${item.token} tokens on a video you voted on.`
       }
     }
   }
