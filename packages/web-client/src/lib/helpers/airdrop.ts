@@ -70,8 +70,6 @@ export async function isFormFilled(principalId: string): Promise<boolean> {
 
 export async function isInWaitlist(principalId: string): Promise<boolean> {
   try {
-    if (principalId === '2vxsx-fae') return false
-
     const res = await fetch(
       `https://isinwaitlist-5nps3y6y6a-uc.a.run.app?principalId=${principalId}`,
       {
@@ -94,8 +92,6 @@ export async function registerForWaitlist(
   email: string,
 ): Promise<boolean> {
   try {
-    if (principalId === '2vxsx-fae') return true
-
     const res = await fetch(
       'https://registerforwaitlist-5nps3y6y6a-uc.a.run.app',
       {
