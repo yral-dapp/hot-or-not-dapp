@@ -3,6 +3,7 @@ import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import AirdropGraphic from '$components/icons/AirdropGraphic.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
+import LoginButton from '$components/login/LoginButton.svelte'
 import { isInWaitlist, registerForWaitlist } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
@@ -79,27 +80,31 @@ $: if (!$loadingAuthStatus) {
             <AirdropCountdown />
           </div>
 
-          <form
-            bind:this={htmlFormEl}
-            on:submit={submitEmail}
-            class="flex w-full items-center gap-1 rounded-sm bg-[#202125]
-            {loadingEmail ? 'pointer-events-none opacity-50' : ''}">
-            <input
-              bind:value={email}
-              required
-              placeholder="Email me when it releases"
-              type="email"
-              class="w-full appearance-none border-0 bg-transparent p-3 pr-0 text-xs text-white placeholder:text-white/30 focus:ring-transparent" />
-            <button
-              disabled={loadingEmail}
-              type="submit"
-              class="h-full shrink-0 rounded-r-sm bg-primary px-3 text-xs text-white">
-              Submit
-            </button>
-            {#if error}
-              <div class="text-xs text-red-500">{error}</div>
-            {/if}
-          </form>
+          {#if $authState.isLoggedIn}
+            <form
+              bind:this={htmlFormEl}
+              on:submit={submitEmail}
+              class="flex w-full items-center gap-1 rounded-sm bg-[#202125]
+          {loadingEmail ? 'pointer-events-none opacity-50' : ''}">
+              <input
+                bind:value={email}
+                required
+                placeholder="Email me when it releases"
+                type="email"
+                class="w-full appearance-none border-0 bg-transparent p-3 pr-0 text-xs text-white placeholder:text-white/30 focus:ring-transparent" />
+              <button
+                disabled={loadingEmail}
+                type="submit"
+                class="h-full shrink-0 rounded-r-sm bg-primary px-3 text-xs text-white">
+                Submit
+              </button>
+              {#if error}
+                <div class="text-xs text-red-500">{error}</div>
+              {/if}
+            </form>
+          {:else}
+            <LoginButton />
+          {/if}
 
           <a
             on:click={() => ($showAirdropPopup = false)}
