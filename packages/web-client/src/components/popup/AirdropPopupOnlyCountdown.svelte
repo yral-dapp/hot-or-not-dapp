@@ -3,6 +3,7 @@ import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import AirdropGraphic from '$components/icons/AirdropGraphic.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
+import { registerForWaitlist } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
 import { showAirdropPopup } from '$stores/popups'
@@ -21,7 +22,10 @@ async function submitEmail() {
   loadingEmail = true
   try {
     if (htmlFormEl.checkValidity()) {
-      // participated = await registerForWaitlist($authState.idString, email)
+      // participated = await registerForWaitlist($authState.idString || '', email)
+      if (!participated) {
+        throw 'Could not send request'
+      }
     }
   } catch (e) {
     email = ''
