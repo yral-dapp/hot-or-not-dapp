@@ -67,3 +67,24 @@ export async function isFormFilled(principalId: string): Promise<boolean> {
     return false
   }
 }
+
+export async function isInWaitlist(principalId: string): Promise<boolean> {
+  try {
+    if (principalId === '2vxsx-fae') return false
+
+    const res = await fetch(
+      `https://entryexists-5nps3y6y6a-uc.a.run.app/?principalId=${principalId}`,
+      {
+        mode: 'cors',
+      },
+    )
+
+    const body = await res.json()
+
+    if (body.success && body.exists) return true
+    return false
+  } catch (e) {
+    console.error('Error adding document: ', e)
+    return false
+  }
+}
