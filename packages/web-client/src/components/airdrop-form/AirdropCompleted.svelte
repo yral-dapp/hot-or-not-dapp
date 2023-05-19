@@ -19,8 +19,7 @@ export let adjustTopMargin = false
     Congratulations
   </div>
   <div class="md:text-md py-4 text-center text-sm">
-    Your Profile has been registered for the airdrop. You can claim your airdrop
-    on 10 June, 2023 12PM UTC.
+    We have registered your interest. Airdrop will be live on 23 May
   </div>
   <a
     on:click

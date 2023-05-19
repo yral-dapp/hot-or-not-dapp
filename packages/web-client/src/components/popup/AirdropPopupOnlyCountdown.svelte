@@ -36,7 +36,7 @@ async function submitEmail() {
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    // participated = await isInWaitlist($authState.idString)
+    participated = await isInWaitlist($authState.idString)
     $showAirdropPopup = !participated
   }
   loading = false
