@@ -39,7 +39,7 @@
     "prettier-plugin-tailwindcss": "0.3.0"
   },
   "dependencies": {
-    "date-fns": "^2.29.3"
+    "date-fns": "^2.30.0"
   },
   "private": true
 }
