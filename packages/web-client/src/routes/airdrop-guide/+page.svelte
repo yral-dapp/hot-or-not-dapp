@@ -14,7 +14,7 @@ import { showAirdropPopup } from '$stores/popups'
   <title>Airdrop Guide | Hot or Not</title>
 </svelte:head>
 
-<AirdropPopupOnlyCountdown />
+<AirdropPopupOnlyCountdown preventAutoPopup />
 
 <HomeLayout>
   <svelte:fragment slot="top">

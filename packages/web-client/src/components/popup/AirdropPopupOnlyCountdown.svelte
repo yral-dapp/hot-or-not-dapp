@@ -9,6 +9,8 @@ import { loadingAuthStatus } from '$stores/loading'
 import { showAirdropPopup } from '$stores/popups'
 import AirdropCountdown from './AirdropCountdown.svelte'
 
+export let preventAutoPopup = false
+
 let loading = true
 let participated = false
 
@@ -47,7 +49,9 @@ $: if (!$loadingAuthStatus) {
     checkIfCompleted()
   } else {
     loading = false
-    $showAirdropPopup = true
+    if (!preventAutoPopup) {
+      $showAirdropPopup = true
+    }
   }
 }
 </script>
@@ -92,6 +96,9 @@ $: if (!$loadingAuthStatus) {
               class="h-full shrink-0 rounded-r-sm bg-primary px-3 text-xs text-white">
               Submit
             </button>
+            {#if error}
+              <div class="text-xs text-red-500">{error}</div>
+            {/if}
           </form>
 
           <a
