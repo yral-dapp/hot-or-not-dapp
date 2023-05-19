@@ -15,12 +15,12 @@ let loadingEmail = false
 let error = ''
 let email = ''
 
-let htmlInputEl: HTMLInputElement
+let htmlFormEl: HTMLFormElement
 
 async function submitEmail() {
   loadingEmail = true
   try {
-    if (htmlInputEl.checkValidity()) {
+    if (htmlFormEl.checkValidity()) {
       // participated = await registerForWaitlist($authState.idString, email)
     }
   } catch (e) {
@@ -72,12 +72,12 @@ $: if (!$loadingAuthStatus) {
             <AirdropCountdown />
           </div>
 
-          <div
-            class="flex w-full items-center gap-1 rounded-sm bg-[#202125] {loadingEmail
-              ? 'pointer-events-none opacity-50'
-              : ''}">
+          <form
+            bind:this={htmlFormEl}
+            on:submit={submitEmail}
+            class="flex w-full items-center gap-1 rounded-sm bg-[#202125]
+            {loadingEmail ? 'pointer-events-none opacity-50' : ''}">
             <input
-              bind:this={htmlInputEl}
               bind:value={email}
               required
               placeholder="Email me when it releases"
@@ -85,11 +85,11 @@ $: if (!$loadingAuthStatus) {
               class="w-full appearance-none border-0 bg-transparent p-3 pr-0 text-xs text-white placeholder:text-white/30 focus:ring-transparent" />
             <button
               disabled={loadingEmail}
-              on:click={submitEmail}
+              type="submit"
               class="h-full shrink-0 rounded-r-sm bg-primary px-3 text-xs text-white">
               Submit
             </button>
-          </div>
+          </form>
 
           <a
             href="/airdrop-guide"
