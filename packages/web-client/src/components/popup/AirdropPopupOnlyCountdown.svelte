@@ -26,6 +26,7 @@ async function submitEmail() {
   try {
     if (htmlFormEl.checkValidity()) {
       participated = await registerForWaitlist($authState.idString || '', email)
+      $shownAirdropPopup = true
       if (!participated) {
         throw 'Could not send request'
       }
@@ -41,6 +42,7 @@ async function checkIfCompleted() {
   if ($authState.idString) {
     participated = await isInWaitlist($authState.idString)
     $showAirdropPopup = !participated
+    $shownAirdropPopup = participated
   }
   loading = false
 }
