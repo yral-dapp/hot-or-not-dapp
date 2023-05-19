@@ -12,31 +12,31 @@ $: countdownOver =
 </script>
 
 {#if !countdownOver}
-  <div class="flex items-center gap-4">
+  <div class="flex select-none items-center divide-x-[1px] divide-primary">
     <div class="flex flex-col items-center gap-1">
       <div
-        class="flex h-12 w-12 items-center justify-center rounded-md border-[1px] border-white text-2xl font-bold text-primary">
+        class="flex w-20 items-center justify-center rounded-md text-3xl font-bold text-white">
         {$time.days.toString().padStart(2, '0')}
       </div>
       <span class="text-xs">Days</span>
     </div>
     <div class="flex flex-col items-center gap-1">
       <div
-        class="flex h-12 w-12 items-center justify-center rounded-md border-[1px] border-white text-2xl font-bold text-primary">
+        class="flex w-20 items-center justify-center rounded-md text-3xl font-bold text-white">
         {$time.hours.toString().padStart(2, '0')}
       </div>
       <span class="text-xs">Hours</span>
     </div>
     <div class="flex flex-col items-center gap-1">
       <div
-        class="flex h-12 w-12 items-center justify-center rounded-md border-[1px] border-white text-2xl font-bold text-primary">
+        class="flex w-20 items-center justify-center rounded-md text-3xl font-bold text-white">
         {$time.minutes.toString().padStart(2, '0')}
       </div>
       <span class="text-xs">Minutes</span>
     </div>
     <div class="flex flex-col items-center gap-1">
       <div
-        class="flex h-12 w-12 items-center justify-center rounded-md border-[1px] border-white text-2xl font-bold text-primary">
+        class="flex w-20 items-center justify-center rounded-md text-3xl font-bold text-white">
         {$time.seconds.toString().padStart(2, '0')}
       </div>
       <span class="text-xs">Seconds</span>
