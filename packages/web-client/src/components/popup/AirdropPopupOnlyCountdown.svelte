@@ -95,6 +95,7 @@ $: if (!$loadingAuthStatus) {
           </form>
 
           <a
+            on:click={() => ($showAirdropPopup = false)}
             href="/airdrop-guide"
             class="mt-2 text-xs font-thin text-white/70 underline">
             Learn more about the airdrop here
