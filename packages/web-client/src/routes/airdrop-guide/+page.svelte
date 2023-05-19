@@ -1,10 +1,12 @@
 <script lang="ts">
+import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
+import { showAirdropPopup } from '$stores/popups'
 </script>
 
 <svelte:head>
@@ -58,19 +60,31 @@ import { navigateBack } from '$stores/navigation'
           To recognize the support of its users and early adopters, Hot or Not
           is airdropping 10 million HOT tokens (1% of the initial token supply)
           for free. This presents a unique opportunity for users to join the
-          growing community and receive free tokens. It's important to note that
-          HOT tokens are governance tokens on the platform, while COYN is the
-          in-app utility token. COYN is not listed, while HOT tokens will be
-          listed once the sale is completed.
+          growing community and receive free tokens.
+        </p>
+        <p>
+          It's important to note that HOT tokens are governance tokens on the
+          platform, while COYN is the in-app utility token. COYN is not listed,
+          while HOT tokens will be listed once the sale is completed. Are you
+          interested in participating in the upcoming HOT token airdrop? Look no
+          further -- We've compiled all the information you need to know to
+          register and be eligible for the airdrop.
         </p>
         <p>
           Are you interested in participating in the upcoming HOT token airdrop?
           Look no further -- We've compiled all the information you need to know
           to register and be eligible for the airdrop.
         </p>
+
         <h4>Registration and Eligibility</h4>
-        <p>To be eligible for the airdrop, you must register here:</p>
-        <a href="/airdrop" class="py-2 text-primary underline">Register Now</a>
+
+        <p>
+          You must register to participate in the airdrop. Just click the
+          "Notify Me" button at the bottom of this page, and we'll let you know
+          when the airdrop form is live. Take a look at the registration steps
+          below and get ready:
+        </p>
+
         <p>Registration process:</p>
 
         <li>Login through Google or Internet Identity</li>
@@ -79,7 +93,7 @@ import { navigateBack } from '$stores/navigation'
           <div class="pl-4 pt-1">
             <li>Principal ID (HotOrNot)</li>
             <li>
-              Current wallet balance (final balance on 10th June, 2023 12PM UTC
+              Current wallet balance (final balance on 22nd June, 2023 12PM UTC
               will be considered for airdrop allotment)
             </li>
           </div>
@@ -196,6 +210,14 @@ import { navigateBack } from '$stores/navigation'
           </span>
         </div>
       </div>
+    </div>
+    <div
+      class="fixed bottom-0 flex w-full items-center justify-center bg-gradient-to-t from-black to-transparent px-8 py-2">
+      <Button
+        on:click={() => ($showAirdropPopup = true)}
+        class="w-full max-w-md !py-3">
+        Register now
+      </Button>
     </div>
   </svelte:fragment>
 </HomeLayout>
