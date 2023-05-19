@@ -36,7 +36,7 @@ async function submitEmail() {
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isInWaitlist($authState.idString)
+    // participated = await isInWaitlist($authState.idString)
     $showAirdropPopup = !participated
   }
   loading = false
@@ -68,10 +68,9 @@ $: if (!$loadingAuthStatus) {
         <div class="flex w-full max-w-md flex-col items-center gap-2 px-16">
           <div class="font-bold text-primary">Coming Soon</div>
           <div
-            class="outlined whitespace-nowrap text-4xl font-bold uppercase text-transparent">
-            Hot Token
+            class="text-center text-4xl font-bold uppercase text-white md:whitespace-nowrap">
+            hot token airdrop
           </div>
-          <div class="text-4xl font-bold uppercase text-white">Airdrop</div>
           <div class="py-2 md:py-4">
             <AirdropCountdown />
           </div>
@@ -112,12 +111,3 @@ $: if (!$loadingAuthStatus) {
     </div>
   </airdrop>
 {/if}
-
-<style>
-.outlined {
-  -webkit-text-stroke: 1px white;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
-</style>
