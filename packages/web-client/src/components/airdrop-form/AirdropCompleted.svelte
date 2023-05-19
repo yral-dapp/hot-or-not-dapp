@@ -3,6 +3,7 @@ import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.s
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
+import AirdropCountdown from '$components/popup/AirdropCountdown.svelte'
 
 export let adjustTopMargin = false
 </script>
@@ -21,6 +22,11 @@ export let adjustTopMargin = false
   <div class="md:text-md py-4 text-center text-sm">
     We have registered your interest. Airdrop will be live on 23 May
   </div>
+
+  <div class="py-2 md:py-4">
+    <AirdropCountdown />
+  </div>
+
   <a
     on:click
     href="/airdrop-guide"
