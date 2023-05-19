@@ -25,7 +25,7 @@ export let adjustTopMargin = false
     on:click
     href="/airdrop-guide"
     class="text-center text-sm text-primary underline">
-    Learn more about the rewards here
+    Learn more about the airdrop here
   </a>
   <div class="flex flex-col items-center justify-center space-y-4 px-8">
     <div class="flex items-center space-x-4">

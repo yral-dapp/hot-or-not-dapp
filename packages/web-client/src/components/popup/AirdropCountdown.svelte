@@ -2,7 +2,8 @@
 import { getTimeLeft } from '$lib/utils/timeLeft'
 
 // const airdropEndDate = new Date('31 May 11:59:59 PM 2023')
-const airdropEndDate = new Date('23 May 12:00:00 PM 2023')
+const airdropEndDate = new Date('May 23 2023 17:30:00 GMT+0530')
+
 $: time = getTimeLeft(new Date(), airdropEndDate)
 $: countdownOver =
   $time.days === 0 &&
