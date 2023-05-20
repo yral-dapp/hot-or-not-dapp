@@ -42,7 +42,7 @@ export let adjustTopMargin = false
         <TelegramIcon class="h-5 w-5 -translate-x-[1px]" />
       </a>
       <a
-        href="https://discord.gg/KwxCpeQB"
+        href="https://discord.gg/GZ9QemnZuj"
         target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
         <DiscordIcon class="h-5 w-5" />
