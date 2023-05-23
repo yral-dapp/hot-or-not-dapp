@@ -219,7 +219,7 @@ import { showAirdropPopup } from '$stores/popups'
       <Button
         on:click={() => ($showAirdropPopup = true)}
         class="w-full max-w-md !py-3">
-        Notify me
+        Register
       </Button>
     </div>
   </svelte:fragment>
