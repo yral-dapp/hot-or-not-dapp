@@ -260,8 +260,8 @@ async function validateData() {
             <InfoIcon class="h-3 w-3" />
           </span>
           <span class="text-xs">
-            You need to tweet with the hashtag #hotornot and paste your tweet's
-            link
+            You need to tweet tagging your favourite celebrity with the hashtag
+            #hotornot and paste your tweet's link
           </span>
         </div>
         <Input
