@@ -79,10 +79,9 @@ import { showAirdropPopup } from '$stores/popups'
         <h4>Registration and Eligibility</h4>
 
         <p>
-          You must register to participate in the airdrop. Just click the
-          "Notify Me" button at the bottom of this page, and we'll let you know
-          when the airdrop form is live. Take a look at the registration steps
-          below and get ready:
+          Registration is required to participate in the airdrop. To register,
+          please click the 'Register' button located at the bottom of this page
+          and follow the steps below:
         </p>
 
         <p>Registration process:</p>
