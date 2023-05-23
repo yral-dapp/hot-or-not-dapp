@@ -4,7 +4,6 @@ import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
-import AirdropPopupOnlyCountdown from '$components/popup/AirdropPopupOnlyCountdown.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
 import { showAirdropPopup } from '$stores/popups'
@@ -13,8 +12,6 @@ import { showAirdropPopup } from '$stores/popups'
 <svelte:head>
   <title>Airdrop Guide | Hot or Not</title>
 </svelte:head>
-
-<AirdropPopupOnlyCountdown preventAutoPopup />
 
 <HomeLayout>
   <svelte:fragment slot="top">
@@ -82,10 +79,9 @@ import { showAirdropPopup } from '$stores/popups'
         <h4>Registration and Eligibility</h4>
 
         <p>
-          You must register to participate in the airdrop. Just click the
-          "Notify Me" button at the bottom of this page, and we'll let you know
-          when the airdrop form is live. Take a look at the registration steps
-          below and get ready:
+          Registration is required to participate in the airdrop. To register,
+          please click the 'Register' button located at the bottom of this page
+          and follow the steps below:
         </p>
 
         <p>Registration process:</p>
@@ -216,11 +212,7 @@ import { showAirdropPopup } from '$stores/popups'
     </div>
     <div
       class="fixed bottom-0 flex w-full items-center justify-center bg-gradient-to-t from-black to-transparent px-8 py-2">
-      <Button
-        on:click={() => ($showAirdropPopup = true)}
-        class="w-full max-w-md !py-3">
-        Notify me
-      </Button>
+      <Button href="/airdrop" class="w-full max-w-md !py-3">Register</Button>
     </div>
   </svelte:fragment>
 </HomeLayout>
