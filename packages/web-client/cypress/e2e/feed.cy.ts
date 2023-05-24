@@ -9,6 +9,11 @@ describe('Home Feed Tests', () => {
     cy.visit(TEST_HOST + '/feed')
     cy.get('splash-screen').should('be.visible')
     cy.get('splash-screen').should('not.exist')
+    cy.get('body').then(($body) => {
+      if ($body.find('airdrop').length) {
+        cy.get('button[aria-label=close]').click()
+      }
+    })
     cy.wait(2000)
   })
 
