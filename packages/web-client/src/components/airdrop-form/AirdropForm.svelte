@@ -324,7 +324,7 @@ async function validateData() {
           {#if formLoading}
             <LoadingIcon class="h-6 w-6 animate-spin-slow" />
           {:else}
-            Join waitlist
+            Join whitelist
           {/if}
         </Button>
       </div>
