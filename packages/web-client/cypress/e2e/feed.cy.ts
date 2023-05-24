@@ -22,13 +22,15 @@ describe('Home Feed Tests', () => {
   })
 
   it('First video on the feed starts auto-playing', () => {
-    cy.get('video').first().and('have.prop', 'paused', false)
+    cy.get('video').first().its('0.paused').should('equal', false)
   })
 
   it('First video on a feed has a positive duration', () => {
+    cy.get('video').first()
     cy.get('video')
       .first()
-      .and('have.prop', 'paused', false)
+      .its('0.paused')
+      .should('equal', false)
       .then(() => {
         cy.get('video')
           .first()
@@ -39,13 +41,11 @@ describe('Home Feed Tests', () => {
   })
 
   it('Click to unmute video', () => {
-    const video = cy
-      .get('video')
-      .first()
-      .and('have.prop', 'paused', false)
-      .and('have.prop', 'muted', true)
+    const video = cy.get('video').first()
+    video.its('0.paused').should('equal', false)
+    video.and('have.prop', 'muted', true)
     video.click().then(() => {
-      video.should('have.prop', 'muted', false)
+      video.and('have.prop', 'muted', false)
     })
   })
 
