@@ -65,9 +65,9 @@ onMount(() => loadPosts())
     <NoVotesIcon class="w-32" />
     <div class="text-center text-lg font-bold">
       {#if me}
-        You don't have any current bets yet
+        You don't have any current votes yet
       {:else}
-        This user has not placed any bets yet
+        This user has not placed any vote yet
       {/if}
     </div>
   </div>

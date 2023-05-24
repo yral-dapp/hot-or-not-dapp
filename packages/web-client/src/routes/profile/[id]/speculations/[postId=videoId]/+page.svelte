@@ -17,7 +17,7 @@ let unavailable = false
 </script>
 
 <svelte:head>
-  <title>{me ? 'Your' : "User's"} Bets | Hot or Not</title>
+  <title>{me ? 'Your' : "User's"} Participations | Hot or Not</title>
 </svelte:head>
 
 <HomeLayout>
@@ -25,7 +25,7 @@ let unavailable = false
     {#if me != undefined}
       <div class="flex w-full items-center justify-center pt-2">
         <div class="rounded-full bg-black/50 px-4 py-2">
-          {me ? 'Your' : "User's"} Bets
+          {me ? 'Your' : "User's"} HotOrNot
         </div>
       </div>
     {/if}

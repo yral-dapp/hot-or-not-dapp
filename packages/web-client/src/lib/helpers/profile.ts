@@ -398,7 +398,7 @@ type UnionValueOf<U> = U extends U ? U[keyof U] : never
 const walletEventDetails = ({} as WalletEvent)?.details
 type WalletEvent = UnionValueOf<TokenEvent>
 type WalletEventDetails = typeof walletEventDetails
-type WalletEventSubType = UnionKeyOf<WalletEventDetails>
+export type WalletEventSubType = UnionKeyOf<WalletEventDetails>
 type WalletEventSubDetails = UnionValueOf<WalletEventDetails>
 type NotificationEventType = Omit<
   WalletEventSubType,

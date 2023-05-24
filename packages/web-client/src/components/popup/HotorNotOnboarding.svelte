@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fade } from 'svelte/transition'
-import { showOnboarding } from '$stores/hotOrNotOnboarding'
+import { showOnboardingPopup } from '$stores/popups'
 import left from '$assets/decore-left.png'
 import right from '$assets/decore-right.png'
 import StarsIcon from '$components/icons/StarsIcon.svelte'
@@ -13,7 +13,7 @@ import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 let step: 1 | 2 | 3 | 4 = 1
 </script>
 
-{#if $showOnboarding}
+{#if $showOnboardingPopup}
   <onboarding
     class="absolute inset-0 z-[15] flex h-full w-full items-center justify-center bg-black/90 px-8 text-white"
     out:fade|local={{ duration: 500 }}>
@@ -37,7 +37,7 @@ let step: 1 | 2 | 3 | 4 = 1
         <div class="flex w-full flex-col space-y-6">
           <Button on:click={() => (step = 2)}>Start Tutorial</Button>
           <button
-            on:click={() => ($showOnboarding = false)}
+            on:click={() => ($showOnboardingPopup = false)}
             class="font-medium">
             Maybe Later
           </button>
@@ -58,7 +58,9 @@ let step: 1 | 2 | 3 | 4 = 1
           <TutorialArrow class="h-48" />
         </div>
         <Button class="px-12" on:click={() => (step = 3)}>Next</Button>
-        <button on:click={() => ($showOnboarding = false)} class="font-medium">
+        <button
+          on:click={() => ($showOnboardingPopup = false)}
+          class="font-medium">
           Skip
         </button>
 
@@ -86,7 +88,9 @@ let step: 1 | 2 | 3 | 4 = 1
           <TutorialArrow class="h-56" />
         </div>
         <Button class="px-12" on:click={() => (step = 4)}>Next</Button>
-        <button on:click={() => ($showOnboarding = false)} class="font-medium">
+        <button
+          on:click={() => ($showOnboardingPopup = false)}
+          class="font-medium">
           Skip
         </button>
 
@@ -108,7 +112,7 @@ let step: 1 | 2 | 3 | 4 = 1
           <GiftBoxIcon outlined class="h-12 w-12" />
           <span>Vote with the majority and win double the tokens!</span>
         </div>
-        <Button on:click={() => ($showOnboarding = false)} class="w-full">
+        <Button on:click={() => ($showOnboardingPopup = false)} class="w-full">
           Let's make some money
         </Button>
       </div>

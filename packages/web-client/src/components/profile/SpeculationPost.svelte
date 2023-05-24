@@ -7,7 +7,7 @@ import type {
 const betKeyword: Record<OutcomeStatus, string> = {
   Lost: 'lost',
   Draw: 'lost',
-  AwaitingResult: 'vote',
+  AwaitingResult: 'voted',
   Won: 'received',
 }
 

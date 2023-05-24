@@ -15,7 +15,7 @@ import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
-import { hideSplashScreen } from '$stores/splashScreen'
+import { hideSplashScreen } from '$stores/popups'
 import Hls from 'hls.js/dist/hls.min.js'
 import { onMount, tick } from 'svelte'
 import 'swiper/css'
@@ -160,6 +160,7 @@ beforeNavigate(() => {
           source="hon_feed"
           watchHistoryDb="watch-hon"
           showWalletLink
+          showAirdropButton
           showReportButton
           let:recordView
           let:updateStats>

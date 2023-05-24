@@ -1,6 +1,9 @@
 <script lang="ts">
 import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
-import type { TransactionHistory } from '$lib/helpers/profile'
+import type {
+  TransactionHistory,
+  WalletEventSubType,
+} from '$lib/helpers/profile'
 import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
@@ -16,7 +19,7 @@ function getEventName() {
     case 'Won':
       return 'Won outcome'
     default:
-      return item.subType?.replace(/([A-Z])/g, ' $1').trim() || ''
+      return labels[item.subType]?.replace(/([A-Z])/g, ' $1').trim() || ''
   }
 }
 
@@ -40,6 +43,14 @@ $: hrefTypeEl =
     item.subType === 'WinningsEarnedFromBet' ||
     item.subType === 'CommissionFromHotOrNotBet') &&
   postCanisterId
+
+const labels: Record<WalletEventSubType, string> = {
+  BetOnHotOrNotPost: 'VotedOnHotOrNotPost',
+  CommissionFromHotOrNotBet: 'CommissionFromPostVote',
+  WinningsEarnedFromBet: 'WinningsEarnedFromVoting',
+  NewUserSignup: 'NewUserSignup',
+  Referral: 'Referral',
+}
 </script>
 
 <svelte:element
