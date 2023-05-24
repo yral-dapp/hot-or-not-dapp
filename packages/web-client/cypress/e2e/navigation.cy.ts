@@ -1,17 +1,12 @@
 describe('Navigation test', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
-  const IC0_HOST = 'https://ic0.app'
-  const timeout = 20_000
 
   before(() => {
-    cy.task(
-      'log',
-      'Running tests on host: ' + TEST_HOST + ' with ic0 host: ' + IC0_HOST,
-    )
+    cy.task('log', 'Running tests on host: ' + TEST_HOST)
   })
 
   beforeEach(() => {
-    cy.visit(TEST_HOST)
+    cy.visit(TEST_HOST + '/feed')
   })
 
   it('On load, should be navigated to home feed', () => {
@@ -19,9 +14,7 @@ describe('Navigation test', () => {
   })
 
   it('Navigate to user profile from the feed', () => {
-    cy.get('div[aria-roledescription=video-info] > a', {
-      timeout,
-    })
+    cy.get('div[aria-roledescription=video-info] > a')
       .first()
       .click({ force: true })
 
@@ -29,9 +22,7 @@ describe('Navigation test', () => {
   })
 
   it("Navigate to user profile and then navigate to user's lovers list", () => {
-    cy.get('div[aria-roledescription=video-info] > a', {
-      timeout,
-    })
+    cy.get('div[aria-roledescription=video-info] > a')
       .first()
       .click({ force: true })
 
@@ -40,14 +31,12 @@ describe('Navigation test', () => {
   })
 
   it('Navigate to user profile and then view a post', () => {
-    cy.get('div[aria-roledescription=video-info] > a', {
-      timeout,
-    })
+    cy.get('div[aria-roledescription=video-info] > a')
       .first()
       .click({ force: true })
     cy.scrollTo('bottom')
 
-    cy.get('a[aria-roledescription=user-post]', { timeout })
+    cy.get('a[aria-roledescription=user-post]')
       .first()
       .click({ force: true })
       .then(() => {

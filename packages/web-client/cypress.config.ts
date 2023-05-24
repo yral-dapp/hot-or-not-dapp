@@ -9,7 +9,7 @@ export default defineConfig({
   env: {
     ...process.env,
   },
-
+  defaultCommandTimeout: 20_000,
   reporter: '../../node_modules/mochawesome/src/mochawesome.js',
   reporterOptions: {
     reportPageTitle: 'Hot or Not Cypress Report',

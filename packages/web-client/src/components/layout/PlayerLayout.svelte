@@ -220,7 +220,9 @@ $: avatarUrl =
         ? 'bottom-40'
         : 'bottom-20'}">
       <div class="flex grow flex-col justify-end space-y-4">
-        <div class="pointer-events-auto flex space-x-3">
+        <div
+          aria-roledescription="video-info"
+          class="pointer-events-auto flex space-x-3">
           <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
             <Avatar class="h-12 w-12" src={avatarUrl} />
           </a>

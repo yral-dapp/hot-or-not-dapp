@@ -14,6 +14,8 @@ import AirdropCountdown from './AirdropCountdown.svelte'
 let loading = true
 let participated = false
 
+$: isLoggedIn = $authState.isLoggedIn
+
 async function checkIfCompleted() {
   if ($authState.idString) {
     participated = await isFormFilled($authState.idString)
@@ -23,7 +25,7 @@ async function checkIfCompleted() {
 }
 
 $: if (!$loadingAuthStatus) {
-  if ($authState.isLoggedIn) {
+  if (isLoggedIn) {
     checkIfCompleted()
   } else {
     loading = false
@@ -73,6 +75,7 @@ $: if (!$loadingAuthStatus) {
     </div>
     <div class="absolute right-4 top-4">
       <IconButton
+        ariaLabel="close"
         disabled={loading}
         on:click={() => ($showAirdropPopup = false)}>
         <CloseIcon class="h-8 w-8" />

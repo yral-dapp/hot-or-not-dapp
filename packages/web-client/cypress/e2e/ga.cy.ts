@@ -1,6 +1,5 @@
 describe('Google analytics tests', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
-  const IC0_HOST = 'https://ic0.app'
 
   Cypress.on('window:before:load', (win) => {
     //@ts-ignore
@@ -8,13 +7,13 @@ describe('Google analytics tests', () => {
   })
 
   before(() => {
-    cy.log('Running tests on host:', TEST_HOST, 'with ic0 host:', IC0_HOST)
+    cy.log('Running tests on host:', TEST_HOST)
     cy.log('env', JSON.stringify(Cypress.env()))
   })
 
   beforeEach(() => {
     cy.intercept({ hostname: 'www.google-analytics.com' }, { statusCode: 503 })
-    cy.visit(TEST_HOST)
+    cy.visit(TEST_HOST + '/feed')
   })
 
   it('Ensure GA is loaded and configured correctly', () => {

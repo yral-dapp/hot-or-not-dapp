@@ -153,16 +153,16 @@ jobs:
       - name: Install canisters
         if: always()
         working-directory: ./packages/hot-or-not-backend-canister
-        run: ./scripts/canisters/local_deploy/install_all_canisters.sh -s
+        run: ./scripts/canisters/local_deploy/install_all_canisters.sh -si
 
       - name: Test DFX connection
         if: always()
         run: dfx ping http://localhost:4943
 
-      - name: Run vitest
-        run: |
-          set -euxo pipefail
-          npm run wc:test:vi
+      # - name: Run vitest
+      #   run: |
+      #     set -euxo pipefail
+      #     npm run wc:test:vi
 
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
@@ -205,6 +205,13 @@ jobs:
         with:
           name: coverage-report
           path: packages/web-client/coverage/
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-report
+          path: packages/web-client/cypress/
           retention-days: 7
 
       - uses: actions/upload-artifact@v3

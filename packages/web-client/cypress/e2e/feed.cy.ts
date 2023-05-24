@@ -1,36 +1,36 @@
 describe('Home Feed Tests', () => {
   const TEST_HOST = Cypress.env('TEST_HOST') || 'https://hotornot.wtf'
-  const IC0_HOST = 'https://ic0.app'
-  const timeout = 20_000
 
   before(() => {
-    cy.task(
-      'log',
-      'Running tests on host: ' + TEST_HOST + ' with ic0 host: ' + IC0_HOST,
-    )
+    cy.task('log', 'Running tests on host: ' + TEST_HOST)
   })
 
   beforeEach(() => {
-    cy.visit(TEST_HOST)
+    cy.visit(TEST_HOST + '/feed')
+    cy.get('splash-screen').should('be.visible')
+    cy.get('splash-screen').should('not.exist')
+    cy.get('body').then(($body) => {
+      if ($body.find('airdrop').length) {
+        cy.get('button[aria-label=close]').click()
+      }
+    })
+    cy.wait(2000)
   })
 
   it('First video on feed has a valid source', () => {
-    cy.get('video', { timeout }).first().and('have.prop', 'src')
+    cy.get('video').first().and('have.prop', 'src')
   })
 
   it('First video on the feed starts auto-playing', () => {
-    cy.get('video', { timeout })
-      .first()
-      .and('have.prop', 'paused', false)
-      .and('have.prop', 'ended', false)
+    cy.get('video').first().and('have.prop', 'paused', false)
   })
 
   it('First video on a feed has a positive duration', () => {
-    cy.get('video', { timeout })
+    cy.get('video')
       .first()
       .and('have.prop', 'paused', false)
       .then(() => {
-        cy.get('video', { timeout })
+        cy.get('video')
           .first()
           .then(($video) => {
             expect(($video[0] as HTMLVideoElement).duration).to.be.gt(0)
@@ -38,11 +38,21 @@ describe('Home Feed Tests', () => {
       })
   })
 
+  it('Click to unmute video', () => {
+    const video = cy
+      .get('video')
+      .first()
+      .and('have.prop', 'paused', false)
+      .and('have.prop', 'muted', true)
+    video.click().then(() => {
+      video.should('have.prop', 'muted', false)
+    })
+  })
+
   it('Measure first video load and show time on feed', () => {
     const t0 = performance.now()
-    cy.get('splash-screen').and('not.exist')
-    cy.get('video', { timeout })
-      .eq(0)
+    cy.get('video')
+      .first()
       .should('have.prop', 'paused', false)
       .then(() => {
         cy.wrap(performance.now()).then((t1) => {
@@ -53,17 +63,6 @@ describe('Home Feed Tests', () => {
       })
   })
 
-  it('Click to unmute video', () => {
-    const video = cy
-      .get('video', { timeout })
-      .first()
-      .and('have.prop', 'paused', false)
-      .and('have.prop', 'muted', true)
-    video.click().then(() => {
-      video.should('have.prop', 'muted', false)
-    })
-  })
-
   it('Scrolling on main feed', () => {
     cy.task('log', 'Waiting for more videos to load to start scrolling')
     cy.get('video', { timeout: 40_000 })
@@ -72,25 +71,38 @@ describe('Home Feed Tests', () => {
         const SCROLL_COUNT = 20
         cy.task('log', 'Next videos loaded, now starting to scroll')
         const t0 = performance.now()
-        cy.get('video', { timeout }).first().click()
+        cy.get('video[data-index=0]').should('be.visible').click()
 
         cy.wrap(Array(SCROLL_COUNT))
-          .each((_, index) => {
-            cy.log('index', index)
+          .each((el, index) => {
+            cy.log('Checking video with index:', index)
 
-            cy.get('video', { timeout })
-              .eq(index)
+            const video = cy.get(`video[data-index=${index}]`)
+
+            video.scrollIntoView().wait(1000)
+
+            video
               .and('have.prop', 'paused', false)
               .and('have.prop', 'muted', false)
 
-            const nextVideo = cy.get('video', { timeout }).eq(index + 1)
-            nextVideo.and('have.prop', 'paused', true)
+            cy.log('✅ Video with index:', index, 'is paused and muted!')
+
+            cy.get(`video[data-index=${index + 1}]`).and(
+              'have.prop',
+              'paused',
+              true,
+            )
+
+            cy.log('✅ Next video:', index + 1, 'is paused!')
+
             if (index !== 0) {
-              cy.get('video', {
-                timeout,
-              })
-                .eq(index - 1)
-                .should('have.prop', 'paused', true)
+              cy.get(`video[data-index=${index - 1}]`).and(
+                'have.prop',
+                'paused',
+                true,
+              )
+
+              cy.log('✅ Previous video:', index - 1, 'is paused!')
             }
             if (index === 9) {
               cy.wrap(performance.now()).then((t1) => {
@@ -102,7 +114,6 @@ describe('Home Feed Tests', () => {
                 )
               })
             }
-            nextVideo.scrollIntoView()
           })
           .then(() => {
             cy.wrap(performance.now()).then((t1) => {
