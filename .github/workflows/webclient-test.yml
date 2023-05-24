@@ -210,7 +210,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: coverage-report
+          name: cypress-report
           path: packages/web-client/cypress/
           retention-days: 7
 
