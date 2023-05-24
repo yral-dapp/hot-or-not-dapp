@@ -73,6 +73,7 @@ $: if (!$loadingAuthStatus) {
     </div>
     <div class="absolute right-4 top-4">
       <IconButton
+        ariaLabel="close"
         disabled={loading}
         on:click={() => ($showAirdropPopup = false)}>
         <CloseIcon class="h-8 w-8" />
