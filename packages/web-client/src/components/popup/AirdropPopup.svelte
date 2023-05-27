@@ -39,7 +39,7 @@ $: if (!$loadingAuthStatus) {
     class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
     <div
       class="flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto py-8">
-      {#if true}
+      {#if participated}
         <div class="flex h-full w-full flex-col items-center overflow-hidden">
           <AirdropCompleted on:click={() => ($showAirdropPopup = false)} />
         </div>
