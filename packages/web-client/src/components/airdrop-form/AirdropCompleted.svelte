@@ -1,11 +1,14 @@
 <script lang="ts">
+import { goto } from '$app/navigation'
+import { page } from '$app/stores'
+import Button from '$components/button/Button.svelte'
 import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
-import AirdropCountdown from '$components/popup/AirdropCountdown.svelte'
 
 export let adjustTopMargin = false
+export let gotoHotOrNot = false
 </script>
 
 <div
@@ -20,12 +23,17 @@ export let adjustTopMargin = false
     Congratulations
   </div>
   <div class="md:text-md py-4 text-center text-sm">
-    Your Profile has been registered for the airdrop. You can claim your airdrop
-    on 23 June, 2023.
+    Your profile has been successfully registered for the airdrop. Keep playing
+    Hot or Not to earn more COYNS and increase your airdrop rewards.
   </div>
 
   <div class="py-2 md:py-4">
-    <AirdropCountdown />
+    <Button
+      on:click
+      on:click={() => gotoHotOrNot && goto('/hotornot')}
+      type="primary">
+      Play to Earn
+    </Button>
   </div>
 
   <a
