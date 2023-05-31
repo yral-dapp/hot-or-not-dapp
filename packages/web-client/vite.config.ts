@@ -37,6 +37,9 @@ const canisterDefinitions = Object.entries(canisterIds).reduce(
 )
 
 export default defineConfig(() => ({
+  build: {
+    sourcemap: true,
+  },
   resolve: {
     alias: {
       $canisters: resolve('./declarations'),
