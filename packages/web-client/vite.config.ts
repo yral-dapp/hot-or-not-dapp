@@ -3,6 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
+import { sentrySvelteKit } from '@sentry/sveltekit'
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -71,6 +72,17 @@ export default defineConfig(() => ({
     },
   },
   plugins: [
+    sentrySvelteKit({
+      autoInstrument: false,
+      sourceMapsUploadOptions: {
+        telemetry: false,
+        org: 'gobazzinga',
+        project: 'hot-or-not',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        cleanArtifacts: true,
+        rewrite: false,
+      },
+    }),
     sveltekit(),
     nodePolyfills({
       // https://github.com/vitejs/vite/discussions/2785#discussioncomment-4738116
