@@ -33,7 +33,8 @@ const config = {
     files: {
       assets: 'static',
       hooks: {
-        server: './hooks/server.hooks.ts',
+        server: './hooks/server.ts',
+        client: './hooks/client.ts',
       },
     },
     adapter: isSSR
