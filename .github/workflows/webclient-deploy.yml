@@ -22,7 +22,7 @@ jobs:
           token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run wc:build:static
+      - run: npm run wc:build:static:prod
       - run: |
           set -euxo pipefail
           DFX_VERSION=0.13.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
@@ -44,7 +44,7 @@ jobs:
           token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
-      - run: npm run wc:build
+      - run: npm run wc:build:prod
 
       - name: Deploy production build
         uses: cloudflare/wrangler-action@2.0.0
