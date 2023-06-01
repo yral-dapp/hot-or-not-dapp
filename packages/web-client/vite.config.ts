@@ -57,7 +57,8 @@ export default defineConfig(() => ({
     'import.meta.env.NODE_ENV': JSON.stringify(
       isDev ? 'development' : 'production',
     ),
-    'import.meta.env.ENABLE_SSR': process.env.BUILD_MODE != 'static',
+    'import.meta.env.ENABLE_SSR': process.env.BUILD_MODE !== 'static',
+    'import.meta.env.PRODUCTION': process.env.PRODUCTION === 'true',
   },
   server: {
     fs: {
@@ -76,7 +77,7 @@ export default defineConfig(() => ({
   },
   plugins: [
     sentryVitePlugin({
-      disable: process.env.NODE_ENV !== 'production',
+      disable: process.env.PRODUCTION !== 'true',
       org: 'gobazzinga',
       project: 'hot-or-not',
       authToken: process.env.SENTRY_AUTH_TOKEN,
