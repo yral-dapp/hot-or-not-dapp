@@ -168,6 +168,10 @@ import { showAirdropPopup } from '$stores/popups'
               <td>Whitelisted Applicants who own SNS1 Tokens</td>
               <td>In-app Wallet Balance on Cutoff Date + 1,000 COYNs</td>
             </tr>
+            <tr>
+              <td>Whitelisted Applicants who are DSCVR Users</td>
+              <td>In-app Wallet Balance on Cutoff Date + 1,000 COYNs</td>
+            </tr>
           </tbody>
         </table>
         <p>
