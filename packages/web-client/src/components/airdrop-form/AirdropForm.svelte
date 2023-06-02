@@ -85,6 +85,10 @@ let formData: Omit<
     checked: false,
     principalId: '',
   },
+  dscvrOne: {
+    checked: false,
+    principalId: '',
+  },
 }
 
 async function saveFormData() {
@@ -159,6 +163,15 @@ async function validateData() {
 
   if (formData.gobGobNft.checked) {
     const principal = formData.gobGobNft.principalId.trim()
+    if (!principal) {
+      formErrors.push('Principal ID for Gob Gob NFT is required')
+    } else if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for Gob Gob NFT is invalid')
+    }
+  }
+
+  if (formData.dscvrOne.checked) {
+    const principal = formData.dscvrOne.principalId.trim()
     if (!principal) {
       formErrors.push('Principal ID for Gob Gob NFT is required')
     } else if (!isPrincipal(principal)) {
@@ -297,6 +310,12 @@ async function validateData() {
           bind:value={formData.gobGobNft.principalId}
           checkboxLabel="Gob-Gob NFT"
           inputLabel="Please submit your Plug wallet principal ID"
+          inputPlaceholder="Enter Principal ID" />
+        <OptionalInput
+          bind:checked={formData.dscvrOne.checked}
+          bind:value={formData.dscvrOne.principalId}
+          checkboxLabel="DSCVR.ONE User"
+          inputLabel="Please submit your principal ID of DSCVR.ONE app"
           inputPlaceholder="Enter Principal ID" />
       </div>
       <div class="text-xs text-white/70">
