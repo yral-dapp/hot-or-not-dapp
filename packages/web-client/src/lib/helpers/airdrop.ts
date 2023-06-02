@@ -20,6 +20,10 @@ export type AirdropFormData = {
     checked: boolean
     principalId: string
   }
+  dscvrOne: {
+    checked: boolean
+    principalId: string
+  }
 }
 
 const x = btoa
