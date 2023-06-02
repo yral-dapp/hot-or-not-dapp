@@ -1,8 +1,7 @@
 <script lang="ts">
 import { goto } from '$app/navigation'
-import { page } from '$app/stores'
+import Avatar from '$components/avatar/Avatar.svelte'
 import Button from '$components/button/Button.svelte'
-import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
@@ -12,25 +11,50 @@ export let gotoHotOrNot = false
 </script>
 
 <div
-  class="max-w-80 h-max max-h-80 w-max px-32 md:px-24
-  {adjustTopMargin ? '-mt-40' : '-mt-12'}">
-  <AirdropCompleteGraphics class="h-full w-full" />
-</div>
-<div
-  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 md:space-y-4 md:px-16
+  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 pb-16 md:space-y-4 md:px-16
   {adjustTopMargin ? 'pt-24' : 'pt-4'}">
   <div class="text-3xl font-bold uppercase text-transparent text-white">
     Congratulations
   </div>
   <div class="md:text-md py-4 text-center text-sm">
-    Your profile has been successfully registered for the airdrop. Keep playing
-    Hot or Not to earn more COYNS and increase your airdrop rewards.
+    You profile has been registered for the airdrop
+  </div>
+  <div class="flex gap-5">
+    <div class="flex flex-col items-center pt-8">
+      <span class="text-xs font-bold">2</span>
+      <Avatar
+        src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+        class="my-2 h-16 w-16" />
+      <span class="text-sm font-bold text-primary">32.1k COYNS</span>
+      <span class="text-xs font-bold">@syyhu</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span class="text-xs font-bold">1</span>
+      <Avatar
+        src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+        class="my-2 h-20 w-20" />
+      <span class="text-sm font-bold text-primary">32.1k COYNS</span>
+      <span class="text-xs font-bold">@syyhu</span>
+    </div>
+    <div class="flex flex-col items-center pt-8">
+      <span class="text-xs font-bold">3</span>
+      <Avatar
+        src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+        class="my-2 h-16 w-16" />
+      <span class="text-sm font-bold text-primary">32.1k COYNS</span>
+      <span class="text-xs font-bold">@syyhu</span>
+    </div>
+  </div>
+  <div class="py-4 text-center text-sm">
+    These were our top earners from yesterday. Play Hot or Not to earn COYNs*,
+    feature on the leaderboard and boost your HOT token airdrop
   </div>
 
   <div class="py-2 md:py-4">
     <Button
       on:click
       on:click={() => gotoHotOrNot && goto('/hotornot')}
+      class="px-8"
       type="primary">
       Play to Earn
     </Button>
@@ -38,10 +62,19 @@ export let gotoHotOrNot = false
 
   <a
     on:click
+    href="/airdrop-dscvr"
+    class="text-center text-sm text-primary underline">
+    Submit your DSCVR ID for a boost
+  </a>
+  <a
+    on:click
     href="/airdrop-guide"
     class="text-center text-sm text-primary underline">
-    Learn more about the airdrop here
+    Learn more about the rewards here
   </a>
+  <div class="py-4 text-sm text-white/50">
+    * Coyns earned in-app are different compared to airdrop tokens
+  </div>
   <div class="flex flex-col items-center justify-center space-y-4 px-8">
     <div class="flex items-center space-x-4">
       <a
