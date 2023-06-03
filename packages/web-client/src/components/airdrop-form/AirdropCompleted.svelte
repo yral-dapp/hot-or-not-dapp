@@ -5,9 +5,31 @@ import Button from '$components/button/Button.svelte'
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
+import { topThreeEntry } from '$lib/helpers/airdrop'
+import { onMount } from 'svelte'
+
+type User = {
+  canisterId: string
+  principalId: string
+  walletBalance: number
+}
 
 export let adjustTopMargin = false
 export let gotoHotOrNot = false
+
+async function fetchUsers(data: User[]) {
+  data.sort((a, b) => b.walletBalance - a.walletBalance)
+  // users = data;
+}
+
+let users: User[] | null = null
+
+onMount(async () => {
+  const d = await topThreeEntry()
+  if (d.success && d.data) {
+    fetchUsers(d.data as any)
+  }
+})
 </script>
 
 <div
@@ -19,32 +41,40 @@ export let gotoHotOrNot = false
   <div class="md:text-md py-4 text-center text-sm">
     You profile has been registered for the airdrop
   </div>
-  <div class="flex gap-5">
-    <div class="flex flex-col items-center pt-8">
-      <span class="text-xs font-bold">2</span>
-      <Avatar
-        src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
-        class="my-2 h-16 w-16" />
-      <span class="text-sm font-bold text-primary">32.1k COYNS</span>
-      <span class="text-xs font-bold">@syyhu</span>
+  {#if users}
+    <div class="flex gap-5">
+      {#if users[1]}
+        <div class="flex flex-col items-center pt-8">
+          <span class="text-xs font-bold">2</span>
+          <Avatar
+            src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+            class="my-2 h-16 w-16" />
+          <span class="text-sm font-bold text-primary">32.1k COYNS</span>
+          <span class="text-xs font-bold">@syyhu</span>
+        </div>
+      {/if}
+      {#if users[0]}
+        <div class="flex flex-col items-center">
+          <span class="text-xs font-bold">1</span>
+          <Avatar
+            src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+            class="my-2 h-20 w-20" />
+          <span class="text-sm font-bold text-primary">32.1k COYNS</span>
+          <span class="text-xs font-bold">@syyhu</span>
+        </div>
+      {/if}
+      {#if users[2]}
+        <div class="flex flex-col items-center pt-8">
+          <span class="text-xs font-bold">3</span>
+          <Avatar
+            src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+            class="my-2 h-16 w-16" />
+          <span class="text-sm font-bold text-primary">32.1k COYNS</span>
+          <span class="text-xs font-bold">@syyhu</span>
+        </div>
+      {/if}
     </div>
-    <div class="flex flex-col items-center">
-      <span class="text-xs font-bold">1</span>
-      <Avatar
-        src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
-        class="my-2 h-20 w-20" />
-      <span class="text-sm font-bold text-primary">32.1k COYNS</span>
-      <span class="text-xs font-bold">@syyhu</span>
-    </div>
-    <div class="flex flex-col items-center pt-8">
-      <span class="text-xs font-bold">3</span>
-      <Avatar
-        src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
-        class="my-2 h-16 w-16" />
-      <span class="text-sm font-bold text-primary">32.1k COYNS</span>
-      <span class="text-xs font-bold">@syyhu</span>
-    </div>
-  </div>
+  {/if}
   <div class="py-4 text-center text-sm">
     These were our top earners from yesterday. Play Hot or Not to earn COYNs*,
     feature on the leaderboard and boost your HOT token airdrop
