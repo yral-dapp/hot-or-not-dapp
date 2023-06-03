@@ -56,7 +56,7 @@ export async function uploadForm(data: AirdropFormData): Promise<boolean> {
 
 export async function enrollDscvr(data: DscvrFormData): Promise<boolean> {
   try {
-    const res = await fetch('https://submitentry-5nps3y6y6a-uc.a.run.app', {
+    const res = await fetch('https://enrolldscvr-5nps3y6y6a-uc.a.run.app', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -104,7 +104,7 @@ export async function isEnrolledDscvr(principalId: string): Promise<boolean> {
     if (principalId === '2vxsx-fae') return true
 
     const res = await fetch(
-      `https://entryexists-5nps3y6y6a-uc.a.run.app/?principalId=${principalId}`,
+      `https://isenrolleddscvr-5nps3y6y6a-uc.a.run.app/?principalId=${principalId}`,
       {
         mode: 'cors',
       },
@@ -114,6 +114,21 @@ export async function isEnrolledDscvr(principalId: string): Promise<boolean> {
 
     if (body.success && body.enrolled) return true
     return false
+  } catch (e) {
+    console.error('Error adding document: ', e)
+    return true
+  }
+}
+
+export async function topThreeEntry(): Promise<any> {
+  try {
+    const res = await fetch('https://topthreelastday-5nps3y6y6a-uc.a.run.app', {
+      mode: 'cors',
+    })
+
+    const body = await res.json()
+
+    return body
   } catch (e) {
     console.error('Error adding document: ', e)
     return true
