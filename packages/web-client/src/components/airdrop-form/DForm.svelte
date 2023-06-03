@@ -6,17 +6,17 @@ import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
-import { isFormFilled, enrollDscvr } from '$lib/helpers/airdrop'
+import { enrollDscvr, isEnrolledDscvr } from '$lib/helpers/airdrop'
+import { isPrincipal } from '$lib/utils/isPrincipal'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
-import AirdropCompleted from './AirdropCompleted.svelte'
 
 let loading = true
 let participated = false
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isFormFilled($authState.idString)
+    participated = await isEnrolledDscvr($authState.idString)
   }
   loading = false
 }
@@ -53,7 +53,9 @@ async function validateData() {
 
   const id = dscvrId.trim()
   if (!id) {
-    formErrors.push('Dscvr principal ID is required')
+    formErrors.push('Dscvr Principal ID is required')
+  } else if (!isPrincipal(id)) {
+    formErrors.push('Dscvr Principal ID is invalid')
   }
   formErrors = formErrors
   if (formErrors.length === 0) {
@@ -141,7 +143,7 @@ async function validateData() {
           Congratulations
         </div>
         <div class="md:text-md py-4 text-center text-sm">
-          You entry has been updated.
+          You have submitted your Dscvr.one ID
         </div>
       </div>
       <div class="w-full px-4 py-4">
