@@ -50,11 +50,11 @@ export let gotoHotOrNot = false
     feature on the leaderboard and boost your HOT token airdrop
   </div>
 
-  <div class="py-2 md:py-4">
+  <div class="w-full px-4 py-4">
     <Button
       on:click
       on:click={() => gotoHotOrNot && goto('/hotornot')}
-      class="px-8"
+      class="w-full px-8"
       type="primary">
       Play to Earn
     </Button>
@@ -63,7 +63,7 @@ export let gotoHotOrNot = false
   <a
     on:click
     href="/airdrop-dscvr"
-    class="text-center text-sm text-primary underline">
+    class="pb-2 text-center text-sm font-bold text-white">
     Submit your DSCVR ID for a boost
   </a>
   <a
