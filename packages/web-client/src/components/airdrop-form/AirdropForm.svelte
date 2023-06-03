@@ -204,7 +204,7 @@ async function validateData() {
         </span>
         <span class="text-xl font-bold">Airdrop is here</span>
       </div>
-      <div class="text-sm">
+      <div class="mx-auto text-center text-sm">
         <span>
           Join us at Hot or Not as we take over TikTok! Register for the
           whitelist to receive "HOT" governance tokens in our decentralization
