@@ -20,10 +20,7 @@ export type AirdropFormData = {
     checked: boolean
     principalId: string
   }
-  dscvrOne: {
-    checked: boolean
-    principalId: string
-  }
+  dscvrOne?: string
 }
 
 export type DscvrFormData = {
