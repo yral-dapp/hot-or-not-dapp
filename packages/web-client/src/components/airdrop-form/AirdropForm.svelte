@@ -85,10 +85,7 @@ let formData: Omit<
     checked: false,
     principalId: '',
   },
-  dscvrOne: {
-    checked: false,
-    principalId: '',
-  },
+  dscvrOne: '',
 }
 
 async function saveFormData() {
@@ -170,12 +167,10 @@ async function validateData() {
     }
   }
 
-  if (formData.dscvrOne.checked) {
-    const principal = formData.dscvrOne.principalId.trim()
-    if (!principal) {
-      formErrors.push('Principal ID for Gob Gob NFT is required')
-    } else if (!isPrincipal(principal)) {
-      formErrors.push('Principal ID for Gob Gob NFT is invalid')
+  if (formData.dscvrOne?.trim()) {
+    const principal = formData.dscvrOne.trim()
+    if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for Dscvr.one is invalid')
     }
   }
 
@@ -227,7 +222,7 @@ async function validateData() {
       <div class="flex w-full justify-center pt-8">
         <LoadingIcon class="h-8 w-8 animate-spin-slow" />
       </div>
-    {:else if !participated}
+    {:else if true}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
@@ -283,6 +278,21 @@ async function validateData() {
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
+        <span class="text-sm text-white">Dscvr Principal ID</span>
+        <div class="flex items-start gap-1 text-white/70">
+          <span class="shrink-0 pt-0.5">
+            <InfoIcon class="h-3 w-3" />
+          </span>
+          <span class="text-xs">
+            You can add your dscvr.one principal ID for a boost!
+          </span>
+        </div>
+        <Input
+          bind:value={formData.dscvrOne}
+          placeholder="Enter your dscvr.one principal (optional)"
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+      </div>
+      <div class="flex flex-col gap-2">
         <span class="text-sm text-white">
           Do you own any of the following assets? Please select all that apply
           for additional rewards:
@@ -310,12 +320,6 @@ async function validateData() {
           bind:value={formData.gobGobNft.principalId}
           checkboxLabel="Gob-Gob NFT"
           inputLabel="Please submit your Plug wallet principal ID"
-          inputPlaceholder="Enter Principal ID" />
-        <OptionalInput
-          bind:checked={formData.dscvrOne.checked}
-          bind:value={formData.dscvrOne.principalId}
-          checkboxLabel="DSCVR.ONE User"
-          inputLabel="Please submit your principal ID of DSCVR.ONE app"
           inputPlaceholder="Enter Principal ID" />
       </div>
       <div class="text-xs text-white/70">
