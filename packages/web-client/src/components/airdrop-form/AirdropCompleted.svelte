@@ -6,8 +6,12 @@ import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
 import { isEnrolledDscvr, topThreeEntry } from '$lib/helpers/airdrop'
+import { individualUser } from '$lib/helpers/backend'
+import { sanitizeProfile } from '$lib/helpers/profile'
+import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
+import type { UserProfile } from '$stores/userProfile'
 import { onMount } from 'svelte'
 
 type User = {
@@ -20,14 +24,33 @@ export let adjustTopMargin = false
 export let gotoHotOrNot = false
 
 let enrolledInDscvr = true
-let users: User[] | null = null
+let users:
+  | {
+      profile: UserProfile
+      data: User
+    }[]
+  | null = null
 
 $: authorized = $authState.isLoggedIn && !$loadingAuthStatus
 $: authorized && checkIfEnrolledinDscvr()
 
 async function fetchUsers(data: User[]) {
-  data.sort((a, b) => b.walletBalance - a.walletBalance)
-  // users = data;
+  if (data?.length) {
+    data.sort((a, b) => b.walletBalance - a.walletBalance)
+    const d = await Promise.all(
+      data.map((d) =>
+        individualUser(d.canisterId)
+          .get_profile_details()
+          .then((u) => {
+            return {
+              profile: sanitizeProfile(u, d.principalId),
+              data: d,
+            }
+          }),
+      ),
+    )
+    users = d
+  }
 }
 
 async function checkIfEnrolledinDscvr() {
@@ -54,35 +77,47 @@ onMount(async () => {
     You profile has been registered for the airdrop
   </div>
   {#if users}
-    <div class="flex gap-5">
+    <div class="flex w-full gap-5">
       {#if users[1]}
-        <div class="flex flex-col items-center pt-8">
+        <div class="flex w-[5.5rem] shrink-0 flex-col items-center pt-8">
           <span class="text-xs font-bold">2</span>
           <Avatar
-            src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+            src={users[1].profile.profile_picture_url}
             class="my-2 h-16 w-16" />
-          <span class="text-sm font-bold text-primary">32.1k COYNS</span>
-          <span class="text-xs font-bold">@syyhu</span>
+          <span class="text-center text-sm font-bold text-primary">
+            {getShortNumber(users[1].data.walletBalance)} COYNS
+          </span>
+          <span class="text-center text-xs font-bold">
+            @{users[1].profile.unique_user_name}
+          </span>
         </div>
       {/if}
       {#if users[0]}
-        <div class="flex flex-col items-center">
+        <div class="flex w-24 shrink-0 flex-col items-center">
           <span class="text-xs font-bold">1</span>
           <Avatar
-            src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+            src={users[0].profile.profile_picture_url}
             class="my-2 h-20 w-20" />
-          <span class="text-sm font-bold text-primary">32.1k COYNS</span>
-          <span class="text-xs font-bold">@syyhu</span>
+          <span class="text-center text-sm font-bold text-primary">
+            {getShortNumber(users[0].data.walletBalance)} COYNS
+          </span>
+          <span class="text-center text-xs font-bold">
+            @{users[0].profile.unique_user_name}
+          </span>
         </div>
       {/if}
       {#if users[2]}
-        <div class="flex flex-col items-center pt-8">
+        <div class="flex w-[5.5rem] shrink-0 flex-col items-center pt-8">
           <span class="text-xs font-bold">3</span>
           <Avatar
-            src="https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg"
+            src={users[2].profile.profile_picture_url}
             class="my-2 h-16 w-16" />
-          <span class="text-sm font-bold text-primary">32.1k COYNS</span>
-          <span class="text-xs font-bold">@syyhu</span>
+          <span class="text-center text-sm font-bold text-primary">
+            {getShortNumber(users[2].data.walletBalance)} COYNS
+          </span>
+          <span class="text-center text-xs font-bold">
+            @{users[2].profile.unique_user_name}
+          </span>
         </div>
       {/if}
     </div>
