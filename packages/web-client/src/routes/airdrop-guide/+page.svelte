@@ -111,6 +111,7 @@ import { showAirdropPopup } from '$stores/popups'
           <li>Plug Principal ID holding Hot or Not Funded NFT</li>
           <li>NNS Principal ID holding SNS-1 Token</li>
           <li>NNS Principal ID holding Chat Token</li>
+          <li>DSCVR Principal ID for DSCVR users</li>
         </p>
 
         <h4>Rewards</h4>
