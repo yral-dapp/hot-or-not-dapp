@@ -20,7 +20,6 @@ type User = {
   walletBalance: number
 }
 
-export let adjustTopMargin = false
 export let gotoHotOrNot = false
 
 let enrolledInDscvr = true
@@ -68,8 +67,8 @@ onMount(async () => {
 </script>
 
 <div
-  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 pb-16 md:space-y-4 md:px-16
-  {adjustTopMargin ? 'pt-24' : 'pt-4'}">
+  class="flex w-full max-w-md flex-col items-center justify-center space-y-2 px-8 pb-16 pt-4 md:space-y-4
+  md:px-16">
   <div class="text-3xl font-bold uppercase text-transparent text-white">
     Congratulations
   </div>
@@ -77,7 +76,7 @@ onMount(async () => {
     You profile has been registered for the airdrop
   </div>
   {#if users}
-    <div class="flex w-full gap-5">
+    <div class="flex w-screen justify-center gap-5">
       {#if users[1]}
         <div class="flex w-[5.5rem] shrink-0 flex-col items-center pt-8">
           <span class="text-xs font-bold">2</span>
