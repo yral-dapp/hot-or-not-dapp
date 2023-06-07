@@ -5,7 +5,9 @@ import Button from '$components/button/Button.svelte'
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
-import { topThreeEntry } from '$lib/helpers/airdrop'
+import { isEnrolledDscvr, topThreeEntry } from '$lib/helpers/airdrop'
+import { authState } from '$stores/auth'
+import { loadingAuthStatus } from '$stores/loading'
 import { onMount } from 'svelte'
 
 type User = {
@@ -17,12 +19,22 @@ type User = {
 export let adjustTopMargin = false
 export let gotoHotOrNot = false
 
+let enrolledInDscvr = true
+let users: User[] | null = null
+
+$: authorized = $authState.isLoggedIn && !$loadingAuthStatus
+$: authorized && checkIfEnrolledinDscvr()
+
 async function fetchUsers(data: User[]) {
   data.sort((a, b) => b.walletBalance - a.walletBalance)
   // users = data;
 }
 
-let users: User[] | null = null
+async function checkIfEnrolledinDscvr() {
+  if ($authState.idString) {
+    enrolledInDscvr = await isEnrolledDscvr($authState.idString)
+  }
+}
 
 onMount(async () => {
   const d = await topThreeEntry()
@@ -89,13 +101,14 @@ onMount(async () => {
       Play to Earn
     </Button>
   </div>
-
-  <a
-    on:click
-    href="/airdrop-dscvr"
-    class="pb-2 text-center text-sm font-bold text-white">
-    Submit your DSCVR ID for a boost
-  </a>
+  {#if !enrolledInDscvr}
+    <a
+      on:click
+      href="/airdrop-dscvr"
+      class="pb-2 text-center text-sm font-bold text-white">
+      Submit your DSCVR ID for a boost
+    </a>
+  {/if}
   <a
     on:click
     href="/airdrop-guide"
