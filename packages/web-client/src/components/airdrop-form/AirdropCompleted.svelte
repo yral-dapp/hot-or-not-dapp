@@ -149,7 +149,7 @@ onMount(async () => {
     class="text-center text-sm text-primary underline">
     Learn more about the rewards here
   </a>
-  <div class="py-4 text-sm text-white/50">
+  <div class="py-4 text-center text-sm text-white/50">
     * Coyns earned in-app are different compared to airdrop tokens
   </div>
   <div class="flex flex-col items-center justify-center space-y-4 px-8">
