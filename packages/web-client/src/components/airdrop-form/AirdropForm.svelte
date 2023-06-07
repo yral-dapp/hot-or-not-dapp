@@ -222,7 +222,7 @@ async function validateData() {
       <div class="flex w-full justify-center pt-8">
         <LoadingIcon class="h-8 w-8 animate-spin-slow" />
       </div>
-    {:else if true}
+    {:else if !participated}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
