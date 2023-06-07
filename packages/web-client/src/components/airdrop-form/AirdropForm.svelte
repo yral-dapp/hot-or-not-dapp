@@ -278,21 +278,6 @@ async function validateData() {
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="flex flex-col gap-2">
-        <span class="text-sm text-white">Dscvr Principal ID</span>
-        <div class="flex items-start gap-1 text-white/70">
-          <span class="shrink-0 pt-0.5">
-            <InfoIcon class="h-3 w-3" />
-          </span>
-          <span class="text-xs">
-            You can add your dscvr.one principal ID for a boost!
-          </span>
-        </div>
-        <Input
-          bind:value={formData.dscvrOne}
-          placeholder="Enter your dscvr.one principal (optional)"
-          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
-      </div>
-      <div class="flex flex-col gap-2">
         <span class="text-sm text-white">
           Do you own any of the following assets? Please select all that apply
           for additional rewards:
@@ -321,6 +306,16 @@ async function validateData() {
           checkboxLabel="Gob-Gob NFT"
           inputLabel="Please submit your Plug wallet principal ID"
           inputPlaceholder="Enter Principal ID" />
+      </div>
+      <div class="flex flex-col gap-2">
+        <span class="text-sm text-white">
+          Are you a DSCVR user? If yes, please submit your DSCVR Principal ID to
+          boost your airdrop:
+        </span>
+        <Input
+          bind:value={formData.dscvrOne}
+          placeholder="Enter your dscvr.one principal (optional)"
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
       <div class="text-xs text-white/70">
         Note: Every email ID can only be associated with one login account. If
