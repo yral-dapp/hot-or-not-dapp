@@ -85,6 +85,7 @@ let formData: Omit<
     checked: false,
     principalId: '',
   },
+  dscvrOne: '',
 }
 
 async function saveFormData() {
@@ -166,6 +167,13 @@ async function validateData() {
     }
   }
 
+  if (formData.dscvrOne?.trim()) {
+    const principal = formData.dscvrOne.trim()
+    if (!isPrincipal(principal)) {
+      formErrors.push('Principal ID for Dscvr.one is invalid')
+    }
+  }
+
   formErrors = formErrors
   if (formErrors.length === 0) {
     await saveFormData()
@@ -191,7 +199,7 @@ async function validateData() {
         </span>
         <span class="text-xl font-bold">Airdrop is here</span>
       </div>
-      <div class="text-sm">
+      <div class="mx-auto text-center text-sm">
         <span>
           Join us at Hot or Not as we take over TikTok! Register for the
           whitelist to receive "HOT" governance tokens in our decentralization
@@ -299,6 +307,16 @@ async function validateData() {
           inputLabel="Please submit your Plug wallet principal ID"
           inputPlaceholder="Enter Principal ID" />
       </div>
+      <div class="flex flex-col gap-2">
+        <span class="text-sm text-white">
+          Are you a DSCVR user? If yes, please submit your DSCVR Principal ID to
+          boost your airdrop:
+        </span>
+        <Input
+          bind:value={formData.dscvrOne}
+          placeholder="Enter your dscvr.one principal (optional)"
+          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+      </div>
       <div class="text-xs text-white/70">
         Note: Every email ID can only be associated with one login account. If
         the same mail is used with multiple airdrop entries, the previous
@@ -348,7 +366,7 @@ async function validateData() {
       </div>
     {:else}
       <div class="flex h-full w-full flex-col items-center overflow-hidden">
-        <AirdropCompleted adjustTopMargin gotoHotOrNot />
+        <AirdropCompleted gotoHotOrNot />
       </div>
     {/if}
   </div>
