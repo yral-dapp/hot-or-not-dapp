@@ -16,6 +16,7 @@ let canisterIds = {}
 try {
   canisterIds = isDev
     ? await import(
+        //@ts-ignore
         '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
       )
     : await import('../hot-or-not-backend-canister/canister_ids.json')
@@ -53,6 +54,7 @@ export default defineConfig(() => ({
   define: {
     // Here we can define global constants
     ...canisterDefinitions,
+    'process.env.INTERNET_IDENTITY_CANISTER_ID': 'qhbym-qaaaa-aaaaa-aaafq-cai',
     'process.env.DFX_NETWORK': JSON.stringify(isDev ? 'local' : 'ic'),
     'import.meta.env.NODE_ENV': JSON.stringify(
       isDev ? 'development' : 'production',
