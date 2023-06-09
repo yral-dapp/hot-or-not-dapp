@@ -45,9 +45,6 @@ jobs:
       previewUrl: ${{ steps.preview-url.outputs.url }}
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: "true"
-          token: ${{ secrets.SUBMODULE_PAT }}
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build
@@ -103,10 +100,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: "true"
-          token: ${{ secrets.SUBMODULE_PAT }}
-
       - uses: actions/setup-node@v3
         with:
           node-version: 18
