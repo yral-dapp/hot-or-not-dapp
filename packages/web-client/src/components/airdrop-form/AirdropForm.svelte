@@ -242,8 +242,8 @@ async function validateData() {
         {:else}
           <span>{wallet.balance} Coyns</span>
           <span class="text-xs text-white/70">
-            Note: The final balance as of July 15th 2023, 12 PM UTC, will be
-            taken into account for airdrop allotment
+            Note: The final balance as of 15th July 2023 12PM UTC will be taken
+            into account for airdrop allotment
           </span>
         {/if}
       </div>
