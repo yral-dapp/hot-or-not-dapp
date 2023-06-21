@@ -92,7 +92,7 @@ import { showAirdropPopup } from '$stores/popups'
           <div class="pl-4 pt-1">
             <li>Principal ID (HotOrNot)</li>
             <li>
-              Current wallet balance (final balance on 22nd June, 2023 12PM UTC
+              Current wallet balance (final balance on 15th July, 2023 12PM UTC
               will be considered for airdrop allotment)
             </li>
           </div>
