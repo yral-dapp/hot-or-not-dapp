@@ -25,7 +25,7 @@
     "@builder.io/partytown": "^0.8.0",
     "@dfinity/agent": "^0.15.6",
     "@dfinity/auth-client": "^0.15.6",
-    "@dfinity/candid": "^0.15.6",
+    "@dfinity/candid": "^0.15.7",
     "@dfinity/identity": "^0.15.6",
     "@dfinity/identity-secp256k1": "^0.15.6",
     "@dfinity/principal": "^0.15.6",
