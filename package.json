@@ -31,11 +31,11 @@
     "workers:publish": "npm run publish --w @hnn/workers"
   },
   "devDependencies": {
-    "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
-    "@types/node": "^20.3.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
-    "eslint": "^8.43.0",
+    "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v6.0.4",
+    "@types/node": "^18.16.19",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^2.8.8",
     "prettier-plugin-svelte": "^2.10.1",
