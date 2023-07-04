@@ -51,7 +51,7 @@ $: if (placedBetDetail) {
 </script>
 
 <div
-  transition:fade|local
+  transition:fade
   class="flex h-full w-full items-center space-x-8 px-4">
   <div
     class={c('flex items-center', {

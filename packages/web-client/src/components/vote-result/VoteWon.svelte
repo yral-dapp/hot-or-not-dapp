@@ -6,7 +6,7 @@ import { fade } from 'svelte/transition'
 </script>
 
 <vote-win
-  transition:fade|local
+  transition:fade
   class="absolute z-[100] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black px-8 text-white">
   <div class="absolute z-0 h-full w-full overflow-hidden">
     <VoteWonBackground class="h-full opacity-50" />
