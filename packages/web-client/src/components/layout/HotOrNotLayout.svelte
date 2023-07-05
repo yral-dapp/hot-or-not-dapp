@@ -9,10 +9,9 @@ $: innerHeight = browser ? window?.innerHeight : 0
 
 <svelte:window on:resize={() => (innerHeight = window?.innerHeight)} />
 
-<home
+<hon-layout
   style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
-  class="relative block h-full w-full overflow-hidden text-white"
-  on:keyup>
+  class="relative block h-full w-full overflow-hidden text-white">
   <slot name="content" />
   <div class="absolute inset-x-0 top-0 z-[5] {testClasses}">
     <slot name="top" />
@@ -21,4 +20,4 @@ $: innerHeight = browser ? window?.innerHeight : 0
     class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48 {testClasses}">
     <slot name="bottom-navigation" />
   </div>
-</home>
+</hon-layout>
