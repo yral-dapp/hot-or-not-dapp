@@ -1,7 +1,6 @@
 import staticAdapter from '@sveltejs/adapter-static'
 import cfAdapter from '@sveltejs/adapter-cloudflare'
-import preprocess from 'svelte-preprocess'
-import directives from './directives.js'
+import { vitePreprocess } from '@sveltejs/kit/vite'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
@@ -15,11 +14,11 @@ console.log(
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: preprocess({
-    postcss: true,
-    preserve: ['partytown'],
-  }),
-
+  preprocess: [vitePreprocess()],
+  onwarn(warning, handler) {
+    if (warning.code.startsWith('a11y')) return
+    handler(warning)
+  },
   kit: {
     // csp: isDev
     //   ? undefined
