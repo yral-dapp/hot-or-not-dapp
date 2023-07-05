@@ -254,9 +254,9 @@ onDestroy(() => {
       {/if}
       {#if previewPaused}
         <div
+          role="presentation"
           on:click={() => (previewPaused = false)}
-          class="absolute inset-0 flex items-center justify-center"
-          on:keyup>
+          class="absolute inset-0 flex items-center justify-center">
           <IconButton class="rounded-full bg-black/50 p-4">
             <PlayIcon class="h-4 w-4" />
           </IconButton>
