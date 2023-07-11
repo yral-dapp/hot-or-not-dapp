@@ -36,7 +36,7 @@ $: userId = $userProfile.username_set
 $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
 $: href =
   item.subType === 'CommissionFromHotOrNotBet'
-    ? `/hotornot/${userId}/${postId}`
+    ? `/hotornot/${userId}@${postId}`
     : `/profile/${userId}/speculations/${postCanisterId}@${postId}`
 $: hrefTypeEl =
   (item.subType === 'BetOnHotOrNotPost' ||
