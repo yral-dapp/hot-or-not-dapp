@@ -20,11 +20,13 @@ import { hideSplashScreen } from '$stores/popups'
 import Hls from 'hls.js/dist/hls.min.js'
 import { onMount, tick } from 'svelte'
 import 'swiper/css'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
+import { Swiper as SwiperS, SwiperSlide as SwiperSlideS } from 'swiper/svelte'
 import type { PageData } from './$types'
 
 export let data: PageData
 
+const Swiper = SwiperS as any
+const SwiperSlide = SwiperSlideS as any
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
 const keepVideosLoadedCount: number = 3
