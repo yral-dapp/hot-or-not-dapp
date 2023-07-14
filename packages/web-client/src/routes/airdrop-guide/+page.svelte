@@ -1,5 +1,5 @@
 <script lang="ts">
-import './guide-styles.postcss'
+import './styles.postcss'
 
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
