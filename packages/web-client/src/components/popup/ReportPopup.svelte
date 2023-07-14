@@ -33,7 +33,8 @@ async function handleReport() {
   if (type === 'post') {
     const data = reportData as PostReportData
     text = `🎞️ Video reported 🚨  
-    Profile Link: https://hotornot.wtf/profile/${data.postUploadedByUserId}/post/${data.postId}
+    Video Link: https://hotornot.wtf/profile/${data.postUploadedByUserId}/post/${data.postId}
+    Profile Link: https://hotornot.wtf/profile/${data.postUploadedByUserId}
     Reported Video ID: ${data.postCanisterId}@${data.postId} 
     Reported Video Cloudflare UID: ${data.videoUid} 
     Reported by: ${data.reportedByUserId} 

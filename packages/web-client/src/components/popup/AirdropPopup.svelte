@@ -40,7 +40,7 @@ $: if (!$loadingAuthStatus) {
     <div
       class="flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto py-8">
       {#if participated}
-        <div class="flex h-full w-full flex-col items-center overflow-hidden">
+        <div class="flex h-full w-full flex-col items-center">
           <AirdropCompleted on:click={() => ($showAirdropPopup = false)} />
         </div>
       {:else}

@@ -3,6 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -15,6 +16,7 @@ let canisterIds = {}
 try {
   canisterIds = isDev
     ? await import(
+        //@ts-ignore
         '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
       )
     : await import('../hot-or-not-backend-canister/canister_ids.json')
@@ -36,6 +38,9 @@ const canisterDefinitions = Object.entries(canisterIds).reduce(
 )
 
 export default defineConfig(() => ({
+  build: {
+    sourcemap: true,
+  },
   resolve: {
     alias: {
       $canisters: resolve('./declarations'),
@@ -49,11 +54,13 @@ export default defineConfig(() => ({
   define: {
     // Here we can define global constants
     ...canisterDefinitions,
+    'process.env.INTERNET_IDENTITY_CANISTER_ID': 'qhbym-qaaaa-aaaaa-aaafq-cai',
     'process.env.DFX_NETWORK': JSON.stringify(isDev ? 'local' : 'ic'),
     'import.meta.env.NODE_ENV': JSON.stringify(
       isDev ? 'development' : 'production',
     ),
-    'import.meta.env.ENABLE_SSR': process.env.BUILD_MODE != 'static',
+    'import.meta.env.ENABLE_SSR': process.env.BUILD_MODE !== 'static',
+    'import.meta.env.PRODUCTION': process.env.PRODUCTION === 'true',
   },
   server: {
     fs: {
@@ -71,6 +78,12 @@ export default defineConfig(() => ({
     },
   },
   plugins: [
+    sentryVitePlugin({
+      disable: process.env.PRODUCTION !== 'true',
+      org: 'gobazzinga',
+      project: 'hot-or-not',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+    }),
     sveltekit(),
     nodePolyfills({
       // https://github.com/vitejs/vite/discussions/2785#discussioncomment-4738116
