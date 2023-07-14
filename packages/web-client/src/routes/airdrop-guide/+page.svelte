@@ -1,4 +1,6 @@
 <script lang="ts">
+import './guide-styles.postcss'
+
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
@@ -6,7 +8,6 @@ import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
-import { showAirdropPopup } from '$stores/popups'
 </script>
 
 <svelte:head>
@@ -221,34 +222,3 @@ import { showAirdropPopup } from '$stores/popups'
     </div>
   </svelte:fragment>
 </HomeLayout>
-
-<style lang="postcss">
-p {
-  @apply py-2 text-sm text-white/70;
-}
-h4 {
-  @apply py-2 text-lg text-white;
-}
-
-li {
-  @apply marker:text-primary;
-  @apply text-sm text-white/70;
-}
-
-th {
-  @apply p-1 text-left text-white;
-  @apply border-[1px];
-  @apply border-white/50;
-  @apply bg-white/10;
-}
-
-td {
-  @apply border-[1px];
-  @apply p-1;
-  @apply border-white/50;
-}
-
-tr:nth-child(even) {
-  @apply bg-white/10;
-}
-</style>
