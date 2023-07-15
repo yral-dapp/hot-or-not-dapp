@@ -63,9 +63,10 @@ async function checkIfCompleted() {
           </div>
         {:else if participated}
           <div>
-            You have successfully claimed your airdrop. Now, continue to bet on
-            videos to earn more coyns and you can visit the below link anytime
-            to check your airdrop balance.
+            Your profile has been successfully registered for the airdrop. A
+            snapshot of your wallet balance on 15th July at 12 PM UTC has been
+            taken. Please await further instructions while we verify the details
+            of all participants.
           </div>
         {:else if !participated}
           <div>
