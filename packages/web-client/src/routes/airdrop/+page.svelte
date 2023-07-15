@@ -58,7 +58,8 @@ async function checkIfCompleted() {
         {#if !authorized}
           <div>
             Thank you for your interest! We are no longer accepting new
-            registrations. Follow our socials for more information
+            registrations. If you have already registered, please login to see
+            your status.
           </div>
         {:else if participated}
           <div>
