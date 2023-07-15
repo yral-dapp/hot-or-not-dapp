@@ -54,7 +54,9 @@ export default defineConfig(() => ({
   define: {
     // Here we can define global constants
     ...canisterDefinitions,
-    'process.env.INTERNET_IDENTITY_CANISTER_ID': 'qhbym-qaaaa-aaaaa-aaafq-cai',
+    'process.env.INTERNET_IDENTITY_CANISTER_ID': JSON.stringify(
+      'qhbym-qaaaa-aaaaa-aaafq-cai',
+    ),
     'process.env.DFX_NETWORK': JSON.stringify(isDev ? 'local' : 'ic'),
     'import.meta.env.NODE_ENV': JSON.stringify(
       isDev ? 'development' : 'production',
