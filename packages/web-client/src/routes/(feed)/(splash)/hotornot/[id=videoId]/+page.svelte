@@ -18,13 +18,12 @@ import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
 import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/popups'
 import Hls from 'hls.js/dist/hls.min.js'
-import { onMount, tick } from 'svelte'
+import { onMount, tick, onDestroy } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
 import type { PageData } from './$types'
 import type { Observable, Subject } from 'rxjs'
-import { onDestroy } from 'svelte/types/runtime/internal/lifecycle'
 
 export let data: PageData
 
