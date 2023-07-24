@@ -9,6 +9,7 @@ import {
   getHotOrNotPosts,
   updatePostInWatchHistory,
   type PostPopulated,
+  generateHotOrNotPostQueue,
 } from '$lib/helpers/feed'
 import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
@@ -22,8 +23,13 @@ import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
 import type { PageData } from './$types'
+import type { Observable, Subject } from 'rxjs'
+import { onDestroy } from 'svelte/types/runtime/internal/lifecycle'
 
 export let data: PageData
+
+let queue$: Observable<PostPopulated | undefined>
+let terminate$: Subject<null>
 
 const fetchCount = 25
 const fetchWhenVideosLeft = 10
@@ -39,6 +45,8 @@ let fetchedVideosCount = 0
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
 let showError = false
+
+async function fetchNextVideosInTheQueue() {}
 
 async function fetchNextVideos(force = false) {
   // console.log(
@@ -114,8 +122,21 @@ async function handleUnavailableVideo(index: number) {
   videos = videos
 }
 
+function init() {
+  const q = generateHotOrNotPostQueue()
+  queue$ = q.queue$
+  terminate$ = q.terminate$
+  queue$.subscribe((d) => {
+    if (d) {
+      videos.push(d)
+      videos = videos
+    }
+  })
+}
+
 onMount(async () => {
   updateURL()
+  init()
   $playerState.initialized = false
   $playerState.muted = true
   $playerState.visible = true
@@ -129,6 +150,10 @@ onMount(async () => {
   await tick()
   fetchNextVideos()
   handleParams()
+})
+
+onDestroy(() => {
+  terminate$.next(null)
 })
 
 beforeNavigate(() => {
