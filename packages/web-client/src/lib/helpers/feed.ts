@@ -7,6 +7,7 @@ import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { Principal } from '@dfinity/principal'
 import { individualUser, postCache } from './backend'
+import { Subject, type Observable, mergeAll, takeUntil } from 'rxjs'
 
 export interface PostPopulated
   extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -150,6 +151,18 @@ async function filterBets(
   } catch (e) {
     Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
     return posts
+  }
+}
+
+export function generateHotOrNotPostQueue() {
+  const queue$: Subject<Observable<PostPopulated | undefined>> = new Subject()
+  const terminate$ = new Subject<null>()
+
+  const throttledQueue$ = queue$.pipe(mergeAll(5))
+
+  return {
+    queue$: throttledQueue$.pipe(takeUntil(terminate$)),
+    terminate$,
   }
 }
 
