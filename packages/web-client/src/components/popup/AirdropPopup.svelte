@@ -51,7 +51,8 @@ $: if (!$loadingAuthStatus) {
           <AirdropEndGraphics class="h-full w-full" />
         </div>
         <div class="flex w-full max-w-md flex-col items-center space-y-4 px-16">
-          <div class="text-3xl font-bold uppercase text-transparent text-white">
+          <div
+            class="text-center text-3xl font-bold uppercase text-transparent text-white">
             the wait is over!!
           </div>
           <div class="text-md text-center">
