@@ -126,16 +126,15 @@ async function validateData() {
       <DotSeparator />
     {/if}
 
-    <!-- {#if !authorized}
+    {#if !authorized}
       <div class="flex w-full justify-center">
         <LoginButton />
       </div>
     {:else if loading}
       <div class="flex w-full justify-center pt-8">
         <LoadingIcon class="h-8 w-8 animate-spin-slow" />
-      </div> -->
-    <!-- {:else if !participated} -->
-    {#if true}
+      </div>
+    {:else if !participated}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
