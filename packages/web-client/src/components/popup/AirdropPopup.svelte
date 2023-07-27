@@ -2,6 +2,7 @@
 import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
+import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
 import AirdropEndGraphics from '$components/icons/AirdropEndGraphics.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
@@ -14,16 +15,21 @@ import { loadingAuthStatus } from '$stores/loading'
 import { showAirdropPopup } from '$stores/popups'
 
 let loading = true
-let participated = false
+let participatedForNNS = false
+let participatedForAirdrop = false
 
 $: isLoggedIn = $authState.isLoggedIn
 
 async function checkIfCompleted() {
   if ($authState.idString) {
     const res = await airdropEntryDetails($authState.idString)
+    if (!res) {
+      participatedForAirdrop = false
+    }
     if (res) {
-      participated = await isNNSIdRegistered($authState.idString)
-      $showAirdropPopup = !participated
+      participatedForAirdrop = true
+      participatedForNNS = await isNNSIdRegistered($authState.idString)
+      $showAirdropPopup = !participatedForNNS
     }
   }
   loading = false
@@ -44,8 +50,29 @@ $: if (!$loadingAuthStatus) {
     class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
     <div
       class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
-      {#if participated}
+      {#if participatedForNNS}
         <AirdropCompleted />
+      {:else if !participatedForAirdrop}
+        <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
+          <AirdropCompleteGraphics class="h-full w-full" />
+        </div>
+        <div class="flex w-full max-w-md flex-col items-center space-y-4 px-16">
+          <div
+            class="text-center text-3xl font-bold uppercase text-transparent text-white">
+            Airdrop Registration Has Ended
+          </div>
+          <div class="text-md text-center">
+            Thank you for your interest! We are no longer accepting new
+            registrations.
+          </div>
+
+          <Button
+            on:click={() => ($showAirdropPopup = false)}
+            disabled={loading}
+            class="w-full">
+            Play to Earn
+          </Button>
+        </div>
       {:else}
         <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
           <AirdropEndGraphics class="h-full w-full" />
