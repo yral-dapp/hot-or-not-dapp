@@ -93,12 +93,18 @@ async function validateData() {
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
-    {#if participatedForAirdrop && !participatedForNNS}
+    {#if !authorized || (participatedForAirdrop && !participatedForNNS)}
       <div class="mx-auto pt-16 text-center text-sm">
         <div>
-          Your HOT token airdrop allocation has been determined. Please submit
-          your NNS Principal ID to start the claim process and become a part of
-          the HotorNot team!
+          {#if authorized}
+            Your HOT token airdrop allocation has been determined. Please submit
+            your NNS Principal ID to start the claim process and become a part
+            of the HotorNot team!
+          {:else}
+            The HOT token airdrop claim process has started. If you registered
+            for the airdrop before 15th July 2023, please login to see your
+            status.
+          {/if}
         </div>
         <br />
         <a href="/airdrop-guide" class="text-primary underline">
