@@ -8,7 +8,7 @@ import DiscordIcon from '$components/icons/DiscordIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import TelegramIcon from '$components/icons/TelegramIcon.svelte'
 import TwitterIcon from '$components/icons/TwitterIcon.svelte'
-import { isNNSIdRegistered } from '$lib/helpers/airdrop'
+import { airdropEntryDetails, isNNSIdRegistered } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
 import { showAirdropPopup } from '$stores/popups'
@@ -20,8 +20,11 @@ $: isLoggedIn = $authState.isLoggedIn
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isNNSIdRegistered($authState.idString)
-    $showAirdropPopup = !participated
+    const res = await airdropEntryDetails($authState.idString)
+    if (res) {
+      participated = await isNNSIdRegistered($authState.idString)
+      $showAirdropPopup = !participated
+    }
   }
   loading = false
 }
