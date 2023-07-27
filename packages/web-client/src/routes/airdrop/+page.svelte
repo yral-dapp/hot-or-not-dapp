@@ -25,7 +25,7 @@ import { navigateBack } from '$stores/navigation'
       </div>
     </div>
   </svelte:fragment>
-  <svelte:fragment slot="content">
+  <div class="h-full w-full overflow-y-auto" slot="content">
     <AirdropForm />
-  </svelte:fragment>
+  </div>
 </HomeLayout>
