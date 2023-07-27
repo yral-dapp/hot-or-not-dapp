@@ -57,8 +57,8 @@ $: if (!$loadingAuthStatus) {
           </div>
           <div class="text-md text-center">
             {#if isLoggedIn}
-              Unbox your airdrop now. Just follow the instructions on the link
-              to receive your coyns.
+              Your profile has been successfully registered for the airdrop.
+              Please submit your NNS Principal ID to start the claim process.
             {:else}
               The HOT token airdrop claim process has started. If you registered
               for the airdrop before 15th July 2023, please login to see your
@@ -73,8 +73,10 @@ $: if (!$loadingAuthStatus) {
             class="w-full">
             {#if loading}
               <LoadingIcon class="h-4 w-4 animate-spin-slow" />
-            {:else}
+            {:else if isLoggedIn}
               Claim your airdrop
+            {:else}
+              Login
             {/if}
           </Button>
         </div>
