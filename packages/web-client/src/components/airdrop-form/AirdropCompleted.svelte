@@ -38,8 +38,9 @@ $: authorized && refreshTokenBalance()
     You have successfully submitted your NNS Principal ID to claim your airdrop.
   </div>
   {#if !wallet.loading}
-    <div class="text-md text-center text-primary">
-      Your Hot token allocation: {wallet.hot} HOT tokens
+    <div>
+      <div class="text-md text-center">Your Hot token allocation</div>
+      <div class="text-md text-center text-3xl font-bold">{wallet.hot}</div>
     </div>
   {/if}
   <div class="py-4 text-center text-sm">
