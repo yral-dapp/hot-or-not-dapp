@@ -18,8 +18,6 @@ let loading = true
 let participatedForNNS = false
 let participatedForAirdrop = false
 
-$: isLoggedIn = $authState.isLoggedIn
-
 async function checkIfCompleted() {
   if ($authState.idString) {
     const res = await airdropEntryDetails($authState.idString)
@@ -35,13 +33,13 @@ async function checkIfCompleted() {
   loading = false
 }
 
-$: if (!$loadingAuthStatus) {
-  if (isLoggedIn) {
-    checkIfCompleted()
-  } else {
-    loading = false
-    $showAirdropPopup = true
-  }
+$: authorized = $authState.isLoggedIn && !$loadingAuthStatus
+
+$: if (authorized) {
+  checkIfCompleted()
+} else {
+  loading = false
+  $showAirdropPopup = true
 }
 </script>
 
@@ -52,7 +50,7 @@ $: if (!$loadingAuthStatus) {
       class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
       {#if participatedForNNS}
         <AirdropCompleted />
-      {:else if !participatedForAirdrop}
+      {:else if !participatedForAirdrop && authorized}
         <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
           <AirdropCompleteGraphics class="h-full w-full" />
         </div>
@@ -83,7 +81,7 @@ $: if (!$loadingAuthStatus) {
             the wait is over!!
           </div>
           <div class="text-md text-center">
-            {#if isLoggedIn}
+            {#if authorized}
               Your profile has been successfully registered for the airdrop.
               Please submit your NNS Principal ID to start the claim process.
             {:else}
@@ -100,7 +98,7 @@ $: if (!$loadingAuthStatus) {
             class="w-full">
             {#if loading}
               <LoadingIcon class="h-4 w-4 animate-spin-slow" />
-            {:else if isLoggedIn}
+            {:else if authorized}
               Claim your airdrop
             {:else}
               Login
