@@ -7,15 +7,10 @@ import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
-import { isFormFilled } from '$lib/helpers/airdrop'
-import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
-import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
-import Button from '$components/button/Button.svelte'
-import TelegramIcon from '$components/icons/TelegramIcon.svelte'
-import DiscordIcon from '$components/icons/DiscordIcon.svelte'
-import TwitterIcon from '$components/icons/TwitterIcon.svelte'
+import { isNNSIdRegistered, airdropEntryDetails } from '$lib/helpers/airdrop'
 
-let participated = false
+let participatedForNNS = false
+let participatedForAirdrop = false
 let loading = true
 
 $: authorized = $authState.isLoggedIn && !$loadingAuthStatus
@@ -23,7 +18,12 @@ $: authorized && checkIfCompleted()
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isFormFilled($authState.idString)
+    const res = await airdropEntryDetails($authState.idString)
+    if (!res) {
+      participatedForAirdrop = false
+    } else {
+      participatedForNNS = await isNNSIdRegistered($authState.idString)
+    }
   }
   loading = false
 }

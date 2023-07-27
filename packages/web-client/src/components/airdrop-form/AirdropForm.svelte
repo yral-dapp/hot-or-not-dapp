@@ -7,19 +7,19 @@ import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import {
-  isFormFilled,
-  uploadForm,
-  type AirdropFormData,
+  airdropEntryDetails,
+  isNNSIdRegistered,
+  registerNNSId,
 } from '$lib/helpers/airdrop'
 import { fetchTokenBalance } from '$lib/helpers/profile'
 import { isPrincipal } from '$lib/utils/isPrincipal'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
-import AirdropCompleted from './AirdropCompleted.svelte'
 import OptionalInput from './OptionalInput.svelte'
 
 let wallet = {
-  balance: 0,
+  coyn: '0',
+  hot: 0,
   loading: true,
   error: false,
 }
@@ -39,19 +39,21 @@ function validateWithRegex(regex: 'url' | 'email', str: string) {
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isFormFilled($authState.idString)
+    participated = await isNNSIdRegistered($authState.idString)
   }
   loading = false
 }
 
 async function refreshTokenBalance() {
+  if (!$authState.idString) return
   wallet.loading = true
   wallet.error = false
-  const res = await fetchTokenBalance()
-  if (res.error) {
+  const res = await airdropEntryDetails($authState.idString)
+  if (!res) {
     wallet.error = true
   } else {
-    wallet.balance = res.balance
+    wallet.coyn = res?.FinalCOYNWalletBalance
+    wallet.hot = res?.FinalHotTokens
   }
   wallet.loading = false
 }
@@ -62,40 +64,15 @@ $: authorized && !participated && refreshTokenBalance()
 
 let formErrors: string[] = []
 let formLoading = false
-
-let formData: Omit<
-  AirdropFormData,
-  'principalId' | 'walletBalance' | 'canisterId'
-> = {
-  email: '',
-  tweetLink: '',
-  sns1Token: {
-    checked: false,
-    principalId: '',
-  },
-  chatToken: {
-    checked: false,
-    principalId: '',
-  },
-  fundedNft: {
-    checked: false,
-    principalId: '',
-  },
-  gobGobNft: {
-    checked: false,
-    principalId: '',
-  },
-  dscvrOne: '',
-}
+let nnsValue = ''
 
 async function saveFormData() {
   try {
     formLoading = true
-    const res = await uploadForm({
+    const res = await registerNNSId({
       principalId: $authState.idString || '',
-      walletBalance: wallet.balance,
       canisterId: $authState.userCanisterId || '',
-      ...formData,
+      nnsId: nnsValue,
     })
     if (!res) throw 'Something went wrong'
     formLoading = false
@@ -117,60 +94,10 @@ async function validateData() {
     return
   }
 
-  const email = formData.email.trim()
-  if (!email) {
-    formErrors.push('Email is required')
-  } else if (!validateWithRegex('email', email)) {
-    formErrors.push('Email is invalid')
-  }
-
-  const url = formData.tweetLink.trim()
-  if (!url) {
-    formErrors.push('Tweet link is required')
-  } else if (!validateWithRegex('url', url)) {
-    formErrors.push('Tweet link is invalid')
-  }
-
-  if (formData.sns1Token.checked) {
-    const principal = formData.sns1Token.principalId.trim()
-    if (!principal) {
-      formErrors.push('Principal ID for SNS-1 Token is required')
-    } else if (!isPrincipal(principal)) {
-      formErrors.push('Principal ID for SNS-1 Token is invalid')
-    }
-  }
-
-  if (formData.chatToken.checked) {
-    const principal = formData.chatToken.principalId.trim()
-    if (!principal) {
-      formErrors.push('Principal ID for Chat Token is required')
-    } else if (!isPrincipal(principal)) {
-      formErrors.push('Principal ID for Chat Token is invalid')
-    }
-  }
-
-  if (formData.fundedNft.checked) {
-    const principal = formData.fundedNft.principalId.trim()
-    if (!principal) {
-      formErrors.push('Principal ID for Funded NFT is required')
-    } else if (!isPrincipal(principal)) {
-      formErrors.push('Principal ID for Funded NFT is invalid')
-    }
-  }
-
-  if (formData.gobGobNft.checked) {
-    const principal = formData.gobGobNft.principalId.trim()
-    if (!principal) {
-      formErrors.push('Principal ID for Gob Gob NFT is required')
-    } else if (!isPrincipal(principal)) {
-      formErrors.push('Principal ID for Gob Gob NFT is invalid')
-    }
-  }
-
-  if (formData.dscvrOne?.trim()) {
-    const principal = formData.dscvrOne.trim()
+  if (nnsValue.trim()) {
+    const principal = nnsValue.trim()
     if (!isPrincipal(principal)) {
-      formErrors.push('Principal ID for Dscvr.one is invalid')
+      formErrors.push('NNS Principal ID is invalid')
     }
   }
 
@@ -227,7 +154,7 @@ async function validateData() {
         {:else if wallet.loading}
           <pre class="text-xs">Loading ...</pre>
         {:else}
-          <span>{wallet.balance} Coyns</span>
+          <span>{wallet.coyn} Coyns</span>
           <span class="text-xs text-white/70">
             Note: The amount mentioned above represents the sum of your final
             wallet balance on 15th July 2023, along with the extra COYNs awarded
@@ -240,7 +167,7 @@ async function validateData() {
         <span class="font-bold text-primary">
           Your HOT token airdrop allotment
         </span>
-        <span>{wallet.balance} Coyns</span>
+        <span>{wallet.hot} HOT Tokens</span>
         <span class="text-xs text-white/70">
           Note: Please refer the Airdrop Guide for details on how the HOT token
           reward is calculated.
@@ -263,7 +190,7 @@ async function validateData() {
           </span>
         </div>
         <Input
-          bind:value={formData.tweetLink}
+          bind:value={nnsValue}
           placeholder="Enter NNS Principal ID"
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
@@ -290,7 +217,7 @@ async function validateData() {
       </div>
     {:else}
       <div class="flex h-full w-full flex-col items-center overflow-hidden">
-        <AirdropCompleted gotoHotOrNot />
+        completed
       </div>
     {/if}
   </div>
