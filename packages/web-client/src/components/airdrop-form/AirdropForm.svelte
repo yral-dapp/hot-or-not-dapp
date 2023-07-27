@@ -19,46 +19,30 @@ let wallet = {
   coyn: '0',
   hot: 0,
   loading: true,
-  error: false,
 }
 
 let loading = true
-let participated = false
-
-const validationRegex = {
-  url: /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-  email:
-    /^(([a-zA-Z0-9]+)|([a-zA-Z0-9]+((?:\_[a-zA-Z0-9]+)|(?:\.[a-zA-Z0-9]+))*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-zA-Z]{2,6}(?:\.[a-zA-Z]{2})?)$)/,
-}
-
-function validateWithRegex(regex: 'url' | 'email', str: string) {
-  return validationRegex[regex].test(str)
-}
+let participatedForNNS = false
+let participatedForAirdrop = false
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    participated = await isNNSIdRegistered($authState.idString)
+    const res = await airdropEntryDetails($authState.idString)
+    if (!res) {
+      participatedForAirdrop = false
+    } else {
+      wallet.coyn = res?.FinalCOYNWalletBalance
+      wallet.hot = res?.FinalHotTokens
+      wallet.loading = false
+      participatedForAirdrop = true
+      participatedForNNS = await isNNSIdRegistered($authState.idString)
+    }
   }
   loading = false
 }
 
-async function refreshTokenBalance() {
-  if (!$authState.idString) return
-  wallet.loading = true
-  wallet.error = false
-  const res = await airdropEntryDetails($authState.idString)
-  if (!res) {
-    wallet.error = true
-  } else {
-    wallet.coyn = res?.FinalCOYNWalletBalance
-    wallet.hot = res?.FinalHotTokens
-  }
-  wallet.loading = false
-}
-
 $: authorized = $authState.isLoggedIn && !$loadingAuthStatus
 $: authorized && checkIfCompleted()
-$: authorized && !participated && refreshTokenBalance()
 
 let formErrors: string[] = []
 let formLoading = false
@@ -74,7 +58,7 @@ async function saveFormData() {
     })
     if (!res) throw 'Something went wrong'
     formLoading = false
-    participated = true
+    participatedForNNS = true
   } catch (e) {
     console.error('Failed while saving data', e)
     formLoading = false
@@ -87,7 +71,7 @@ async function validateData() {
   formLoading = true
   formErrors = []
 
-  if (wallet.error || wallet.loading) {
+  if (wallet.loading) {
     formErrors = ['Could not fetch wallet balance. Please refresh the page']
     return
   }
@@ -109,7 +93,7 @@ async function validateData() {
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
-    {#if !participated}
+    {#if participatedForAirdrop && !participatedForNNS}
       <div class="mx-auto pt-16 text-center text-sm">
         <div>
           Your HOT token airdrop allocation has been determined. Please submit
@@ -132,7 +116,7 @@ async function validateData() {
       <div class="flex w-full justify-center pt-8">
         <LoadingIcon class="h-8 w-8 animate-spin-slow" />
       </div>
-    {:else if !participated}
+    {:else if participatedForAirdrop && !participatedForNNS}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
@@ -140,15 +124,8 @@ async function validateData() {
 
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Final Wallet Balance</span>
-        {#if wallet.error}
-          <div>
-            <button
-              class="mx-2 inline rounded-sm bg-primary px-2 py-1 outline-1 outline-white">
-              Reload
-            </button>
-            <span class="text-red-700">Error fetching balance.</span>
-          </div>
-        {:else if wallet.loading}
+
+        {#if wallet.loading}
           <pre class="text-xs">Loading ...</pre>
         {:else}
           <span>{wallet.coyn} Coyns</span>
@@ -212,6 +189,19 @@ async function validateData() {
           {/if}
         </Button>
       </div>
+    {:else if !participatedForAirdrop}
+      <div class="mx-auto pt-16 text-center text-sm">
+        <div>Airdrop Registration Has Ended</div>
+        <div>
+          Thank you for your interest! We are no longer accepting new
+          registrations.
+        </div>
+        <br />
+        <a href="/airdrop-guide" class="text-primary underline">
+          Learn more about the airdrop here
+        </a>
+      </div>
+      <Button href="/hotornot" class="w-full">Play to earn</Button>
     {:else}
       <div class="flex h-full w-full flex-col items-center overflow-hidden">
         <AirdropCompleted />
