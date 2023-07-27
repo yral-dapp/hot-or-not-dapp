@@ -152,17 +152,7 @@ async function validateData() {
           Please submit you NNS Principal ID:
           <sub class="align-super text-primary">*</sub>
         </span>
-        <div class="flex items-start gap-1 text-white/70">
-          <span class="shrink-0 pt-0.5">
-            <InfoIcon class="h-3 w-3" />
-          </span>
-          <span class="text-xs">
-            Note: The HOT tokens will be transferred to your NNS wallet by our
-            team over the course of a few months as we go through the process
-            manually with over 16,000 winners. Please be patient and check our
-            socials for updates.
-          </span>
-        </div>
+
         <Input
           bind:value={nnsValue}
           placeholder="Enter NNS Principal ID"
@@ -177,6 +167,14 @@ async function validateData() {
           {/each}
         </div>
       {/if}
+      <div class="text-white/70">
+        <span class="text-xs">
+          Note: The HOT tokens will be transferred to your NNS wallet by our
+          team over the course of a few months as we go through the process
+          manually with over 16,000 winners. Please be patient and check our
+          socials for updates.
+        </span>
+      </div>
       <div>
         <Button
           disabled={formLoading}
@@ -190,7 +188,7 @@ async function validateData() {
         </Button>
       </div>
     {:else if !participatedForAirdrop}
-      <div class="mx-auto pt-16 text-center text-sm">
+      <div class="mx-auto pt-32 text-center text-sm">
         <div>Airdrop Registration Has Ended</div>
         <div>
           Thank you for your interest! We are no longer accepting new
