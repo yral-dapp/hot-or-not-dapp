@@ -185,27 +185,12 @@ async function validateData() {
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
     {#if !participated}
-      <div
-        class="relative mx-auto flex w-fit flex-col items-center gap-4 rounded-md bg-center">
-        <Coin3dIcon class="absolute -left-4 -top-4 h-5 w-5 rotate-[280deg]" />
-        <Coin3dIcon class="absolute -top-4 right-0 h-8 w-8 rotate-[15deg]" />
-        <Coin3dIcon
-          class="absolute -left-10 bottom-0 h-10 w-10 rotate-[15deg]" />
-        <Coin3dIcon
-          class="absolute -right-4 bottom-0 h-6 w-6 rotate-[320deg]" />
-        <span class="text-xl font-bold">Hot or Not's</span>
-        <span class="text-5xl font-bold text-primary">
-          $ 300,000 <sub class="align-super text-white">*</sub>
-        </span>
-        <span class="text-xl font-bold">Airdrop is here</span>
-      </div>
-      <div class="mx-auto text-center text-sm">
-        <span>
-          Join us at Hot or Not as we take over TikTok! Register for the
-          whitelist to receive "HOT" governance tokens in our decentralization
-          sale.
-        </span>
-        <br />
+      <div class="mx-auto pt-16 text-center text-sm">
+        <div>
+          Your HOT token airdrop allocation has been determined. Please submit
+          your NNS Principal ID to start the claim process and become a part of
+          the HotorNot team!
+        </div>
         <br />
         <a href="/airdrop-guide" class="text-primary underline">
           Learn more about the airdrop here
@@ -214,21 +199,23 @@ async function validateData() {
       <DotSeparator />
     {/if}
 
-    {#if !authorized}
+    <!-- {#if !authorized}
       <div class="flex w-full justify-center">
         <LoginButton />
       </div>
     {:else if loading}
       <div class="flex w-full justify-center pt-8">
         <LoadingIcon class="h-8 w-8 animate-spin-slow" />
-      </div>
-    {:else if !participated}
+      </div> -->
+    <!-- {:else if !participated} -->
+    {#if true}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
       </div>
+
       <div class="flex flex-col gap-2 text-sm">
-        <span class="font-bold text-primary">Your Current Wallet Balance</span>
+        <span class="font-bold text-primary">Your Final Wallet Balance</span>
         {#if wallet.error}
           <div>
             <button
@@ -242,25 +229,26 @@ async function validateData() {
         {:else}
           <span>{wallet.balance} Coyns</span>
           <span class="text-xs text-white/70">
-            Note: The final balance as of 15th July 2023 12PM UTC will be taken
-            into account for airdrop allotment
+            Note: The amount mentioned above represents the sum of your final
+            wallet balance on 15th July 2023, along with the extra COYNs awarded
+            for holding CHAT tokens, SNS-1 tokens, DSCVR Principal ID, GobGobs,
+            and Funded NFTs.
           </span>
         {/if}
       </div>
-      <div class="flex flex-col gap-2">
-        <span class="text-sm text-white">
-          Email
-          <sub class="align-super text-primary">*</sub>
+      <div class="flex flex-col gap-2 text-sm">
+        <span class="font-bold text-primary">
+          Your HOT token airdrop allotment
         </span>
-        <Input
-          bind:value={formData.email}
-          type="email"
-          placeholder="Enter your email"
-          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+        <span>{wallet.balance} Coyns</span>
+        <span class="text-xs text-white/70">
+          Note: Please refer the Airdrop Guide for details on how the HOT token
+          reward is calculated.
+        </span>
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-sm text-white">
-          Tweet Link
+          Please submit you NNS Principal ID:
           <sub class="align-super text-primary">*</sub>
         </span>
         <div class="flex items-start gap-1 text-white/70">
@@ -268,64 +256,18 @@ async function validateData() {
             <InfoIcon class="h-3 w-3" />
           </span>
           <span class="text-xs">
-            You need to tweet tagging your favourite celebrity with the hashtag
-            #hotornot and paste your tweet's link
+            Note: The HOT tokens will be transferred to your NNS wallet by our
+            team over the course of a few months as we go through the process
+            manually with over 16,000 winners. Please be patient and check our
+            socials for updates.
           </span>
         </div>
         <Input
           bind:value={formData.tweetLink}
-          placeholder="Enter your tweet link"
+          placeholder="Enter NNS Principal ID"
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
-      <div class="flex flex-col gap-2">
-        <span class="text-sm text-white">
-          Do you own any of the following assets? Please select all that apply
-          for additional rewards:
-        </span>
-        <OptionalInput
-          bind:checked={formData.sns1Token.checked}
-          bind:value={formData.sns1Token.principalId}
-          checkboxLabel="SNS-1 Token"
-          inputLabel="Please submit your NNS principal ID"
-          inputPlaceholder="Enter Principal ID" />
-        <OptionalInput
-          bind:checked={formData.chatToken.checked}
-          bind:value={formData.chatToken.principalId}
-          checkboxLabel="Chat Token"
-          inputLabel="Please submit your NNS principal ID"
-          inputPlaceholder="Enter Principal ID" />
-        <OptionalInput
-          bind:checked={formData.fundedNft.checked}
-          bind:value={formData.fundedNft.principalId}
-          checkboxLabel="Hot or Not Funded NFT"
-          inputLabel="Please submit your Plug wallet principal ID"
-          inputPlaceholder="Enter Principal ID" />
-        <OptionalInput
-          bind:checked={formData.gobGobNft.checked}
-          bind:value={formData.gobGobNft.principalId}
-          checkboxLabel="Gob-Gob NFT"
-          inputLabel="Please submit your Plug wallet principal ID"
-          inputPlaceholder="Enter Principal ID" />
-      </div>
-      <div class="flex flex-col gap-2">
-        <span class="text-sm text-white">
-          Are you a DSCVR user? If yes, please submit your DSCVR Principal ID to
-          boost your airdrop:
-        </span>
-        <Input
-          bind:value={formData.dscvrOne}
-          placeholder="Enter your dscvr.one principal (optional)"
-          class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
-      </div>
-      <div class="text-xs text-white/70">
-        Note: Every email ID can only be associated with one login account. If
-        the same mail is used with multiple airdrop entries, the previous
-        entries will be overwritten
-      </div>
-      <div class="text-xs text-white/70">
-        <span class="text-lg">*</span>
-        Subject to full SNS subscription & ICP price
-      </div>
+
       {#if formErrors.length}
         <div class="flex flex-col gap-1">
           <span>Error(s):</span>
@@ -342,27 +284,9 @@ async function validateData() {
           {#if formLoading}
             <LoadingIcon class="h-6 w-6 animate-spin-slow" />
           {:else}
-            Join whitelist
+            Submit
           {/if}
         </Button>
-      </div>
-      <div class="text-center text-xs text-white/70">
-        By joining, you agree to
-        <a
-          class="underline"
-          href="/terms-of-service"
-          target="_blank"
-          rel="noopener noreferrer">
-          terms of service
-        </a>
-        &amp;
-        <a
-          class="underline"
-          href="/privacy-policy"
-          target="_blank"
-          rel="noopener noreferrer">
-          privacy policy
-        </a>
       </div>
     {:else}
       <div class="flex h-full w-full flex-col items-center overflow-hidden">
