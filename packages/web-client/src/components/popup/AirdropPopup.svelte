@@ -1,7 +1,7 @@
 <script lang="ts">
+import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
 import AirdropEndGraphics from '$components/icons/AirdropEndGraphics.svelte'
 import CloseIcon from '$components/icons/CloseIcon.svelte'
 import DiscordIcon from '$components/icons/DiscordIcon.svelte'
@@ -12,7 +12,6 @@ import { isNNSIdRegistered } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
 import { showAirdropPopup } from '$stores/popups'
-import AirdropCountdown from './AirdropCountdown.svelte'
 
 let loading = true
 let participated = false
@@ -43,26 +42,7 @@ $: if (!$loadingAuthStatus) {
     <div
       class="flex h-full w-full flex-col items-center justify-center gap-10 overflow-y-auto py-8">
       {#if participated}
-        <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
-          <AirdropCompleteGraphics class="h-full w-full" />
-        </div>
-        <div class="flex w-full max-w-md flex-col items-center space-y-4 px-16">
-          <div class="text-3xl font-bold uppercase text-transparent text-white">
-            Well done!
-          </div>
-          <div class="text-md text-center">
-            You have successfully submitted your NNS Principal ID to claim your
-            airdrop.
-          </div>
-          <div class="py-4 text-center text-sm">
-            The HOT tokens will be transferred to your NNS wallet by our team
-            over the course of a few months as we go through the process
-            manually with over 16,000 winners. Please be patient and check our
-            socials for updates.
-          </div>
-
-          <Button href="/hotornot" class="w-full">Play to earn</Button>
-        </div>
+        <AirdropCompleted />
       {:else}
         <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
           <AirdropEndGraphics class="h-full w-full" />

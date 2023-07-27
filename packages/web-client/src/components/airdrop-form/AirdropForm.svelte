@@ -1,6 +1,5 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
 import InfoIcon from '$components/icons/InfoIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Input from '$components/input/Input.svelte'
@@ -11,11 +10,10 @@ import {
   isNNSIdRegistered,
   registerNNSId,
 } from '$lib/helpers/airdrop'
-import { fetchTokenBalance } from '$lib/helpers/profile'
 import { isPrincipal } from '$lib/utils/isPrincipal'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
-import OptionalInput from './OptionalInput.svelte'
+import AirdropCompleted from './AirdropCompleted.svelte'
 
 let wallet = {
   coyn: '0',
@@ -216,7 +214,7 @@ async function validateData() {
       </div>
     {:else}
       <div class="flex h-full w-full flex-col items-center overflow-hidden">
-        completed
+        <AirdropCompleted />
       </div>
     {/if}
   </div>
