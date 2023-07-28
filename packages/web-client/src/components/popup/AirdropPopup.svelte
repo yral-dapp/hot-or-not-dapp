@@ -27,7 +27,6 @@ async function checkIfCompleted() {
     if (res) {
       participatedForAirdrop = true
       participatedForNNS = await isNNSIdRegistered($authState.idString)
-      $showAirdropPopup = !participatedForNNS
     }
   }
   loading = false
@@ -39,13 +38,12 @@ $: if (authorized) {
   checkIfCompleted()
 } else {
   loading = false
-  $showAirdropPopup = true
 }
 </script>
 
-{#if $showAirdropPopup && !loading}
-  <airdrop
-    class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
+<airdrop
+  class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white duration-500">
+  {#if !loading}
     <div
       class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
       {#if participatedForNNS}
@@ -132,13 +130,17 @@ $: if (authorized) {
         </div>
       </div>
     </div>
-    <div class="absolute right-4 top-4">
-      <IconButton
-        ariaLabel="close"
-        disabled={loading}
-        on:click={() => ($showAirdropPopup = false)}>
-        <CloseIcon class="h-8 w-8" />
-      </IconButton>
+  {:else}
+    <div class="flex h-full w-full items-center justify-center">
+      <LoadingIcon class="h-8 w-8 animate-spin-slow" />
     </div>
-  </airdrop>
-{/if}
+  {/if}
+  <div class="absolute right-4 top-4">
+    <IconButton
+      ariaLabel="close"
+      disabled={loading}
+      on:click={() => ($showAirdropPopup = false)}>
+      <CloseIcon class="h-8 w-8" />
+    </IconButton>
+  </div>
+</airdrop>
