@@ -81,7 +81,7 @@ $: if (authorized) {
           <div class="text-md text-center">
             {#if authorized}
               Your profile has been successfully registered for the airdrop.
-              Please submit your NNS Principal ID to start the claim process.
+              Please submit your NNS HOT Address to start the claim process.
             {:else}
               The HOT token airdrop claim process has started. If you registered
               for the airdrop before 15th July 2023, please login to see your
