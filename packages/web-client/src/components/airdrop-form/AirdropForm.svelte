@@ -134,7 +134,7 @@ async function validateData() {
         {#if wallet.loading}
           <pre class="text-xs">Loading ...</pre>
         {:else}
-          <span>{wallet.coyn} Coyns</span>
+          <span>{wallet.coyn} COYNs</span>
           <span class="text-xs text-white/70">
             Note: The amount mentioned above represents the sum of your final
             wallet balance on 15th July 2023, along with the extra COYNs awarded
