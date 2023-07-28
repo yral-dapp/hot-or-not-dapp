@@ -79,7 +79,7 @@ async function validateData() {
   if (nnsValue.trim()) {
     const principal = nnsValue.trim()
     if (!isPrincipal(principal)) {
-      formErrors.push('NNS Principal ID is invalid')
+      formErrors.push('NNS HOT Address is invalid')
     }
   }
 
@@ -98,8 +98,8 @@ async function validateData() {
         <div>
           {#if authorized}
             Your HOT token airdrop allocation has been determined. Please submit
-            your NNS Principal ID to start the claim process and become a part
-            of the HotorNot team!
+            your NNS HOT Address to start the claim process and become a part of
+            the HotorNot team!
           {:else}
             The HOT token airdrop claim process has started. If you registered
             for the airdrop before 15th July 2023, please login to see your
@@ -155,13 +155,23 @@ async function validateData() {
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-sm text-white">
-          Please submit your NNS Principal ID:
+          Please submit your NNS HOT address
           <sub class="align-super text-primary">*</sub>
+        </span>
+        <span class="text-xs text-white/70">
+          This ID can be obtained by logging into <a
+            href="https://nns.ic0.app"
+            class="underline"
+            target="_blank">
+            https://nns.ic0.app
+          </a>
+          and navigating to 'My tokens' -> 'Hot or Not' -> 'Receive' -> Copy the
+          provided HOT Address
         </span>
 
         <Input
           bind:value={nnsValue}
-          placeholder="Enter NNS Principal ID"
+          placeholder="Enter NNS HOT Address"
           class="flex-1 rounded-md border-0 bg-white/10 p-2 text-sm outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
       </div>
 
