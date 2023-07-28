@@ -155,7 +155,7 @@ async function validateData() {
       </div>
       <div class="flex flex-col gap-2">
         <span class="text-sm text-white">
-          Please submit you NNS Principal ID:
+          Please submit your NNS Principal ID:
           <sub class="align-super text-primary">*</sub>
         </span>
 
