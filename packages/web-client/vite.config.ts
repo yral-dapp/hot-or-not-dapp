@@ -5,7 +5,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
-const isDev = process.env.NODE_ENV === 'production'
+const isDev = process.env.NODE_ENV !== 'production'
 
 console.log('starting vite in', process.env.NODE_ENV, 'mode')
 
