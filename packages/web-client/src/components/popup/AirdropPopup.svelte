@@ -42,7 +42,7 @@ $: if (authorized) {
 </script>
 
 <airdrop
-  class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
+  class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white duration-500">
   {#if !loading}
     <div
       class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
@@ -129,6 +129,10 @@ $: if (authorized) {
           For more queries, you can get in touch with us on our socials
         </div>
       </div>
+    </div>
+  {:else}
+    <div class="flex h-full w-full items-center justify-center">
+      <LoadingIcon class="h-8 w-8 animate-spin-slow" />
     </div>
   {/if}
   <div class="absolute right-4 top-4">
