@@ -76,44 +76,6 @@ import { showAirdropPopup } from '$stores/popups'
           to register and be eligible for the airdrop.
         </p>
 
-        <h4>Registration and Eligibility</h4>
-
-        <p>
-          Registration is required to participate in the airdrop. To register,
-          please click the 'Register' button located at the bottom of this page
-          and follow the steps below:
-        </p>
-
-        <p>Registration process:</p>
-
-        <li>Login through Google or Internet Identity</li>
-        <li>
-          The following information will be taken automatically upon login:
-          <div class="pl-4 pt-1">
-            <li>Principal ID (HotOrNot)</li>
-            <li>
-              Current wallet balance (final balance on 15th July, 2023 12PM UTC
-              will be considered for airdrop allotment)
-            </li>
-          </div>
-        </li>
-        <li>
-          Fill out the airdrop form with the following details:
-          <div class="pl-4 pt-1">
-            <li>Email</li>
-            <li>A tweet with the hashtag #hotornot and paste link</li>
-          </div>
-        </li>
-        <p>
-          Optional information for additional rewards:
-
-          <li>Plug Principal ID holding Gob-Gob NFT</li>
-          <li>Plug Principal ID holding Hot or Not Funded NFT</li>
-          <li>NNS Principal ID holding SNS-1 Token</li>
-          <li>NNS Principal ID holding Chat Token</li>
-          <li>DSCVR Principal ID for DSCVR users</li>
-        </p>
-
         <h4>Rewards</h4>
         <p>
           The number of HOT tokens allocated to one whitelisted/ waitlisted
