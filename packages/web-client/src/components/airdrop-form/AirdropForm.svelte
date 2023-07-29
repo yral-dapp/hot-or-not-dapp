@@ -27,7 +27,7 @@ let participatedForAirdrop = false
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    const res = await airdropEntryDetails($authState.idString + '2222')
+    const res = await airdropEntryDetails($authState.idString)
     if (!res) {
       participatedForAirdrop = false
     } else {
