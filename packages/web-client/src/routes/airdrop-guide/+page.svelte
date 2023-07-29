@@ -58,9 +58,8 @@ import { showAirdropPopup } from '$stores/popups'
         </p>
         <p>
           To recognize the support of its users and early adopters, Hot or Not
-          is airdropping 10 million HOT tokens (1% of the initial token supply)
-          for free. This presents a unique opportunity for users to join the
-          growing community and receive free tokens.
+          is airdropping HOT tokens to the users who registered in our airdrop
+          before 15th July.
         </p>
         <p>
           It's important to note that HOT tokens are governance tokens on the
@@ -137,16 +136,7 @@ import { showAirdropPopup } from '$stores/popups'
             </tr>
           </tbody>
         </table>
-        <p>
-          There are a limited number of sign-ups available on the Hot or Not
-          platform before we hit the subnet limit. So hurry before we run out of
-          sign-ups! The airdrop is on a first come, first serve basis.
-        </p>
-        <p>
-          In case we reach the subnet limit, the sign-ups on the platform would
-          be halted. For those who register for the airdrop post this event, the
-          wallet balance would be considered as 100 COYNs on the cutoff date.
-        </p>
+
         <p>
           The maximum reward per participant is 10,000 HOT tokens, regardless of
           their wallet balance, to prevent excessive token allocation and ensure
@@ -161,26 +151,11 @@ import { showAirdropPopup } from '$stores/popups'
           applicants at a later date.
         </p>
       </div>
-      <div>
-        <div
-          class="relative mx-auto mt-8 flex w-full flex-col items-center gap-4 overflow-hidden rounded-md bg-center p-8">
-          <Coin3dIcon class="absolute left-2 top-4 h-5 w-5 rotate-[280deg]" />
-          <Coin3dIcon class="absolute right-4 top-2 h-8 w-8 rotate-[15deg]" />
-          <Coin3dIcon
-            class="absolute bottom-0 left-10 h-10 w-10 rotate-[15deg]" />
-          <Coin3dIcon
-            class="absolute bottom-0 right-9 h-6 w-6 rotate-[320deg]" />
-          <span class="text-center">
-            Don't miss this opportunity to become a part of our growing
-            community and receive free tokens!
-          </span>
-        </div>
-      </div>
     </div>
     <div
       class="fixed bottom-0 flex w-full items-center justify-center bg-gradient-to-t from-black to-transparent px-8 py-2">
       <Button href="/airdrop" class="w-full max-w-md !py-3">
-        Claim your airdrop
+        Check your status
       </Button>
     </div>
   </svelte:fragment>
