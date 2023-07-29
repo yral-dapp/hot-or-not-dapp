@@ -210,6 +210,12 @@ async function validateData() {
           Thank you for your interest! We are no longer accepting new
           registrations.
         </div>
+        <div class="flex flex-col gap-2 pt-4 text-sm opacity-50">
+          <span class="font-bold text-primary">
+            Your Hot or Not Principal ID
+          </span>
+          <span>{$authState.idString}</span>
+        </div>
         <br />
         <a href="/airdrop-guide" class="text-primary underline">
           Learn more about the airdrop here
