@@ -217,7 +217,9 @@ import { showAirdropPopup } from '$stores/popups'
     </div>
     <div
       class="fixed bottom-0 flex w-full items-center justify-center bg-gradient-to-t from-black to-transparent px-8 py-2">
-      <Button href="/airdrop" class="w-full max-w-md !py-3">Register</Button>
+      <Button href="/airdrop" class="w-full max-w-md !py-3">
+        Claim your airdrop
+      </Button>
     </div>
   </svelte:fragment>
 </HomeLayout>
