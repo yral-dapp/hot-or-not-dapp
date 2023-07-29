@@ -1,6 +1,5 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import InfoIcon from '$components/icons/InfoIcon.svelte'
 import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
@@ -81,6 +80,8 @@ async function validateData() {
     if (!isPrincipal(principal)) {
       formErrors.push('NNS HOT Address is invalid')
     }
+  } else {
+    formErrors.push('NNS HOT Address is required')
   }
 
   formErrors = formErrors
