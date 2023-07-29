@@ -57,7 +57,7 @@ $: if (authorized) {
             class="text-center text-3xl font-bold uppercase text-transparent text-white">
             Airdrop Registration Has Ended
           </div>
-          <div class="text-md text-center">
+          <div class="text-center text-sm">
             Thank you for your interest! We are no longer accepting new
             registrations.
           </div>
@@ -68,6 +68,18 @@ $: if (authorized) {
             class="w-full">
             Play to Earn
           </Button>
+          <div class="text-center text-[0.6rem] opacity-70">
+            <span class="font-bold">PID:</span>
+            <span>P: {$authState.idString}</span>
+            <span class="font-bold">CID:</span>
+            <span>{$authState.userCanisterId}</span>
+            <span class="font-bold">S:</span>
+            <span>
+              A:{participatedForAirdrop ? '1' : '0'},N:{participatedForNNS
+                ? '1'
+                : '0'}
+            </span>
+          </div>
         </div>
       {:else}
         <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
