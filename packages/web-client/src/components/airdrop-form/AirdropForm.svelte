@@ -27,7 +27,7 @@ let participatedForAirdrop = false
 
 async function checkIfCompleted() {
   if ($authState.idString) {
-    const res = await airdropEntryDetails($authState.idString)
+    const res = await airdropEntryDetails($authState.idString + '2222')
     if (!res) {
       participatedForAirdrop = false
     } else {
@@ -210,11 +210,18 @@ async function validateData() {
           Thank you for your interest! We are no longer accepting new
           registrations.
         </div>
-        <div class="flex flex-col gap-2 pt-4 text-sm opacity-50">
+        <div class="flex flex-col gap-2 pt-4 text-xs opacity-70">
           <span class="font-bold text-primary">
             Your Hot or Not Principal ID
           </span>
           <span>{$authState.idString}</span>
+          <span class="font-bold text-primary">Your Canister ID</span>
+          <span>{$authState.userCanisterId}</span>
+          <span>
+            Status: A:{participatedForAirdrop ? '1' : '0'},N:{participatedForNNS
+              ? '1'
+              : '0'}
+          </span>
         </div>
         <br />
         <a href="/airdrop-guide" class="text-primary underline">
