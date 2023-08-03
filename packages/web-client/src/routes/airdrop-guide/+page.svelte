@@ -169,11 +169,6 @@ h4 {
   @apply py-2 text-lg text-white;
 }
 
-li {
-  @apply marker:text-primary;
-  @apply text-sm text-white/70;
-}
-
 th {
   @apply p-1 text-left text-white;
   @apply border-[1px];

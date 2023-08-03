@@ -171,7 +171,6 @@ function handleEnd() {
 </script>
 
 <div
-  on:mousewheel={({ deltaY }) => handleScroll(deltaY)}
   on:touchstart={(e) => {
     dragging = true
     // console.log(e.touches[0].clientY)
