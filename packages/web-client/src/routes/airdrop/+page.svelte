@@ -5,8 +5,6 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
-
-let participated = false
 </script>
 
 <svelte:head>
@@ -17,7 +15,7 @@ let participated = false
   <svelte:fragment slot="top">
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
-      Airdrop
+      Airdrop Claim Form
       <div class="absolute left-4 top-4">
         <IconButton
           on:click={() => goBack($navigateBack || '/menu', true)}
@@ -27,9 +25,7 @@ let participated = false
       </div>
     </div>
   </svelte:fragment>
-  <svelte:fragment slot="content">
-    <div class="h-full w-full overflow-y-auto px-2 pb-12 pt-24">
-      <AirdropForm />
-    </div>
-  </svelte:fragment>
+  <div class="h-full w-full overflow-y-auto" slot="content">
+    <AirdropForm />
+  </div>
 </HomeLayout>

@@ -253,10 +253,7 @@ $: avatarUrl =
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showAirdropButton}
           <IconButton
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              $showAirdropPopup = true
-            }}
+            on:click={() => ($showAirdropPopup = true)}
             ariaLabel="Join airdrop">
             <AirdropIcon class=" h-16" />
           </IconButton>
