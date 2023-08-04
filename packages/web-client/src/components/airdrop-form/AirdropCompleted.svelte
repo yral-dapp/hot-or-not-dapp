@@ -1,6 +1,6 @@
 <script>
 import Button from '$components/button/Button.svelte'
-import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
+import AirdropCompleteGraphics from '$components/airdrop-form/AirdropCompleteGraphics.svelte'
 import { airdropEntryDetails } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
