@@ -28,7 +28,7 @@ let profile: any
         <button class="flex grow flex-col items-center space-y-1">
           <div
             class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-transparent">
-            <ArrowUpIcon class="h-6 w-6" />
+            <Icon name="arrow-up" class="h-6 w-6" />
           </div>
           <div class="text-xs">Send</div>
         </button>
