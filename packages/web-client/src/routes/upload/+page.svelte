@@ -20,7 +20,6 @@ import Button from '$components/button/Button.svelte'
 import { linear } from 'svelte/easing'
 import { tweened, type Tweened } from 'svelte/motion'
 import Log from '$lib/utils/Log'
-import CameraAccessIcon from '$components/icons/CameraAccessIcon.svelte'
 import Icon from '$components/icon/Icon.svelte'
 
 let videoEl: HTMLVideoElement

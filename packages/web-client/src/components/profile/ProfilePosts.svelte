@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
 import Button from '$components/button/Button.svelte'
-import NoPostsIcon from '$components/icons/NoPostsIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import { fetchPosts } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
