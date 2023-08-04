@@ -3,7 +3,7 @@ import Button from '$components/button/Button.svelte'
 import Popup from './Popup.svelte'
 import { authHelper } from '$stores/auth'
 import { initializeAuthClient } from '$lib/helpers/auth'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import userProfile from '$stores/userProfile'
 import Icon from '$components/icon/Icon.svelte'
 

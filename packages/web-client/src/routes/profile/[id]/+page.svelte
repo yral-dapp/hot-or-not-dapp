@@ -5,7 +5,7 @@ import IconButton from '$components/button/IconButton.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import ProfilePosts from '$components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
 import {
   doIFollowThisUser,

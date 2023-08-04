@@ -6,7 +6,7 @@ import LoginPopup from '$components/login/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
 import { navigateBack, navigationHistory } from '$stores/navigation'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import { page } from '$app/stores'
@@ -54,7 +54,7 @@ function registerServiceWorker() {
 let GA: any
 async function initializeGA() {
   try {
-    GA = (await import('$components/seo/GA.svelte')).default
+    GA = (await import('$components/analytics/GA.svelte')).default
   } catch (_) {
     Log('GA Blocked', 'warn')
   }

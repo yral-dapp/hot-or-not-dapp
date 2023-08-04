@@ -9,7 +9,7 @@ import type {
   BetOnCurrentlyViewingPostError,
   PlacedBetDetail,
 } from '$canisters/individual_user_template/individual_user_template.did'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'
 import type { PostPopulated } from '$lib/helpers/feed'
