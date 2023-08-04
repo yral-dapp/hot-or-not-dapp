@@ -3,7 +3,6 @@ import { fade } from 'svelte/transition'
 import { showOnboardingPopup } from '$stores/popups'
 import left from '$assets/decore-left.png'
 import right from '$assets/decore-right.png'
-import StarsIcon from '$components/icons/StarsIcon.svelte'
 import Button from '$components/button/Button.svelte'
 import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 import Icon from '$components/icon/Icon.svelte'
@@ -26,7 +25,7 @@ let step: 1 | 2 | 3 | 4 = 1
         <div class="relative w-full select-none text-center text-3xl font-bold">
           <div
             class="absolute inset-0 bottom-16 flex items-center justify-center">
-            <StarsIcon class="h-36" />
+            <Icon name="stars-graphics" class="h-36" />
           </div>
           Welcome to
           <br />

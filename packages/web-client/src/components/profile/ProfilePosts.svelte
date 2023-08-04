@@ -64,7 +64,7 @@ onMount(() => loadPosts())
 {:else if !loading && !error}
   <div
     class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-    <NoPostsIcon class="w-36" />
+    <Icon name="posts-graphic" class="h-36 w-36" />
     <div class="text-center text-lg font-bold">
       {#if me}
         You have not uploaded any videos yet

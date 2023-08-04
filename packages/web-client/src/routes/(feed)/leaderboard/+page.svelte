@@ -6,4 +6,4 @@ import ComingSoon from '$components/coming-soon/ComingSoon.svelte'
   <title>Leaderboards | Hot or Not</title>
 </svelte:head>
 
-<ComingSoon />;
+<ComingSoon />

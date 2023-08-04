@@ -3,7 +3,6 @@ import { authState } from '$stores/auth'
 import LogoutPopup from '$components/popup/LogoutPopup.svelte'
 import { page } from '$app/stores'
 import userProfile from '$stores/userProfile'
-import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
@@ -171,7 +170,7 @@ onMount(() => {
       {/if}
     </div>
     <div class="pb-2">
-      <OnChainDfinityIcon class="h-14" />
+      <Icon name="on-chain-dfinity-graphics" class="h-14" />
     </div>
   </div>
 </div>

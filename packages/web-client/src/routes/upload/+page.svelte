@@ -373,7 +373,7 @@ onDestroy(async () => {
         <div
           transition:fade|local
           class="flex h-full flex-col items-center justify-center space-y-8 px-10">
-          <CameraAccessIcon class="h-56" />
+          <Icon name="camera-graphic" class="h-56 w-56" />
 
           <span class="font-semibold">Enable Camera Access</span>
           <span class="text-center text-white/60">

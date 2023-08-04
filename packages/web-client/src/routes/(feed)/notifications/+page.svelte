@@ -1,7 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
 import Icon from '$components/icon/Icon.svelte'
-import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
@@ -77,7 +76,7 @@ $: $authState.isLoggedIn && loadTransactions()
         {:else if !loading}
           <div
             class="flex h-full w-full grow flex-col items-center justify-center gap-4">
-            <NoTransactionsIcon class="w-full max-w-sm px-10" />
+            <Icon name="transactions-graphic" class="w-full max-w-sm px-10" />
             <div class="pt-4 text-center opacity-70">No notifications yet</div>
           </div>
         {/if}

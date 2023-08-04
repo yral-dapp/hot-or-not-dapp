@@ -1,9 +1,9 @@
 <script lang="ts">
 import { page } from '$app/stores'
+import coinsStashImg from '$assets/coins-stash.webp'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import Icon from '$components/icon/Icon.svelte'
-import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
@@ -126,7 +126,7 @@ $: link = !loggedIn
         tabs={['How to earn', 'History']} />
       {#if selectedTab == 0}
         <div class="shrink-0 py-4">
-          <CoinsStashIcon class="h-36" />
+          <img src={coinsStashImg} class="h-36 select-none" alt="Coins stash" />
         </div>
         <div class="shrink-0 text-center text-2xl font-bold">
           Invite & Win {INVITE_WIN_TOKENS} tokens

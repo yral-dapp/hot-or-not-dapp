@@ -1,7 +1,7 @@
 <script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte'
 import Button from '$components/button/Button.svelte'
-import VoteWonBackground from '$components/icons/VoteWonBackground.svelte'
+import confettiBg from '$assets/confetti-background.webp'
 import { fade } from 'svelte/transition'
 </script>
 
@@ -9,7 +9,7 @@ import { fade } from 'svelte/transition'
   transition:fade|local
   class="absolute z-[100] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black px-8 text-white">
   <div class="absolute z-0 h-full w-full overflow-hidden">
-    <VoteWonBackground class="h-full opacity-50" />
+    <img alt="" src={confettiBg} class="h-full object-cover opacity-50" />
   </div>
   <Avatar
     class="h-24 w-24"

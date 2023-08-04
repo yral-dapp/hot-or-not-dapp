@@ -2,7 +2,6 @@
 import { beforeNavigate } from '$app/navigation'
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
-import NoVideosIcon from '$components/icons/NoVideosIcon.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import {
@@ -22,6 +21,7 @@ import { onMount, tick } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
 import type { PageData } from './$types'
+import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -207,7 +207,7 @@ beforeNavigate(() => {
     <SwiperSlide class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-        <NoVideosIcon class="w-56" />
+        <Icon name="videos-graphic" class="w-56" />
         <div class="text-center text-lg font-bold">
           No more videos to display today
         </div>

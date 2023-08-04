@@ -1,6 +1,5 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import NoVotesIcon from '$components/icons/NoVotesIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import {
   fetchSpeculations,
@@ -61,7 +60,7 @@ onMount(() => loadPosts())
 {:else if !loading && !error}
   <div
     class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-    <NoVotesIcon class="w-32" />
+    <Icon name="votes-graphics" class="w-32" />
     <div class="text-center text-lg font-bold">
       {#if me}
         You don't have any current votes yet
