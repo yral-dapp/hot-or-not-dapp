@@ -19,7 +19,6 @@ import { registerEvent } from '$components/analytics/GA.svelte'
 import Switch from '$components/switch/Switch.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { debounce } from 'throttle-debounce'
-import Icon from '$components/icon/Icon.svelte'
 
 let uploadStatus: UploadStatus = 'to-upload'
 let previewPaused = true
