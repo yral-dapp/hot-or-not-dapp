@@ -1,7 +1,11 @@
 <script lang="ts">
+import Icon from '$components/icon/Icon.svelte'
+import type { IconName } from '$components/icon/icon.type'
 import c from 'clsx'
 
 export let disabled = false
+export let iconName: IconName
+export let iconClass: string
 export let href = ''
 export let preload = false
 export let ariaLabel = ''
@@ -21,6 +25,7 @@ $: classes = c(
 
 {#if href && !preload && !disabled}
   <a aria-label={ariaLabel} {style} on:click {href} class={classes}>
+    <Icon name={iconName} class={iconClass} />
     <slot />
   </a>
 {:else if href && preload && !disabled}
@@ -31,6 +36,7 @@ $: classes = c(
     data-sveltekit-preload-data="tap"
     {href}
     class={classes}>
+    <Icon name={iconName} class={iconClass} />
     <slot />
   </a>
 {:else}
@@ -41,6 +47,7 @@ $: classes = c(
     on:click
     {disabled}
     class={classes}>
+    <Icon name={iconName} class={iconClass} />
     <slot />
   </button>
 {/if}
