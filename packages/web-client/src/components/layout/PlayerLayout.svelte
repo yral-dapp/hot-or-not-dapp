@@ -249,7 +249,7 @@ $: avatarUrl =
           <IconButton
             on:click={() => ($showAirdropPopup = true)}
             ariaLabel="Join airdrop">
-            <AirdropParachuteIcon class="h-16 w-16 drop-shadow-md" />
+            <Icon name="airdrop-parachute" class="h-16 w-16 drop-shadow-md" />
           </IconButton>
         {/if}
         {#if showReportButton}
