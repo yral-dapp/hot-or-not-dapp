@@ -250,6 +250,7 @@ onDestroy(() => {
           src={videoSrc}
           playsinline
           autoplay
+          loop
           muted={previewMuted}
           class="h-full w-full rounded-xl bg-white/10 ring-4 ring-white/30" />
       {/if}
@@ -260,8 +261,8 @@ onDestroy(() => {
           on:keyup>
           <IconButton
             iconName="play"
-            class="h-4 w-4"
-            iconClass="rounded-full bg-black/50 p-4" />
+            iconClass="h-4 w-4"
+            class="rounded-full bg-black/50 p-4" />
         </div>
       {/if}
     </div>
