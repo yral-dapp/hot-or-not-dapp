@@ -51,15 +51,6 @@ function registerServiceWorker() {
   }
 }
 
-let GoSquared: any
-async function initializeGoSquared() {
-  try {
-    GoSquared = (await import('$components/seo/GoSquared.svelte')).default
-  } catch (_) {
-    Log('GS Blocked', 'warn')
-  }
-}
-
 let GA: any
 async function initializeGA() {
   try {
@@ -83,7 +74,6 @@ onMount(() => {
     listenForUnhandledRejections()
     initializeAuthClient()
     registerServiceWorker()
-    initializeGoSquared()
     initializeGA()
   } catch (e) {
     Log({ error: e, source: '1 layout' }, 'error')
@@ -130,10 +120,6 @@ beforeNavigate(({ from, to, type }) => {
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
   <slot />
 </div>
-
-{#if GoSquared}
-  <svelte:component this={GoSquared} />
-{/if}
 
 {#if GA}
   <svelte:component this={GA} />
