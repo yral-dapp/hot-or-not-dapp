@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import Input from '$components/input/Input.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
@@ -15,9 +15,9 @@ let walletId = ''
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Refer & Earn
-      <div class="absolute top-4 left-4">
+      <div class="absolute left-4 top-4">
         <IconButton href="/wallet-staging">
-          <CaretLeftIcon class="h-5 w-5" />
+          <Icon name="caret-left" class="h-5 w-5" />
         </IconButton>
       </div>
     </div>

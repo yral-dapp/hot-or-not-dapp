@@ -1,5 +1,5 @@
 <script lang="ts">
-import CopyIcon from '$components/icons/CopyIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import Log from '$lib/utils/Log'
 import { onDestroy } from 'svelte'
 
@@ -30,6 +30,6 @@ onDestroy(() => {
   on:click={copy}
   on:click
   class="flex w-min min-w-[5.5rem] items-center justify-center space-x-2 rounded-md bg-primary/10 px-2 py-1 text-sm text-primary">
-  <CopyIcon class="h-4 w-4" />
+  <Icon name="copy" class="h-4 w-4" />
   <span>{copied ? 'Copied' : 'Copy'}</span>
 </button>

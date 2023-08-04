@@ -2,11 +2,6 @@
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import PencilIcon from '$components/icons/PencilIcon.svelte'
-import ReportIcon from '$components/icons/ReportIcon.svelte'
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import ProfilePosts from '$components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
@@ -31,6 +26,7 @@ import { slide } from 'svelte/transition'
 import CopyButton from '$components/profile/CopyButton.svelte'
 import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -154,20 +150,20 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
     <IconButton
       on:click={() => goBack($navigateBack || '/menu', true)}
       class="shrink-0">
-      <CaretLeftIcon class="h-7 w-7" />
+      <Icon name="caret-left" class="h-7 w-7" />
     </IconButton>
   </svelte:fragment>
   <div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
     <IconButton on:click={showShareDialog}>
-      <ShareArrowIcon class="h-6 w-6" />
+      <Icon name="share" class="h-6 w-6" />
     </IconButton>
     {#if me}
       <IconButton href={`/profile/${userId}/edit`}>
-        <PencilIcon class="h-5 w-5" />
+        <Icon name="pencil" class="h-5 w-5" />
       </IconButton>
     {:else if profile.principal_id}
       <IconButton on:click={() => (showReportPopup = true)}>
-        <ReportIcon class="h-5 w-5" />
+        <Icon name="report" class="h-5 w-5" />
       </IconButton>
     {/if}
   </div>
@@ -269,7 +265,9 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
             on:click={handleLove}
             class="mx-auto w-[10rem]">
             {#if follow.loading}
-              <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
+              <Icon
+                name="loading"
+                class="h-6 w-6 animate-spin-slow text-white" />
             {:else}
               {follow.doIFollow ? 'Loving' : 'Love'}
             {/if}

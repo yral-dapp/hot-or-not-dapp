@@ -1,6 +1,5 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import ProfileImageSelector from '$components/profile/ProfileImageSelector.svelte'
 import Input from '$components/input/Input.svelte'
@@ -17,6 +16,7 @@ import { goto } from '$app/navigation'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser, userIndex } from '$lib/helpers/backend'
 import goBack from '$lib/utils/goBack'
+import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -184,7 +184,7 @@ $: userId = username_set
         disabled={loading}
         on:click={() => goBack(`/profile/${userId}`, true)}
         class="shrink-0">
-        <CaretLeftIcon class="h-7 w-7" />
+        <Icon name="caret-left" class="h-7 w-7" />
       </IconButton>
     </svelte:fragment>
 

@@ -1,14 +1,14 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import HotOrNotFireIcon from '$components/icons/HotOrNotFireIcon.svelte'
 import Log from '$lib/utils/Log'
 import { page } from '$app/stores'
+import Icon from '$components/icon/Icon.svelte'
 
 const error = $page.error?.message
 const status = $page.status
 
 function getVariant() {
-  return Math.random() < 0.5 ? 'hot' : 'not'
+  return Math.random() < 0.5 ? 'hot-logo' : 'not-logo'
 }
 
 Log({ error: 'Page load error', details: error, status }, 'error')
@@ -20,7 +20,7 @@ $: statusCode = status.toString().split('')
   <div class="flex select-none items-center space-x-4 text-white">
     {#each statusCode as c}
       {#if c == '0'}
-        <HotOrNotFireIcon variant={getVariant()} class="h-20" />
+        <Icon name={getVariant()} class="h-20 w-12" />
       {:else}
         <span class="text-8xl">
           {c}

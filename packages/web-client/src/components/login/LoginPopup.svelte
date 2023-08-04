@@ -17,8 +17,6 @@ const NFID_AUTH_URL =
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CloseIcon from '$components/icons/CloseIcon.svelte'
-import DfinityIcon from '$components/icons/DfinityIcon.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import Log from '$lib/utils/Log'
@@ -27,7 +25,7 @@ import userProfile from '$stores/userProfile'
 import { goto } from '$app/navigation'
 import { tick } from 'svelte'
 import { get } from 'svelte/store'
-import GoogleIcon from '$components/icons/GoogleIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 export let hideNfid = false
 
@@ -118,7 +116,7 @@ function handleError(type: LoginType, e?: string) {
           on:click={async () => await handleLogin('nfid')}
           type="primary"
           class="flex h-12 w-full items-center space-x-3 !bg-white font-normal !text-black">
-          <GoogleIcon class="h-6 w-6" />
+          <Icon name="google-logo" class="h-6 w-6" />
 
           <span>Login with Google</span>
         </Button>
@@ -128,7 +126,7 @@ function handleError(type: LoginType, e?: string) {
         on:click={async () => await handleLogin('ii')}
         class="h-12 w-full space-x-2 py-3"
         type="secondary">
-        <DfinityIcon class="w-8" />
+        <Icon name="dfinity-logo" class="w-8" />
         <span>Internet Identity</span>
       </Button>
 
@@ -145,7 +143,7 @@ function handleError(type: LoginType, e?: string) {
     <IconButton
       disabled={loading}
       on:click={() => ($authState.showLogin = false)}>
-      <CloseIcon class="h-8 w-8" />
+      <Icon name="close" class="h-8 w-8" />
     </IconButton>
   </div>
 </login>

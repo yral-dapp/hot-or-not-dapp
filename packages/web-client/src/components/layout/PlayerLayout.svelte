@@ -2,14 +2,8 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import AirdropIcon from '$components/icons/AirdropIcon.svelte'
-import EyeIcon from '$components/icons/EyeIcon.svelte'
-import FireIcon from '$components/icons/FireIcon.svelte'
-import FlagIcon from '$components/icons/FlagIcon.svelte'
-import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
-import HeartIcon from '$components/icons/HeartIcon.svelte'
-import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
-import WalletIcon from '$components/icons/WalletIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
+import AirdropParachuteIcon from '$components/icons/AirdropParachuteIcon.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
@@ -232,7 +226,7 @@ $: avatarUrl =
                 generateRandomName('name', post.created_by_user_principal_id)}
             </a>
             <div class="flex items-center space-x-1">
-              <EyeIcon class="h-4 w-4 text-white" />
+              <Icon name="eye-open" class="h-4 w-4 text-white" />
               <span class="text-sm">{Number(post.total_view_count)}</span>
             </div>
           </div>
@@ -255,7 +249,7 @@ $: avatarUrl =
           <IconButton
             on:click={() => ($showAirdropPopup = true)}
             ariaLabel="Join airdrop">
-            <AirdropIcon class=" h-16" />
+            <AirdropParachuteIcon class="h-16 w-16 drop-shadow-md" />
           </IconButton>
         {/if}
         {#if showReportButton}
@@ -265,13 +259,13 @@ $: avatarUrl =
               e.stopImmediatePropagation()
               showReportPopup = true
             }}>
-            <FlagIcon class="h-8 w-8 text-white drop-shadow" />
+            <Icon name="flag" class="h-6 w-6 text-white drop-shadow-md" />
           </IconButton>
         {/if}
 
         {#if showReferAndEarnLink}
           <IconButton ariaLabel="Share this post" href="/refer-earn">
-            <GiftBoxIcon class="h-8 w-8" />
+            <Icon name="giftbox-fill" class="h-7 w-7" />
           </IconButton>
         {/if}
         {#if showLikeButton}
@@ -282,18 +276,22 @@ $: avatarUrl =
                 e.stopImmediatePropagation()
                 handleLike()
               }}>
-              <HeartIcon
-                filled={post.liked_by_me && $authState.isLoggedIn}
+              <Icon
+                name={post.liked_by_me && $authState.isLoggedIn
+                  ? 'heart-fill-color'
+                  : 'heart-fill'}
                 class="h-8 w-8" />
             </IconButton>
-            <span class="text-center text-sm drop-shadow-sm">
+            <span class="text-center text-sm drop-shadow-md">
               {getShortNumber(Number(post.like_count))}
             </span>
           </div>
         {/if}
         {#if showWalletLink}
           <IconButton ariaLabel="Wallet" href="/wallet">
-            <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
+            <Icon
+              name="wallet-fill"
+              class="h-6 w-6 text-white drop-shadow-md" />
           </IconButton>
         {/if}
         {#if showShareButton}
@@ -302,7 +300,7 @@ $: avatarUrl =
               e.stopImmediatePropagation()
               handleShare()
             }}>
-            <ShareMessageIcon class="h-6 w-6" />
+            <Icon name="share-message" class="h-6 w-6 drop-shadow-md" />
           </IconButton>
         {/if}
         {#if showHotOrNotButton}
@@ -311,7 +309,7 @@ $: avatarUrl =
             disabled={!bettingStatusValue}
             href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
             class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
-            <FireIcon class="h-5 w-5" />
+            <Icon name="fire" class="h-5 w-5" />
           </IconButton>
         {/if}
       </div>

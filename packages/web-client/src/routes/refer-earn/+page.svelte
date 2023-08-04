@@ -2,11 +2,8 @@
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte'
-import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte'
-import DownloadIcon from '$components/icons/DownloadCloudIcon.svelte'
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import { registerEvent } from '$components/seo/GA.svelte'
@@ -116,7 +113,7 @@ $: link = !loggedIn
         <IconButton
           on:click={() => goBack($navigateBack || '/menu', true)}
           class="shrink-0">
-          <CaretLeftIcon class="h-7 w-7" />
+          <Icon name="caret-left" class="h-7 w-7" />
         </IconButton>
       </div>
     </div>
@@ -151,7 +148,7 @@ $: link = !loggedIn
 
             <div class="absolute right-0 bg-black px-3">
               <IconButton on:click={shareLink}>
-                <ShareArrowIcon class="h-5 pr-1" />
+                <Icon name="share" class="h-5 w-5 pr-1" />
               </IconButton>
             </div>
           </div>
@@ -175,7 +172,7 @@ $: link = !loggedIn
           <div class="flex flex-col items-center space-y-3">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
-              <ShareArrowIcon class="h-5 text-primary" />
+              <Icon name="share" class="h-5 w-5 text-primary" />
             </div>
             <span class="text-center text-xs">
               Share your link with a friend
@@ -184,7 +181,7 @@ $: link = !loggedIn
           <div class="flex flex-col items-center space-y-3">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
-              <DownloadIcon class="h-5 text-primary" />
+              <Icon name="cloud-download" class="h-5 w-5 text-primary" />
             </div>
             <span class="text-center text-xs">
               Your friends downloads and logs into the app
@@ -193,7 +190,7 @@ $: link = !loggedIn
           <div class="flex flex-col items-center space-y-3">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
-              <DollarCoinIcon class="h-5 text-primary" />
+              <Icon name="coin-dollar" class="h-5 w-5 text-primary" />
             </div>
             <span class="text-center text-xs">
               You both win {INVITE_WIN_TOKENS} tokens each

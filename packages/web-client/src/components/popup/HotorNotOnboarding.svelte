@@ -5,10 +5,8 @@ import left from '$assets/decore-left.png'
 import right from '$assets/decore-right.png'
 import StarsIcon from '$components/icons/StarsIcon.svelte'
 import Button from '$components/button/Button.svelte'
-import TutorialArrow from '$components/icons/TutorialArrow.svelte'
-import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
-import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
 import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 let step: 1 | 2 | 3 | 4 = 1
 </script>
@@ -55,7 +53,7 @@ let step: 1 | 2 | 3 | 4 = 1
           </div>
         </div>
         <div class="absolute bottom-32 -translate-x-full">
-          <TutorialArrow class="h-48" />
+          <Icon name="arrow-long-down" class="h-48 w-8" />
         </div>
         <Button class="px-12" on:click={() => (step = 3)}>Next</Button>
         <button
@@ -81,11 +79,11 @@ let step: 1 | 2 | 3 | 4 = 1
             not.
           </div>
         </div>
-        <div class="absolute bottom-40 left-10">
-          <TutorialArrow class="h-52" />
+        <div class="absolute bottom-40 left-3">
+          <Icon name="arrow-long-down" class="h-52 w-8" />
         </div>
-        <div style="transform: scaleX(-1);" class="absolute bottom-40 right-14">
-          <TutorialArrow class="h-56" />
+        <div style="transform: scaleX(-1);" class="absolute bottom-40 right-3">
+          <Icon name="arrow-long-down" class="h-56 w-8" />
         </div>
         <Button class="px-12" on:click={() => (step = 4)}>Next</Button>
         <button
@@ -105,11 +103,11 @@ let step: 1 | 2 | 3 | 4 = 1
         class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-16">
         <div class="text-3xl font-bold">Win 2X Coyn tokens</div>
         <div class="flex flex-col items-center space-y-3">
-          <CoinBagIcon class="h-12 w-12" />
+          <Icon name="pouch" class="h-12 w-12" />
           <span>Win 2X Coyn tokens</span>
         </div>
         <div class="flex flex-col items-center space-y-3">
-          <GiftBoxIcon outlined class="h-12 w-12" />
+          <Icon name="giftbox" class="h-12 w-12" />
           <span>Vote with the majority and win double the tokens!</span>
         </div>
         <Button on:click={() => ($showOnboardingPopup = false)} class="w-full">

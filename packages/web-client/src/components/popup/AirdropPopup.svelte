@@ -2,13 +2,9 @@
 import AirdropCompleted from '$components/airdrop-form/AirdropCompleted.svelte'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import AirdropCompleteGraphics from '$components/icons/AirdropCompleteGraphics.svelte'
 import AirdropEndGraphics from '$components/icons/AirdropEndGraphics.svelte'
-import CloseIcon from '$components/icons/CloseIcon.svelte'
-import DiscordIcon from '$components/icons/DiscordIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import TelegramIcon from '$components/icons/TelegramIcon.svelte'
-import TwitterIcon from '$components/icons/TwitterIcon.svelte'
 import { airdropEntryDetails, isNNSIdRegistered } from '$lib/helpers/airdrop'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
@@ -107,7 +103,7 @@ $: if (authorized) {
             href="/airdrop"
             class="w-full">
             {#if loading}
-              <LoadingIcon class="h-4 w-4 animate-spin-slow" />
+              <Icon name="loading" class="h-4 w-4 animate-spin-slow" />
             {:else if authorized}
               Claim your airdrop
             {:else}
@@ -122,19 +118,19 @@ $: if (authorized) {
             href="https://t.me/+c-LTX0Cp-ENmMzI1"
             target="_blank"
             class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-            <TelegramIcon class="h-5 w-5 -translate-x-[1px]" />
+            <Icon name="telegram-logo" class="h-5 w-5 -translate-x-[1px]" />
           </a>
           <a
             href="https://discord.gg/GZ9QemnZuj"
             target="_blank"
             class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-            <DiscordIcon class="h-5 w-5" />
+            <Icon name="discord-logo" class="h-5 w-5" />
           </a>
           <a
             href="https://twitter.com/hotornot_dapp"
             target="_blank"
             class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-            <TwitterIcon class="h-4 w-4" />
+            <Icon name="twitter-logo" class="h-4 w-4" />
           </a>
         </div>
         <div class="text-center text-sm text-white/70">
@@ -144,7 +140,7 @@ $: if (authorized) {
     </div>
   {:else}
     <div class="flex h-full w-full items-center justify-center">
-      <LoadingIcon class="h-8 w-8 animate-spin-slow" />
+      <Icon name="loading" class="h-8 w-8 animate-spin-slow" />
     </div>
   {/if}
   <div class="absolute right-4 top-4">
@@ -152,7 +148,7 @@ $: if (authorized) {
       ariaLabel="close"
       disabled={loading}
       on:click={() => ($showAirdropPopup = false)}>
-      <CloseIcon class="h-8 w-8" />
+      <Icon name="close" class="h-8 w-8" />
     </IconButton>
   </div>
 </airdrop>

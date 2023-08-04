@@ -12,15 +12,11 @@ export type PlaceVote = {
 
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import VoteCoinIcon from '$components/icons/VoteCoinIcon.svelte'
-import ChevronUpIcon from '$components/icons/ChevronUpIcon.svelte'
-import HotIcon from '$components/icons/HotIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import NotIcon from '$components/icons/NotIcon.svelte'
 import { playerState } from '$stores/playerState'
 import c from 'clsx'
 import { createEventDispatcher } from 'svelte'
 import { fade } from 'svelte/transition'
+import Icon from '$components/icon/Icon.svelte'
 
 export let tutorialMode: {
   highlightCoin: boolean
@@ -80,8 +76,9 @@ function placeVote(direction: 'Hot' | 'Not') {
         e.stopImmediatePropagation()
         placeVote('Not')
       }}>
-      <NotIcon
-        class={c('h-24 transition-transform', {
+      <Icon
+        name="not-logo"
+        class={c('h-24 w-24 transition-transform', {
           'scale-110': loadingWithDirection === 'Not',
           'scale-90 grayscale': loadingWithDirection === 'Hot',
         })} />
@@ -102,7 +99,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
         invisible: votePlaced || loadingWithDirection,
       })}>
-      <ChevronUpIcon class="h-2" />
+      <Icon name="chevron-up" class="h-2 w-2" />
     </IconButton>
     {#if tutorialMode.highlightCoin}
       <div class="absolute top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
@@ -116,11 +113,11 @@ function placeVote(direction: 'Hot' | 'Not') {
         grayscale:
           tutorialMode.highlightSelectors || votePlaced !== false || disabled,
       })}>
-      <VoteCoinIcon class="h-20" />
+      <Icon name="coin-face" class="h-20 w-20" />
       <div
         class="absolute inset-0 flex select-none items-center justify-center">
         {#if loadingWithDirection}
-          <LoadingIcon class="h-8 w-8 animate-spin" />
+          <Icon name="loading" class="h-8 w-8 animate-spin" />
         {:else}
           <span
             style="text-shadow: 3px 3px 0 #EA9C00;"
@@ -139,7 +136,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
         invisible: votePlaced || loadingWithDirection,
       })}>
-      <ChevronUpIcon class="h-2 rotate-180" />
+      <Icon name="chevron-up" class="h-2 w-2 rotate-180" />
     </IconButton>
   </div>
   <div
@@ -157,8 +154,9 @@ function placeVote(direction: 'Hot' | 'Not') {
         e.stopImmediatePropagation()
         placeVote('Hot')
       }}>
-      <HotIcon
-        class={c('h-24 transition-transform', {
+      <Icon
+        name="hot-logo"
+        class={c('h-24 w-24 transition-transform', {
           'scale-110': loadingWithDirection === 'Hot',
           'scale-90 grayscale': loadingWithDirection === 'Not',
         })} />

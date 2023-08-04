@@ -3,6 +3,7 @@ import type {
   BettingStatus,
   SystemTime,
 } from '$canisters/individual_user_template/individual_user_template.did'
+import Icon from '$components/icon/Icon.svelte'
 
 type UnionValueOf<U> = U extends U ? U[keyof U] : never
 type BetStatus = UnionValueOf<BettingStatus>
@@ -14,9 +15,6 @@ const systemTime: SystemTime = {
 </script>
 
 <script lang="ts">
-import PieChartIcon from '$components/icons/PieChartIcon.svelte'
-import TimerIcon from '$components/icons/TimerIcon.svelte'
-import UsersIcon from '$components/icons/UsersIcon.svelte'
 import Tooltip from '$components/tooltip/Tooltip.svelte'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 
@@ -39,7 +37,7 @@ $: timeLeft = getMsLeftForBetResult(onGoingSlot, startTime)
       <Tooltip text="Time Remaining for Result" position="middle">
         <div
           class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-          <TimerIcon class="h-4 w-4" />
+          <Icon name="stopwatch" class="h-4 w-4" />
           <span class="text-sm">{$timeLeft}</span>
         </div>
       </Tooltip>
@@ -47,14 +45,14 @@ $: timeLeft = getMsLeftForBetResult(onGoingSlot, startTime)
     <Tooltip text="Participants" position="middle">
       <div
         class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-        <UsersIcon class="h-4 w-4" />
+        <Icon name="user-multiple" class="h-4 w-4" />
         <span class="text-sm">{usersInThisSlot}/100</span>
       </div>
     </Tooltip>
     <Tooltip text="Hours since upload" position="middle">
       <div
         class="flex items-center space-x-2 rounded-full bg-black/40 px-3 py-2 text-white">
-        <PieChartIcon class="h-4 w-4" />
+        <Icon name="pie-chart" class="h-4 w-4" />
         <span class="text-sm">{onGoingSlot}/48</span>
       </div>
     </Tooltip>

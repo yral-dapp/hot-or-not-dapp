@@ -1,7 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
@@ -52,7 +51,7 @@ onMount(loadTransactions)
 <ProfileLayout>
   <svelte:fragment slot="top-left">
     <IconButton on:click={() => history.back()} class="shrink-0">
-      <CaretLeftIcon class="h-7 w-7" />
+      <Icon name="caret-left" class="h-7 w-7" />
     </IconButton>
   </svelte:fragment>
   <div slot="top-center" class="text-lg font-bold">All transactions</div>
@@ -78,7 +77,7 @@ onMount(loadTransactions)
 
         {#if loading}
           <div class="flex w-full items-center justify-center space-x-2 py-8">
-            <LoadingIcon class="h-4 w-4 animate-spin" />
+            <Icon name="loading" class="h-4 w-4 animate-spin" />
             <span>Loading</span>
           </div>
         {/if}

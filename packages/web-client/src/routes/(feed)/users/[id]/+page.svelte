@@ -2,7 +2,7 @@
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 </script>
 
 <svelte:head>
@@ -11,12 +11,12 @@ import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 
 <HomeLayout>
   <svelte:fragment slot="top">
-    <div class="flex items-center rounded-full bg-black/10 py-2 px-4">
+    <div class="flex items-center rounded-full bg-black/10 px-4 py-2">
       User's Videos
     </div>
-    <div class="absolute top-4 left-4">
+    <div class="absolute left-4 top-4">
       <IconButton>
-        <CaretLeftIcon class="h-5 w-5" />
+        <Icon name="caret-left" class="h-5 w-5" />
       </IconButton>
     </div>
   </svelte:fragment>

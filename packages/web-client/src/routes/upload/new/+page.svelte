@@ -1,8 +1,6 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import PlayIcon from '$components/icons/PlayIcon.svelte'
 import InputBox from '$components/input/InputBox.svelte'
 import UploadLayout from '$components/layout/UploadLayout.svelte'
 import { tweened } from 'svelte/motion'
@@ -21,6 +19,7 @@ import { registerEvent } from '$components/seo/GA.svelte'
 import Switch from '$components/switch/Switch.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { debounce } from 'throttle-debounce'
+import Icon from '$components/icon/Icon.svelte'
 
 let uploadStatus: UploadStatus = 'to-upload'
 let previewPaused = true
@@ -222,7 +221,7 @@ onDestroy(() => {
 <UploadLayout>
   <div slot="top-left">
     <IconButton href="/upload" preload>
-      <CaretLeftIcon class="h-7 w-7 text-white" />
+      <Icon name="caret-left" class="h-7 w-7 text-white" />
     </IconButton>
   </div>
   <svelte:fragment slot="top-center">Upload</svelte:fragment>
@@ -258,7 +257,7 @@ onDestroy(() => {
           class="absolute inset-0 flex items-center justify-center"
           on:keyup>
           <IconButton class="rounded-full bg-black/50 p-4">
-            <PlayIcon class="h-4 w-4" />
+            <Icon name="play" class="h-4 w-4" />
           </IconButton>
         </div>
       {/if}

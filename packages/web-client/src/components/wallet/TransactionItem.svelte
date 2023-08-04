@@ -1,5 +1,5 @@
 <script lang="ts">
-import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import type {
   TransactionHistory,
   WalletEventSubType,
@@ -62,11 +62,7 @@ const labels: Record<WalletEventSubType, string> = {
       class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
       <div
         class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-        {#if deducted}
-          <ArrowUpIcon class="h-6 w-6" />
-        {:else}
-          <ArrowUpIcon class="h-6 w-6 rotate-180" />
-        {/if}
+        <Icon name="arrow-up" class="h-6 w-6 {deducted ? '' : 'rotate-180'}" />
       </div>
     </div>
     <div class="flex flex-col">

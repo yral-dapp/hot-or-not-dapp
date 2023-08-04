@@ -1,77 +1,74 @@
 <script lang="ts">
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import TelegramIcon from '$components/icons/TelegramIcon.svelte'
-import DiscordIcon from '$components/icons/DiscordIcon.svelte'
-import TwitterIcon from '$components/icons/TwitterIcon.svelte'
-import CoinBagIcon from '$components/icons/CoinBagIcon.svelte'
-import CenterTextIcon from '$components/icons/CenterTextIcon.svelte'
-import MessageBoxIcon from '$components/icons/MessageBoxIcon.svelte'
-import NotebookIcon from '$components/icons/NotebookIcon.svelte'
-import LockIcon from '$components/icons/LockIcon.svelte'
-import LogoutIcon from '$components/icons/LogoutIcon.svelte'
 import { authState } from '$stores/auth'
 import LogoutPopup from '$components/popup/LogoutPopup.svelte'
-import Ic0Icon from '$components/icons/Ic0Icon.svelte'
 import { page } from '$app/stores'
 import userProfile from '$stores/userProfile'
 import OnChainDfinityIcon from '$components/icons/OnChainDfinityIcon.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
-import WhatsappIcon from '$components/icons/WhatsappIcon.svelte'
 import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
 import { loadingAuthStatus } from '$stores/loading'
-import SaveIcon from '$components/icons/SaveIcon.svelte'
-import QuestionIcon from '$components/icons/QuestionIcon.svelte'
+import type { IconName } from '$components/icon/icon.type'
+import Icon from '$components/icon/Icon.svelte'
+
+let links: {
+  icon: IconName
+  title: string
+  class?: string
+  href?: string
+  onClick?: () => void
+  hide?: boolean
+}[] = []
 
 $: links = [
   {
-    icon: CoinBagIcon,
+    icon: 'pouch',
     title: 'Airdrop Guide',
     class: 'w-5 h-5',
     href: '/airdrop-guide',
   },
   {
-    icon: QuestionIcon,
+    icon: 'help',
     title: 'How to Earn',
     class: 'w-5 h-5',
     href: '/refer-earn',
   },
   {
-    icon: CenterTextIcon,
+    icon: 'text-align-middle',
     title: 'About Us',
     class: 'w-5 h-5',
     href: '/about-us',
   },
   {
-    icon: MessageBoxIcon,
+    icon: 'chat-box',
     title: 'FAQs',
     href: '/faq',
   },
   {
-    icon: WhatsappIcon,
+    icon: 'whatsapp-logo',
     title: 'Talk to the team',
     class: 'w-5 h-5 pl-0.5',
     href: 'https://t.me/+c-LTX0Cp-ENmMzI1',
   },
 
   {
-    icon: NotebookIcon,
+    icon: 'notebook',
     title: 'Terms of Service',
     href: '/terms-of-service',
   },
   {
-    icon: LockIcon,
+    icon: 'lock',
     title: 'Privacy Policy',
     href: '/privacy-policy',
   },
   {
-    icon: SaveIcon,
+    icon: 'download',
     title: 'Install App',
     href: '/faq/install-app',
     class: 'w-5 h-5 pl-1',
   },
   {
-    icon: LogoutIcon,
+    icon: 'logout',
     title: 'Logout',
     class: 'w-5 h-5 pl-1',
     onClick: () => (showLogoutPopup = true),
@@ -134,12 +131,10 @@ onMount(() => {
           data-sveltekit-preload-data="tap"
           class="flex items-center justify-between">
           <div class="flex items-center space-x-4 text-white">
-            <svelte:component
-              this={link.icon}
-              class={link.class ?? 'h-6 w-6'} />
+            <Icon name={link.icon} class={link.class ?? 'h-6 w-6'} />
             <div>{link.title}</div>
           </div>
-          <CaretLeftIcon class="h-6 w-6 rotate-180" />
+          <Icon name="caret-left" class="h-6 w-6 rotate-180" />
         </svelte:element>
       {/if}
     {/each}
@@ -151,19 +146,19 @@ onMount(() => {
         href="https://t.me/+c-LTX0Cp-ENmMzI1"
         target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-        <TelegramIcon class="h-5 w-5 -translate-x-[1px]" />
+        <Icon name="telegram-logo" class="h-5 w-5 -translate-x-[1px]" />
       </a>
       <a
         href="https://discord.gg/GZ9QemnZuj"
         target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-        <DiscordIcon class="h-5 w-5" />
+        <Icon name="discord-logo" class="h-5 w-5" />
       </a>
       <a
         href="https://twitter.com/hotornot_dapp"
         target="_blank"
         class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-        <TwitterIcon class="h-4 w-4" />
+        <Icon name="twitter-logo" class="h-4 w-4" />
       </a>
       {#if !$page.url.host.includes('ic0.app')}
         <a
@@ -171,7 +166,7 @@ onMount(() => {
             import.meta.env.VITE_WEBCLIENT_CANISTER_ID
           }.raw.ic0.app`}
           class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-          <Ic0Icon class="h-5 w-5" />
+          <Icon name="ic-app" class="h-5 w-5" />
         </a>
       {/if}
     </div>

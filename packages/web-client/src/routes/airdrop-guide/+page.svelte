@@ -1,12 +1,10 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
-import { showAirdropPopup } from '$stores/popups'
 </script>
 
 <svelte:head>
@@ -22,7 +20,7 @@ import { showAirdropPopup } from '$stores/popups'
         <IconButton
           on:click={() => goBack($navigateBack || '/menu', true)}
           class="shrink-0">
-          <CaretLeftIcon class="h-7 w-7" />
+          <Icon name="caret-left" class="h-7 w-7" />
         </IconButton>
       </div>
     </div>

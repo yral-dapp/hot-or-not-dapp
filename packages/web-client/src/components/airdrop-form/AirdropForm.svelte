@@ -1,6 +1,6 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
@@ -121,7 +121,7 @@ async function validateData() {
       </div>
     {:else if loading}
       <div class="flex w-full justify-center pt-8">
-        <LoadingIcon class="h-8 w-8 animate-spin-slow" />
+        <Icon name="loading" class="h-8 w-8 animate-spin-slow" />
       </div>
     {:else if participatedForAirdrop && !participatedForNNS}
       <div class="flex flex-col gap-2 text-sm">
@@ -198,7 +198,7 @@ async function validateData() {
           on:click={() => validateData()}
           class="w-full">
           {#if formLoading}
-            <LoadingIcon class="h-6 w-6 animate-spin-slow" />
+            <Icon name="loading" class="h-6 w-6 animate-spin-slow" />
           {:else}
             Submit
           {/if}

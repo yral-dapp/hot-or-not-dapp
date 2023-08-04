@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 </script>
 
@@ -13,16 +13,16 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Terms of service
-      <div class="absolute top-4 left-4">
+      <div class="absolute left-4 top-4">
         <IconButton href="/menu">
-          <CaretLeftIcon class="h-5 w-5" />
+          <Icon name="caret-left" class="h-5 w-5" />
         </IconButton>
       </div>
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div
-      class="flex h-full w-full flex-col space-y-8 overflow-hidden overflow-y-auto py-20 px-8">
+      class="flex h-full w-full flex-col space-y-8 overflow-hidden overflow-y-auto px-8 py-20">
       <div class="flex flex-col space-y-2">
         <div class="text-sm">1. Introductions</div>
         <div class="text-xs">
@@ -319,7 +319,7 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
           details are below:
           <div class="pl-4 pt-2">Name: Utkarsh Goyal</div>
           <div class="pl-4">Designation: Director</div>
-          <div class="pl-4 pb-2">Email ID: utkarsh@gobazzinga.io</div>
+          <div class="pb-2 pl-4">Email ID: utkarsh@gobazzinga.io</div>
           We will endeavour to redress the complaint within three months from the
           date of receipt of the complaint.
         </div>

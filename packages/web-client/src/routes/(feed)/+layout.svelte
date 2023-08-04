@@ -5,8 +5,8 @@ import Selector from '$components/home/Selector.svelte'
 import { page } from '$app/stores'
 import { playerState } from '$stores/playerState'
 import { onDestroy, onMount } from 'svelte'
-import NotificationIcon from '$components/icons/NotificationIcon.svelte'
 import { authState } from '$stores/auth'
+import Icon from '$components/icon/Icon.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -35,7 +35,9 @@ $: pathname = $page.url.pathname
       <a
         href="/notifications"
         class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center">
-        <NotificationIcon showDot={$authState.isLoggedIn} class="h-6 w-6" />
+        <Icon
+          name={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
+          class="h-6 w-6" />
       </a>
     {:else if pathname.includes('menu')}
       <div

@@ -1,7 +1,6 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 </script>
 
@@ -14,9 +13,9 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       About Us
-      <div class="absolute top-4 left-4">
+      <div class="absolute left-4 top-4">
         <IconButton href="/menu">
-          <CaretLeftIcon class="h-5 w-5" />
+          <Icon name="caret-left" class="h-5 w-5" />
         </IconButton>
       </div>
     </div>
