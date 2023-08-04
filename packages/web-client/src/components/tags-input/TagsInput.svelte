@@ -66,9 +66,10 @@ onMount(() => {
       <span>
         #{tag}
       </span>
-      <IconButton on:click={() => removeTag(tag)}>
-        <Icon name="close" class="h-4 w-4" />
-      </IconButton>
+      <IconButton
+        iconName="close"
+        iconClass="h-4 w-4"
+        on:click={() => removeTag(tag)} />
     </div>
   {/each}
   {#if showError}

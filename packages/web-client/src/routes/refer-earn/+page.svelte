@@ -111,10 +111,10 @@ $: link = !loggedIn
       Refer & Earn
       <div class="absolute left-4 top-4">
         <IconButton
+          iconName="caret-left"
+          iconClass="h-7 w-7"
           on:click={() => goBack($navigateBack || '/menu', true)}
-          class="shrink-0">
-          <Icon name="caret-left" class="h-7 w-7" />
-        </IconButton>
+          class="shrink-0" />
       </div>
     </div>
   </svelte:fragment>
@@ -147,9 +147,10 @@ $: link = !loggedIn
             </span>
 
             <div class="absolute right-0 bg-black px-3">
-              <IconButton on:click={shareLink}>
-                <Icon name="share" class="h-5 w-5 pr-1" />
-              </IconButton>
+              <IconButton
+                iconName="caret-left"
+                iconClass="h-5 w-5 pr-1"
+                on:click={shareLink} />
             </div>
           </div>
           {#if copied}

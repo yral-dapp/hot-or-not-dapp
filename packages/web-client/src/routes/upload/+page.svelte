@@ -429,11 +429,11 @@ onDestroy(async () => {
       </div>
     {:else}
       <IconButton
+        iconName="close"
+        iconClass="h-6 w-6 text-white"
         href="/feed"
         preload
-        class="h-10 w-10 rounded-full bg-black/50">
-        <Icon name="close" class="h-6 w-6 text-white" />
-      </IconButton>
+        class="h-10 w-10 rounded-full bg-black/50" />
     {/if}
   </div>
   <svelte:fragment slot="bottom-camera-controls">
@@ -507,6 +507,8 @@ onDestroy(async () => {
         {#if cameraControls.flash !== 'hide'}
           <div class="flex flex-col items-center justify-center space-y-1">
             <IconButton
+              iconName={cameraControls.flash}
+              iconClass="h-5 w-5"
               on:click={toggleTorch}
               disabled={cameraControls.flash === 'flash-not-available'}
               class={c(
@@ -514,9 +516,7 @@ onDestroy(async () => {
                 cameraControls.flash === 'flash-fill'
                   ? 'bg-white text-primary'
                   : 'bg-black text-white',
-              )}>
-              <Icon name={cameraControls.flash} class="h-5 w-5" />
-            </IconButton>
+              )} />
             <span class="text-xs">Flash</span>
           </div>
         {/if}
@@ -525,32 +525,28 @@ onDestroy(async () => {
             !cameraControls.flip.show || (recording && !useCanvas)}
           <div class="flex flex-col items-center justify-center space-y-1">
             <IconButton
+              iconName={disabled ? 'flip-not-available' : 'flip'}
+              iconClass="h-4 w-4 text-white"
               {disabled}
               on:click={switchCamera}
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-              <Icon
-                name={disabled ? 'flip-not-available' : 'flip'}
-                class="h-4 w-4 text-white" />
-            </IconButton>
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-black/50" />
             <span class="text-xs">Flip</span>
           </div>
         {/if}
         <div class="flex flex-col items-center justify-center space-y-1">
           <IconButton
+            iconName={recording ? 'stopwatch-not-available' : 'stopwatch'}
+            iconClass="h-5 w-5 {cameraControls.timer === 'off' ? '' : 'hidden'}"
             disabled={recording}
             on:click={toggleTimer}
             class={c(
               'flex h-10 w-10 items-center justify-center rounded-full',
               {
-                'bg-black text-white': cameraControls.timer === 'off',
+                'bg-black/50 text-white': cameraControls.timer === 'off',
                 'bg-white text-primary': cameraControls.timer !== 'off',
               },
             )}>
-            {#if cameraControls.timer === 'off'}
-              <Icon
-                name={recording ? 'stopwatch-not-available' : 'stopwatch'}
-                class="h-5 w-5 " />
-            {:else}
+            {#if cameraControls.timer !== 'off'}
               {cameraControls.timer}
             {/if}
           </IconButton>

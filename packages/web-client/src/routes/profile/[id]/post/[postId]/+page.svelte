@@ -31,9 +31,10 @@ let unavailable = false
     {/if}
 
     <div class="absolute left-4 top-4">
-      <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
-        <Icon name="caret-left" class="h-5 w-5" />
-      </IconButton>
+      <IconButton
+        iconName="caret-left"
+        iconClass="h-5 w-5"
+        on:click={() => goBack(`/profile/${$page.params.id}`, true)} />
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">

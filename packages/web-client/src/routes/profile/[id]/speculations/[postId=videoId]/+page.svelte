@@ -32,10 +32,10 @@ let unavailable = false
 
     <div class="absolute left-4 top-4">
       <IconButton
+        iconName="caret-left"
+        iconClass="h-5 w-5"
         on:click={() =>
-          goBack(`/profile/${$page.params.id}?tab=speculations`, true)}>
-        <Icon name="caret-left" class="h-5 w-5" />
-      </IconButton>
+          goBack(`/profile/${$page.params.id}?tab=speculations`, true)} />
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">

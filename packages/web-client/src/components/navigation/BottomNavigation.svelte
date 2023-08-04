@@ -26,57 +26,53 @@ $: homeIconFilled = path.includes('feed')
     ? 'bg-black shadow-up'
     : ''}">
   <IconButton
+    iconName={homeIconFilled ? 'home-fill' : 'home'}
+    iconClass="h-6 w-6 {homeIconFilled ? 'text-primary' : 'text-white'}"
     preload
     ariaLabel="Navigate to home feed"
     href={`/feed/${feedUrl}`}
     class="relative flex items-center px-2 py-5">
-    <Icon
-      name={homeIconFilled ? 'home-fill' : 'home'}
-      class="h-6 w-6 {homeIconFilled ? 'text-primary' : 'text-white'}" />
     <div
       class:hidden={!path.includes('feed')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
   <IconButton
+    iconName={path.includes('leaderboard') ? 'trophy-fill' : 'trophy'}
+    iconClass="h-6 w-6 {path.includes('leaderboard')
+      ? 'text-primary'
+      : 'text-white'}"
     ariaLabel="Navigate to leaderboards"
     href="/leaderboard"
     class="relative flex items-center px-2 py-5">
-    <Icon
-      name={path.includes('leaderboard') ? 'trophy-fill' : 'trophy'}
-      class="h-6 w-6 {path.includes('leaderboard')
-        ? 'text-primary'
-        : 'text-white'}" />
     <div
       class:hidden={!path.includes('leaderboard')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
   <IconButton
+    iconName="plus"
+    iconClass="h-4 w-4 text-white"
     ariaLabel="Navigate to create new post"
     href="/upload"
-    class="flex items-center rounded-full bg-primary p-3">
-    <Icon name="plus" class="h-4 w-4 text-white" />
-  </IconButton>
+    class="flex items-center rounded-full bg-primary p-3" />
   <IconButton
+    iconName={path.includes('wallet') ? 'wallet-fill' : 'wallet'}
+    iconClass="h-6 w-6 {path.includes('wallet')
+      ? 'text-primary'
+      : 'text-white'}"
     ariaLabel="Navigate to wallet page"
     href="/wallet"
     class="relative flex items-center px-2 py-5">
-    <Icon
-      name={path.includes('wallet') ? 'wallet-fill' : 'wallet'}
-      class="h-6 w-6 {path.includes('wallet')
-        ? 'text-primary'
-        : 'text-white'}" />
     <div
       class:hidden={!path.includes('wallet')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />
   </IconButton>
   <IconButton
+    iconName="text-align-right"
+    iconClass="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}"
     preload
     ariaLabel="Navigate to menu for more options"
     href="/menu"
     class="relative flex items-center px-2 py-5">
-    <Icon
-      name="text-align-right"
-      class="h-6 w-6 {path.includes('menu') ? 'text-primary' : 'text-white'}" />
     <div
       class:hidden={!path.includes('menu')}
       class="absolute bottom-0 w-full bg-primary py-1 blur-md" />

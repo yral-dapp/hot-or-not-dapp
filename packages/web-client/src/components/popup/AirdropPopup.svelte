@@ -145,10 +145,10 @@ $: if (authorized) {
   {/if}
   <div class="absolute right-4 top-4">
     <IconButton
+      iconName="close"
+      iconClass="h-8 w-8"
       ariaLabel="close"
       disabled={loading}
-      on:click={() => ($showAirdropPopup = false)}>
-      <Icon name="close" class="h-8 w-8" />
-    </IconButton>
+      on:click={() => ($showAirdropPopup = false)} />
   </div>
 </airdrop>

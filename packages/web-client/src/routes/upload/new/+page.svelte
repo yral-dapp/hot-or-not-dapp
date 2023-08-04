@@ -220,9 +220,11 @@ onDestroy(() => {
 
 <UploadLayout>
   <div slot="top-left">
-    <IconButton href="/upload" preload>
-      <Icon name="caret-left" class="h-7 w-7 text-white" />
-    </IconButton>
+    <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7 text-white"
+      href="/upload"
+      preload />
   </div>
   <svelte:fragment slot="top-center">Upload</svelte:fragment>
   <div
@@ -256,9 +258,10 @@ onDestroy(() => {
           on:click={() => (previewPaused = false)}
           class="absolute inset-0 flex items-center justify-center"
           on:keyup>
-          <IconButton class="rounded-full bg-black/50 p-4">
-            <Icon name="play" class="h-4 w-4" />
-          </IconButton>
+          <IconButton
+            iconName="play"
+            class="h-4 w-4"
+            iconClass="rounded-full bg-black/50 p-4" />
         </div>
       {/if}
     </div>

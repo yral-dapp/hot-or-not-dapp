@@ -148,23 +148,26 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
 <ProfileLayout>
   <svelte:fragment slot="top-left">
     <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7"
       on:click={() => goBack($navigateBack || '/menu', true)}
-      class="shrink-0">
-      <Icon name="caret-left" class="h-7 w-7" />
-    </IconButton>
+      class="shrink-0" />
   </svelte:fragment>
   <div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
-    <IconButton on:click={showShareDialog}>
-      <Icon name="share" class="h-6 w-6" />
-    </IconButton>
+    <IconButton
+      iconName="share"
+      iconClass="h-6 w-6"
+      on:click={showShareDialog} />
     {#if me}
-      <IconButton href={`/profile/${userId}/edit`}>
-        <Icon name="pencil" class="h-5 w-5" />
-      </IconButton>
+      <IconButton
+        iconName="pencil"
+        iconClass="h-5 w-5"
+        href={`/profile/${userId}/edit`} />
     {:else if profile.principal_id}
-      <IconButton on:click={() => (showReportPopup = true)}>
-        <Icon name="report" class="h-5 w-5" />
-      </IconButton>
+      <IconButton
+        iconName="report"
+        iconClass="h-5 w-5"
+        on:click={() => (showReportPopup = true)} />
     {/if}
   </div>
   <div slot="top-center" class="text-lg font-bold">

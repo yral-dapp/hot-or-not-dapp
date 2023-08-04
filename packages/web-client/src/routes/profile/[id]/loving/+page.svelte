@@ -87,10 +87,10 @@ async function handleLove(userIndex: number, userId?: string) {
 <ProfileLayout>
   <svelte:fragment slot="top-left">
     <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7"
       on:click={() => goBack(`/profile/${userId}`, true)}
-      class="shrink-0">
-      <Icon name="caret-left" class="h-7 w-7" />
-    </IconButton>
+      class="shrink-0" />
   </svelte:fragment>
   <div slot="top-center" class="text-lg font-bold">
     {me ? 'Your ' : ''}Loving

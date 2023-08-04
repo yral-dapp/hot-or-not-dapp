@@ -18,10 +18,10 @@ import { navigateBack } from '$stores/navigation'
       Airdrop Claim Form
       <div class="absolute left-4 top-4">
         <IconButton
+          iconName="caret-left"
+          iconClass="h-7 w-7"
           on:click={() => goBack($navigateBack || '/menu', true)}
-          class="shrink-0">
-          <Icon name="caret-left" class="h-7 w-7" />
-        </IconButton>
+          class="shrink-0" />
       </div>
     </div>
   </svelte:fragment>

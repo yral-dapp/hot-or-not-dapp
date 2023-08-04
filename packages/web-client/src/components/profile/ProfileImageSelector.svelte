@@ -87,15 +87,11 @@ async function uploadImage(blob: Blob) {
       class="h-48 w-48 rounded-full object-cover" />
   {/if}
   <IconButton
+    iconName={!src ? 'plus' : 'pencil'}
+    iconClass="h-4 w-4 text-white"
     on:click={() => (menuPopup = true)}
     disabled={loading}
-    class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 focus:bg-orange-600">
-    {#if !src}
-      <Icon name="plus" class="h-4 w-4 text-white" />
-    {:else}
-      <Icon name="pencil" class="h-4 w-4 text-white" />
-    {/if}
-  </IconButton>
+    class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full bg-orange-500 focus:bg-orange-600" />
 </div>
 
 <input

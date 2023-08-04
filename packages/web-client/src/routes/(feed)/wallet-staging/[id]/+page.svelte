@@ -16,9 +16,10 @@ let walletId = ''
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Refer & Earn
       <div class="absolute left-4 top-4">
-        <IconButton href="/wallet-staging">
-          <Icon name="caret-left" class="h-5 w-5" />
-        </IconButton>
+        <IconButton
+          iconName="caret-left"
+          iconClass="h-5 w-5"
+          href="/wallet-staging" />
       </div>
     </div>
   </svelte:fragment>

@@ -50,9 +50,11 @@ onMount(loadTransactions)
 
 <ProfileLayout>
   <svelte:fragment slot="top-left">
-    <IconButton on:click={() => history.back()} class="shrink-0">
-      <Icon name="caret-left" class="h-7 w-7" />
-    </IconButton>
+    <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7"
+      on:click={() => history.back()}
+      class="shrink-0" />
   </svelte:fragment>
   <div slot="top-center" class="text-lg font-bold">All transactions</div>
 

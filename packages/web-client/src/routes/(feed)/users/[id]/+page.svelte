@@ -15,9 +15,7 @@ import Icon from '$components/icon/Icon.svelte'
       User's Videos
     </div>
     <div class="absolute left-4 top-4">
-      <IconButton>
-        <Icon name="caret-left" class="h-5 w-5" />
-      </IconButton>
+      <IconButton iconName="caret-left" iconClass="h-5 w-5" />
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">content</svelte:fragment>

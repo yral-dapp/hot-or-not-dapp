@@ -72,17 +72,15 @@ function placeVote(direction: 'Hot' | 'Not') {
     {/if}
     <IconButton
       disabled={disabled || tutorialMode.highlightCoin}
+      iconName="not-logo"
+      iconClass={c('h-24 w-24 transition-transform', {
+        'scale-110': loadingWithDirection === 'Not',
+        'scale-90 grayscale': loadingWithDirection === 'Hot',
+      })}
       on:click={(e) => {
         e.stopImmediatePropagation()
         placeVote('Not')
-      }}>
-      <Icon
-        name="not-logo"
-        class={c('h-24 w-24 transition-transform', {
-          'scale-110': loadingWithDirection === 'Not',
-          'scale-90 grayscale': loadingWithDirection === 'Hot',
-        })} />
-    </IconButton>
+      }} />
     <span class="text-sm">Not</span>
   </div>
   <div
@@ -91,6 +89,8 @@ function placeVote(direction: 'Hot' | 'Not') {
       _tutorialMode || error ? '!pointer-events-none' : 'pointer-events-auto',
     )}>
     <IconButton
+      iconName="chevron-up"
+      iconClass="h-2 w-2"
       disabled={$playerState.selectedCoins == 100 || disabled || _tutorialMode}
       on:click={(e) => {
         e.stopImmediatePropagation()
@@ -98,9 +98,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       }}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
         invisible: votePlaced || loadingWithDirection,
-      })}>
-      <Icon name="chevron-up" class="h-2 w-2" />
-    </IconButton>
+      })} />
     {#if tutorialMode.highlightCoin}
       <div class="absolute top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
@@ -128,6 +126,8 @@ function placeVote(direction: 'Hot' | 'Not') {
       </div>
     </button>
     <IconButton
+      iconName="chevron-up"
+      iconClass="h-2 w-2 rotate-180"
       on:click={(e) => {
         e.stopImmediatePropagation()
         decreaseCoins()
@@ -135,9 +135,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       disabled={$playerState.selectedCoins == 10 || disabled || _tutorialMode}
       class={c('z-[10] flex items-center p-4 disabled:opacity-50', {
         invisible: votePlaced || loadingWithDirection,
-      })}>
-      <Icon name="chevron-up" class="h-2 w-2 rotate-180" />
-    </IconButton>
+      })} />
   </div>
   <div
     class={c(
@@ -148,19 +146,17 @@ function placeVote(direction: 'Hot' | 'Not') {
       <div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
     <IconButton
+      iconName="hot-logo"
+      iconClass={c('h-24 w-24 transition-transform', {
+        'scale-110': loadingWithDirection === 'Hot',
+        'scale-90 grayscale': loadingWithDirection === 'Not',
+      })}
       class="z-2"
       disabled={disabled || tutorialMode.highlightCoin}
       on:click={(e) => {
         e.stopImmediatePropagation()
         placeVote('Hot')
-      }}>
-      <Icon
-        name="hot-logo"
-        class={c('h-24 w-24 transition-transform', {
-          'scale-110': loadingWithDirection === 'Hot',
-          'scale-90 grayscale': loadingWithDirection === 'Not',
-        })} />
-    </IconButton>
+      }} />
     <span class="text-sm">Hot</span>
   </div>
 </div>

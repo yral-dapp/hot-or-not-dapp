@@ -141,9 +141,9 @@ function handleError(type: LoginType, e?: string) {
   </div>
   <div class="absolute right-4 top-4">
     <IconButton
+      iconName="close"
+      iconClass="h-8 w-8"
       disabled={loading}
-      on:click={() => ($authState.showLogin = false)}>
-      <Icon name="close" class="h-8 w-8" />
-    </IconButton>
+      on:click={() => ($authState.showLogin = false)} />
   </div>
 </login>

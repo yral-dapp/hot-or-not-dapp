@@ -246,70 +246,70 @@ $: avatarUrl =
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showAirdropButton}
           <IconButton
+            iconName="airdrop-parachute"
+            iconClass="h-16 w-16 drop-shadow-md"
             on:click={() => ($showAirdropPopup = true)}
-            ariaLabel="Join airdrop">
-            <Icon name="airdrop-parachute" class="h-16 w-16 drop-shadow-md" />
-          </IconButton>
+            ariaLabel="Join airdrop" />
         {/if}
         {#if showReportButton}
           <IconButton
+            iconName="flag"
+            iconClass="h-6 w-6 text-white drop-shadow-md"
             ariaLabel="Report this post"
             on:click={(e) => {
               e.stopImmediatePropagation()
               showReportPopup = true
-            }}>
-            <Icon name="flag" class="h-6 w-6 text-white drop-shadow-md" />
-          </IconButton>
+            }} />
         {/if}
 
         {#if showReferAndEarnLink}
-          <IconButton ariaLabel="Share this post" href="/refer-earn">
-            <Icon name="giftbox-fill" class="h-7 w-7" />
-          </IconButton>
+          <IconButton
+            iconName="giftbox-fill"
+            iconClass="h-7 w-7"
+            ariaLabel="Share this post"
+            href="/refer-earn" />
         {/if}
         {#if showLikeButton}
           <div class="flex flex-col">
             <IconButton
+              iconName={post.liked_by_me && $authState.isLoggedIn
+                ? 'heart-fill-color'
+                : 'heart-fill'}
+              iconClass="h-8 w-8"
               ariaLabel="Toggle like on this post"
               on:click={(e) => {
                 e.stopImmediatePropagation()
                 handleLike()
-              }}>
-              <Icon
-                name={post.liked_by_me && $authState.isLoggedIn
-                  ? 'heart-fill-color'
-                  : 'heart-fill'}
-                class="h-8 w-8" />
-            </IconButton>
+              }} />
             <span class="text-center text-sm drop-shadow-md">
               {getShortNumber(Number(post.like_count))}
             </span>
           </div>
         {/if}
         {#if showWalletLink}
-          <IconButton ariaLabel="Wallet" href="/wallet">
-            <Icon
-              name="wallet-fill"
-              class="h-6 w-6 text-white drop-shadow-md" />
-          </IconButton>
+          <IconButton
+            iconName="wallet-fill"
+            iconClass="h-6 w-6 text-white drop-shadow-md"
+            ariaLabel="Wallet"
+            href="/wallet" />
         {/if}
         {#if showShareButton}
           <IconButton
+            iconName="share-message"
+            iconClass="h-6 w-6 drop-shadow-md"
             on:click={(e) => {
               e.stopImmediatePropagation()
               handleShare()
-            }}>
-            <Icon name="share-message" class="h-6 w-6 drop-shadow-md" />
-          </IconButton>
+            }} />
         {/if}
         {#if showHotOrNotButton}
           <IconButton
+            iconName="fire"
+            iconClass="h-5 w-5"
             ariaLabel="Check out this post in Hot or Not"
             disabled={!bettingStatusValue}
             href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
-            class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
-            <Icon name="fire" class="h-5 w-5" />
-          </IconButton>
+            class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2" />
         {/if}
       </div>
     </div>
