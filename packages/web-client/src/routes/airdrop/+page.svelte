@@ -1,7 +1,6 @@
 <script lang="ts">
 import AirdropForm from '$components/airdrop-form/AirdropForm.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
