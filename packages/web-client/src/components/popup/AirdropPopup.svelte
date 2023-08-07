@@ -22,7 +22,7 @@ async function checkIfCompleted() {
     }
     if (res) {
       participatedForAirdrop = true
-      participatedForNNS = await isNNSIdRegistered($authState.idString)
+      participatedForNNS = !!(await isNNSIdRegistered($authState.idString))
     }
   }
   loading = false
