@@ -50,4 +50,11 @@ $: authorized && refreshTokenBalance()
   </div>
 
   <Button href="/hotornot" class="w-full">Play to earn</Button>
+
+  <a
+    href="/airdrop?edit"
+    on:click|stopPropagation
+    class="text-sm underline opacity-75">
+    Edit airdrop claim form
+  </a>
 </div>
