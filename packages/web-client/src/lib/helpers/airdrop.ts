@@ -1,17 +1,28 @@
-export async function registerNNSId(data: {
-  principalId: string
-  canisterId: string
-  nnsId: string
-}): Promise<boolean> {
+export async function registerNNSId(
+  data: {
+    principalId: string
+    canisterId: string
+    nnsId: string
+  },
+  update: boolean,
+): Promise<boolean> {
   try {
-    const res = await fetch('https://registernnsid-5nps3y6y6a-uc.a.run.app', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      update
+        ? 'https://updatennsid-5nps3y6y6a-uc.a.run.app'
+        : 'https://registernnsid-5nps3y6y6a-uc.a.run.app',
+      {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          uid: btoa(data.canisterId + 'a@1' + data.principalId),
+        }),
       },
-      body: JSON.stringify({ ...data }),
-    })
+    )
 
     const body = await res.json()
 
@@ -47,7 +58,9 @@ export async function airdropEntryDetails(principalId: string) {
   }
 }
 
-export async function isNNSIdRegistered(principalId: string): Promise<boolean> {
+export async function isNNSIdRegistered(
+  principalId: string,
+): Promise<boolean | string> {
   try {
     const res = await fetch(
       `https://isregisteredfornns-5nps3y6y6a-uc.a.run.app?principalId=${principalId}`,
@@ -58,7 +71,7 @@ export async function isNNSIdRegistered(principalId: string): Promise<boolean> {
 
     const body = await res.json()
 
-    if (body.success && body.exists) return true
+    if (body.success && body.exists) return body.exists as string
     return false
   } catch (e) {
     console.error('Error adding document: ', e)
