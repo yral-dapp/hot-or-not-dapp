@@ -1,5 +1,5 @@
 <script lang="ts">
-import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
 import TransactionItem from '$components/wallet/TransactionItem.svelte'
 import {
@@ -107,7 +107,7 @@ $: loggedIn && init()
 					<button class="flex grow flex-col items-center space-y-1">
 						<div
 							class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-transparent">
-							<ArrowUpIcon class="h-6 w-6" />
+							<Icon name="arrow-up" class="h-6 w-6" />
 						</div>
 						<div class="text-xs">Send</div>
 					</button>
@@ -131,7 +131,7 @@ $: loggedIn && init()
           <TransactionItem {item} />
         {:else}
           <div class="flex grow h-full w-full items-center justify-center">
-            <NoTransactionsIcon class="w-full max-w-sm px-10" />
+            <Icon name="transactions-graphic" class="w-full max-w-sm px-10" />
           </div>
           <div class="opacity-70 pt-4 text-center">No transactions yet</div>
         {/each}

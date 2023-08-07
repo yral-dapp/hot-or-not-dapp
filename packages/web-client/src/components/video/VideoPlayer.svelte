@@ -1,8 +1,5 @@
 <script lang="ts">
-import CloudNotAvailableIcon from '$components/icons/CloudNotAvailableIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import PlayIcon from '$components/icons/PlayIcon.svelte'
-import SoundIcon from '$components/icons/SoundIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import { getHlsUrl, getMp4Url } from '$lib/utils/cloudflare'
 import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
@@ -229,7 +226,7 @@ onDestroy(() => {
 {#if videoUnavailable}
   <div
     class="absolute inset-0 z-[6] flex flex-col items-center justify-center space-y-3 px-8">
-    <CloudNotAvailableIcon class="h-12 w-12" />
+    <Icon name="cloud-not-available" class="h-12 w-12" />
     <div class="font-bold">Video unavailable</div>
     <div class="text-center text-sm">
       This video was removed due to content policy ToS
@@ -239,15 +236,20 @@ onDestroy(() => {
   <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
     <div class="flex h-full items-center justify-center">
       {#if !playing}
-        <PlayIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+        <Icon
+          name="play"
+          class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
       {:else if $playerState.muted}
-        <SoundIcon class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+        <Icon
+          name="speaker-max"
+          class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
       {/if}
     </div>
   </div>
 {/if}
 
 {#if !loaded || waiting}
-  <LoadingIcon
+  <Icon
+    name="loading"
     class="absolute left-6 top-6 z-[5] h-6 w-6 animate-spin-slow text-white" />
 {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-import HomeIcon from '$components/icons/HomeIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import { playerState } from '$stores/playerState'
 import c from 'clsx'
 export let selected: 'videos' | 'hot-or-not' = 'hot-or-not'
@@ -41,7 +41,7 @@ $: hotOrNotUrl =
       href="/feed/{feedUrl}"
       on:click={() => (selected = 'videos')}
       class="z-[2] flex items-center space-x-2">
-      <HomeIcon filled class="h-3 w-3 text-white" />
+      <Icon name="home-fill" class="h-3 w-3 text-white" />
       <span>Home</span>
     </a>
   </div>

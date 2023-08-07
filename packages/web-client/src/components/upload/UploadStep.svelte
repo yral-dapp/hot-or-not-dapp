@@ -1,5 +1,5 @@
 <script lang="ts">
-import CheckIcon from '$components/icons/CheckIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import c from 'clsx'
 export let step: 1 | 2 | 3 = 1
 export let status: 'queued' | 'active' | 'finished' = 'queued'
@@ -18,6 +18,6 @@ export let status: 'queued' | 'active' | 'finished' = 'queued'
   {#if status !== 'finished'}
     {step}
   {:else}
-    <CheckIcon class="h-4 w-4 text-white" />
+    <Icon name="checkmark" class="h-4 w-4 text-white" />
   {/if}
 </div>

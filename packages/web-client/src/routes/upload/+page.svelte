@@ -1,10 +1,5 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CameraAccessIcon from '$components/icons/CameraAccessIcon.svelte'
-import CloseIcon from '$components/icons/CloseIcon.svelte'
-import FlashIcon from '$components/icons/FlashIcon.svelte'
-import FlipIcon from '$components/icons/FlipIcon.svelte'
-import TimerIcon from '$components/icons/TimerIcon.svelte'
 import CameraLayout from '$components/layout/CameraLayout.svelte'
 import {
   applyConstraintsOnVideoStream,
@@ -20,12 +15,12 @@ import { fileToUpload } from '$stores/fileUpload'
 import { goto } from '$app/navigation'
 import { isiPhone } from '$lib/utils/isSafari'
 import type { CameraControls } from '$components/upload/UploadTypes'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
 import Popup from '$components/popup/Popup.svelte'
 import Button from '$components/button/Button.svelte'
 import { linear } from 'svelte/easing'
 import { tweened, type Tweened } from 'svelte/motion'
 import Log from '$lib/utils/Log'
+import Icon from '$components/icon/Icon.svelte'
 
 let videoEl: HTMLVideoElement
 let mediaStream: MediaStream
@@ -61,7 +56,7 @@ const filterPreviewImage =
   'https://images.unsplash.com/photo-1563982291479-585982ec57b6?w=320&q=80&fm=jpg&crop=entropy&cs=tinysrgb'
 
 let cameraControls: CameraControls = {
-  flash: 'off',
+  flash: 'flash',
   flip: {
     show: false,
     facingMode: 'user',
@@ -136,7 +131,7 @@ async function switchCamera() {
   cameraControls.flip.facingMode =
     cameraControls.flip.facingMode === 'user' ? 'environment' : 'user'
   if (
-    cameraControls.flash !== 'not-available' &&
+    cameraControls.flash !== 'flash-not-available' &&
     cameraControls.flash !== 'hide'
   ) {
     await toggleTorch()
@@ -146,10 +141,11 @@ async function switchCamera() {
 
 async function toggleTorch() {
   const success = await applyConstraintsOnVideoStream(mediaStream, {
-    advanced: [{ torch: cameraControls.flash === 'on' ? false : true }],
+    advanced: [{ torch: cameraControls.flash === 'flash-fill' ? false : true }],
   })
   if (success) {
-    cameraControls.flash = cameraControls.flash === 'on' ? 'off' : 'on'
+    cameraControls.flash =
+      cameraControls.flash === 'flash-fill' ? 'flash' : 'flash-fill'
   }
 }
 
@@ -157,7 +153,9 @@ async function checkIfFlashAvailable() {
   try {
     const imageCapture = new ImageCapture(mediaStream.getVideoTracks()[0])
     const capablities = await imageCapture.getPhotoCapabilities()
-    cameraControls.flash = capablities.fillLightMode ? 'off' : 'not-available'
+    cameraControls.flash = capablities.fillLightMode
+      ? 'flash'
+      : 'flash-not-available'
   } catch (e) {
     console.warn('flash not available on this device')
     cameraControls.flash = 'hide'
@@ -350,7 +348,7 @@ onMount(async () => {
 })
 
 onDestroy(async () => {
-  if (cameraControls.flash == 'on') {
+  if (cameraControls.flash == 'flash-fill') {
     await toggleTorch()
   }
   if (mediaStream) {
@@ -374,7 +372,7 @@ onDestroy(async () => {
         <div
           transition:fade|local
           class="flex h-full flex-col items-center justify-center space-y-8 px-10">
-          <CameraAccessIcon class="h-56" />
+          <Icon name="camera-graphic" class="h-56 w-56" />
 
           <span class="font-semibold">Enable Camera Access</span>
           <span class="text-center text-white/60">
@@ -430,11 +428,11 @@ onDestroy(async () => {
       </div>
     {:else}
       <IconButton
+        iconName="close"
+        iconClass="h-6 w-6 text-white"
         href="/feed"
         preload
-        class="h-10 w-10 rounded-full bg-black/50">
-        <CloseIcon class="h-6 w-6 text-white" />
-      </IconButton>
+        class="h-10 w-10 rounded-full bg-black/50" />
     {/if}
   </div>
   <svelte:fragment slot="bottom-camera-controls">
@@ -450,7 +448,8 @@ onDestroy(async () => {
           )}>
           <div class="h-4 w-4 rounded-sm bg-white" />
           {#if loading}
-            <LoadingIcon
+            <Icon
+              name="loading"
               class="absolute mx-auto h-8 w-8 animate-spin-slow text-primary" />
           {/if}
         </button>
@@ -507,16 +506,16 @@ onDestroy(async () => {
         {#if cameraControls.flash !== 'hide'}
           <div class="flex flex-col items-center justify-center space-y-1">
             <IconButton
+              iconName={cameraControls.flash}
+              iconClass="h-5 w-5"
               on:click={toggleTorch}
-              disabled={cameraControls.flash === 'not-available'}
+              disabled={cameraControls.flash === 'flash-not-available'}
               class={c(
                 'flex h-10 w-10 items-center justify-center rounded-full',
-                cameraControls.flash === 'on'
+                cameraControls.flash === 'flash-fill'
                   ? 'bg-white text-primary'
                   : 'bg-black text-white',
-              )}>
-              <FlashIcon variant={cameraControls.flash} class="h-5 w-5" />
-            </IconButton>
+              )} />
             <span class="text-xs">Flash</span>
           </div>
         {/if}
@@ -525,28 +524,28 @@ onDestroy(async () => {
             !cameraControls.flip.show || (recording && !useCanvas)}
           <div class="flex flex-col items-center justify-center space-y-1">
             <IconButton
+              iconName={disabled ? 'flip-not-available' : 'flip'}
+              iconClass="h-4 w-4 text-white"
               {disabled}
               on:click={switchCamera}
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-              <FlipIcon {disabled} class="h-4 w-4 text-white" />
-            </IconButton>
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-black/50" />
             <span class="text-xs">Flip</span>
           </div>
         {/if}
         <div class="flex flex-col items-center justify-center space-y-1">
           <IconButton
+            iconName={recording ? 'stopwatch-not-available' : 'stopwatch'}
+            iconClass="h-5 w-5 {cameraControls.timer === 'off' ? '' : 'hidden'}"
             disabled={recording}
             on:click={toggleTimer}
             class={c(
               'flex h-10 w-10 items-center justify-center rounded-full',
               {
-                'bg-black text-white': cameraControls.timer === 'off',
+                'bg-black/50 text-white': cameraControls.timer === 'off',
                 'bg-white text-primary': cameraControls.timer !== 'off',
               },
             )}>
-            {#if cameraControls.timer === 'off'}
-              <TimerIcon disabled={recording} class="h-5 w-5 " />
-            {:else}
+            {#if cameraControls.timer !== 'off'}
               {cameraControls.timer}
             {/if}
           </IconButton>

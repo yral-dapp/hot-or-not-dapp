@@ -1,7 +1,6 @@
 <script lang="ts">
 import { page } from '$app/stores'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
@@ -9,6 +8,7 @@ import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import Hls from 'hls.js/dist/hls.min.js'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
+import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -31,9 +31,10 @@ let unavailable = false
     {/if}
 
     <div class="absolute left-4 top-4">
-      <IconButton on:click={() => goBack(`/profile/${$page.params.id}`, true)}>
-        <CaretLeftIcon class="h-5 w-5" />
-      </IconButton>
+      <IconButton
+        iconName="caret-left"
+        iconClass="h-5 w-5"
+        on:click={() => goBack(`/profile/${$page.params.id}`, true)} />
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">

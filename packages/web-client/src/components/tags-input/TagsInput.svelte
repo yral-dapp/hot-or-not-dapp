@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CloseIcon from '$components/icons/CloseIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import { onMount, tick } from 'svelte'
 
 export let value = ''
@@ -62,13 +62,14 @@ onMount(() => {
   class="relative inline-flex w-full flex-wrap items-center gap-3 rounded-xl bg-white/10 p-3">
   {#each tags as tag}
     <div
-      class="flex shrink-0 items-center space-x-2 rounded-sm bg-primary py-1 px-2 text-sm">
+      class="flex shrink-0 items-center space-x-2 rounded-sm bg-primary px-2 py-1 text-sm">
       <span>
         #{tag}
       </span>
-      <IconButton on:click={() => removeTag(tag)}>
-        <CloseIcon class="h-4 w-4" />
-      </IconButton>
+      <IconButton
+        iconName="close"
+        iconClass="h-4 w-4"
+        on:click={() => removeTag(tag)} />
     </div>
   {/each}
   {#if showError}
@@ -82,6 +83,6 @@ onMount(() => {
       on:keyup={handleInput}
       {placeholder}
       style="min-width: 30%;"
-      class="flex-1 border-0 bg-transparent py-[2px] px-0 outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
+      class="flex-1 border-0 bg-transparent px-0 py-[2px] outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0" />
   {/if}
 </tags-input>

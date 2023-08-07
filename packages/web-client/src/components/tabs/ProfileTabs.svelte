@@ -1,6 +1,5 @@
 <script lang="ts">
-import ProfileIcon from '$components/icons/ProfileIcon.svelte'
-import TrophyIcon from '$components/icons/TrophyIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import c from 'clsx'
 
 export let selectedTab: 'posts' | 'speculations'
@@ -13,7 +12,11 @@ export let selectedTab: 'posts' | 'speculations'
       selectedTab = 'posts'
     }}
     class="flex flex-1 items-center justify-center">
-    <ProfileIcon filled={selectedTab === 'posts'} class="h-6 w-6" />
+    <Icon
+      name={selectedTab === 'posts' ? 'grid-fill' : 'grid'}
+      class="h-6 w-6 {selectedTab === 'posts'
+        ? 'text-primary'
+        : 'text-white'}" />
   </button>
   <button
     on:click={() => {
@@ -21,7 +24,11 @@ export let selectedTab: 'posts' | 'speculations'
       selectedTab = 'speculations'
     }}
     class="flex flex-1 items-center justify-center">
-    <TrophyIcon filled={selectedTab === 'speculations'} class="h-6 w-6" />
+    <Icon
+      name={selectedTab === 'speculations' ? 'trophy-fill' : 'trophy'}
+      class="h-6 w-6 {selectedTab === 'speculations'
+        ? 'text-primary'
+        : 'text-white'}" />
   </button>
   <div
     class={c(

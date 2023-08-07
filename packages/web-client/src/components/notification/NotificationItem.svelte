@@ -1,6 +1,5 @@
 <script lang="ts">
-import ArrowUpIcon from '$components/icons/ArrowUpIcon.svelte'
-import TrophyIcon from '$components/icons/TrophyIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import type { NotificationHistory } from '$lib/helpers/profile'
 import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$stores/auth'
@@ -55,16 +54,14 @@ $: timeDiff = getTimeDifference(
             'grayscale': item.eventOutcome === 'Draw',
             '-rotate-[60deg]': item.eventOutcome === 'Lost',
           })}>
-          <TrophyIcon class="h-5 w-5" filled />
+          <Icon name="trophy-fill" class="h-5 w-5" />
         </div>
       {:else}
         <div
           class="flex h-full w-full items-center justify-center rounded-full border-2 border-primary bg-transparent">
-          {#if deducted}
-            <ArrowUpIcon class="h-6 w-6" />
-          {:else}
-            <ArrowUpIcon class="h-6 w-6 rotate-180" />
-          {/if}
+          <Icon
+            name="arrow-up"
+            class="h-6 w-6 {deducted ? '' : 'rotate-180'}" />
         </div>
       {/if}
     </div>

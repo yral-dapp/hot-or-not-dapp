@@ -6,7 +6,7 @@ import LoginPopup from '$components/login/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
 import { navigateBack, navigationHistory } from '$stores/navigation'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import { page } from '$app/stores'
@@ -51,19 +51,10 @@ function registerServiceWorker() {
   }
 }
 
-let GoSquared: any
-async function initializeGoSquared() {
-  try {
-    GoSquared = (await import('$components/seo/GoSquared.svelte')).default
-  } catch (_) {
-    Log('GS Blocked', 'warn')
-  }
-}
-
 let GA: any
 async function initializeGA() {
   try {
-    GA = (await import('$components/seo/GA.svelte')).default
+    GA = (await import('$components/analytics/GA.svelte')).default
   } catch (_) {
     Log('GA Blocked', 'warn')
   }
@@ -83,7 +74,6 @@ onMount(() => {
     listenForUnhandledRejections()
     initializeAuthClient()
     registerServiceWorker()
-    initializeGoSquared()
     initializeGA()
   } catch (e) {
     Log({ error: e, source: '1 layout' }, 'error')
@@ -130,10 +120,6 @@ beforeNavigate(({ from, to, type }) => {
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
   <slot />
 </div>
-
-{#if GoSquared}
-  <svelte:component this={GoSquared} />
-{/if}
 
 {#if GA}
   <svelte:component this={GA} />

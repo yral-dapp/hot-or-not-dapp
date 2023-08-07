@@ -1,13 +1,13 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import { authState } from '$stores/auth'
 import { loadingAuthStatus } from '$stores/loading'
 </script>
 
 {#if $loadingAuthStatus}
   <div class="flex h-[6.5rem] items-center justify-center space-x-2">
-    <LoadingIcon class="h-4 w-4 animate-spin" />
+    <Icon name="loading" class="h-4 w-4 animate-spin" />
     <span class="opacity-20">Loading</span>
   </div>
 {:else}

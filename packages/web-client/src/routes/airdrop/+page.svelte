@@ -1,7 +1,6 @@
 <script lang="ts">
 import AirdropForm from '$components/airdrop-form/AirdropForm.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
@@ -18,10 +17,10 @@ import { navigateBack } from '$stores/navigation'
       Airdrop Claim Form
       <div class="absolute left-4 top-4">
         <IconButton
+          iconName="caret-left"
+          iconClass="h-7 w-7"
           on:click={() => goBack($navigateBack || '/menu', true)}
-          class="shrink-0">
-          <CaretLeftIcon class="h-7 w-7" />
-        </IconButton>
+          class="shrink-0" />
       </div>
     </div>
   </svelte:fragment>

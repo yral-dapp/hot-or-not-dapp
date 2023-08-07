@@ -2,8 +2,7 @@
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import {
@@ -88,10 +87,10 @@ async function handleLove(userIndex: number, userId?: string) {
 <ProfileLayout>
   <svelte:fragment slot="top-left">
     <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7"
       on:click={() => goBack(`/profile/${userId}`, true)}
-      class="shrink-0">
-      <CaretLeftIcon class="h-7 w-7" />
-    </IconButton>
+      class="shrink-0" />
   </svelte:fragment>
   <div slot="top-center" class="text-lg font-bold">
     {me ? 'Your ' : ''}Loving
@@ -140,7 +139,7 @@ async function handleLove(userIndex: number, userId?: string) {
 
       {#if loading}
         <div class="flex w-full items-center justify-center space-x-2 py-8">
-          <LoadingIcon class="h-4 w-4 animate-spin" />
+          <Icon name="loading" class="h-4 w-4 animate-spin" />
           <span>Loading</span>
         </div>
       {/if}

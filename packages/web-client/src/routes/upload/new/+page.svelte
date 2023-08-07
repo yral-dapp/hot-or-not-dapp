@@ -1,8 +1,6 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import PlayIcon from '$components/icons/PlayIcon.svelte'
 import InputBox from '$components/input/InputBox.svelte'
 import UploadLayout from '$components/layout/UploadLayout.svelte'
 import { tweened } from 'svelte/motion'
@@ -17,7 +15,7 @@ import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream'
 import Log from '$lib/utils/Log'
 import TagsInput from '$components/tags-input/TagsInput.svelte'
 import userProfile from '$stores/userProfile'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import Switch from '$components/switch/Switch.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { debounce } from 'throttle-debounce'
@@ -221,9 +219,11 @@ onDestroy(() => {
 
 <UploadLayout>
   <div slot="top-left">
-    <IconButton href="/upload" preload>
-      <CaretLeftIcon class="h-7 w-7 text-white" />
-    </IconButton>
+    <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7 text-white"
+      href="/upload"
+      preload />
   </div>
   <svelte:fragment slot="top-center">Upload</svelte:fragment>
   <div
@@ -249,6 +249,7 @@ onDestroy(() => {
           src={videoSrc}
           playsinline
           autoplay
+          loop
           muted={previewMuted}
           class="h-full w-full rounded-xl bg-white/10 ring-4 ring-white/30" />
       {/if}
@@ -257,9 +258,10 @@ onDestroy(() => {
           on:click={() => (previewPaused = false)}
           class="absolute inset-0 flex items-center justify-center"
           on:keyup>
-          <IconButton class="rounded-full bg-black/50 p-4">
-            <PlayIcon class="h-4 w-4" />
-          </IconButton>
+          <IconButton
+            iconName="play"
+            iconClass="h-4 w-4"
+            class="rounded-full bg-black/50 p-4" />
         </div>
       {/if}
     </div>

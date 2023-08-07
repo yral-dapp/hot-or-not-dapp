@@ -1,8 +1,8 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CloseIcon from '$components/icons/CloseIcon.svelte'
 import { fade } from 'svelte/transition'
 import { createEventDispatcher } from 'svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 export let show = false
 export let showCloseButton = false
@@ -30,10 +30,10 @@ const dispatch = createEventDispatcher<{ close: void }>()
       class="relative z-[99] mx-8 w-full max-w-sm rounded-lg bg-white p-10 {exportClass}">
       {#if showCloseButton}
         <IconButton
+          iconName="close"
+          iconClass="h-6 w-6 text-black/50"
           on:click={() => (show = false)}
-          class="absolute top-2 right-2">
-          <CloseIcon class="h-6 w-6 text-black/50" />
-        </IconButton>
+          class="absolute right-2 top-2" />
       {/if}
       <slot />
     </div>

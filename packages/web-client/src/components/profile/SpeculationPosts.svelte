@@ -1,8 +1,5 @@
 <script lang="ts">
 import Button from '$components/button/Button.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import NoVotesIcon from '$components/icons/NoVotesIcon.svelte'
-import ReportIcon from '$components/icons/ReportIcon.svelte'
 import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
 import {
   fetchSpeculations,
@@ -11,6 +8,7 @@ import {
 import Log from '$lib/utils/Log'
 import { onMount } from 'svelte'
 import SpeculationPost from './SpeculationPost.svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 export let me = false
 export let userId = ''
@@ -62,7 +60,7 @@ onMount(() => loadPosts())
 {:else if !loading && !error}
   <div
     class="flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-    <NoVotesIcon class="w-32" />
+    <Icon name="votes-graphics" class="w-32" />
     <div class="text-center text-lg font-bold">
       {#if me}
         You don't have any current votes yet
@@ -75,7 +73,7 @@ onMount(() => loadPosts())
 {#if error}
   <div class="flex w-full flex-col items-center justify-center space-y-2 py-8">
     <div class="flex items-center space-x-2 text-sm text-red-500">
-      <ReportIcon class="h-4 w-4" />
+      <Icon name="report" class="h-4 w-4" />
       <span>Error while fetching posts</span>
     </div>
     <Button on:click={loadPosts} type="secondary" class="px-6 py-2 text-xs">
@@ -84,7 +82,7 @@ onMount(() => loadPosts())
   </div>
 {:else if loading}
   <div class="flex w-full items-center justify-center space-x-2 py-8">
-    <LoadingIcon class="h-4 w-4 animate-spin" />
+    <Icon name="loading" class="h-4 w-4 animate-spin" />
     <span>Fetching posts</span>
   </div>
 {/if}

@@ -1,10 +1,8 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import EyeIcon from '$components/icons/EyeIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import { getShortNumber } from '$lib/utils/shortNumber'
-import HeartIcon from '$components/icons/HeartIcon.svelte'
 import { onMount } from 'svelte'
-import CloudNotAvailableIcon from '$components/icons/CloudNotAvailableIcon.svelte'
 
 export let id: number
 export let imageBg: string
@@ -38,7 +36,7 @@ onMount(loadImg)
   {:else if notAvailable}
     <div
       class="gap- absolute inset-0 flex flex-col items-center justify-center">
-      <CloudNotAvailableIcon class="h-8 w-8" />
+      <Icon name="cloud-not-available" class="h-8 w-8" />
       <span class="text-xs">Not Available</span>
     </div>
   {/if}
@@ -48,7 +46,7 @@ onMount(loadImg)
     <div class="flex items-center space-x-1">
       <div
         class="flex h-5 w-5 items-center justify-center rounded-full bg-black/50">
-        <HeartIcon class="h-3 w-3 text-primary" />
+        <Icon name="heart" class="h-3 w-3 text-primary" />
       </div>
       <span class="text-xs">
         {getShortNumber(likes)}
@@ -57,7 +55,7 @@ onMount(loadImg)
     <div class="flex items-center space-x-1">
       <div
         class="flex h-5 w-5 items-center justify-center rounded-full bg-black/50">
-        <EyeIcon class="h-3 w-3 text-white" />
+        <Icon name="eye-open" class="h-3 w-3 text-white" />
       </div>
       <span class="text-xs">
         {getShortNumber(views)}

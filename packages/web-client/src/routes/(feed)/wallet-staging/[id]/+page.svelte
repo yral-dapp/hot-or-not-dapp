@@ -1,7 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import NoTransactionsIcon from '$components/icons/NoTransactionsIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import Input from '$components/input/Input.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
@@ -15,10 +14,11 @@ let walletId = ''
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Refer & Earn
-      <div class="absolute top-4 left-4">
-        <IconButton href="/wallet-staging">
-          <CaretLeftIcon class="h-5 w-5" />
-        </IconButton>
+      <div class="absolute left-4 top-4">
+        <IconButton
+          iconName="caret-left"
+          iconClass="h-5 w-5"
+          href="/wallet-staging" />
       </div>
     </div>
   </svelte:fragment>
@@ -50,7 +50,7 @@ let walletId = ''
       {:else}
         <div
           class="flex h-full w-full flex-col items-center justify-center space-y-4 px-16">
-          <NoTransactionsIcon class="w-56" />
+          <Icon name="transactions-graphic" class="w-56" />
           <div class="text-lg">You have not made any transactions yet</div>
         </div>
       {/if}

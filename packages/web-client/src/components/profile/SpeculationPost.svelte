@@ -21,8 +21,7 @@ function getBetOutcome(betDetails: PlacedBetDetail): OutcomeStatus {
 
 <script lang="ts">
 import Avatar from '$components/avatar/Avatar.svelte'
-import CloudNotAvailableIcon from '$components/icons/CloudNotAvailableIcon.svelte'
-import TimerIcon from '$components/icons/TimerIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
@@ -80,7 +79,7 @@ onMount(loadImg)
   {:else if notAvailable}
     <div
       class="gap- absolute inset-0 flex flex-col items-center justify-center">
-      <CloudNotAvailableIcon class="h-8 w-8" />
+      <Icon name="cloud-not-available" class="h-8 w-8" />
       <span class="text-xs">Not Available</span>
     </div>
   {/if}
@@ -125,7 +124,7 @@ onMount(loadImg)
       {:else if BET_OUTCOME === 'AwaitingResult'}
         <div
           class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-1 text-sm text-white md:py-2">
-          <TimerIcon class="h-5 w-5" />
+          <Icon name="stopwatch" class="h-5 w-5" />
           <span>{$timeLeft}</span>
         </div>
       {/if}

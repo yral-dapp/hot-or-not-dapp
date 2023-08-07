@@ -2,7 +2,7 @@
 import Accordion from '$components/accordion/Accordion.svelte'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import { deferredPrompt } from '$stores/deferredPrompt'
 import { slide } from 'svelte/transition'
@@ -34,16 +34,14 @@ function toggleAccordion(i: number) {
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Install App
-      <div class="absolute top-4 left-4">
-        <IconButton href="/menu">
-          <CaretLeftIcon class="h-5 w-5" />
-        </IconButton>
+      <div class="absolute left-4 top-4">
+        <IconButton href="/menu" iconName="caret-left" iconClass="h-5 w-5" />
       </div>
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div
-      class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll py-20 px-8">
+      class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll px-8 py-20">
       <div class="w-full">How to install Hot or Not app</div>
       <Accordion
         on:click={() => toggleAccordion(0)}

@@ -4,27 +4,30 @@ import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+const prodCanisterJson = async () =>
+  await import('../hot-or-not-backend-canister/canister_ids.json')
+const devCanisterJson = async () => {
+  try {
+    return await import(
+      //@ts-ignore
+      '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
+    )
+  } catch (e) {
+    console.error(
+      '⚠️ Error finding dev canister JSON. Did you forget to run `dfx deploy`?',
+      e,
+    )
+    return {}
+  }
+}
 
 const isDev = process.env.NODE_ENV !== 'production'
 
-console.log('starting vite in', process.env.NODE_ENV, 'mode')
+console.log('starting app in', isDev ? 'dev' : 'prod', 'mode')
 
 const DFX_PORT = 4943
 
-let canisterIds = {}
-
-try {
-  canisterIds = isDev
-    ? await import(
-        //@ts-ignore
-        '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
-      )
-    : await import('../hot-or-not-backend-canister/canister_ids.json')
-} catch (e) {
-  console.error('Error finding canisters info', e)
-  throw '⚠ Before starting the dev server you need to run: `dfx deploy`'
-}
-
+const canisterIds = isDev ? await devCanisterJson() : await prodCanisterJson()
 // Generate canister ids, required by the generated canister code in .dfx/local/canisters/*
 // This strange way of JSON.stringify the value is required by vite
 const canisterDefinitions = Object.entries(canisterIds).reduce(
@@ -100,5 +103,19 @@ export default defineConfig(() => ({
         global: 'globalThis',
       },
     },
+    include: [
+      '@dfinity/principal',
+      '@sentry/svelte',
+      '@sentry/tracing',
+      'clsx',
+      'svelte-local-storage-store',
+      '@dfinity/auth-client',
+      '@dfinity/agent',
+      '@sentry/browser',
+      'throttle-debounce',
+      'idb',
+      'hls.js/dist/hls.min.js',
+      'swiper/svelte',
+    ],
   },
 }))

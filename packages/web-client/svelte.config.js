@@ -1,7 +1,8 @@
 import staticAdapter from '@sveltejs/adapter-static'
 import cfAdapter from '@sveltejs/adapter-cloudflare'
 import preprocess from 'svelte-preprocess'
-import directives from './directives.js'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import cspDirectives from './directives.js'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
@@ -17,7 +18,6 @@ console.log(
 const config = {
   preprocess: preprocess({
     postcss: true,
-    preserve: ['partytown'],
   }),
 
   kit: {

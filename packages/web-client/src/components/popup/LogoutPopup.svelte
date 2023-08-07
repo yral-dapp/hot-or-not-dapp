@@ -3,9 +3,9 @@ import Button from '$components/button/Button.svelte'
 import Popup from './Popup.svelte'
 import { authHelper } from '$stores/auth'
 import { initializeAuthClient } from '$lib/helpers/auth'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import userProfile from '$stores/userProfile'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 export let show = false
 let loading = false
@@ -32,7 +32,7 @@ async function handleLogout() {
     <Button disabled={loading} on:click={handleLogout}>
       {#if loading}
         <div class="flex items-center space-x-2">
-          <LoadingIcon class="h-4 w-4 animate-spin" />
+          <Icon name="loading" class="h-4 w-4 animate-spin" />
           <span>Logging you out</span>
         </div>
       {:else}

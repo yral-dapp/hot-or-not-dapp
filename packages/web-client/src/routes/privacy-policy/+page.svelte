@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 </script>
 
@@ -13,16 +13,14 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Privacy Policy
-      <div class="absolute top-4 left-4">
-        <IconButton href="/menu">
-          <CaretLeftIcon class="h-5 w-5" />
-        </IconButton>
+      <div class="absolute left-4 top-4">
+        <IconButton href="/menu" iconName="caret-left" iconClass="h-5 w-5" />
       </div>
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div
-      class="flex h-full w-full flex-col space-y-8 overflow-hidden overflow-y-auto py-20 px-8">
+      class="flex h-full w-full flex-col space-y-8 overflow-hidden overflow-y-auto px-8 py-20">
       <div class="text-xs">
         Thanks for choosing "Hot or Not" . We are pleased to make our Service
         available to you. Hot or Not includes the Hot or Not App, website,

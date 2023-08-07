@@ -2,13 +2,13 @@
 import { page } from '$app/stores'
 import IconButton from '$components/button/IconButton.svelte'
 import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import Hls from 'hls.js/dist/hls.min.js'
 import type { PageData } from './$types'
+import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -32,10 +32,10 @@ let unavailable = false
 
     <div class="absolute left-4 top-4">
       <IconButton
+        iconName="caret-left"
+        iconClass="h-5 w-5"
         on:click={() =>
-          goBack(`/profile/${$page.params.id}?tab=speculations`, true)}>
-        <CaretLeftIcon class="h-5 w-5" />
-      </IconButton>
+          goBack(`/profile/${$page.params.id}?tab=speculations`, true)} />
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">

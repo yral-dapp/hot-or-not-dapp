@@ -1,15 +1,12 @@
 <script lang="ts">
 import { page } from '$app/stores'
+import coinsStashImg from '$assets/coins-stash.webp'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import CoinsStashIcon from '$components/icons/CoinsStashIcon.svelte'
-import DollarCoinIcon from '$components/icons/DollarCoinIcon.svelte'
-import DownloadIcon from '$components/icons/DownloadCloudIcon.svelte'
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import DotTabs from '$components/tabs/DotTabs.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
@@ -114,10 +111,10 @@ $: link = !loggedIn
       Refer & Earn
       <div class="absolute left-4 top-4">
         <IconButton
+          iconName="caret-left"
+          iconClass="h-7 w-7"
           on:click={() => goBack($navigateBack || '/menu', true)}
-          class="shrink-0">
-          <CaretLeftIcon class="h-7 w-7" />
-        </IconButton>
+          class="shrink-0" />
       </div>
     </div>
   </svelte:fragment>
@@ -129,7 +126,7 @@ $: link = !loggedIn
         tabs={['How to earn', 'History']} />
       {#if selectedTab == 0}
         <div class="shrink-0 py-4">
-          <CoinsStashIcon class="h-36" />
+          <img src={coinsStashImg} class="h-36 select-none" alt="Coins stash" />
         </div>
         <div class="shrink-0 text-center text-2xl font-bold">
           Invite & Win {INVITE_WIN_TOKENS} tokens
@@ -150,9 +147,10 @@ $: link = !loggedIn
             </span>
 
             <div class="absolute right-0 bg-black px-3">
-              <IconButton on:click={shareLink}>
-                <ShareArrowIcon class="h-5 pr-1" />
-              </IconButton>
+              <IconButton
+                iconName="caret-left"
+                iconClass="h-5 w-5 pr-1"
+                on:click={shareLink} />
             </div>
           </div>
           {#if copied}
@@ -175,7 +173,7 @@ $: link = !loggedIn
           <div class="flex flex-col items-center space-y-3">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
-              <ShareArrowIcon class="h-5 text-primary" />
+              <Icon name="share" class="h-5 w-5 text-primary" />
             </div>
             <span class="text-center text-xs">
               Share your link with a friend
@@ -184,7 +182,7 @@ $: link = !loggedIn
           <div class="flex flex-col items-center space-y-3">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
-              <DownloadIcon class="h-5 text-primary" />
+              <Icon name="cloud-download" class="h-5 w-5 text-primary" />
             </div>
             <span class="text-center text-xs">
               Your friends downloads and logs into the app
@@ -193,7 +191,7 @@ $: link = !loggedIn
           <div class="flex flex-col items-center space-y-3">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-sm bg-white/10">
-              <DollarCoinIcon class="h-5 text-primary" />
+              <Icon name="coin-dollar" class="h-5 w-5 text-primary" />
             </div>
             <span class="text-center text-xs">
               You both win {INVITE_WIN_TOKENS} tokens each

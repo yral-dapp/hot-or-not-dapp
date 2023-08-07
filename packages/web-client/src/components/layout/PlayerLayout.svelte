@@ -2,16 +2,9 @@
 import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import AirdropIcon from '$components/icons/AirdropIcon.svelte'
-import EyeIcon from '$components/icons/EyeIcon.svelte'
-import FireIcon from '$components/icons/FireIcon.svelte'
-import FlagIcon from '$components/icons/FlagIcon.svelte'
-import GiftBoxIcon from '$components/icons/GiftBoxIcon.svelte'
-import HeartIcon from '$components/icons/HeartIcon.svelte'
-import ShareMessageIcon from '$components/icons/ShareMessageIcon.svelte'
-import WalletIcon from '$components/icons/WalletIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
@@ -232,7 +225,7 @@ $: avatarUrl =
                 generateRandomName('name', post.created_by_user_principal_id)}
             </a>
             <div class="flex items-center space-x-1">
-              <EyeIcon class="h-4 w-4 text-white" />
+              <Icon name="eye-open" class="h-4 w-4 text-white" />
               <span class="text-sm">{Number(post.total_view_count)}</span>
             </div>
           </div>
@@ -253,66 +246,70 @@ $: avatarUrl =
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showAirdropButton}
           <IconButton
+            iconName="airdrop-parachute"
+            iconClass="h-16 w-16 drop-shadow-md"
             on:click={() => ($showAirdropPopup = true)}
-            ariaLabel="Join airdrop">
-            <AirdropIcon class=" h-16" />
-          </IconButton>
+            ariaLabel="Join airdrop" />
         {/if}
         {#if showReportButton}
           <IconButton
+            iconName="flag"
+            iconClass="h-6 w-6 text-white drop-shadow-md"
             ariaLabel="Report this post"
             on:click={(e) => {
               e.stopImmediatePropagation()
               showReportPopup = true
-            }}>
-            <FlagIcon class="h-8 w-8 text-white drop-shadow" />
-          </IconButton>
+            }} />
         {/if}
 
         {#if showReferAndEarnLink}
-          <IconButton ariaLabel="Share this post" href="/refer-earn">
-            <GiftBoxIcon class="h-8 w-8" />
-          </IconButton>
+          <IconButton
+            iconName="giftbox-fill"
+            iconClass="h-7 w-7"
+            ariaLabel="Share this post"
+            href="/refer-earn" />
         {/if}
         {#if showLikeButton}
           <div class="flex flex-col">
             <IconButton
+              iconName={post.liked_by_me && $authState.isLoggedIn
+                ? 'heart-fill-color'
+                : 'heart-fill'}
+              iconClass="h-8 w-8"
               ariaLabel="Toggle like on this post"
               on:click={(e) => {
                 e.stopImmediatePropagation()
                 handleLike()
-              }}>
-              <HeartIcon
-                filled={post.liked_by_me && $authState.isLoggedIn}
-                class="h-8 w-8" />
-            </IconButton>
-            <span class="text-center text-sm drop-shadow-sm">
+              }} />
+            <span class="text-center text-sm drop-shadow-md">
               {getShortNumber(Number(post.like_count))}
             </span>
           </div>
         {/if}
         {#if showWalletLink}
-          <IconButton ariaLabel="Wallet" href="/wallet">
-            <WalletIcon filled class="h-6 w-6 text-white drop-shadow-md" />
-          </IconButton>
+          <IconButton
+            iconName="wallet-fill"
+            iconClass="h-6 w-6 text-white drop-shadow-md"
+            ariaLabel="Wallet"
+            href="/wallet" />
         {/if}
         {#if showShareButton}
           <IconButton
+            iconName="share-message"
+            iconClass="h-6 w-6 drop-shadow-md"
             on:click={(e) => {
               e.stopImmediatePropagation()
               handleShare()
-            }}>
-            <ShareMessageIcon class="h-6 w-6" />
-          </IconButton>
+            }} />
         {/if}
         {#if showHotOrNotButton}
           <IconButton
+            iconName="fire"
+            iconClass="h-5 w-5"
             ariaLabel="Check out this post in Hot or Not"
             disabled={!bettingStatusValue}
             href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
-            class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2">
-            <FireIcon class="h-5 w-5" />
-          </IconButton>
+            class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2" />
         {/if}
       </div>
     </div>

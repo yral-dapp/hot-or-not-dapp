@@ -1,7 +1,7 @@
 <script lang="ts">
 import Accordion from '$components/accordion/Accordion.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import DotTabs from '$components/tabs/DotTabs.svelte'
 import faq from '$lib/utils/faq'
@@ -25,16 +25,14 @@ function toggleAccordion(i: number) {
     <div
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       FAQs
-      <div class="absolute top-4 left-4">
-        <IconButton href="/menu">
-          <CaretLeftIcon class="h-5 w-5" />
-        </IconButton>
+      <div class="absolute left-4 top-4">
+        <IconButton iconName="caret-left" iconClass="h-5 w-5" href="/menu" />
       </div>
     </div>
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div
-      class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll py-20 px-8">
+      class="flex h-full w-full flex-col items-center space-y-4 overflow-hidden overflow-y-scroll px-8 py-20">
       <div class="w-full">Find all your answers here</div>
       <DotTabs
         on:click={() => (expandedIndex = -1)}

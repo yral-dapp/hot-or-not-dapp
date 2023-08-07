@@ -2,15 +2,10 @@
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
-import PencilIcon from '$components/icons/PencilIcon.svelte'
-import ReportIcon from '$components/icons/ReportIcon.svelte'
-import ShareArrowIcon from '$components/icons/ShareArrowIcon.svelte'
 import ProfileLayout from '$components/layout/ProfileLayout.svelte'
 import ProfilePosts from '$components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
-import { registerEvent } from '$components/seo/GA.svelte'
+import { registerEvent } from '$components/analytics/GA.svelte'
 import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
 import {
   doIFollowThisUser,
@@ -31,6 +26,7 @@ import { slide } from 'svelte/transition'
 import CopyButton from '$components/profile/CopyButton.svelte'
 import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
 import ReportPopup from '$components/popup/ReportPopup.svelte'
+import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data
@@ -152,23 +148,26 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
 <ProfileLayout>
   <svelte:fragment slot="top-left">
     <IconButton
+      iconName="caret-left"
+      iconClass="h-7 w-7"
       on:click={() => goBack($navigateBack || '/menu', true)}
-      class="shrink-0">
-      <CaretLeftIcon class="h-7 w-7" />
-    </IconButton>
+      class="shrink-0" />
   </svelte:fragment>
   <div slot="top-right" class="mt-0.5 flex shrink-0 items-center space-x-6">
-    <IconButton on:click={showShareDialog}>
-      <ShareArrowIcon class="h-6 w-6" />
-    </IconButton>
+    <IconButton
+      iconName="share"
+      iconClass="h-6 w-6"
+      on:click={showShareDialog} />
     {#if me}
-      <IconButton href={`/profile/${userId}/edit`}>
-        <PencilIcon class="h-5 w-5" />
-      </IconButton>
+      <IconButton
+        iconName="pencil"
+        iconClass="h-5 w-5"
+        href={`/profile/${userId}/edit`} />
     {:else if profile.principal_id}
-      <IconButton on:click={() => (showReportPopup = true)}>
-        <ReportIcon class="h-5 w-5" />
-      </IconButton>
+      <IconButton
+        iconName="report"
+        iconClass="h-5 w-5"
+        on:click={() => (showReportPopup = true)} />
     {/if}
   </div>
   <div slot="top-center" class="text-lg font-bold">
@@ -269,7 +268,9 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
             on:click={handleLove}
             class="mx-auto w-[10rem]">
             {#if follow.loading}
-              <LoadingIcon class="h-6 w-6 animate-spin-slow text-white" />
+              <Icon
+                name="loading"
+                class="h-6 w-6 animate-spin-slow text-white" />
             {:else}
               {follow.doIFollow ? 'Loving' : 'Love'}
             {/if}

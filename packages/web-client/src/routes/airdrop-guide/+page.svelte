@@ -1,12 +1,11 @@
 <script lang="ts">
+import './style.postcss'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
-import CaretLeftIcon from '$components/icons/CaretLeftIcon.svelte'
-import Coin3dIcon from '$components/icons/Coin3dIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$stores/navigation'
-import { showAirdropPopup } from '$stores/popups'
 </script>
 
 <svelte:head>
@@ -20,10 +19,10 @@ import { showAirdropPopup } from '$stores/popups'
       Airdrop Guide
       <div class="absolute left-4 top-4">
         <IconButton
+          iconName="caret-left"
+          iconClass="h-7 w-7"
           on:click={() => goBack($navigateBack || '/menu', true)}
-          class="shrink-0">
-          <CaretLeftIcon class="h-7 w-7" />
-        </IconButton>
+          class="shrink-0" />
       </div>
     </div>
   </svelte:fragment>
@@ -160,34 +159,3 @@ import { showAirdropPopup } from '$stores/popups'
     </div>
   </svelte:fragment>
 </HomeLayout>
-
-<style lang="postcss">
-p {
-  @apply py-2 text-sm text-white/70;
-}
-h4 {
-  @apply py-2 text-lg text-white;
-}
-
-li {
-  @apply marker:text-primary;
-  @apply text-sm text-white/70;
-}
-
-th {
-  @apply p-1 text-left text-white;
-  @apply border-[1px];
-  @apply border-white/50;
-  @apply bg-white/10;
-}
-
-td {
-  @apply border-[1px];
-  @apply p-1;
-  @apply border-white/50;
-}
-
-tr:nth-child(even) {
-  @apply bg-white/10;
-}
-</style>

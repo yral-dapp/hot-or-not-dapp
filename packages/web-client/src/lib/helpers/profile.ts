@@ -9,11 +9,7 @@ import type {
   TokenEvent,
   UserProfileDetailsForFrontend,
 } from '$canisters/individual_user_template/individual_user_template.did'
-import { setUserProperties } from '$components/seo/GA.svelte'
-import {
-  identifyUserGS,
-  unidentifyUserGS,
-} from '$components/seo/GoSquared.svelte'
+import { setUserProperties } from '$components/analytics/GA.svelte'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
@@ -113,15 +109,8 @@ async function updateUserProperties() {
       ...(profile.username_set && { username: profile.unique_user_name }),
       ...(!res.error && { wallet_balance: res.balance }),
     })
-
-    identifyUserGS({
-      id: profile.principal_id,
-      name: profile.display_name,
-      ...(profile.username_set && { username: profile.unique_user_name }),
-    })
   } else {
     setUserProperties()
-    unidentifyUserGS()
   }
 }
 

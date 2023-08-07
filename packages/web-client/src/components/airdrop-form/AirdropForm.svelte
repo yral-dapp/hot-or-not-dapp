@@ -1,6 +1,7 @@
 <script lang="ts">
+import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
-import LoadingIcon from '$components/icons/LoadingIcon.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import Input from '$components/input/Input.svelte'
 import DotSeparator from '$components/layout/DotSeparator.svelte'
 import LoginButton from '$components/login/LoginButton.svelte'
@@ -23,6 +24,10 @@ let wallet = {
 let loading = true
 let participatedForNNS = false
 let participatedForAirdrop = false
+let submitted = false
+
+$: edit = !!$page.url.searchParams.has('edit')
+$: editAndSubmitted = edit && !submitted
 
 async function checkIfCompleted() {
   if ($authState.idString) {
@@ -34,7 +39,11 @@ async function checkIfCompleted() {
       wallet.hot = res?.FinalHotTokens
       wallet.loading = false
       participatedForAirdrop = true
-      participatedForNNS = await isNNSIdRegistered($authState.idString)
+      const nns = await isNNSIdRegistered($authState.idString)
+      participatedForNNS = !!nns
+      if (typeof nns === 'string') {
+        nnsValue = nns
+      }
     }
   }
   loading = false
@@ -50,14 +59,18 @@ let nnsValue = ''
 async function saveFormData() {
   try {
     formLoading = true
-    const res = await registerNNSId({
-      principalId: $authState.idString || '',
-      canisterId: $authState.userCanisterId || '',
-      nnsId: nnsValue,
-    })
+    const res = await registerNNSId(
+      {
+        principalId: $authState.idString || '',
+        canisterId: $authState.userCanisterId || '',
+        nnsId: nnsValue,
+      },
+      participatedForNNS,
+    )
     if (!res) throw 'Something went wrong'
     formLoading = false
     participatedForNNS = true
+    submitted = true
   } catch (e) {
     console.error('Failed while saving data', e)
     formLoading = false
@@ -94,7 +107,7 @@ async function validateData() {
 
 <waitlist-form class="relative mx-auto block w-full max-w-2xl">
   <div class="flex flex-col gap-8 p-3 !pt-8 md:p-8">
-    {#if !authorized || (participatedForAirdrop && !participatedForNNS)}
+    {#if !authorized || (participatedForAirdrop && (!participatedForNNS || editAndSubmitted))}
       <div class="mx-auto pt-16 text-center text-sm">
         <div>
           {#if authorized}
@@ -121,9 +134,9 @@ async function validateData() {
       </div>
     {:else if loading}
       <div class="flex w-full justify-center pt-8">
-        <LoadingIcon class="h-8 w-8 animate-spin-slow" />
+        <Icon name="loading" class="h-8 w-8 animate-spin-slow" />
       </div>
-    {:else if participatedForAirdrop && !participatedForNNS}
+    {:else if participatedForAirdrop && (!participatedForNNS || editAndSubmitted)}
       <div class="flex flex-col gap-2 text-sm">
         <span class="font-bold text-primary">Your Hot or Not Principal ID</span>
         <span>{$authState.idString}</span>
@@ -198,7 +211,7 @@ async function validateData() {
           on:click={() => validateData()}
           class="w-full">
           {#if formLoading}
-            <LoadingIcon class="h-6 w-6 animate-spin-slow" />
+            <Icon name="loading" class="h-6 w-6 animate-spin-slow" />
           {:else}
             Submit
           {/if}

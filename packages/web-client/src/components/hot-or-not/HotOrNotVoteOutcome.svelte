@@ -19,15 +19,12 @@ import type {
   PlacedBetDetail,
   SystemTime,
 } from '$canisters/individual_user_template/individual_user_template.did'
-import VoteCoinIcon from '$components/icons/VoteCoinIcon.svelte'
-import HotIcon from '$components/icons/HotIcon.svelte'
-import NotIcon from '$components/icons/NotIcon.svelte'
 import { fade } from 'svelte/transition'
 import c from 'clsx'
-import TimerIcon from '$components/icons/TimerIcon.svelte'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 import type { Readable } from 'svelte/store'
 import { pluralize } from '$lib/utils/pluralize'
+import Icon from '$components/icon/Icon.svelte'
 
 export let placedBetDetail: PlacedBetDetail | undefined = undefined
 export let postCreatedAt: SystemTime | undefined = undefined
@@ -60,13 +57,13 @@ $: if (placedBetDetail) {
     })}>
     <div class="z-[2] shrink-0">
       {#if betDirection === 'Hot'}
-        <HotIcon class="h-16" />
+        <Icon name="hot-logo" class="h-16 w-16" />
       {:else if betDirection === 'Not'}
-        <NotIcon class="h-16" />
+        <Icon name="not-logo" class="h-16 w-16" />
       {/if}
     </div>
     <div class="relative z-[1] h-16 w-16 shrink-0">
-      <VoteCoinIcon class="h-16" />
+      <Icon name="coin-face" class="h-16 w-16" />
       <span
         style="text-shadow: 3px 3px 0 #EA9C00;"
         class="absolute inset-0 flex select-none items-center justify-center text-2xl font-extrabold text-[#ffeea8]">
@@ -86,7 +83,7 @@ $: if (placedBetDetail) {
       {#if timeLeft}
         <div
           class="flex grow items-center justify-center space-x-2 rounded-full bg-primary px-3 py-2 shadow-button-primary">
-          <TimerIcon class="h-5 w-5" />
+          <Icon name="stopwatch" class="h-5 w-5" />
           <span class="font-bold text-white">{$timeLeft}</span>
         </div>
       {/if}
