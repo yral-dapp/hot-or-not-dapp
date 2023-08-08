@@ -33,7 +33,7 @@
   "devDependencies": {
     "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
     "@types/node": "^18.17.2",
-    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
     "eslint-plugin-svelte3": "^4.0.0",
