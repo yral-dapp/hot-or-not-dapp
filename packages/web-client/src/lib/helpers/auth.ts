@@ -1,5 +1,5 @@
 import Log from '$lib/utils/Log'
-import { AuthClient } from '@dfinity/auth-client'
+import { AuthClient, LocalStorage } from '@dfinity/auth-client'
 import { get } from 'svelte/store'
 import { authState, authHelper, referralId } from '$stores/auth'
 import { updateProfile } from './profile'
@@ -123,12 +123,14 @@ export async function initializeAuthClient(): Promise<{
   const authHelperData = get(authHelper)
   let client: AuthClient | undefined = undefined
   if (!authHelperData.client) {
-    client = await AuthClient.create({
-      idleOptions: {
-        disableIdle: true,
-        disableDefaultIdleCallback: true,
-      },
-    })
+      client = await AuthClient.create({
+          storage: new LocalStorage(),
+          keyType: 'Ed25519',
+          idleOptions: {
+              disableIdle: true,
+              disableDefaultIdleCallback: true,
+          },
+      })
   } else {
     client = authHelperData.client
   }
