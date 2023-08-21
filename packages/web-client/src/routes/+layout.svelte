@@ -30,7 +30,7 @@ async function initSentry() {
       /Error in compression worker/i, // Replay Error
       /e.getLastBreadcrumb/i, // Sentry error
       /chrome-extension/i, // Chrome extensions error
-      /_ is not defined/i, //Unknown error
+      /. is not defined/i, //Unknown error
     ],
     beforeSend: $page.url.host.includes('t:')
       ? (event) => {
