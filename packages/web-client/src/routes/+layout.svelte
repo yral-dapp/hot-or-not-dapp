@@ -15,34 +15,6 @@ import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 
 const ignoredPaths = ['edit', 'lovers', 'post', 'speculations']
 
-async function initSentry() {
-  const Sentry = await import('@sentry/svelte')
-  const { BrowserTracing } = await await import('@sentry/tracing')
-
-  Sentry.init({
-    dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-    integrations: [new BrowserTracing(), new Sentry.Replay()],
-    environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
-    replaysSessionSampleRate: 0.3,
-    replaysOnErrorSampleRate: 1,
-    ignoreErrors: [
-      /Adding invalid event/i, // Replay Error
-      /Error in compression worker/i, // Replay Error
-      /e.getLastBreadcrumb/i, // Sentry error
-      /chrome-extension/i, // Chrome extensions error
-      /. is not defined/i, //Unknown error
-    ],
-    beforeSend: $page.url.host.includes('t:')
-      ? (event) => {
-          console.log('[SENTRY LOG]', event)
-          return event
-        }
-      : undefined,
-  })
-  Sentry.makeMain(Sentry.getCurrentHub())
-  Log('Sentry Initialized', 'info')
-}
-
 function registerServiceWorker() {
   if ($page.url.host.includes('t:')) return
 
@@ -70,7 +42,6 @@ function listenForUnhandledRejections() {
 onMount(() => {
   try {
     $navigateBack = null
-    initSentry()
     listenForUnhandledRejections()
     initializeAuthClient()
     registerServiceWorker()
