@@ -3,7 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
-import { sentrySvelteKit } from '@sentry/sveltekit'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const prodCanisterJson = async () =>
   //@ts-ignore
@@ -85,11 +85,9 @@ export default defineConfig(() => ({
     },
   },
   plugins: [
-    sentrySvelteKit({
-      sourceMapsUploadOptions: {
-        org: 'gobazzinga',
-        project: 'hot-or-not',
-      },
+    sentryVitePlugin({
+      org: 'gobazzinga',
+      project: 'hot-or-not',
     }),
     sveltekit(),
     nodePolyfills({
