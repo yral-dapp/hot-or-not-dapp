@@ -4,6 +4,9 @@ import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 const prodCanisterJson = async () =>
   //@ts-ignore
@@ -86,6 +89,7 @@ export default defineConfig(() => ({
   },
   plugins: [
     sentryVitePlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'gobazzinga',
       project: 'hot-or-not',
     }),
@@ -105,7 +109,7 @@ export default defineConfig(() => ({
     },
     include: [
       '@dfinity/principal',
-      '@sentry/sveltekit',
+      '@sentry/svelte',
       'clsx',
       'svelte-local-storage-store',
       '@dfinity/auth-client',
