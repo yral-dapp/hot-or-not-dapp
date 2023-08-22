@@ -4,7 +4,7 @@ Feel free to delete this file and the entire sentry route.
 -->
 
 <script>
-import * as Sentry from '@sentry/sveltekit'
+import * as Sentry from '@sentry/svelte'
 
 async function getSentryData() {
   const transaction = Sentry.startTransaction({
