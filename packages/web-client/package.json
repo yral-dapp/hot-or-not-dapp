@@ -29,8 +29,7 @@
     "@dfinity/identity-secp256k1": "^0.18.1",
     "@dfinity/principal": "^0.18.1",
     "@neoconfetti/svelte": "^1.0.0",
-    "@sentry/svelte": "^7.61.0",
-    "@sentry/tracing": "^7.61.0",
+    "@sentry/sveltekit": "^7.64.0",
     "buffer": "^6.0.3",
     "clsx": "^2.0.0",
     "hls.js": "^1.4.10",
@@ -40,7 +39,6 @@
     "throttle-debounce": "^5.0.0"
   },
   "devDependencies": {
-    "@sentry/vite-plugin": "^2.5.0",
     "@sveltejs/adapter-cloudflare": "^2.3.2",
     "@sveltejs/adapter-static": "^2.0.3",
     "@sveltejs/kit": "^1.22.4",
