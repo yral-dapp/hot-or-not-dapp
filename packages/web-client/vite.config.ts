@@ -3,8 +3,10 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig } from 'vite'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
+import { sentrySvelteKit } from '@sentry/sveltekit'
+
 const prodCanisterJson = async () =>
+  //@ts-ignore
   await import('../hot-or-not-backend-canister/canister_ids.json')
 const devCanisterJson = async () => {
   try {
@@ -83,11 +85,11 @@ export default defineConfig(() => ({
     },
   },
   plugins: [
-    sentryVitePlugin({
-      disable: process.env.PRODUCTION !== 'true',
-      org: 'gobazzinga',
-      project: 'hot-or-not',
-      authToken: process.env.SENTRY_AUTH_TOKEN,
+    sentrySvelteKit({
+      sourceMapsUploadOptions: {
+        org: 'gobazzinga',
+        project: 'hot-or-not',
+      },
     }),
     sveltekit(),
     nodePolyfills({
@@ -105,13 +107,11 @@ export default defineConfig(() => ({
     },
     include: [
       '@dfinity/principal',
-      '@sentry/svelte',
-      '@sentry/tracing',
+      '@sentry/sveltekit',
       'clsx',
       'svelte-local-storage-store',
       '@dfinity/auth-client',
       '@dfinity/agent',
-      '@sentry/browser',
       'throttle-debounce',
       'idb',
       'hls.js/dist/hls.min.js',
