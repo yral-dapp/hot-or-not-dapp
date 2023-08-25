@@ -14,7 +14,7 @@
       "$stores/*": ["./src/stores/*"],
       "$assets/*": ["./src/assets/*"]
     },
-    "module": "ESNext",
+    "module": "ES2020",
     "allowJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
