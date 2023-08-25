@@ -139,14 +139,18 @@ async function updateStats() {
     watchProgress.totalCount == 0
       ? {
           WatchedPartially: {
-            percentage_watched:
+            percentage_watched: Math.min(
               Math.ceil(watchProgress.partialWatchedPercentage) || 1,
+              100,
+            ),
           },
         }
       : {
           WatchedMultipleTimes: {
-            percentage_watched:
+            percentage_watched: Math.min(
               Math.ceil(watchProgress.partialWatchedPercentage) || 1,
+              100,
+            ),
             watch_count: watchProgress.totalCount,
           },
         }
