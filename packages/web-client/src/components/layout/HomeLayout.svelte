@@ -11,7 +11,7 @@ $: innerHeight = browser ? window?.innerHeight : 0
 <svelte:window on:resize={() => (innerHeight = window?.innerHeight)} />
 
 <home
-  style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
+  style="height: {innerHeight ? `${innerHeight}px` : '100dvh;'}"
   class="relative block h-full w-full overflow-hidden text-white"
   on:keyup>
   <slot name="content" />

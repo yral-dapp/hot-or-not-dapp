@@ -608,10 +608,10 @@ onDestroy(async () => {
 
 <style>
 .w-dumb-start {
-  width: calc((100vw / 2) + 2rem);
+  width: calc((100dvw / 2) + 2rem);
 }
 
 .w-dumb-end {
-  width: calc((100vw / 2) - 3rem);
+  width: calc((100dvw / 2) - 3rem);
 }
 </style>

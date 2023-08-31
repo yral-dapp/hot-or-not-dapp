@@ -53,6 +53,9 @@ async function handleLogin(type: LoginType) {
     onSuccess: () => handleSuccessfulLogin(type),
     onError: (e) => handleError(type, e),
     identityProvider: getIdentityProviderURL(type),
+    derivationOrigin: `https://${
+      import.meta.env.VITE_WEBCLIENT_CANISTER_ID
+    }.ic0.app`,
   })
 }
 

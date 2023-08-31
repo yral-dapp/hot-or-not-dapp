@@ -6,7 +6,7 @@ $: innerHeight = browser ? window?.innerHeight : 0
 <svelte:window on:resize={() => (innerHeight = window?.innerHeight)} />
 
 <camera-layout
-  style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
+  style="height: {innerHeight ? `${innerHeight}px` : '100dvh;'}"
   class="relative block h-full w-full overflow-hidden text-white">
   <slot name="content" />
   <div class="absolute inset-x-0 top-4 z-[6] flex items-center justify-center">
