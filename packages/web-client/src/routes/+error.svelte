@@ -11,7 +11,11 @@ function getVariant() {
   return Math.random() < 0.5 ? 'hot-logo' : 'not-logo'
 }
 
-Log({ error: 'Page load error', details: error, status }, 'error')
+Log('error', 'Page load error', {
+  details: error,
+  status,
+  from: 'errorPage',
+})
 $: statusCode = status.toString().split('')
 </script>
 

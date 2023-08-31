@@ -81,13 +81,9 @@ async function checkLoadedVideo(videoEl: HTMLVideoElement, file: File) {
       }
       loading = false
     } else {
-      Log(
-        {
-          res: 'Selected file is fine. Proceeding',
-          source: '0 checkFileSelected',
-        },
-        'info',
-      )
+      Log('info', 'Uploading file', {
+        from: 'upload.checkLoadedVideo',
+      })
       $fileToUpload = file
       await videoEl.pause()
       goto('/upload/new')
@@ -194,7 +190,10 @@ async function requestMediaAccess() {
       initState = 'denied'
     }
   } catch (e) {
-    Log({ error: e, source: '1 requestMediaAccess' }, 'error')
+    Log('error', 'Could not get media request', {
+      error: e,
+      from: 'upload.requestMediaAccess',
+    })
   }
 }
 
@@ -246,7 +245,10 @@ async function startRecording(ignoreTimer = false) {
       recording = true
     }
   } catch (e) {
-    Log({ error: e, source: '1 startRecording' }, 'error')
+    Log('error', 'Could not start recording', {
+      error: e,
+      from: 'upload.startRecording',
+    })
   }
 }
 
@@ -262,13 +264,9 @@ function handleDataAvailable(event: any) {
     })
     goto('/upload/new')
   } else {
-    Log(
-      {
-        res: 'Video recorded, Data not available',
-        source: '1 handleDataAvailable',
-      },
-      'error',
-    )
+    Log('error', 'Could not handle recorded data', {
+      from: 'upload.handleDataAvailable',
+    })
   }
 }
 
@@ -301,7 +299,10 @@ function computeFrame() {
       ctx.putImageData(frame, 0, 0)
     }
   } catch (e) {
-    Log({ error: e, source: '1 computeFrame' }, 'error')
+    Log('error', 'Could not compute frame', {
+      from: 'upload.computeFrame',
+      e,
+    })
   }
 }
 

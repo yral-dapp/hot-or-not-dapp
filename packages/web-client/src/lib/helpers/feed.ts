@@ -47,7 +47,11 @@ async function filterPosts(
     )
     return filtered
   } catch (e) {
-    Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.filterPosts',
+      type: 'idb',
+    })
     return posts
   }
 }
@@ -64,7 +68,11 @@ async function filterReportedPosts(posts: PostScoreIndexItem[]) {
     )
     return filtered
   } catch (e) {
-    Log({ error: e, from: '1 filterReportedPosts', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.filterReportedPosts',
+      type: 'idb',
+    })
     return posts
   }
 }
@@ -83,7 +91,11 @@ export async function getWatchedVideosFromCache(
     const sorted = values.sort((a, b) => a.watched_at - b.watched_at)
     return sorted
   } catch (e) {
-    Log({ error: e, from: '1 getWatchedVideosFromCache', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.getWatchedVideosFromCache',
+      type: 'idb',
+    })
     return []
   }
 }
@@ -129,7 +141,10 @@ export async function getTopPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 getTopPosts' }, 'error')
+    Log('error', 'Error while loading posts', {
+      error: e,
+      from: 'feed.getTopPosts',
+    })
     return { error: true }
   }
 }
@@ -148,7 +163,11 @@ async function filterBets(
     )
     return filtered
   } catch (e) {
-    Log({ error: e, from: '1 filterPosts', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.filterPosts',
+      type: 'idb',
+    })
     return posts
   }
 }
@@ -194,7 +213,10 @@ export async function getHotOrNotPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 getTopPosts' }, 'error')
+    Log('error', 'Error while loading posts', {
+      error: e,
+      from: 'feed.getHotOrNotPosts',
+    })
     return { error: true }
   }
 }
@@ -260,7 +282,10 @@ async function populatePosts(
     )
     return { posts: res.filter((o) => !!o) as PostPopulated[], error: false }
   } catch (e) {
-    Log({ error: e, from: '11 populatePosts.feed' }, 'error')
+    Log('error', 'Error while loading posts', {
+      error: e,
+      from: 'feed.populatePosts',
+    })
     return { error: true, posts: [] }
   }
 }
@@ -286,7 +311,11 @@ export async function updatePostInWatchHistory(
       postHistory,
     )
   } catch (e) {
-    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.updatePostInWatchHistory',
+      type: 'idb',
+    })
   }
 }
 
@@ -297,6 +326,10 @@ export async function saveReportedPostInDb(postId: string, reason: string) {
     }
     await idb.set('reported', postId, reason)
   } catch (e) {
-    Log({ error: e, source: '1 recordView', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.saveReportedPostInDb',
+      type: 'idb',
+    })
   }
 }

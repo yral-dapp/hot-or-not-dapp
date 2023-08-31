@@ -12,7 +12,11 @@ export async function getCanisterId(id: string): Promise<string | undefined> {
       idb = await (await import('$lib/idb')).idb
       canId = await idb.get('canisters', id)
     } catch (e) {
-      Log({ error: e, from: '1 getCanisterId', type: 'idb' }, 'error')
+      Log('error', 'Error while accessing IDB', {
+        error: e,
+        from: 'canisterId.getCanisterId',
+        type: 'idb',
+      })
       return
     }
     if (canId) return canId
@@ -36,7 +40,10 @@ export async function getCanisterId(id: string): Promise<string | undefined> {
       }
     }
   } catch (e) {
-    Log({ error: e, from: '1 getCanisterId' }, 'error')
+    Log('error', 'Error while fetching canisterId', {
+      error: e,
+      from: 'canisterId.getCanisterId',
+    })
     return
   }
 }

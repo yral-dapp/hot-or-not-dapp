@@ -17,11 +17,10 @@ const ignoredPaths = ['edit', 'lovers', 'post', 'speculations']
 
 async function initSentry() {
   const Sentry = await import('@sentry/svelte')
-  const { BrowserTracing } = await await import('@sentry/tracing')
 
   Sentry.init({
     dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-    integrations: [new BrowserTracing(), new Sentry.Replay()],
+    integrations: [new Sentry.Replay()],
     environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
     replaysSessionSampleRate: 0.3,
     replaysOnErrorSampleRate: 1,
@@ -40,7 +39,7 @@ async function initSentry() {
       : undefined,
   })
   Sentry.makeMain(Sentry.getCurrentHub())
-  Log('Sentry Initialized', 'info')
+  Log('info', 'Sentry initialized')
 }
 
 function registerServiceWorker() {
@@ -56,28 +55,27 @@ async function initializeGA() {
   try {
     GA = (await import('$components/analytics/GA.svelte')).default
   } catch (_) {
-    Log('GA Blocked', 'warn')
+    Log('warn', 'Could not load GA')
   }
 }
 
 function listenForUnhandledRejections() {
   window.addEventListener('unhandledrejection', (e) => {
     // Handle app-crash level errors here
-    Log({ e, type: 'unhandled' }, 'error')
+    Log('error', 'Unhandled exception', {
+      from: 'listenForUnhandledRejections',
+      e,
+    })
   })
 }
 
 onMount(() => {
-  try {
-    $navigateBack = null
-    initSentry()
-    listenForUnhandledRejections()
-    initializeAuthClient()
-    registerServiceWorker()
-    initializeGA()
-  } catch (e) {
-    Log({ error: e, source: '1 layout' }, 'error')
-  }
+  $navigateBack = null
+  initSentry()
+  listenForUnhandledRejections()
+  initializeAuthClient()
+  registerServiceWorker()
+  initializeGA()
 })
 
 beforeNavigate(({ from, to, type }) => {

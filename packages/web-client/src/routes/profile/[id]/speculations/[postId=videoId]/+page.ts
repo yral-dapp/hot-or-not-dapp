@@ -68,15 +68,12 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
     return { me, post }
   } catch (e) {
-    Log(
-      {
-        from: '1 speculation/[vid] load',
-        id: params.id,
-        postId: params.postId,
-        error: e,
-      },
-      'warn',
-    )
+    Log('warn', 'Could not load profile', {
+      from: 'speculation/[vid].load',
+      id: params.id,
+      postId: params.postId,
+      error: e,
+    })
     throw redirect(307, '/profile')
   }
 }

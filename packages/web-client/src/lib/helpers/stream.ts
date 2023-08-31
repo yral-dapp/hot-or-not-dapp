@@ -90,7 +90,11 @@ export async function enableMp4Downloads(uid: string) {
       method: 'GET',
     })
   } catch (e) {
-    Log({ error: e, from: '1 enableMp4Downloads' }, 'error')
+    Log('error', 'Could not enable downloads for video', {
+      from: 'stream.enableMp4Downloads',
+      uid,
+      error: e,
+    })
   }
 }
 

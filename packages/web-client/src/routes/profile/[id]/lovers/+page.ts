@@ -20,10 +20,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
   } else {
     const canId = await getCanisterId(id)
     if (!canId) {
-      Log({ from: '1 noCanId' }, 'warn')
+      Log('warn', 'No canister ID', { from: 'loadLovers', id: params.id })
       throw new Error("Couldn't find canister Id")
     }
-    Log({ canId, from: '0 canId' }, 'info')
     const fetchedProfile = await individualUser(
       Principal.from(canId),
       fetch,

@@ -15,14 +15,20 @@ async function generateUrl() {
       }),
     })
     const body = await res.json()
-    Log({ body, from: '0 generateUrl' }, 'info')
+    Log('info', 'Generating video upload URL', {
+      body,
+      from: 'image.generateUrl',
+    })
     if (body.success) {
       return body.result as { uploadURL: string; id: string }
     } else {
       return
     }
   } catch (e) {
-    Log({ error: e, from: '1 generateUrl' }, 'error')
+    Log('error', 'Could not generate video upload URL', {
+      error: e,
+      from: 'image.generateUrl',
+    })
     return
   }
 }
@@ -40,12 +46,18 @@ export async function uploadProfilePicture(file: Blob | File) {
       body: formData,
     })
     const body = await res.json()
-    Log({ body, from: '0 uploadProfilePicture' }, 'info')
+    Log('info', 'Uploading profile picture', {
+      body,
+      from: 'image.uploadProfilePicture',
+    })
     if (body.success) {
       return body.result.variants[0] as string
     }
   } catch (e) {
-    Log({ error: e, from: '1 uploadProfilePicture' }, 'error')
+    Log('error', 'Could not upload profile picture', {
+      error: e,
+      from: 'image.uploadProfilePicture',
+    })
     return
   }
 }

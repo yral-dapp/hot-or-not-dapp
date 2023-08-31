@@ -62,10 +62,14 @@ export const stop = debounce(
         videoEl.pause()
       }
     } catch (e: any) {
-      Log(
-        { error: e, index, uid, playFormat, inView, source: '2 play' },
-        'error',
-      )
+      Log('error', 'Error in video playback', {
+        error: e,
+        index,
+        uid,
+        playFormat,
+        inView,
+        source: 'VideoPlayer.stop',
+      })
     }
   },
   { atBegin: true },
@@ -122,10 +126,14 @@ async function handleClick() {
       }
     }
   } catch (e) {
-    Log(
-      { error: e, index, uid, playFormat, inView, source: '1 handleClick' },
-      'error',
-    )
+    Log('error', 'Error in video playback', {
+      error: e,
+      index,
+      uid,
+      playFormat,
+      inView,
+      source: 'VideoPlayer.handleClick',
+    })
   }
 }
 
@@ -180,10 +188,13 @@ onMount(() => {
     } else {
       // Fallback to mp4
       videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
-      Log(
-        { error: 'Hls not supported', index, src, source: '1 videoPlayer' },
-        'warn',
-      )
+
+      Log('warn', 'Hls not supported', {
+        error: 'Hls not supported',
+        index,
+        src,
+        source: 'VideoPlayer.mount',
+      })
     }
   }
 })
