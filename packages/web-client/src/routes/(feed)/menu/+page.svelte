@@ -22,9 +22,9 @@ let links: {
 $: links = [
   {
     icon: 'pouch',
-    title: 'Airdrop Guide',
+    title: 'Airdrop',
     class: 'w-5 h-5',
-    href: '/airdrop-guide',
+    href: '/airdrop',
   },
   {
     icon: 'help',
