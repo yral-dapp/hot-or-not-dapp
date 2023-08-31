@@ -23,6 +23,10 @@ export function hideSplashScreen(timeoutMs: number = 2000) {
   if (get(splashScreenPopup).shown) return
   if (splashScreenTimeOut) clearTimeout(splashScreenTimeOut)
   splashScreenTimeOut = setTimeout(() => {
+    const el = document.getElementsByTagName('splash-screen')
+    if (el && el[0]) {
+      el[0].remove()
+    }
     splashScreenPopup.set({ show: false, shown: true })
   }, timeoutMs)
 }
