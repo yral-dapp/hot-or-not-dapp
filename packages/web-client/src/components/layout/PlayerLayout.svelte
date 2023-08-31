@@ -13,7 +13,6 @@ import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
-import { showAirdropPopup } from '$stores/popups'
 import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
 
@@ -27,7 +26,6 @@ export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let unavailable = false
-export let showAirdropButton = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
 
@@ -248,13 +246,6 @@ $: avatarUrl =
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
-        {#if showAirdropButton}
-          <IconButton
-            iconName="airdrop-parachute"
-            iconClass="h-16 w-16 drop-shadow-md"
-            on:click={() => ($showAirdropPopup = true)}
-            ariaLabel="Join airdrop" />
-        {/if}
         {#if showReportButton}
           <IconButton
             iconName="flag"
