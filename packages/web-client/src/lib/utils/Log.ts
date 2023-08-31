@@ -26,15 +26,17 @@ const logTypeMap: Record<Logs, string> = {
   error: '🚨',
 }
 
-export default (data: any, type: Logs) => {
+export default (type: Logs, message: string, data?: any) => {
   const dataStr = JSON.stringify(data, replaceErrors) || data
   const localhost = browser
     ? location.host.includes('localhost')
     : import.meta.env.NODE_ENV !== 'production'
   if (localhost || type == 'error') {
-    console[type](logTypeMap[type], dataStr)
+    console[type](logTypeMap[type], message, dataStr)
   }
   if (type === 'error') {
-    Sentry.captureException(dataStr)
+    Sentry.captureException(new Error(message), {
+      extra: data,
+    })
   }
 }
