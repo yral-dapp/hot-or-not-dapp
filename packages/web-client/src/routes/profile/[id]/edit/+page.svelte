@@ -36,6 +36,7 @@ let {
 
 let pageLoaded = false
 const usernameSetFirstTime = username_set
+const usernameRegex = new RegExp(/^[\w]*$/)
 let loading = true
 let error = ''
 let values: {
@@ -47,6 +48,8 @@ let values: {
 async function isUsernameTaken() {
   const newUsername = values.username.toLowerCase().trim()
   if (!username_set) {
+    return false
+  } else if (!usernameRegex.test(newUsername)) {
     return false
   } else if (newUsername === username) {
     return false
