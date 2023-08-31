@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -20,6 +20,15 @@
     data-sveltekit-preload-data="hover"
     style="overflow: hidden; background-color: black"
     class="h-screen">
+    <splash-screen
+      class="spacy-y-8 absolute z-[15] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black">
+      <svg class="h-56 w-56">
+        <use xlink:href="/icons.sprite.svg#hot-or-not-logo"></use>
+      </svg>
+      <svg class="h-5 w-5 animate-spin-slow opacity-50">
+        <use xlink:href="/icons.sprite.svg#loading"></use>
+      </svg>
+    </splash-screen>
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>
