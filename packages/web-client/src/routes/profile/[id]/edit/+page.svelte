@@ -85,6 +85,11 @@ async function saveChanges() {
     loading = false
     Log({ error }, 'warn')
     return
+  } else if (!usernameRegex.test(values.username.trim())) {
+    error = 'Username not allowed'
+    loading = false
+    Log({ error }, 'warn')
+    return
   } else if (!username_set && (await isUsernameTaken())) {
     error = 'This username is already taken'
     loading = false
