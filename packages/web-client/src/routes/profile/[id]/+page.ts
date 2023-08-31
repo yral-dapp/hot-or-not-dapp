@@ -15,7 +15,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
   const id = params.id
 
   if (!id) {
-    Log({ from: '1 load profile', id: params.id }, 'warn')
+    Log('warn', 'No profile ID', { from: 'loadProfile', id: params.id })
     throw redirect(307, '/menu')
   }
 
@@ -46,10 +46,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
     }
     const canId = await getCanisterId(id)
     if (!canId) {
-      Log({ from: '1 noCanId' }, 'warn')
+      Log('warn', 'No canister ID', { from: 'loadProfile', id: params.id })
       throw error(404, "Couldn't find canister Id")
     }
-    Log({ canId, from: '0 canId' }, 'info')
+    Log('info', 'Found canister ID', { from: 'loadProfile', canId })
     const fetchedProfile = await individualUser(
       Principal.from(canId),
       fetch,

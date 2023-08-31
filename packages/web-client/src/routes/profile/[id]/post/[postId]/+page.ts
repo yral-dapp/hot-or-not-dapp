@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
     const id = params.id
     let me = false
     if (!pid || isNaN(Number(pid))) {
-      Log({ from: '1 post/[vid] load', pid, id }, 'warn')
+      Log('warn', 'Invalid post ID', { from: 'loadProfilePostId', pid, id })
       throw redirect(307, '/profile')
     }
 
@@ -30,8 +30,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
     if (
       id === userProfileData.unique_user_name ||
       id === userProfileData.principal_id
-    )
+    ) {
       me = true
+    }
 
     const post = await individualUser(
       Principal.from(canId),
@@ -50,15 +51,13 @@ export const load: PageLoad = async ({ params, fetch }) => {
     }
     return { me, video }
   } catch (e) {
-    Log(
-      {
-        from: '1 post/[vid] load',
-        id: params.id,
-        postId: params.postId,
-        error: e,
-      },
-      'warn',
-    )
+    Log('warn', 'Invalid post ID', {
+      from: 'loadProfilePostId',
+      e,
+      id: params.id,
+      postId: params.postId,
+    })
+
     throw redirect(307, '/profile')
   }
 }

@@ -58,7 +58,10 @@ async function shareLink() {
       url: link,
     })
   } catch (e) {
-    Log({ error: e, from: '1 shareLink' }, 'warn')
+    Log('warn', 'Could not share link', {
+      error: e,
+      from: 'refer-earn.shareLink',
+    })
     copyLink()
   }
 }
@@ -71,7 +74,10 @@ async function copyLink() {
     await navigator.clipboard.writeText(link)
     copied = true
   } catch (e) {
-    Log({ error: e, from: '1 copyLink' }, 'warn')
+    Log('warn', 'Could not copy to clipboard', {
+      error: e,
+      from: 'refer-earn.copyLink',
+    })
   }
 }
 

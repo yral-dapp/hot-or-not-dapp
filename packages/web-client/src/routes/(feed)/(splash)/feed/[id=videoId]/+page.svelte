@@ -52,13 +52,10 @@ async function fetchNextVideos(force = false) {
     (force || videos.length - currentVideoIndex < fetchWhenVideosLeft)
   ) {
     try {
-      Log(
-        {
-          res: 'fetching from ' + fetchedVideosCount,
-          source: '0 fetchNextVideos',
-        },
-        'info',
-      )
+      Log('info', 'Fetching videos for feed', {
+        res: 'fetching from ' + fetchedVideosCount,
+        source: 'feed.fetchNextVideos',
+      })
       loading = true
       const res = await getTopPosts(fetchedVideosCount, fetchCount, true)
       if (res.error) {
@@ -92,9 +89,16 @@ async function fetchNextVideos(force = false) {
       noMoreVideos = res.noMorePosts
       await tick()
       loading = false
-      Log({ res: 'fetched', noMoreVideos, source: '0 fetchNextVideos' }, 'info')
+      Log('info', 'Fetched videos for feed', {
+        noMoreVideos,
+        source: 'feed.fetchNextVideos',
+      })
     } catch (e) {
-      Log({ error: e, noMoreVideos, source: '1 fetchNextVideos' }, 'error')
+      Log('error', 'Could not fetch videos for feed', {
+        error: e,
+        noMoreVideos,
+        source: 'feed.fetchNextVideos',
+      })
       loading = false
     }
   }

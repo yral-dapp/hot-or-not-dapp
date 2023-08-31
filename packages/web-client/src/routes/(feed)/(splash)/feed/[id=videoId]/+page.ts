@@ -18,7 +18,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
       const { idb } = await import('$lib/idb')
       cachedPost = await idb.get('watch', params.id)
     } catch (e) {
-      Log({ error: e, source: '1 videoFeedLoad', type: 'idb' }, 'error')
+      Log('error', 'Error while accessing IDB', {
+        error: e,
+        from: 'feed.videoFeedLoad',
+        type: 'idb',
+      })
       cachedPost = undefined
     }
 

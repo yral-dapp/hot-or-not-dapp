@@ -63,13 +63,10 @@ async function updateUserIndexCanister(): Promise<{
       }
     }
 
-    Log(
-      {
-        userCanisterPrincipal: userCanisterPrincipal?.toText(),
-        from: '0 updateUserIndexCanister',
-      },
-      'info',
-    )
+    Log('info', 'Update user index canister info', {
+      userCanisterPrincipal: userCanisterPrincipal?.toText(),
+      from: 'auth.updateUserIndexCanister',
+    })
 
     const authHelperData = get(authHelper)
     authHelper.set({
@@ -93,10 +90,11 @@ async function updateUserIndexCanister(): Promise<{
           userCanisterPrincipal.toText(),
         )
       } catch (e) {
-        Log(
-          { error: e, source: '1 updateUserIndexCanister', type: 'idb' },
-          'error',
-        )
+        Log('error', 'Error while accessing IDB', {
+          error: e,
+          source: 'auth.updateUserIndexCanister',
+          type: 'idb',
+        })
         return { error: false, new_user, referral: referralStore.principalId }
       }
     }
@@ -107,7 +105,10 @@ async function updateUserIndexCanister(): Promise<{
     if (authFailed) {
       await logout()
     } else {
-      Log({ error: e, from: '2 updateUserIndexCanister' }, 'error')
+      Log('error', 'Failed to authenticate', {
+        error: e,
+        from: 'auth.updateUserIndexCanister',
+      })
     }
     return { error: true, error_details: 'OTHER', new_user: false }
   }

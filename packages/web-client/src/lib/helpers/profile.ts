@@ -39,7 +39,10 @@ async function fetchProfile() {
   try {
     return await individualUser().get_profile_details()
   } catch (e) {
-    Log({ error: e, from: '1 fetchProfile' }, 'error')
+    Log('error', 'Could not fetch user profile', {
+      error: e,
+      from: 'profile.fetchProfile',
+    })
   }
 }
 
@@ -83,18 +86,27 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
             authStateData.userCanisterId,
           )
         } catch (e) {
-          Log({ error: e, from: '1 updateProfile', type: 'idb' }, 'warn')
+          Log('warn', 'Error while accessing IDB', {
+            error: e,
+            from: 'profile.updateProfile',
+            type: 'idb',
+          })
         }
       }
     } else {
-      Log({ error: 'No profile found', from: '1 updateProfile' }, 'warn')
+      Log('warn', 'No profile found', {
+        from: 'profile.updateProfile',
+      })
     }
   } else {
     userProfile.set(emptyProfileValues)
   }
   updateUserProperties() // GA
   setUser(authStateData.idString) //Sentry
-  Log({ profile: get(userProfile), from: '0 updateProfile' }, 'info')
+  Log('info', 'Updated user profile', {
+    profile: get(userProfile),
+    from: 'profile.updateProfile',
+  })
 }
 
 async function updateUserProperties() {
@@ -166,7 +178,10 @@ export async function fetchPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    Log('error', 'Error while loading posts', {
+      error: e,
+      from: 'profile.fetchPosts',
+    })
     return { error: true }
   }
 }
@@ -191,7 +206,10 @@ export async function fetchSpeculations(
       noMorePosts: res.length < 10,
     }
   } catch (e) {
-    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    Log('error', 'Error while loading posts', {
+      error: e,
+      from: 'profile.fetchSpeculations',
+    })
     return { error: true }
   }
 }
@@ -226,7 +244,10 @@ async function populatePosts(posts: PlacedBetDetail[]) {
       error: false,
     }
   } catch (e) {
-    Log({ error: e, from: '11 populatePosts.feed' }, 'error')
+    Log('error', 'Error while loading posts', {
+      error: e,
+      from: 'profile.populatePosts',
+    })
     return { error: true, posts: [] }
   }
 }
@@ -253,7 +274,10 @@ export async function fetchLovers(id: string, from?: bigint) {
       noMoreLovers: res.length < 9,
     }
   } catch (e) {
-    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    Log('error', 'Error while loading followers', {
+      error: e,
+      from: 'profile.fetchLovers',
+    })
     return { error: true }
   }
 }
@@ -280,7 +304,10 @@ export async function fetchLovingUsers(id: string, from?: bigint) {
       noMoreLovers: res.length < 10,
     }
   } catch (e) {
-    Log({ error: e, from: '11 fetchPosts' }, 'error')
+    Log('error', 'Error while loading followers', {
+      error: e,
+      from: 'profile.fetchLovingUsers',
+    })
     return { error: true }
   }
 }
@@ -298,17 +325,6 @@ async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
         const principalId = detail?.principal_id?.toText()
         if (!principalId) return
         if (principalId === '2vxsx-fae') return
-        if (!detail?.canister_id) {
-          {
-            Log(
-              {
-                error: `Could not get canisterId for user: ${principalId}`,
-                from: '12 populatePosts.profile',
-              },
-              'error',
-            )
-          }
-        }
 
         const r = await individualUser(
           Principal.from(detail.canister_id),
@@ -329,7 +345,10 @@ async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
       error: false,
     }
   } catch (e) {
-    Log({ error: e, from: '11 populatePosts.profile' }, 'error')
+    Log('error', 'Error while loading profile', {
+      error: e,
+      from: 'profile.populateProfiles',
+    })
     return { error: true, users: [] }
   }
 }
@@ -350,7 +369,10 @@ export async function doIFollowThisUser(principalId?: string) {
     })
     return !!res['Ok']
   } catch (e) {
-    Log({ error: e, from: '1 doIFollowThisUser' }, 'error')
+    Log('error', 'Error while loading following status', {
+      error: e,
+      from: 'profile.doIFollowThisUser',
+    })
     return false
   }
 }
@@ -377,7 +399,10 @@ export async function loveUser(principalId: string) {
       return false
     }
   } catch (e) {
-    Log({ error: e, from: '1 loveUser' }, 'error')
+    Log('error', 'Error while following a status', {
+      error: e,
+      from: 'profile.loveUser',
+    })
     return false
   }
 }
@@ -477,7 +502,11 @@ export async function setBetDetailToDb(
     const idb = (await import('$lib/idb')).idb
     idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
   } catch (e) {
-    Log({ error: e, source: '1 saveBetToDb', type: 'idb' }, 'error')
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'profile.setBetDetailToDb',
+      type: 'idb',
+    })
     return
   }
 }
@@ -511,7 +540,10 @@ export async function fetchHistory(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 fetchHistory' }, 'error')
+    Log('error', 'Error while loading transaction history', {
+      error: e,
+      from: 'profile.fetchHistory',
+    })
     return { error: true }
   }
   return { error: true }
@@ -573,7 +605,10 @@ export async function fetchNotifications(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log({ error: e, from: '11 fetchNotifications' }, 'warn')
+    Log('error', 'Error while loading transaction history', {
+      error: e,
+      from: 'profile.fetchNotifications',
+    })
     return { error: true }
   }
   return { error: true }
@@ -586,7 +621,10 @@ export async function fetchTokenBalance(): Promise<
     const res = await individualUser().get_utility_token_balance()
     return { error: false, balance: Number(res) }
   } catch (e) {
-    Log({ error: e, from: '11 fetchHistory' }, 'error')
+    Log('error', 'Error while loading token balance', {
+      error: e,
+      from: 'profile.fetchTokenBalance',
+    })
     return { error: true }
   }
 }

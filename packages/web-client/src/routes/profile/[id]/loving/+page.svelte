@@ -60,7 +60,10 @@ async function loadLovingUsers() {
     }
     loading = false
   } catch (e) {
-    Log({ error: e, from: '1 loadLovers' }, 'error')
+    Log('error', 'Error while loading followers', {
+      error: e,
+      from: 'profile.loadLovingUsers',
+    })
   }
 
   loading = false

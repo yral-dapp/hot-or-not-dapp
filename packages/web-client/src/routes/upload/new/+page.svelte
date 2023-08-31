@@ -73,7 +73,10 @@ async function startUploading() {
   uploadStatus = 'uploading'
   const uploadRes = await uploadVideoToStream($fileToUpload, onProgress)
   if (!uploadRes.success) {
-    Log({ ...uploadRes, source: '1 startUploading' }, 'error')
+    Log('error', 'Could not start uploading', {
+      ...uploadRes,
+      from: 'upload-new.startUploading',
+    })
     registerEvent('video_upload_failed', {
       at_step: 'uploading_progress',
       userId: $userProfile.principal_id,
@@ -98,7 +101,11 @@ async function checkVideoProcessingStatus(uid: string) {
   videoStatusInterval = setInterval(async () => {
     try {
       const videoStatus = await checkVideoStatus(uid)
-      Log({ videoStatus, source: '0 checkVideoProcessingStatus' }, 'info')
+      Log('info', 'Checking video processing status', {
+        videoStatus,
+        from: 'upload-new.checkVideoProcessingStatus',
+      })
+
       if (!videoStatus.success) {
         clearInterval(videoStatusInterval)
         throw new Error(JSON.stringify(videoStatus))
@@ -108,14 +115,11 @@ async function checkVideoProcessingStatus(uid: string) {
         await tick()
       }
     } catch (e) {
-      Log(
-        {
-          error: 'Processing error',
-          e,
-          source: '1 checkVideoProcessingStatus',
-        },
-        'error',
-      )
+      Log('error', 'Could not check video processing status', {
+        error: 'Processing error',
+        e,
+        source: 'upload-new.checkVideoProcessingStatus',
+      })
       registerEvent('video_upload_failed', {
         at_step: 'processing',
         userId: $userProfile.principal_id,
@@ -135,7 +139,10 @@ const handleSuccessfulUpload = debounce(
   async (videoUid: string) => {
     clearInterval(videoStatusInterval)
     try {
-      Log({ videoUid, source: '0 handleSuccessfulUpload' }, 'info')
+      Log('info', 'Checking video processing status', {
+        videoUid,
+        from: 'upload-new.handleSuccessfulUpload',
+      })
       const postRes = await individualUser().add_post_v2({
         description: videoDescription,
         hashtags,
@@ -153,19 +160,18 @@ const handleSuccessfulUpload = debounce(
         })
         uploadStep = 'verified'
         uploadStatus = 'uploaded'
-        Log({ postRes, source: '0 handleSuccessfulUpload' }, 'info')
+        Log('info', 'Video upload successful', {
+          postRes,
+          from: 'upload-new.handleSuccessfulUpload',
+        })
       } else {
         throw 'Error uploading video to backend'
       }
     } catch (e) {
-      Log(
-        {
-          error: "Couldn't send details to backend",
-          e,
-          source: '1 handleSuccessfulUpload',
-        },
-        'error',
-      )
+      Log('error', 'Could not send uploaded video details to backend', {
+        e,
+        source: 'upload-new.handleSuccessfulUpload',
+      })
       registerEvent('video_upload_failed', {
         at_step: 'updating_db',
         userId: $userProfile.principal_id,

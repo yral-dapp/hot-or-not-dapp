@@ -34,7 +34,11 @@ const dbPromise = openDB('keyval-store', 7, {
     }
   },
 }).catch((e) => {
-  Log({ error: e, from: 'idb' }, 'error')
+  Log('error', 'Error while accessing IDB', {
+    error: e,
+    from: 'db.openDB',
+    type: 'idb',
+  })
 })
 
 export async function get(storeName: DBStores, key) {

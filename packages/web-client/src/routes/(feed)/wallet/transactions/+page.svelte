@@ -38,7 +38,10 @@ async function loadTransactions() {
     fetchedTransactionsCount = transactions.length
     loading = false
   } catch (e) {
-    Log({ error: e, from: '1 loadLovers' }, 'error')
+    Log('error', 'Error while loading transaction history', {
+      error: e,
+      from: 'transactions.loadLovers',
+    })
   }
 
   loading = false

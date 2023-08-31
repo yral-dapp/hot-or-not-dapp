@@ -55,7 +55,10 @@ async function uploadImage(blob: Blob) {
       toUploadSrc = ''
       error =
         'Something went wrong while uploading the photo. Please try again.'
-      Log({ error: 'Something went wrong', from: '1 uploadImage' }, 'error')
+      Log('error', 'Error while uploading photo', {
+        error: 'Something went wrong, unknown reason',
+        from: 'ProfileImageSelector.uploadImage',
+      })
     }
 
     loading = false
@@ -63,7 +66,10 @@ async function uploadImage(blob: Blob) {
     error = 'Could not upload profile photo. Please try again.'
     toUploadSrc = ''
     loading = false
-    Log({ error: e, from: '1 uploadImage' }, 'error')
+    Log('error', 'Error while uploading photo', {
+      from: 'ProfileImageSelector.uploadImage',
+      error: e,
+    })
   }
 }
 </script>

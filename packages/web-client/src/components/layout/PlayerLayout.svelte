@@ -153,7 +153,12 @@ async function updateStats() {
           },
         }
 
-  Log({ from: '0 updateStats', id: post.id, i: index, payload }, 'info')
+  Log('info', 'Updating watch stats', {
+    from: 'PlayerLayout.updateStats',
+    id: post.id,
+    i: index,
+    payload,
+  })
 
   if ($page.url.host.includes('t:')) return
 
@@ -173,7 +178,12 @@ async function updateStats() {
       post.publisher_canister_id,
     ).update_post_add_view_details(post.id, payload)
   } catch (e) {
-    Log({ from: '1 updateStats', i: index, payload, e }, 'error')
+    Log('error', 'Could not update watch stats', {
+      from: 'PlayerLayout.updateStats',
+      i: index,
+      payload,
+      e,
+    })
   }
 }
 

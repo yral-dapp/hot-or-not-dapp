@@ -78,21 +78,21 @@ async function saveChanges() {
   if (!values.name) {
     error = 'Name is required'
     loading = false
-    Log({ error }, 'warn')
     return
   } else if (!values.username) {
     error = 'Username is required'
     loading = false
-    Log({ error }, 'warn')
     return
   } else if (!username_set && (await isUsernameTaken())) {
     error = 'This username is already taken'
     loading = false
-    Log({ error }, 'warn')
     return
   }
 
-  Log({ res: values, from: '0 saveChanges' }, 'info')
+  Log('info', 'Saving changes to profile', {
+    values,
+    from: 'edit.saveChanges',
+  })
 
   const newUsername = values.username.toLowerCase().trim()
   if (username !== newUsername) {
@@ -115,16 +115,21 @@ async function saveChanges() {
           const { idb } = await import('$lib/idb')
           idb.set('canisters', newUsername, canId)
         } catch (e) {
-          Log(
-            { error: e, source: '1 saveChanges Profile', type: 'idb' },
-            'error',
-          )
+          Log('error', 'Error while accessing IDB', {
+            error: e,
+            from: 'edit.saveChanges',
+            type: 'idb',
+          })
+
           loading = false
         }
       }
     } catch (e) {
       loading = false
-      Log({ error: e, from: '1 saveChanges' }, 'error')
+      Log('error', 'Could not check username', {
+        error: e,
+        from: 'edit.saveChanges',
+      })
     }
   }
   try {
@@ -158,7 +163,10 @@ async function saveChanges() {
     )
   } catch (e) {
     loading = false
-    Log({ error: e, from: '2 saveChanges' }, 'error')
+    Log('error', 'Could not update profile', {
+      error: e,
+      from: 'edit.saveChanges',
+    })
   }
 }
 

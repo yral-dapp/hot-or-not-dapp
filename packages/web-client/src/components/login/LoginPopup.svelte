@@ -64,7 +64,10 @@ async function handleSuccessfulLogin(type: LoginType) {
     if (!res) throw {}
 
     if (res.error) {
-      Log({ error: 'Signup prevented' }, 'warn')
+      Log('warn', 'Could not signup', {
+        from: 'LoginPopup.handleSuccessfulLogin',
+        error: 'Signup prevented',
+      })
       $authState.showLogin = false
       registerEvent('sign_up_blocked', {
         login_method: type,
@@ -93,7 +96,11 @@ async function handleSuccessfulLogin(type: LoginType) {
     loading = false
     error = 'Something went wrong. Please refresh the page and try login again.'
   }
-  Log({ type, from: '0 handleSuccessfulLogin' }, 'info')
+
+  Log('info', 'Login succesful', {
+    type,
+    from: 'LoginPopup.handleSuccessfulLogin',
+  })
 }
 
 function handleError(type: LoginType, e?: string) {

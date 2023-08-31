@@ -7,12 +7,17 @@ export async function checkSignupStatusCf(): Promise<boolean> {
   try {
     const res = await fetch(`${cfWorkerHost}/backend/signupStatus`)
     const body = await res.json()
-    Log({ body, from: '0 checkSignupStatusCf' }, 'info')
+    Log('info', 'Checking signup status on CF', {
+      from: 'signup.checkSignupStatusCf',
+    })
     if (body.allowed) {
       return true
     } else return false
   } catch (e) {
-    Log({ error: e, from: '1 checkSignupStatusCf' }, 'error')
+    Log('error', 'Could not fetch signup status on CF', {
+      from: 'signup.checkSignupStatusCf',
+      error: e,
+    })
     return false
   }
 }
@@ -22,7 +27,10 @@ export async function checkSignupStatusCanister(): Promise<boolean> {
     const res = await configuration().are_signups_enabled()
     return res
   } catch (e) {
-    Log({ error: e, from: '1 checkSignupStatusCanister' }, 'error')
+    Log('error', 'Could not fetch signup status on canister', {
+      from: 'signup.checkSignupStatusCanister',
+      error: e,
+    })
     return false
   }
 }

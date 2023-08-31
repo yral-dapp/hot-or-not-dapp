@@ -16,7 +16,10 @@ async function copy() {
       copied = false
     }, 1000)
   } catch (e) {
-    Log({ error: e, from: '1 copyLink' }, 'warn')
+    Log('warn', 'Could not copy to clipboard', {
+      error: e,
+      from: 'CopyButton.copyLink',
+    })
   }
 }
 onDestroy(() => {
