@@ -137,8 +137,15 @@ $: !authorized && (loading = false)
                 login to see your status.
               {/if}
             </div>
-
-            <Button href="/" class="w-full">Play to Earn</Button>
+            {#if authorized}
+              <Button href="/" class="w-full">Play to Earn</Button>
+            {:else}
+              <Button
+                on:click={() => ($authState.showLogin = true)}
+                class="w-full">
+                Login
+              </Button>
+            {/if}
           </div>
         {/if}
         <div class="flex flex-col items-center justify-center space-y-4 px-8">
