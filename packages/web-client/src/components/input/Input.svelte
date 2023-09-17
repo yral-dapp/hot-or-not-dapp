@@ -30,4 +30,5 @@ onMount(() => {
   on:change
   on:focus
   on:blur
-  class="grow border-none py-3 px-4 focus:ring-transparent disabled:opacity-50 {exportClass}" />
+  on:paste
+  class="grow border-none px-4 py-3 focus:ring-transparent disabled:opacity-50 {exportClass}" />

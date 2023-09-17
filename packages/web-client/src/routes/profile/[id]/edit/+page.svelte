@@ -16,7 +16,6 @@ import { goto } from '$app/navigation'
 import { registerEvent } from '$components/analytics/GA.svelte'
 import { individualUser, userIndex } from '$lib/helpers/backend'
 import goBack from '$lib/utils/goBack'
-import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -86,7 +85,7 @@ async function saveChanges() {
   } else if (!usernameRegex.test(values.username.trim())) {
     error = 'Username not allowed'
     loading = false
-    Log({ error }, 'warn')
+    Log('warn', 'Username not allowed')
     return
   } else if (!username_set && (await isUsernameTaken())) {
     error = 'This username is already taken'
@@ -219,6 +218,7 @@ $: userId = username_set
             disabled={loading}
             bind:value={values.name}
             type="text"
+            on:paste={(e) => e.preventDefault()}
             maxlength={40}
             placeholder="Enter your name here"
             class="w-full rounded-md bg-white/10 py-4" />
@@ -230,6 +230,7 @@ $: userId = username_set
             bind:value={values.username}
             on:keydown={filterUsernameKeystrokes}
             type="text"
+            on:paste={(e) => e.preventDefault()}
             maxlength={20}
             placeholder="Enter your username here"
             class="placeholder:norma w-full rounded-md bg-white/10 py-4 lowercase placeholder:normal-case" />

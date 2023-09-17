@@ -13,6 +13,8 @@ export async function airdropEntryDetails(principalId: string) {
       return body.doc as {
         FinalCOYNWalletBalance: string
         FinalHotTokens: number
+        splitNeuronId?: string
+        nnsId?: string
       }
     }
     return false

@@ -20,6 +20,10 @@ let wallet = {
   hot: 0,
   loading: true,
 }
+let transferDetails = {
+  nnsId: '',
+  neuronId: '',
+}
 
 async function checkIfCompleted() {
   if ($authState.idString) {
@@ -29,6 +33,8 @@ async function checkIfCompleted() {
     } else {
       wallet.coyn = res?.FinalCOYNWalletBalance
       wallet.hot = res?.FinalHotTokens
+      res.splitNeuronId && (transferDetails.neuronId = res.splitNeuronId)
+      res.nnsId && (transferDetails.nnsId = res.nnsId)
       wallet.loading = false
       participatedForAirdrop = true
       const nns = await isNNSIdRegistered($authState.idString)
@@ -94,12 +100,23 @@ $: !authorized && (loading = false)
                 </div>
               </div>
             {/if}
-            <div class="py-4 text-center text-sm">
-              The HOT tokens will be transferred to your NNS wallet by our team
-              over the course of a few months as we go through the process
-              manually with over 16,000 winners. Please be patient and check our
-              socials for updates.
-            </div>
+            {#if transferDetails.nnsId && transferDetails.neuronId}
+              <div class="py-4 text-center text-sm">
+                Your reward has been transferred to your NNS dapp account with
+                ID {transferDetails.nnsId}. The neuron ID is
+                <span class="underline">
+                  {transferDetails.neuronId}
+                </span>
+                .
+              </div>
+            {:else}
+              <div class="py-4 text-center text-sm">
+                The HOT tokens will be transferred to your NNS wallet by our
+                team over the course of a few months as we go through the
+                process manually with over 16,000 winners. Please be patient and
+                check our socials for updates.
+              </div>
+            {/if}
 
             <Button href="/hotornot" class="w-full">Play to earn</Button>
 
