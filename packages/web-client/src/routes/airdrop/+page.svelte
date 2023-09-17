@@ -20,6 +20,10 @@ let wallet = {
   hot: 0,
   loading: true,
 }
+let transferDetails = {
+  nnsId: '',
+  neuronId: '',
+}
 
 async function checkIfCompleted() {
   if ($authState.idString) {
@@ -29,6 +33,8 @@ async function checkIfCompleted() {
     } else {
       wallet.coyn = res?.FinalCOYNWalletBalance
       wallet.hot = res?.FinalHotTokens
+      res.splitNeuronId && (transferDetails.neuronId = res.splitNeuronId)
+      res.nnsId && (transferDetails.nnsId = res.nnsId)
       wallet.loading = false
       participatedForAirdrop = true
       const nns = await isNNSIdRegistered($authState.idString)
