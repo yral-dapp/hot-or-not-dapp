@@ -100,12 +100,23 @@ $: !authorized && (loading = false)
                 </div>
               </div>
             {/if}
-            <div class="py-4 text-center text-sm">
-              The HOT tokens will be transferred to your NNS wallet by our team
-              over the course of a few months as we go through the process
-              manually with over 16,000 winners. Please be patient and check our
-              socials for updates.
-            </div>
+            {#if transferDetails.nnsId && transferDetails.neuronId}
+              <div class="py-4 text-center text-sm">
+                Your reward has been transferred to your NNS dapp account with
+                ID {transferDetails.nnsId}. The neuron ID is
+                <span class="underline">
+                  {transferDetails.neuronId}
+                </span>
+                .
+              </div>
+            {:else}
+              <div class="py-4 text-center text-sm">
+                The HOT tokens will be transferred to your NNS wallet by our
+                team over the course of a few months as we go through the
+                process manually with over 16,000 winners. Please be patient and
+                check our socials for updates.
+              </div>
+            {/if}
 
             <Button href="/hotornot" class="w-full">Play to earn</Button>
 
