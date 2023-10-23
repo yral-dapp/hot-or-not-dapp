@@ -15,6 +15,7 @@ import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
+import { onMount } from 'svelte'
 
 export let index: number
 export let post: PostPopulated
@@ -190,6 +191,8 @@ async function updateStats() {
 $: avatarUrl =
   post.created_by_profile_photo_url[0] ||
   getDefaultImageUrl(post.created_by_user_principal_id)
+
+onMount(() => console.log('layout mount', index))
 </script>
 
 {#if showReportPopup}
@@ -207,8 +210,7 @@ $: avatarUrl =
 
 <player-layout
   data-index={index}
-  class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
-  <slot {recordView} {updateStats} />
+  class="relative block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
   {#if !unavailable}
     <img
       alt="background"
@@ -326,6 +328,7 @@ $: avatarUrl =
       </div>
     {/if}
   </div>
+  <slot {recordView} {updateStats} />
 </player-layout>
 
 <style>
