@@ -1,0 +1,5 @@
+/_app/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: autoplay=*, camera=*, microphone=*
