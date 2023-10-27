@@ -1,6 +1,5 @@
 <script lang="ts">
 import { browser } from '$app/environment'
-import { playerState } from '$stores/playerState'
 
 export let testMode = false
 

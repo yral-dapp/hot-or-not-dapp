@@ -7,6 +7,8 @@ import { playerState } from '$stores/playerState'
 import { onDestroy, onMount } from 'svelte'
 import { authState } from '$stores/auth'
 import Icon from '$components/icon/Icon.svelte'
+import { fade } from 'svelte/transition'
+import IconButton from '$components/button/IconButton.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -25,25 +27,37 @@ onDestroy(() => {
 })
 
 $: pathname = $page.url.pathname
+let resultPage = pathname.includes('result')
+$: walletPage = pathname.includes('wallet')
 </script>
 
 <HomeLayout>
   <svelte:fragment slot="top">
-    {#if pathname.includes('feed') || pathname.includes('hotornot')}
-      <Selector
-        selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
-      <a
-        href="/notifications"
-        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center">
-        <Icon
-          name={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
-          class="h-6 w-6" />
-      </a>
-    {:else if pathname.includes('menu')}
+    {#if !walletPage}
       <div
-        class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
-        Menu
+        transition:fade
+        class="relative flex items-center justify-center space-x-6 rounded-full bg-black/50 py-3 pr-5 text-white">
+        <selector
+          class="absolute inset-x-0 z-[1] h-9 rounded-full bg-primary transition-all duration-200
+          {resultPage
+            ? 'w-20 translate-x-[10.25rem]'
+            : 'w-40 translate-x-2'}" />
+
+        <a on:click={() => (resultPage = false)} href="/up-down" class="z-[2]">
+          Up & Down Game
+        </a>
+        <a
+          on:click={() => (resultPage = true)}
+          href="/up-down/results"
+          class="z-[2] flex items-center space-x-2">
+          Results
+        </a>
       </div>
+      <IconButton
+        href="/up-down/wallet"
+        class="absolute right-4"
+        iconName="wallet-fill"
+        iconClass="h-6 w-6 text-white" />
     {/if}
   </svelte:fragment>
   <svelte:fragment slot="content">

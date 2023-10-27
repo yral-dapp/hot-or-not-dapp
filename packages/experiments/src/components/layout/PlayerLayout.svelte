@@ -3,10 +3,7 @@ import { page } from '$app/stores'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import Icon from '$components/icon/Icon.svelte'
-import ReportPopup from '$components/popup/ReportPopup.svelte'
 import { registerEvent } from '$components/analytics/GA.svelte'
-import { individualUser } from '$lib/helpers/backend'
-import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
@@ -23,7 +20,6 @@ export let showWalletLink = false
 export let showReferAndEarnLink = false
 export let showShareButton = false
 export let showLikeButton = false
-export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
 export let unavailable = false
@@ -35,7 +31,6 @@ let watchProgress = {
   totalCount: 0,
   partialWatchedPercentage: 0,
 }
-let showReportPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -195,19 +190,6 @@ $: avatarUrl =
 onMount(() => console.log('layout mount', index))
 </script>
 
-{#if showReportPopup}
-  <ReportPopup
-    bind:show={showReportPopup}
-    type="post"
-    reportData={{
-      postCanisterId: post.publisher_canister_id,
-      postId: post.id.toString(),
-      videoUid: post.video_uid,
-      postUploadedByUserId: post.created_by_user_principal_id,
-      reportedByUserId: $authState.idString || '2vxsx-fae',
-    }} />
-{/if}
-
 <player-layout
   data-index={index}
   class="relative block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
@@ -258,17 +240,6 @@ onMount(() => console.log('layout mount', index))
       </div>
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
-        {#if showReportButton}
-          <IconButton
-            iconName="flag"
-            iconClass="h-6 w-6 text-white drop-shadow-md"
-            ariaLabel="Report this post"
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              showReportPopup = true
-            }} />
-        {/if}
-
         {#if showReferAndEarnLink}
           <IconButton
             iconName="giftbox-fill"

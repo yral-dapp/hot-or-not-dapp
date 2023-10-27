@@ -21,7 +21,7 @@ const devCanisterJson = async () => {
   }
 }
 
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = process.env.NODE_ENV === 'production'
 
 console.log('starting app in', isDev ? 'dev' : 'prod', 'mode')
 

@@ -2,7 +2,6 @@
 import { preloadData } from '$app/navigation'
 import { page } from '$app/stores'
 import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
 import { playerState } from '$stores/playerState'
 import { onMount } from 'svelte'
 
