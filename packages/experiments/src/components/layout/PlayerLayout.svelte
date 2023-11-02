@@ -15,7 +15,7 @@ import { debounce } from 'throttle-debounce'
 import { onMount } from 'svelte'
 
 export let index: number
-export let post: PostPopulated
+export let post: any
 export let showWalletLink = false
 export let showReferAndEarnLink = false
 export let showShareButton = false
@@ -55,9 +55,9 @@ async function handleShare() {
     video_publisher_canister_id: post.publisher_canister_id,
     video_id: post.id,
   })
-  await individualUser(
-    post.publisher_canister_id,
-  ).update_post_increment_share_count(post.id)
+  // await individualUser(
+  //   post.publisher_canister_id,
+  // ).update_post_increment_share_count(post.id)
 }
 
 function recordView(percentageWatched: number) {
@@ -80,10 +80,10 @@ async function handleLike() {
     return
   }
 
-  updatePostInWatchHistory(watchHistoryDb, post, {
-    liked_by_me: !post.liked_by_me,
-    like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
-  })
+  // updatePostInWatchHistory(watchHistoryDb, post, {
+  //   liked_by_me: !post.liked_by_me,
+  //   like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
+  // })
 
   post = {
     ...post,
@@ -102,14 +102,14 @@ async function handleLike() {
   })
 
   try {
-    await individualUser(
-      post.publisher_canister_id,
-    ).update_post_toggle_like_status_by_caller(post.id)
+    // await individualUser(
+    //   post.publisher_canister_id,
+    // ).update_post_toggle_like_status_by_caller(post.id)
   } catch (e) {
-    updatePostInWatchHistory(watchHistoryDb, post, {
-      liked_by_me: post.liked_by_me,
-      like_count: post.like_count,
-    })
+    // updatePostInWatchHistory(watchHistoryDb, post, {
+    //   liked_by_me: post.liked_by_me,
+    //   like_count: post.like_count,
+    // })
 
     post = {
       ...post,
@@ -127,7 +127,7 @@ async function updateStats() {
     return
   }
 
-  updatePostInWatchHistory(watchHistoryDb, post)
+  // updatePostInWatchHistory(watchHistoryDb, post)
 
   const payload =
     watchProgress.totalCount == 0
@@ -170,9 +170,9 @@ async function updateStats() {
     home_feed_score: post.score,
   })
   try {
-    await individualUser(
-      post.publisher_canister_id,
-    ).update_post_add_view_details(post.id, payload)
+    // await individualUser(
+    //   post.publisher_canister_id,
+    // ).update_post_add_view_details(post.id, payload)
   } catch (e) {
     Log('error', 'Could not update watch stats', {
       from: 'PlayerLayout.updateStats',

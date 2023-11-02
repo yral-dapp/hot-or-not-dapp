@@ -1,4 +1,3 @@
-import type { PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from './cloudflare'
 
 export type VideoViewReport = {
@@ -10,10 +9,7 @@ export type VideoViewReport = {
   score: bigint
 }
 
-export function joinArrayUniquely(
-  a: PostPopulated[],
-  b: PostPopulated[],
-): PostPopulated[] {
+export function joinArrayUniquely(a: any[], b: any[]): any[] {
   b.forEach((o) => {
     const duplicates = a.findIndex(
       (v) =>
@@ -28,7 +24,7 @@ export function joinArrayUniquely(
   return a
 }
 
-export function updateMetadata(video?: PostPopulated) {
+export function updateMetadata(video?: any) {
   if (!video) return
   if (!('mediaSession' in navigator)) return
   navigator.mediaSession.metadata = new MediaMetadata({
