@@ -6,6 +6,12 @@ on:
     paths:
       - "packages/experiments/**"
       - ".github/workflows/experiments-deploy.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/experiments/**"
+      - ".github/workflows/experiments-deploy.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
