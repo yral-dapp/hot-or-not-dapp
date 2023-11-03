@@ -11,12 +11,6 @@ export const splashScreenPopup = writable<{
   shown: false,
 })
 
-export const showAirdropPopup = writable<boolean>(false)
-export const shownAirdropPopup = persisted<boolean>(
-  'waitlist-form-submitted',
-  false,
-)
-
 let splashScreenTimeOut: NodeJS.Timeout
 
 export function hideSplashScreen(timeoutMs: number = 2000) {

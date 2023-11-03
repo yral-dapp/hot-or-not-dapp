@@ -1,6 +1,6 @@
 <script lang="ts">
-import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 import Icon from '$components/icon/Icon.svelte'
+import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import { hideSplashScreen } from '$stores/popups'
 import { onMount, tick } from 'svelte'
 
@@ -17,6 +17,6 @@ onMount(async () => {
     There are no videos to vote on
   </div>
   <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-    <HotOrNotVote disabled />
+    <UpDownVote />
   </div>
 </div>

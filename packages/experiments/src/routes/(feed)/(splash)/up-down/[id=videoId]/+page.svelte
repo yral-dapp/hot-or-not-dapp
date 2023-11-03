@@ -2,106 +2,54 @@
 import { beforeNavigate } from '$app/navigation'
 import Button from '$components/button/Button.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import {
-  getHotOrNotPosts,
-  updatePostInWatchHistory,
-  type PostPopulated,
-} from '$lib/helpers/feed'
 import { updateURL } from '$lib/utils/feedUrl'
-import Log from '$lib/utils/Log'
-import { handleParams } from '$lib/utils/params'
-import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
-import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
+import { joinArrayUniquely } from '$lib/utils/video'
+import { playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/popups'
 import Hls from 'hls.js/dist/hls.min.js'
 import { onMount, tick } from 'svelte'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/svelte'
-import type { PageData } from './$types'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
+import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
+import type { UpDownPost } from '$lib/helpers/db.type'
+import { getVideos } from '$lib/helpers/feed'
 
-export let data: PageData
-
-const fetchCount = 25
-const fetchWhenVideosLeft = 10
+const fetchWhenVideosLeft = 5
 const keepVideosLoadedCount: number = 3
 
-let videos: PostPopulated[] = []
+let videos: UpDownPost[] = []
 let currentVideoIndex = 0
 let lastWatchedVideoIndex = -1
 let noMoreVideos = false
 let loading = false
-let fetchedVideosCount = 0
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
 let showError = false
 
-async function fetchNextVideos(force = false) {
-  // console.log(
-  // 	`to fetch: ${!noMoreVideos} && ${
-  // 		videos.length
-  // 	} - ${currentVideoIndex}<${fetchCount}, errorCount: ${errorCount}`
-  // );
-  if (
-    !noMoreVideos &&
-    (force || videos.length - currentVideoIndex < fetchWhenVideosLeft)
-  ) {
-    try {
-      Log('info', 'Fetching videos for feed', {
-        res: 'fetching from ' + fetchedVideosCount,
-        source: 'hotOrNot.fetchNextVideos',
-      })
-      loading = true
-      const res = await getHotOrNotPosts(fetchedVideosCount, fetchCount)
-      if (res.error) {
-        if (errorCount < 4) {
-          loadTimeout = setTimeout(() => {
-            errorCount++
-            fetchNextVideos()
-          }, 5000)
-        } else {
-          clearTimeout(loadTimeout)
-          showError = true
-          loading = false
-        }
-        return
-      } else {
-        errorCount = 0
-        if (loadTimeout) clearTimeout(loadTimeout)
-      }
-
-      fetchedVideosCount = res.from
-
-      videos = joinArrayUniquely(videos, res.posts)
-
-      if (res.noMorePosts) {
-        noMoreVideos = res.noMorePosts
-        // const watchedVideos = await getWatchedVideosFromCache('watch-hon')
-        // videos = joinArrayUniquely(videos, watchedVideos)
-      } else if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
-        fetchNextVideos(true)
-      }
-
-      await tick()
-      loading = false
-
-      Log('info', 'Fetched videos for feed', {
-        noMoreVideos,
-        source: 'hotOrNot.fetchNextVideos',
-      })
-    } catch (e) {
-      Log('error', 'Could not fetch videos for feed', {
-        error: e,
-        noMoreVideos,
-        source: 'hotOrNot.fetchNextVideos',
-      })
-      loading = false
-    }
+async function fetchNextVideos() {
+  if (noMoreVideos) {
+    console.info('No more videos to load')
+    return
   }
+
+  if (videos.length - currentVideoIndex > fetchWhenVideosLeft) {
+    console.info('Waiting to scroll down more')
+    return
+  }
+
+  loading = true
+  const res = await getVideos()
+  if (!res.ok || !res.videos) {
+    return
+  }
+
+  videos = joinArrayUniquely(videos, res.videos)
+  noMoreVideos = !res.more
+  loading = false
 }
 
 async function handleChange(e: CustomEvent) {
@@ -110,7 +58,6 @@ async function handleChange(e: CustomEvent) {
   currentVideoIndex = newIndex
   fetchNextVideos()
   updateURL(videos[currentVideoIndex])
-  updateMetadata(videos[currentVideoIndex])
 }
 
 async function handleUnavailableVideo(index: number) {
@@ -123,22 +70,12 @@ onMount(async () => {
   $playerState.initialized = false
   $playerState.muted = true
   $playerState.visible = true
-  if (data?.post) {
-    videos = [data.post, ...videos]
-    updatePostInWatchHistory('watch-hon', data.post)
-  } else if ($hotOrNotFeedVideos.length) {
-    videos = $hotOrNotFeedVideos
-    $hotOrNotFeedVideos = []
-  }
-  await tick()
   fetchNextVideos()
-  handleParams()
 })
 
 beforeNavigate(() => {
   $playerState.visible = false
   $playerState.muted = true
-  videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex))
 })
 </script>
 
@@ -161,10 +98,9 @@ beforeNavigate(() => {
         <PlayerLayout
           bind:post
           index={i}
-          source="hon_feed"
-          watchHistoryDb="watch-hon"
-          showWalletLink
-          showReportButton
+          source="ud-feed"
+          showLikeButton
+          showShareButton
           let:recordView
           let:updateStats>
           <VideoPlayer
@@ -178,7 +114,7 @@ beforeNavigate(() => {
             inView={i == currentVideoIndex && $playerState.visible}
             uid={post.video_uid} />
 
-          <svelte:fragment slot="hotOrNot">
+          <svelte:fragment slot="controls">
             <UpDownVote />
           </svelte:fragment>
         </PlayerLayout>
@@ -195,7 +131,7 @@ beforeNavigate(() => {
         <Button
           type="primary"
           on:click={(e) => e.preventDefault()}
-          href="/hotornot">
+          href="/up-down">
           Clear here to refresh
         </Button>
       </div>
@@ -218,7 +154,7 @@ beforeNavigate(() => {
           There are no more videos to vote on
         </div>
         <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-          <HotOrNotVote disabled />
+          <UpDownVoteControls />
         </div>
       </div>
     </SwiperSlide>

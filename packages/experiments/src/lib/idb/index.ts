@@ -1,4 +1,4 @@
-import * as idb from './db'
+import * as idb from './idb'
 
 export type IDB = typeof idb
 

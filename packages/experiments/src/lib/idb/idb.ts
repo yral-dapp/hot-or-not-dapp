@@ -1,13 +1,7 @@
 import { openDB } from 'idb'
 import Log from '../utils/Log'
 
-type DBStores =
-  | 'canisters'
-  | 'watch'
-  | 'watch-hon'
-  | 'bets'
-  | 'wallet'
-  | 'reported'
+export type DBStores = 'up-down-watch-history'
 
 const dbPromise = openDB('keyval-store', 7, {
   upgrade(db) {

@@ -1,14 +1,10 @@
 <script lang="ts">
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
-import Selector from '$components/home/Selector.svelte'
 import { page } from '$app/stores'
+import IconButton from '$components/button/IconButton.svelte'
+import HomeLayout from '$components/layout/HomeLayout.svelte'
 import { playerState } from '$stores/playerState'
 import { onDestroy, onMount } from 'svelte'
-import { authState } from '$stores/auth'
-import Icon from '$components/icon/Icon.svelte'
 import { fade } from 'svelte/transition'
-import IconButton from '$components/button/IconButton.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -63,9 +59,4 @@ $: walletPage = pathname.includes('wallet')
   <svelte:fragment slot="content">
     <slot />
   </svelte:fragment>
-  <div class="w-full" slot="bottom-navigation">
-    {#if !pathname.includes('hotornot') && !pathname.includes('up-down')}
-      <BottomNavigation />
-    {/if}
-  </div>
 </HomeLayout>

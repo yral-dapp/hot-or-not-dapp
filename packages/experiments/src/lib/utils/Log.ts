@@ -1,5 +1,4 @@
 import { browser } from '$app/environment'
-import * as Sentry from '@sentry/svelte'
 
 function replaceErrors(_v: any, value) {
   if (typeof value === 'bigint') {
@@ -33,10 +32,5 @@ export default (type: Logs, message: string, data?: any) => {
     : import.meta.env.NODE_ENV !== 'production'
   if (localhost || type == 'error') {
     console[type](logTypeMap[type], message, dataStr)
-  }
-  if (type === 'error') {
-    Sentry.captureException(new Error(message), {
-      extra: data,
-    })
   }
 }

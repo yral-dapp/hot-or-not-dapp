@@ -1,13 +1,13 @@
 <script lang="ts">
-import HotOrNotLayout from '$components/layout/HotOrNotLayout.svelte'
+import FeedLayout from '$components/layout/FeedLayout.svelte'
 </script>
 
 <svelte:head>
   <title>Up Down | Hot or Not</title>
 </svelte:head>
 
-<HotOrNotLayout>
+<FeedLayout>
   <svelte:fragment slot="content">
     <slot />
   </svelte:fragment>
-</HotOrNotLayout>
+</FeedLayout>
