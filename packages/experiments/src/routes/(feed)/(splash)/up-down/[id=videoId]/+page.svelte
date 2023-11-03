@@ -31,18 +31,20 @@ let errorCount = 0
 let showError = false
 
 async function fetchNextVideos() {
+  console.log('called fetchNextVideos')
   if (noMoreVideos) {
-    console.info('No more videos to load')
+    console.log('No more videos to load')
     return
   }
 
   if (videos.length - currentVideoIndex > fetchWhenVideosLeft) {
-    console.info('Waiting to scroll down more')
+    console.log('Waiting to scroll down more')
     return
   }
 
   loading = true
   const res = await getVideos()
+  console.log({ res })
   if (!res.ok || !res.videos) {
     return
   }
@@ -115,7 +117,7 @@ beforeNavigate(() => {
             uid={post.video_uid} />
 
           <svelte:fragment slot="controls">
-            <UpDownVote />
+            <UpDownVote score={post.score} />
           </svelte:fragment>
         </PlayerLayout>
       {/if}
@@ -154,7 +156,7 @@ beforeNavigate(() => {
           There are no more videos to vote on
         </div>
         <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-          <UpDownVoteControls />
+          <UpDownVoteControls score={100} />
         </div>
       </div>
     </SwiperSlide>

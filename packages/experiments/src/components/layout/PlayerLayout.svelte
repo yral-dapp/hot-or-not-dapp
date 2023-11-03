@@ -141,8 +141,6 @@ async function updateStats() {
 }
 
 $: avatarUrl = getDefaultImageUrl(post.ouid)
-
-onMount(() => console.log('layout mount', index))
 </script>
 
 <player-layout

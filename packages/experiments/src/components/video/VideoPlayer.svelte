@@ -168,8 +168,6 @@ $: if (!inView) {
 }
 
 onMount(() => {
-  console.log('player mount', index)
-
   if (playFormat === 'mp4' || ios) {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`

@@ -9,8 +9,10 @@ import { page } from '$app/stores'
 import { deferredPrompt } from '$stores/deferredPrompt'
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { initDb } from '$lib/db'
+import { browser } from '$app/environment'
 
 function registerServiceWorker() {
+  if (!browser) return
   if ($page.url.host.includes('t:')) return
 
   if ('serviceWorker' in navigator) {

@@ -13,7 +13,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export let app: FirebaseApp
-export let db: Firestore
+let db: Firestore
+
+export function getDb() {
+  if (!db) {
+    initDb()
+  }
+  return db
+}
 
 export function initDb() {
   try {

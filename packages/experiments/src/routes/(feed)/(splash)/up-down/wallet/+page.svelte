@@ -5,7 +5,7 @@ import Icon from '$components/icon/Icon.svelte'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 </script>
 
-<div class="flex h-full w-full flex-col overflow-hidden bg-black px-4">
+<div class="mt-20 flex h-full w-full flex-col overflow-hidden bg-black px-4">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-4">
       <IconButton

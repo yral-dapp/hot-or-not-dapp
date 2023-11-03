@@ -4,19 +4,16 @@ import {
   getDocs,
   limit,
   QueryDocumentSnapshot,
-  startAt,
 } from 'firebase/firestore/lite'
 import type { CollectionName, UpDownPost } from './db.type'
-import { db } from '$lib/db'
+import { getDb } from '$lib/db'
 
 export async function getVideos(lastRef?: QueryDocumentSnapshot) {
   try {
+    console.log({ lastRef })
     const videos: UpDownPost[] = []
-    const q = query(
-      collection(db, 'ud-videos' as CollectionName),
-      limit(30),
-      startAt(lastRef),
-    )
+    const db = getDb()
+    const q = query(collection(db, 'ud-videos' as CollectionName), limit(30))
     const snapshot = await getDocs(q)
     if (snapshot.empty) {
       return { ok: true, videos, more: false }
@@ -29,6 +26,7 @@ export async function getVideos(lastRef?: QueryDocumentSnapshot) {
       more: true,
     }
   } catch (e) {
+    console.log('Error fetching videos', e)
     return { ok: false }
   }
 }

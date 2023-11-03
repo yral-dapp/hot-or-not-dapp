@@ -1,29 +1,28 @@
 <script lang="ts">
 import Icon from '$components/icon/Icon.svelte'
-// import { getTimeStringFromMs } from '$lib/utils/timeLeft'
+import { getTimeStringFromMs } from '$lib/utils/timeLeft'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { readable, type Readable } from 'svelte/store'
 
 export let voteDetails: UpDownVoteDetails
-let timeLeft: Readable<string>
 
 function getMsLeftForBetResult(betEndTime: Date) {
   const now = new Date()
   let diff = betEndTime.getTime() - now.getTime()
 
   if (diff > 0) {
-    // const dt = getTimeStringFromMs(diff)
-    // const initialValue =
-    //   dt.minutes + ':' + (dt.seconds < 10 ? '0' : '') + dt.seconds
+    const dt = getTimeStringFromMs(diff)
+    const initialValue =
+      dt.minutes + ':' + (dt.seconds < 10 ? '0' : '') + dt.seconds
 
-    return readable(0, (set) => {
+    return readable('', (set) => {
       let counter = 1
       const updateMs = () => {
         if (diff - counter * 1000 > 0) {
-          // const { minutes, seconds } = getTimeStringFromMs(
-          //   diff - counter * 1000,
-          // )
-          // set(minutes + ':' + (seconds < 10 ? '0' : '') + seconds)
+          const { minutes, seconds } = getTimeStringFromMs(
+            diff - counter * 1000,
+          )
+          set(minutes + ':' + (seconds < 10 ? '0' : '') + seconds)
         } else {
           counter = 1
           diff = 36_00_000
@@ -44,10 +43,10 @@ function getMsLeftForBetResult(betEndTime: Date) {
   }
 }
 
-const fourtyMinutes = new Date()
-fourtyMinutes.setMinutes(fourtyMinutes.getMinutes() + 40)
-
-// timeLeft = getMsLeftForBetResult(fourtyMinutes)
+const sixtyMinutes = new Date()
+sixtyMinutes.setMinutes(sixtyMinutes.getMinutes() + 60)
+let timeLeft: Readable<string>
+timeLeft = getMsLeftForBetResult(sixtyMinutes)
 </script>
 
 <div

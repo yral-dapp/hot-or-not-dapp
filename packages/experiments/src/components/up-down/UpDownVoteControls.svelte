@@ -3,6 +3,8 @@ import Icon from '$components/icon/Icon.svelte'
 import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 
+export let score: number
+
 const dispatch = createEventDispatcher<{
   votePlaced: UpDownVoteDetails
 }>()
@@ -26,6 +28,8 @@ function placeVote(direction: 'up' | 'down', coins: number) {
     dispatch('votePlaced', {
       direction,
       coins,
+      result: 'pending',
+      placed_at: Date.now(),
     })
   }, 2000)
 }
@@ -78,7 +82,7 @@ function placeVote(direction: 'up' | 'down', coins: number) {
     <div class="flex flex-col items-center justify-center">
       <div
         class="text-5xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-        100
+        {score}
       </div>
       <div class="text-sm drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
         Current scrore

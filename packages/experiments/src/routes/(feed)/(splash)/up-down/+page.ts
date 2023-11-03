@@ -1,6 +1,6 @@
 export const ssr = false
 
-import { db } from '$lib/db'
+import { getDb } from '$lib/db'
 import { collection, getDocs, limit, query } from 'firebase/firestore/lite'
 import type { PageLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
@@ -14,7 +14,7 @@ export const load: PageLoad = async () => {
   //     `/up-down/${cachedVideos[0].publisher_canister_id}@${cachedVideos[0].post_id}`,
   //   )
   // }
-
+  const db = getDb()
   const q = query(collection(db, 'ud-videos' as CollectionName), limit(1))
   const res = await getDocs(q)
   if (res.empty) {
