@@ -33,7 +33,10 @@ import { authState } from '$stores/auth'
   <div class="pt-10 text-xs">Recent transactions</div>
   <div
     class="flex h-full flex-col divide-y-[1px] divide-white/10 overflow-hidden overflow-y-auto py-4">
-    {#each new Array(15) as _}
+    <div class="mt-16 flex items-center justify-center text-sm">
+      <div>You have not yet placed any votes. Go play the game!</div>
+    </div>
+    <!-- {#each new Array(15) as _}
       <div class="flex items-center justify-between py-4">
         <div class="flex items-center space-x-4">
           <div
@@ -51,6 +54,6 @@ import { authState } from '$stores/auth'
           </div>
         </div>
       </div>
-    {/each}
+    {/each} -->
   </div>
 </div>
