@@ -21,10 +21,10 @@
   "theme_color": "#E96B25",
   "shortcuts": [
     {
-      "name": "All Videos",
-      "short_name": "Videos",
+      "name": "Up Down Game",
+      "short_name": "Up Down",
       "description": "View sizzling videos on Hot or Not",
-      "url": "/feed",
+      "url": "/up-down",
       "icons": [
         {
           "src": "/assets/logos/logo-symbol-square-192.png",
@@ -34,10 +34,10 @@
       ]
     },
     {
-      "name": "Hot or Not",
-      "short_name": "Videos",
-      "description": "Rate the videos hot or not",
-      "url": "/hot",
+      "name": "Wallet Page",
+      "short_name": "Wallet",
+      "description": "Check out your wallet",
+      "url": "/up-down/wallet",
       "icons": [
         {
           "src": "/assets/logos/logo-symbol-alt-square-192.png",

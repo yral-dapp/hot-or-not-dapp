@@ -34,5 +34,5 @@ export async function getVideos(lastRef?: QueryDocumentSnapshot) {
 }
 
 export async function toggleLike(postId: string) {
-  console.log('toggle like')
+  console.log('toggle like', postId)
 }

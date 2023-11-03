@@ -183,7 +183,7 @@ onMount(() => console.log('layout mount', index))
         {#if showLikeButton}
           <div class="flex flex-col">
             <IconButton
-              iconName={post.liked && $authState.isLoggedIn
+              iconName={post.likes_count && $authState.isLoggedIn
                 ? 'heart-fill-color'
                 : 'heart-fill'}
               iconClass="h-8 w-8"
