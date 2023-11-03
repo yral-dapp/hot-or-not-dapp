@@ -1,8 +1,10 @@
 <script lang="ts">
+import LoginButton from '$components/auth/LoginButton.svelte'
 import Avatar from '$components/avatar/Avatar.svelte'
 import IconButton from '$components/button/IconButton.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { authState } from '$stores/auth'
 </script>
 
 <div class="mt-20 flex h-full w-full flex-col overflow-hidden bg-black px-4">
@@ -20,7 +22,9 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
     <Avatar src={getDefaultImageUrl('12')} class="h-10 w-10" />
   </div>
   <div class="flex flex-col items-center gap-5 pt-12">
-    <button class="w-40 rounded-full bg-primary px-4 py-2">Login</button>
+    {#if !$authState.isLoggedIn}
+      <LoginButton />
+    {/if}
     <div class="flex flex-col items-center gap-1">
       <div class="text-xs font-bold uppercase">Your coYn balance</div>
       <div class="text-5xl font-bold">11,99,520</div>

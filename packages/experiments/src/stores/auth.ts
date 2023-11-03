@@ -10,4 +10,4 @@ export const authState = persisted<{
   showLogin: false,
 })
 
-export const loading = writable(true)
+export const loading = writable(false)
