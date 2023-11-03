@@ -38,9 +38,10 @@ async function fetchNextVideos() {
   }
 
   if (videos.length - currentVideoIndex > fetchWhenVideosLeft) {
-    console.log('Waiting to scroll down more')
     return
   }
+
+  console.log('fetching Videos')
 
   loading = true
   const res = await getVideos()
