@@ -64,7 +64,7 @@ async function onAuthStateChanged(user: User | null) {
     const _anonUser = get(anonUser)
     if (!_anonUser.id) {
       anonUser.set({
-        id: await generateUniqueId(),
+        id: `${await generateUniqueId()}`,
         experimentsBalance: 1000,
       })
     }
