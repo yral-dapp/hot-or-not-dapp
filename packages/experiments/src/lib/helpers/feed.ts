@@ -5,7 +5,7 @@ import {
   limit,
   QueryDocumentSnapshot,
 } from 'firebase/firestore/lite'
-import type { CollectionName, UpDownPost } from './db.type'
+import type { CollectionName, UpDownPost } from '../db/db.types'
 import { getDb } from '$lib/db'
 
 export async function getVideos(lastRef?: QueryDocumentSnapshot) {

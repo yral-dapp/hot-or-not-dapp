@@ -1,5 +1,3 @@
-import { Principal } from '@dfinity/principal'
-
 export const imageHost =
   'https://hotornot.wtf/cdn-cgi/imagedelivery/abXI9nS4DYYtyR1yFFtziA'
 
@@ -26,13 +24,8 @@ const cfAvatarImageIds = [
   '098ae9bb-be53-4128-5918-2b794250ae00',
 ]
 
-export default (principal?: Principal | string) => {
-  let string = 'random'
-  if (typeof principal === 'string') {
-    string = principal
-  } else if (principal?._isPrincipal) {
-    string = Principal.from(principal).toText()
-  }
+export default (seed?: string) => {
+  const string = seed || 'random'
   const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0)
   return `${imageHost}/${cfAvatarImageIds[sum % 20]}/public`
 }

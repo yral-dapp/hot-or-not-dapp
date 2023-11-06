@@ -4,7 +4,7 @@ import { getDb } from '$lib/db'
 import { collection, getDocs, limit, query } from 'firebase/firestore/lite'
 import type { PageLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
-import type { CollectionName, UpDownPost } from '$lib/helpers/db.type'
+import type { CollectionName, UpDownPost } from '$lib/db/db.types'
 
 export const load: PageLoad = async () => {
   // const cachedVideos = await getWatchedVideosFromCache('watch')

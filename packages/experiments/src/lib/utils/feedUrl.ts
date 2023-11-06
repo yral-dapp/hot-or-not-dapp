@@ -1,5 +1,5 @@
 import { registerPageView } from '$components/analytics/GA.svelte'
-import type { UpDownPost } from '$lib/helpers/db.type'
+import type { UpDownPost } from '$lib/db/db.types'
 import { playerState } from '$stores/playerState'
 
 export function updateURL(post?: UpDownPost) {

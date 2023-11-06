@@ -17,6 +17,6 @@ onMount(async () => {
     There are no videos to vote on
   </div>
   <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-    <UpDownVote />
+    <UpDownVote score={100} />
   </div>
 </div>

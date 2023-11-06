@@ -1,4 +1,4 @@
-import type { UpDownPost } from '$lib/helpers/db.type'
+import type { UpDownPost } from '$lib/db/db.types'
 
 export function joinArrayUniquely(
   a: UpDownPost[],

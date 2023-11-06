@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 import Log from '../utils/Log'
 
-export type DBStores = 'up-down-watch-history'
+export type IDBStores = 'up-down-watch-history'
 
 const dbPromise = openDB('keyval-store', 7, {
   upgrade(db) {
@@ -35,21 +35,21 @@ const dbPromise = openDB('keyval-store', 7, {
   })
 })
 
-export async function get(storeName: DBStores, key) {
+export async function get(storeName: IDBStores, key) {
   return (await dbPromise)?.get(storeName, key)
 }
-export async function set(storeName: DBStores, key, val) {
+export async function set(storeName: IDBStores, key, val) {
   return (await dbPromise)?.put(storeName, val, key)
 }
-export async function del(storeName: DBStores, key) {
+export async function del(storeName: IDBStores, key) {
   return (await dbPromise)?.delete(storeName, key)
 }
-export async function clear(storeName: DBStores) {
+export async function clear(storeName: IDBStores) {
   return (await dbPromise)?.clear(storeName)
 }
-export async function keys(storeName: DBStores) {
+export async function keys(storeName: IDBStores) {
   return (await dbPromise)?.getAllKeys(storeName)
 }
-export async function values(storeName: DBStores) {
+export async function values(storeName: IDBStores) {
   return (await dbPromise)?.getAll(storeName)
 }

@@ -24,6 +24,9 @@ export type CollectionName =
 export type LikeRecord = {
   uid: string
   videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
   liked: boolean
   created_at: number
 }
@@ -33,12 +36,14 @@ export type ProfileRecord = {
   username?: string
   name?: string
   img?: string
-  experiments_balance: number
+  experimentsBalance: number
 }
 
 export type ShareRecord = {
   uid: string
-  videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
   shareCount: boolean
   created_at: number
 }
@@ -46,6 +51,9 @@ export type ShareRecord = {
 export type VoteRecord = {
   uid: string
   videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
   transactionId: string
   voteDirection: 'up' | 'down'
   voteAmount: number
@@ -55,6 +63,9 @@ export type VoteRecord = {
 export type TransanctionRecord = {
   uid: string
   videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
   debit: boolean
   type: 'vote-placed' | 'vote-result'
   voteId?: string

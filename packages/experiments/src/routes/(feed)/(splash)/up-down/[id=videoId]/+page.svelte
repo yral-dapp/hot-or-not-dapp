@@ -14,7 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/svelte'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
-import type { UpDownPost } from '$lib/helpers/db.type'
+import type { UpDownPost } from '$lib/db/db.types'
 import { getVideos } from '$lib/helpers/feed'
 
 const fetchWhenVideosLeft = 5
@@ -40,8 +40,6 @@ async function fetchNextVideos() {
   if (videos.length - currentVideoIndex > fetchWhenVideosLeft) {
     return
   }
-
-  console.log('fetching Videos')
 
   loading = true
   const res = await getVideos()

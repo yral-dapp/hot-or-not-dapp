@@ -10,8 +10,7 @@ import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import { debounce } from 'throttle-debounce'
-import { onMount } from 'svelte'
-import type { UpDownPost } from '$lib/helpers/db.type'
+import type { UpDownPost } from '$lib/db/db.types'
 
 export let index: number
 export let post: UpDownPost

@@ -1,13 +1,13 @@
-import type { DBStores } from '$lib/idb/idb'
+import type { IDBStores } from '$lib/idb/idb'
 import Log from '$lib/utils/Log'
-import type { UpDownPost } from './db.type'
+import type { UpDownPost } from '../db/db.types'
 
 export interface UpDownPostHistory extends UpDownPost {
   watched_at: number
 }
 
 export async function updatePostInWatchHistory(
-  store: DBStores,
+  store: IDBStores,
   post: UpDownPost,
   update?: Partial<UpDownPost>,
 ) {

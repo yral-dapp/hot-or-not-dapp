@@ -1,4 +1,5 @@
 import { adjectives, verbs } from './verbs-adjectives'
+import { getCurrentBrowserFingerPrint } from '@rajesh896/broprint.js'
 
 export function generateRandomNumber(length: number, seed: number): string {
   let r = Math.sin(seed) * 10
@@ -9,10 +10,8 @@ export function generateRandomNumber(length: number, seed: number): string {
 }
 
 export function generateRandomName(type: 'name' | 'username', seed?: string) {
-  if (!seed) {
-    seed = 'random'
-  }
-  const sum = seed.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0)
+  const string = seed || 'random'
+  const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0)
 
   const r1 = verbs[sum % verbs.length]
   const r2 = adjectives[sum % adjectives.length]
@@ -25,4 +24,8 @@ export function generateRandomName(type: 'name' | 'username', seed?: string) {
       sum,
     )}`
   }
+}
+
+export async function generateUniqueId() {
+  return await getCurrentBrowserFingerPrint()
 }
