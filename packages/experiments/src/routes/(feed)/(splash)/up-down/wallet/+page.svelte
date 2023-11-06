@@ -38,7 +38,7 @@ async function updateWalletBalance() {
 $: $authState.isLoggedIn && updateWalletBalance()
 
 $: walletBalance = $authState.isLoggedIn
-  ? $userProfile.experimentsBalance
+  ? $userProfile.experimentsBalance || 1000
   : $anonUser.experimentsBalance
 
 let loading = true
