@@ -1,4 +1,5 @@
 export type UpDownPost = {
+  id: string
   oid: number
   status: string
   share_count: number
@@ -20,6 +21,13 @@ export type CollectionName =
   | 'views'
   | 'likes'
   | 'transactions'
+
+export type VideoRef = {
+  videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
+}
 
 export type LikeRecord = {
   uid: string

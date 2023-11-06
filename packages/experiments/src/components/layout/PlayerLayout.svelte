@@ -11,6 +11,7 @@ import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import { debounce } from 'throttle-debounce'
 import type { UpDownPost } from '$lib/db/db.types'
+import { toggleLike } from '$lib/db/actions'
 
 export let index: number
 export let post: UpDownPost
@@ -60,10 +61,14 @@ const increaseWatchCount = debounce(500, () => {
 })
 
 async function handleLike() {
-  if (!$authState.isLoggedIn) {
-    $authState.showLogin = true
-    return
-  }
+  post.likes_count++
+
+  await toggleLike({
+    videoId: post.id,
+    videoOid: post.oid,
+    videoUoid: post.ouid,
+    videoUid: post.video_uid,
+  })
 
   // updatePostInWatchHistory('up-down-watch-history', post, {
   //   liked_by_me: !post.liked_by_me,

@@ -17,7 +17,7 @@ const firebaseConfig = {
   measurementId: 'G-WLVV7NBKTG',
 }
 
-export const BACKEND_HOST = 'https://experiments-hon.uc.r.appspot.com/'
+export const BACKEND_HOST = 'https://experiments-hon.uc.r.appspot.com'
 
 // Initialize Firebase
 let app: FirebaseApp
