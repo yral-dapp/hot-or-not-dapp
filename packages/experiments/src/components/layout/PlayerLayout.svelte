@@ -100,7 +100,7 @@ const increaseWatchCount = debounce(500, () => {
 async function handleLike() {
   if (!isLoggedIn()) return
 
-  post.likes_count++
+  liked = !liked
 
   await toggleLike({
     videoId: post.id,
@@ -128,7 +128,7 @@ async function handleLike() {
 async function handleDislike() {
   if (!isLoggedIn()) return
 
-  post.likes_count++
+  disliked = !disliked
 
   await toggleDislike({
     videoId: post.id,
