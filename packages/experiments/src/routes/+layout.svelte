@@ -10,6 +10,7 @@ import { deferredPrompt } from '$stores/deferredPrompt'
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { initDb } from '$lib/db'
 import { browser } from '$app/environment'
+import LoginPopup from '$components/auth/LoginPopup.svelte'
 
 function registerServiceWorker() {
   if (!browser) return
@@ -63,6 +64,10 @@ onMount(() => {
 <div class="safe-bottom relative h-full w-full overflow-hidden overflow-y-auto">
   <slot />
 </div>
+
+{#if $authState.showLogin}
+  <LoginPopup />
+{/if}
 
 {#if GA}
   <svelte:component this={GA} />

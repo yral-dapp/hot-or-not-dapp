@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store'
 import { persisted } from 'svelte-local-storage-store'
 
-export const showOnboardingPopup = persisted('hot-or-not-ob', true)
+export const showOnboardingPopup = persisted('experiments-ob', true)
 
 export const splashScreenPopup = writable<{
   show: boolean

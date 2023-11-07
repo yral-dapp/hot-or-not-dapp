@@ -5,28 +5,62 @@ import Icon from '$components/icon/Icon.svelte'
 import { registerEvent } from '$components/analytics/GA.svelte'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
-import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import { debounce } from 'throttle-debounce'
-import type { UpDownPost } from '$lib/db/db.types'
-import { toggleLike } from '$lib/db/actions'
+import type { DislikeRecord, LikeRecord, UpDownPost } from '$lib/db/db.types'
+import {
+  shareVideo,
+  toggleDislike,
+  toggleLike,
+  viewVideo,
+} from '$lib/db/actions'
+import { getDb } from '$lib/db'
+import { collection, doc, getDoc } from 'firebase/firestore/lite'
+import { getMsLeftForBetResult } from '$lib/utils/countdown'
 
 export let index: number
 export let post: UpDownPost
 export let showShareButton = false
 export let showLikeButton = false
+export let showTimer = false
+export let showDislikeButton = false
 export let unavailable = false
 export let source: 'ud-feed' | 'result'
 
-let showTruncatedDescription = true
+let liked = false
+let disliked = false
+
 let watchProgress = {
   totalCount: 0,
   partialWatchedPercentage: 0,
 }
 
+async function updateLikeDislikeStatus() {
+  const db = getDb()
+  const likeDoc = (
+    await getDoc(doc(db, `ud-videos/${post.id}/likes/${$authState.userId}`))
+  ).data() as LikeRecord
+  const dislikeDoc = (
+    await getDoc(doc(db, `ud-videos/${post.id}/dislikes/${$authState.userId}`))
+  ).data() as DislikeRecord
+  likeDoc && (liked = likeDoc.liked)
+  dislikeDoc && (disliked = dislikeDoc.disliked)
+}
+
+$: if ($authState.isLoggedIn) {
+  updateLikeDislikeStatus()
+}
+
+function isLoggedIn() {
+  if ($authState.isLoggedIn) return true
+  $authState.showLogin = true
+  return false
+}
+
 async function handleShare() {
+  if (!isLoggedIn()) return
   try {
     await navigator.share({
       title: 'Hot or Not',
@@ -40,9 +74,12 @@ async function handleShare() {
     video_publisher_id: post.ouid,
     video_id: post.oid,
   })
-  // await individualUser(
-  //   post.publisher_canister_id,
-  // ).update_post_increment_share_count(post.id)
+  await shareVideo({
+    videoId: post.id,
+    videoOid: post.oid,
+    videoUoid: post.ouid,
+    videoUid: post.video_uid,
+  })
 }
 
 function recordView(percentageWatched: number) {
@@ -61,6 +98,8 @@ const increaseWatchCount = debounce(500, () => {
 })
 
 async function handleLike() {
+  if (!isLoggedIn()) return
+
   post.likes_count++
 
   await toggleLike({
@@ -75,9 +114,33 @@ async function handleLike() {
   //   like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
   // })
 
-  // post.liked = !post.liked
-  // post.likes_count = post.likes_count + (post.liked ? -1 : 1);
-  // post=post;
+  // registerEvent('like_video', {
+  //   source,
+  //   userId: $userProfile.principal_id,
+  //   video_publisher_id:
+  //     post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
+  //   video_publisher_canister_id: post.publisher_canister_id,
+  //   video_id: post.id,
+  //   likes: post.like_count,
+  // })
+}
+
+async function handleDislike() {
+  if (!isLoggedIn()) return
+
+  post.likes_count++
+
+  await toggleDislike({
+    videoId: post.id,
+    videoOid: post.oid,
+    videoUoid: post.ouid,
+    videoUid: post.video_uid,
+  })
+
+  // updatePostInWatchHistory('up-down-watch-history', post, {
+  //   liked_by_me: !post.liked_by_me,
+  //   like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
+  // })
 
   // registerEvent('like_video', {
   //   source,
@@ -88,17 +151,6 @@ async function handleLike() {
   //   video_id: post.id,
   //   likes: post.like_count,
   // })
-
-  try {
-    // await individualUser(
-    //   post.publisher_canister_id,
-    // ).update_post_toggle_like_status_by_caller(post.id)
-  } catch (e) {
-    // updatePostInWatchHistory(watchHistoryDb, post, {
-    //   liked_by_me: post.liked_by_me,
-    //   like_count: post.like_count,
-    // })
-  }
 }
 
 async function updateStats() {
@@ -115,14 +167,9 @@ async function updateStats() {
     (watchProgress?.totalCount || 0) +
     (watchProgress?.partialWatchedPercentage || 0)
 
-  if (!watchCount) return
+  console.log('watchCount', watchCount)
 
-  Log('info', 'Updating watch stats', {
-    from: 'PlayerLayout.updateStats',
-    id: post.oid,
-    i: index,
-    watch_count: watchCount,
-  })
+  if (!watchCount) return
 
   registerEvent('view_video', {
     source,
@@ -130,21 +177,23 @@ async function updateStats() {
     i: index,
     watch_count: watchCount,
   })
-  try {
-    // await individualUser(
-    //   post.publisher_canister_id,
-    // ).update_post_add_view_details(post.id, payload)
-  } catch (e) {
-    // Log('error', 'Could not update watch stats', {
-    //   from: 'PlayerLayout.updateStats',
-    //   i: index,
-    //   watchCount,
-    //   e,
-    // })
-  }
+
+  await viewVideo(
+    {
+      videoId: post.id,
+      videoOid: post.oid,
+      videoUoid: post.ouid,
+      videoUid: post.video_uid,
+    },
+    watchCount,
+  )
 }
 
 $: avatarUrl = getDefaultImageUrl(post.ouid)
+
+const sixtyMinutes = new Date()
+sixtyMinutes.setMinutes(sixtyMinutes.getMinutes() + 59)
+let timeLeft = getMsLeftForBetResult(sixtyMinutes)
 </script>
 
 <player-layout
@@ -174,7 +223,7 @@ $: avatarUrl = getDefaultImageUrl(post.ouid)
             {generateRandomName('name', post.ouid)}
             <div class="flex items-center space-x-1">
               <Icon name="eye-open" class="h-4 w-4 text-white" />
-              <span class="text-sm">{post.views_count}</span>
+              <span class="text-sm">{Math.round(post.views_count || 0)}</span>
             </div>
           </div>
         </div>
@@ -183,21 +232,24 @@ $: avatarUrl = getDefaultImageUrl(post.ouid)
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
         {#if showLikeButton}
-          <div class="flex flex-col">
-            <IconButton
-              iconName={post.likes_count && $authState.isLoggedIn
-                ? 'heart-fill-color'
-                : 'heart-fill'}
-              iconClass="h-8 w-8"
-              ariaLabel="Toggle like on this post"
-              on:click={(e) => {
-                e.stopImmediatePropagation()
-                handleLike()
-              }} />
-            <span class="text-center text-sm drop-shadow-md">
-              {getShortNumber(post.likes_count)}
-            </span>
-          </div>
+          <IconButton
+            iconName={liked ? 'heart-fill-color' : 'heart-fill'}
+            iconClass="h-8 w-8"
+            ariaLabel="Toggle like on this post"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              handleLike()
+            }} />
+        {/if}
+        {#if showDislikeButton}
+          <IconButton
+            iconName={disliked ? 'heart-broken-fill' : 'heart-broken'}
+            iconClass="h-8 w-8"
+            ariaLabel="Toggle like on this post"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              handleDislike()
+            }} />
         {/if}
         {#if showShareButton}
           <IconButton
@@ -207,6 +259,18 @@ $: avatarUrl = getDefaultImageUrl(post.ouid)
               e.stopImmediatePropagation()
               handleShare()
             }} />
+        {/if}
+        {#if showTimer}
+          <div class="flex flex-col items-center gap-1">
+            <Icon
+              name="stopwatch"
+              class="h-7 w-7"
+              on:click={(e) => {
+                e.stopImmediatePropagation()
+                handleLike()
+              }} />
+            <span class="text-fg-1 text-xs shadow-lg">{$timeLeft}</span>
+          </div>
         {/if}
       </div>
     </div>

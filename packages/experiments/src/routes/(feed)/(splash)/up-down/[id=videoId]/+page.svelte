@@ -101,6 +101,8 @@ beforeNavigate(() => {
           index={i}
           source="ud-feed"
           showLikeButton
+          showDislikeButton
+          showTimer
           showShareButton
           let:recordView
           let:updateStats>
@@ -116,7 +118,7 @@ beforeNavigate(() => {
             uid={post.video_uid} />
 
           <svelte:fragment slot="controls">
-            <UpDownVote score={post.score} />
+            <UpDownVote {post} score={post.score} />
           </svelte:fragment>
         </PlayerLayout>
       {/if}

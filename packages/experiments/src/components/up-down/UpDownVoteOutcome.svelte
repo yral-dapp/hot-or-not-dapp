@@ -1,63 +1,28 @@
 <script lang="ts">
 import Icon from '$components/icon/Icon.svelte'
-import { getTimeStringFromMs } from '$lib/utils/timeLeft'
+import { getMsLeftForBetResult } from '$lib/utils/countdown'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
-import { readable, type Readable } from 'svelte/store'
 
 export let voteDetails: UpDownVoteDetails
-
-function getMsLeftForBetResult(betEndTime: Date) {
-  const now = new Date()
-  let diff = betEndTime.getTime() - now.getTime()
-
-  if (diff > 0) {
-    const dt = getTimeStringFromMs(diff)
-    const initialValue =
-      dt.minutes + ':' + (dt.seconds < 10 ? '0' : '') + dt.seconds
-
-    return readable('', (set) => {
-      let counter = 1
-      const updateMs = () => {
-        if (diff - counter * 1000 > 0) {
-          const { minutes, seconds } = getTimeStringFromMs(
-            diff - counter * 1000,
-          )
-          set(minutes + ':' + (seconds < 10 ? '0' : '') + seconds)
-        } else {
-          counter = 1
-          diff = 36_00_000
-        }
-      }
-
-      const interval = setInterval(() => {
-        updateMs()
-        counter++
-      }, 1000)
-
-      return () => {
-        clearInterval(interval)
-      }
-    })
-  } else {
-    return readable('')
-  }
-}
+export let disabled = false
 
 const sixtyMinutes = new Date()
-sixtyMinutes.setMinutes(sixtyMinutes.getMinutes() + 60)
-let timeLeft: Readable<string>
-timeLeft = getMsLeftForBetResult(sixtyMinutes)
+sixtyMinutes.setMinutes(sixtyMinutes.getMinutes() + 59)
+let timeLeft = getMsLeftForBetResult(sixtyMinutes)
 </script>
 
 <div
-  class="pointer-events-auto flex items-center justify-center gap-4 px-4 pt-10">
+  class="flex items-center justify-center gap-4 px-4 pt-10 transition-opacity
+  {disabled ? 'pointer-events-none opacity-50' : 'pointer-events-auto'}">
   <div
     class="flex w-24 flex-col items-center justify-center gap-1 rounded-md py-4
     {voteDetails.direction === 'up' ? 'bg-green-500' : 'bg-red-500'}">
     <div
       class="flex h-5 w-5 items-center justify-center rounded-full bg-white
       {voteDetails.direction === 'up' ? 'text-green-500' : 'text-red-500'}">
-      <Icon name="arrow-up" class="h-5 w-5 rotate-180" />
+      <Icon
+        name="arrow-up"
+        class="h-5 w-5 {voteDetails.direction === 'up' ? '' : 'rotate-180'}" />
     </div>
     <div class="text-sm capitalize">{voteDetails.direction}</div>
   </div>
@@ -67,7 +32,7 @@ timeLeft = getMsLeftForBetResult(sixtyMinutes)
       <span
         style="text-shadow: 3px 3px 0 #EA9C00;"
         class="select-none text-3xl font-extrabold text-[#FFCC00]">
-        {voteDetails.coins}
+        {voteDetails.voteAmount}
       </span>
     </div>
   </div>

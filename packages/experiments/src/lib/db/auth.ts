@@ -1,24 +1,22 @@
-import { anonUser, authState } from '$stores/auth'
-import { get } from 'svelte/store'
 import { BACKEND_HOST } from './index'
+import { getHeaders } from './db.utils'
 
-export async function registerUser() {
+export async function registerUser({
+  name,
+  photoUrl,
+  email,
+}: {
+  name: string
+  photoUrl: string
+  email: String
+}) {
   await fetch(`${BACKEND_HOST}/register`, {
     method: 'POST',
+    headers: getHeaders('POST'),
     body: JSON.stringify({
-      // details from firebase signup
+      name,
+      photoUrl,
+      email,
     }),
-  })
-}
-
-export async function testAuth() {
-  console.log('testAuthCalled')
-  const _authState = get(authState)
-  const _anonUser = get(anonUser)
-  await fetch(`${BACKEND_HOST}/ud/register/test`, {
-    headers: {
-      anon_id: _anonUser.id || '',
-      authorization: _authState.accessToken || '',
-    },
   })
 }

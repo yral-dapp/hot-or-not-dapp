@@ -78,3 +78,5 @@ export type IconName =
   | 'votes-graphics'
   | 'on-chain-dfinity-graphics'
   | 'stars-graphics'
+  | 'heart-broken'
+  | 'heart-broken-fill'

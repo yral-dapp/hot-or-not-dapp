@@ -7,6 +7,7 @@ export type UpDownPost = {
   description: string
   created_at: number
   likes_count: number
+  dislikes_count: number
   video_uid: string
   score: number
   views_count: number
@@ -14,20 +15,7 @@ export type UpDownPost = {
   ouid: string
 }
 
-export type CollectionName =
-  | 'ud-videos'
-  | 'profile'
-  | 'votes'
-  | 'views'
-  | 'likes'
-  | 'transactions'
-
-export type VideoRef = {
-  videoId: string
-  videoOid: number
-  videoUoid: string
-  videoUid: string
-}
+export type CollectionName = 'ud-videos' | 'profile' | 'transactions'
 
 export type LikeRecord = {
   uid: string
@@ -37,14 +25,41 @@ export type LikeRecord = {
   videoUid: string
   liked: boolean
   created_at: number
+  anon: boolean
+}
+
+export type ViewRecord = {
+  uid: string
+  videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
+  viewCount: number
+  viewCountRounded: number
+  created_at: number
+  anon: boolean
+}
+
+export type DislikeRecord = {
+  uid: string
+  videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
+  disliked: boolean
+  created_at: number
+  anon: boolean
 }
 
 export type ProfileRecord = {
   uid: string
-  username?: string
   name?: string
-  img?: string
+  anon: boolean
+  photoUrl?: string
+  email?: string
   experimentsBalance: number
+  anonId?: string
+  created_at: number
 }
 
 export type ShareRecord = {
@@ -54,6 +69,7 @@ export type ShareRecord = {
   videoUid: string
   shareCount: boolean
   created_at: number
+  anon: boolean
 }
 
 export type VoteRecord = {
@@ -63,9 +79,17 @@ export type VoteRecord = {
   videoUoid: string
   videoUid: string
   transactionId: string
+  currentScore: number
   voteDirection: 'up' | 'down'
   voteAmount: number
   created_at: number
+  anon: boolean
+  status: 'pending' | 'final'
+  result?: {
+    status: 'won' | 'lost' | 'tie'
+    published_at: number
+    winning_transaction_id?: string
+  }
 }
 
 export type TransanctionRecord = {
@@ -79,4 +103,12 @@ export type TransanctionRecord = {
   voteId?: string
   amount: number
   created_at: number
+  anon: boolean
+}
+
+export type VideoRef = {
+  videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
 }

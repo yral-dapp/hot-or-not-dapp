@@ -6,6 +6,7 @@ import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { getAuth as _getAuth, type Auth, type User } from 'firebase/auth'
 import { getFirestore, type Firestore } from 'firebase/firestore/lite'
 import { get } from 'svelte/store'
+import { registerUser } from './auth'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAHcokofuHkZaLy2MvMpEjTwYXLzJ0R__M',
@@ -17,7 +18,8 @@ const firebaseConfig = {
   measurementId: 'G-WLVV7NBKTG',
 }
 
-export const BACKEND_HOST = 'https://experiments-hon.uc.r.appspot.com'
+// export const BACKEND_HOST = 'https://experiments-hon.uc.r.appspot.com/ud'
+export const BACKEND_HOST = 'http://localhost:7887/ud'
 
 // Initialize Firebase
 let app: FirebaseApp
@@ -46,7 +48,6 @@ export function getAuth() {
 }
 
 async function onAuthStateChanged(user: User | null) {
-  console.log('onAuthStateChange', { user })
   if (user) {
     authState.set({
       isLoggedIn: true,
@@ -60,14 +61,12 @@ async function onAuthStateChanged(user: User | null) {
       name: user.displayName || generateRandomName('name', user.uid),
       photoUrl: user.photoURL || getDefaultImageUrl(user.uid),
     })
+    registerUser({
+      email: user.email || 'private',
+      name: user.displayName || 'private',
+      photoUrl: user.photoURL || getDefaultImageUrl(user.uid),
+    })
   } else {
-    const _anonUser = get(anonUser)
-    if (!_anonUser.id) {
-      anonUser.set({
-        id: `${await generateUniqueId()}`,
-        experimentsBalance: 1000,
-      })
-    }
     authState.set({
       isLoggedIn: false,
       showLogin: false,
@@ -80,12 +79,24 @@ async function onAuthStateChanged(user: User | null) {
   }
 }
 
+async function setupAnon() {
+  const _anonUser = get(anonUser)
+  if (!_anonUser.id) {
+    console.log('settings anon user id')
+    anonUser.set({
+      id: `${await generateUniqueId()}`,
+      experimentsBalance: 1000,
+    })
+  }
+}
+
 export function initDb() {
   try {
     app = initializeApp(firebaseConfig)
     db = getFirestore(app)
     auth = _getAuth(app)
     auth.onAuthStateChanged(onAuthStateChanged)
+    setupAnon()
   } catch (e) {
     console.error('Something went wrong while intializing DB')
   }

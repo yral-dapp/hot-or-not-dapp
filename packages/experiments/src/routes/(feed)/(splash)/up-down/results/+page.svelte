@@ -1,14 +1,13 @@
 <script lang="ts">
+import LoginButton from '$components/auth/LoginButton.svelte'
 import Avatar from '$components/avatar/Avatar.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import { getDb } from '$lib/db'
-import { testAuth } from '$lib/db/auth'
 import type { CollectionName, VoteRecord } from '$lib/db/db.types'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { pluralize } from '$lib/utils/pluralize'
-import { anonUser, authState } from '$stores/auth'
+import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
-import { yearsToMonths } from 'date-fns'
 import { collection, getDocs, query, where } from 'firebase/firestore/lite'
 import { onMount, tick } from 'svelte'
 import { fade } from 'svelte/transition'
@@ -20,26 +19,12 @@ async function getVotes() {
   try {
     await tick()
     const db = getDb()
-    const col = collection(db, 'votes' as CollectionName)
-    if ($authState.isLoggedIn) {
-      const data = await getDocs(
-        query(
-          col,
-          where('uid', '==', $authState.userId),
-          where('anon', '==', false),
-        ),
-      )
-      data.forEach((doc) => {
-        votes.push(doc.data() as VoteRecord)
-      })
-    } else {
-      const data = await getDocs(
-        query(col, where('uid', '==', $anonUser.id), where('anon', '==', true)),
-      )
-      data.forEach((doc) => {
-        votes.push(doc.data() as VoteRecord)
-      })
-    }
+    const coll = collection(db, 'votes' as CollectionName)
+
+    const votesDocs = await getDocs(
+      query(coll, where('uid', '==', $authState.userId)),
+    )
+    votesDocs.forEach((doc) => votes.push(doc.data() as VoteRecord))
   } catch (e) {
     console.error('Error loading votes', e)
   } finally {
@@ -49,13 +34,15 @@ async function getVotes() {
 
 onMount(() => {
   getVotes()
-  testAuth()
 })
 </script>
 
 <div transition:fade class="mt-20 h-full w-full bg-black px-4 py-2">
   {#if loading}
-    <Icon name="loading" class="h-4 w-4 animate-spin-slow" />
+    <div class="mt-20 flex w-full flex-col items-center justify-center gap-2">
+      <Icon name="loading" class="h-4 w-4 animate-spin-slow" />
+      <span>Loading ...</span>
+    </div>
   {:else if $authState.isLoggedIn}
     {#if votes.length}
       <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
@@ -79,8 +66,11 @@ onMount(() => {
                 </div>
               </div>
               <div class="flex flex-col">
-                <span class="text-xs font-thin uppercase">Your vote</span>
+                <span class="text-xs font-thin uppercase">
+                  {vote.voteDirection} from {vote.currentScore}
+                </span>
                 <span class="pb-2 text-sm font-bold md:text-lg">
+                  {vote.voteAmount}
                   {pluralize('Token', vote.voteAmount)}
                 </span>
 
@@ -95,9 +85,16 @@ onMount(() => {
         {/each}
       </div>
     {:else}
-      No votes placed yet
+      <div
+        class="mt-24 flex w-full grow flex-col items-center justify-center gap-2">
+        <Icon name="transactions-graphic" class="w-full max-w-sm px-10" />
+        <div class="pt-4 text-center opacity-70">No transactions yet</div>
+      </div>
     {/if}
   {:else}
-    Login to view results
+    <div
+      class="mt-24 flex w-full grow flex-col items-center justify-center gap-2">
+      <LoginButton />
+    </div>
   {/if}
 </div>

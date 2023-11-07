@@ -18,7 +18,9 @@ export async function getVideos(lastRef?: QueryDocumentSnapshot) {
     if (snapshot.empty) {
       return { ok: true, videos, more: false }
     }
-    snapshot.forEach((doc) => videos.push(doc.data() as UpDownPost))
+    snapshot.forEach((doc) =>
+      videos.push({ ...doc.data(), id: doc.id } as UpDownPost),
+    )
     return {
       ok: true,
       videos,

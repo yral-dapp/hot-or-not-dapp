@@ -2,63 +2,68 @@
 import Icon from '$components/icon/Icon.svelte'
 import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
+import { authState } from '$stores/auth'
 
 export let score: number
+export let disabled = false
 
 const dispatch = createEventDispatcher<{
   votePlaced: UpDownVoteDetails
 }>()
 
-let selectedCoins = 50
+let selectedAmount = 50
 let vote: {
   direction?: 'up' | 'down'
   loading: boolean
-  coins?: number
+  voteAmount?: number
 } = {
   loading: false,
 }
 
-function placeVote(direction: 'up' | 'down', coins: number) {
+function placeVote(direction: 'up' | 'down', voteAmount: number) {
   if (vote.loading) return
+  if (!$authState.isLoggedIn) {
+    $authState.showLogin = true
+    return
+  }
   vote.direction = direction
   vote.loading = true
-  vote.coins = coins
+  vote.voteAmount = voteAmount
 
-  setTimeout(() => {
-    dispatch('votePlaced', {
-      direction,
-      coins,
-      result: 'pending',
-      placed_at: Date.now(),
-    })
-  }, 2000)
+  dispatch('votePlaced', {
+    direction,
+    voteAmount,
+    status: 'pending',
+    created_at: Date.now(),
+  })
 }
 </script>
 
 <div
-  class="pointer-events-auto flex flex-col items-center justify-center gap-3 pt-4">
+  class="flex flex-col items-center justify-center gap-3 pt-4 transition-opacity
+  {disabled ? 'pointer-events-none opacity-50' : 'pointer-events-auto'}">
   <div
     class="mx-8 flex items-center justify-between gap-1 rounded-xl bg-black/30 p-1">
     <button
       disabled={vote.loading}
-      on:click={(e) => (selectedCoins = 10)}
-      class:bg-primary={selectedCoins === 10}
+      on:click={(e) => (selectedAmount = 10)}
+      class:bg-primary={selectedAmount === 10}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-dollar" class="h-4 w-4" />
       <div class="whitespace-nowrap text-xs">10 COYNs</div>
     </button>
     <button
       disabled={vote.loading}
-      on:click={() => (selectedCoins = 50)}
-      class:bg-primary={selectedCoins === 50}
+      on:click={() => (selectedAmount = 50)}
+      class:bg-primary={selectedAmount === 50}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-dollar" class="h-4 w-4" />
       <div class="whitespace-nowrap text-xs">50 COYNs</div>
     </button>
     <button
       disabled={vote.loading}
-      on:click={() => (selectedCoins = 100)}
-      class:bg-primary={selectedCoins === 100}
+      on:click={() => (selectedAmount = 100)}
+      class:bg-primary={selectedAmount === 100}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-dollar" class="h-4 w-4" />
       <div class="whitespace-nowrap text-xs">100 COYNs</div>
@@ -67,7 +72,7 @@ function placeVote(direction: 'up' | 'down', coins: number) {
   <div class="flex items-center justify-between gap-4 px-4">
     <button
       disabled={vote.loading}
-      on:click={() => placeVote('down', selectedCoins)}
+      on:click={() => placeVote('down', selectedAmount)}
       class="flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-red-500">
       {#if vote.loading && vote.direction === 'down'}
         <Icon name="loading" class="h-8 w-8 animate-spin-slow text-white" />
@@ -90,7 +95,7 @@ function placeVote(direction: 'up' | 'down', coins: number) {
     </div>
     <button
       disabled={vote.loading}
-      on:click={() => placeVote('up', selectedCoins)}
+      on:click={() => placeVote('up', selectedAmount)}
       class="flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-green-500 py-3">
       {#if vote.loading && vote.direction === 'up'}
         <Icon name="loading" class="h-8 w-8 animate-spin-slow text-white" />
