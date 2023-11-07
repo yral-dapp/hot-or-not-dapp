@@ -26,7 +26,7 @@ export let score: number
 let loading = true
 let voteDetails: UpDownVoteDetails | undefined = undefined
 
-$: if (post?.id) {
+$: if (post?.id && $authState.isLoggedIn && $authState.userId) {
   loadVoteDetails(post.id)
 }
 
