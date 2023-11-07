@@ -18,6 +18,7 @@ let loading = true
 async function getVotes() {
   try {
     await tick()
+    if (!$authState.userId) return
     const db = getDb()
     const coll = collection(db, 'votes' as CollectionName)
 
