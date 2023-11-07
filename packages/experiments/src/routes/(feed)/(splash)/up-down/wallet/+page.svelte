@@ -10,6 +10,7 @@ import type {
   TransanctionRecord,
 } from '$lib/db/db.types'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { generateRandomName } from '$lib/utils/randomUsername'
 import { anonUser, authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import {
@@ -142,8 +143,23 @@ onMount(() => getTransactions())
       </div>
     {/if}
   {:else}
-    <div
-      class="mt-24 flex w-full grow flex-col items-center justify-center gap-2">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <IconButton
+          href="/up-down"
+          iconName="caret-left"
+          iconClass="text-white w-6 h-6" />
+        <div class="flex flex-col items-center py-4">
+          <div class="self-start text-xs">Welcome!</div>
+          <div class="text-lg font-bold text-white">
+            {generateRandomName('name', $anonUser.id)}
+          </div>
+        </div>
+      </div>
+      <Avatar src={getDefaultImageUrl($anonUser.id)} class="h-10 w-10" />
+    </div>
+    <div class="mt-8 flex flex-col items-center gap-4">
+      <div>Login to view your wallet</div>
       <LoginButton />
     </div>
   {/if}

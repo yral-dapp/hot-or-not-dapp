@@ -26,7 +26,7 @@ export let score: number
 let loading = true
 let voteDetails: UpDownVoteDetails | undefined = undefined
 
-$: if (post?.id) {
+$: if (post?.id && $authState.isLoggedIn && $authState.userId) {
   loadVoteDetails(post.id)
 }
 
@@ -64,7 +64,6 @@ async function handlePlaceVote(vote: UpDownVoteDetails) {
     vote.voteAmount,
     vote.direction,
   )
-  console.log({ res })
   voteDetails = vote
 }
 </script>
@@ -75,7 +74,7 @@ async function handlePlaceVote(vote: UpDownVoteDetails) {
   {:else}
     <UpDownVoteControls
       {score}
-      disabled={!post || loading}
+      disabled={$authState.isLoggedIn ? !post || loading : false}
       on:votePlaced={({ detail }) => handlePlaceVote(detail)} />
   {/if}
 </up-down>
