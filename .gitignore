@@ -2,6 +2,8 @@
 .DS_Store
 .dfx
 node_modules
+build
+.svelte-kit/
 .env
 *.wasm
 target

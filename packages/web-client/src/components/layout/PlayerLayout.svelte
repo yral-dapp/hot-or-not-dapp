@@ -207,8 +207,7 @@ $: avatarUrl =
 
 <player-layout
   data-index={index}
-  class="block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
-  <slot {recordView} {updateStats} />
+  class="relative block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
   {#if !unavailable}
     <img
       alt="background"
@@ -326,6 +325,7 @@ $: avatarUrl =
       </div>
     {/if}
   </div>
+  <slot {recordView} {updateStats} />
 </player-layout>
 
 <style>

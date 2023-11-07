@@ -1,0 +1,47 @@
+name: Deploy Experiment app
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/experiments/**"
+      - ".github/workflows/experiments-deploy.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/experiments/**"
+      - ".github/workflows/experiments-deploy.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  experiments-deploy-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: Install dependencies
+        shell: bash
+        run: npm install
+
+      - run: npm run ex:build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          GA_TRACKING_ID: "G-PPE5XD2VKV"
+
+      - name: Deploy production build
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+          workingDirectory: "packages/experiments/"
+          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
+        env:
+          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
