@@ -7,7 +7,7 @@ import Button from '$components/button/Button.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 
-let step: 1 | 2 | 3 | 4 | 5 = 1
+let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
 </script>
 
 {#if $showOnboardingPopup}
@@ -42,7 +42,7 @@ let step: 1 | 2 | 3 | 4 | 5 = 1
       </div>
     {:else if step == 2}
       <div
-        class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
           class="flex w-full flex-col items-center justify-center space-y-6 text-center">
           <div class="text-3xl font-bold">Current Score Overview</div>
@@ -51,7 +51,7 @@ let step: 1 | 2 | 3 | 4 | 5 = 1
             and engagement. Predict if it'll rise or fall in the next hour.
           </div>
         </div>
-        <div class="absolute bottom-32 -translate-x-full">
+        <div class="absolute bottom-20 z-[10] -translate-x-full">
           <Icon name="arrow-long-down" class="h-48 w-8" />
         </div>
         <Button class="px-12" on:click={() => (step = 3)}>Next</Button>
@@ -61,27 +61,20 @@ let step: 1 | 2 | 3 | 4 | 5 = 1
           Skip
         </button>
 
-        <div
-          class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
-          <UpDownVote score={100} />
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
+          <UpDownVote tutorialStep={2} score={100} />
         </div>
       </div>
     {:else if step == 3}
       <div
-        class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
           class="flex w-full flex-col items-center justify-center space-y-6 text-center">
-          <div class="text-3xl font-bold">Cast your Vote</div>
-          <div>
-            Click either 'UP' or 'DOWN' to predict whether the video's score
-            will increase or decrease by the end of the hour.
-          </div>
+          <div class="text-3xl font-bold">Select Your Voting Amount</div>
+          <div>Choose your voting amount: 10, 50, or 100 tokens.</div>
         </div>
-        <div class="absolute bottom-40 left-3">
-          <Icon name="arrow-long-down" class="h-52 w-8" />
-        </div>
-        <div style="transform: scaleX(-1);" class="absolute bottom-40 right-3">
-          <Icon name="arrow-long-down" class="h-56 w-8" />
+        <div class="absolute bottom-36 z-[10] -translate-x-full">
+          <Icon name="arrow-long-down" class="h-48 w-8" />
         </div>
         <Button class="px-12" on:click={() => (step = 4)}>Next</Button>
         <button
@@ -90,12 +83,75 @@ let step: 1 | 2 | 3 | 4 | 5 = 1
           Skip
         </button>
 
-        <div
-          class="pointer-events-none absolute inset-x-0 bottom-20 z-[5] max-h-48">
-          <UpDownVote score={100} />
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
+          <UpDownVote tutorialStep={3} score={100} />
         </div>
       </div>
     {:else if step == 4}
+      <div
+        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        <div
+          class="flex w-full flex-col items-center justify-center space-y-6 text-center">
+          <div class="text-3xl font-bold">Cast your Vote</div>
+          <div>
+            Click either 'UP' or 'DOWN' to predict whether the video's score
+            will increase or decrease by the end of the hour.
+          </div>
+        </div>
+        <div class="absolute bottom-24 left-10 z-[10]">
+          <Icon name="arrow-long-down" class="h-52 w-8" />
+        </div>
+        <div
+          style="transform: scaleX(-1);"
+          class="absolute bottom-24 right-10 z-[10]">
+          <Icon name="arrow-long-down" class="h-56 w-8" />
+        </div>
+        <Button class="px-12" on:click={() => (step = 5)}>Next</Button>
+        <button
+          on:click={() => ($showOnboardingPopup = false)}
+          class="font-medium">
+          Skip
+        </button>
+
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
+          <UpDownVote tutorialStep={4} score={100} />
+        </div>
+      </div>
+    {:else if step == 5}
+      <div
+        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        <div
+          class="flex w-full flex-col items-center justify-center space-y-6 text-center">
+          <div class="text-3xl font-bold">Remaining Time</div>
+          <div>
+            Keep an eye on the timer to see how much time is left until the
+            results are revealed.
+          </div>
+        </div>
+
+        <div
+          style="transform: scaleX(-1);"
+          class="absolute bottom-60 right-0 z-[10]">
+          <Icon name="arrow-long-down" class="h-56 w-8" />
+        </div>
+        <Button class="px-12" on:click={() => (step = 6)}>Next</Button>
+        <button
+          on:click={() => ($showOnboardingPopup = false)}
+          class="font-medium">
+          Skip
+        </button>
+
+        <div
+          class="absolute bottom-44 right-2 flex flex-col items-center gap-1">
+          <Icon name="stopwatch" class="h-7 w-7" />
+          <span class="text-fg-1 text-xs shadow-lg">47:32</span>
+        </div>
+
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
+          <UpDownVote tutorialStep={5} score={100} />
+        </div>
+      </div>
+    {:else if step == 6}
       <div
         class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
@@ -104,14 +160,14 @@ let step: 1 | 2 | 3 | 4 | 5 = 1
           <div>Vote in the right direction and win double the tokens!</div>
         </div>
 
-        <Button class="px-12" on:click={() => (step = 5)}>Next</Button>
+        <Button class="px-12" on:click={() => (step = 7)}>Next</Button>
         <button
           on:click={() => ($showOnboardingPopup = false)}
           class="font-medium">
           Skip
         </button>
       </div>
-    {:else if step == 5}
+    {:else if step == 7}
       <div
         class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div

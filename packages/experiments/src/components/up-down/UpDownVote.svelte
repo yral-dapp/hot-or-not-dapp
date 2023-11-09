@@ -22,6 +22,7 @@ import { authState } from '$stores/auth'
 
 export let post: UpDownPost | undefined = undefined
 export let score: number
+export let tutorialStep: number | undefined = undefined
 
 let loading = true
 let voteDetails: UpDownVoteDetails | undefined = undefined
@@ -69,11 +70,12 @@ async function handlePlaceVote(vote: UpDownVoteDetails) {
 </script>
 
 <up-down class="pointer-events-none block h-full w-full">
-  {#if voteDetails}
+  {#if voteDetails && !tutorialStep}
     <UpDownVoteOutcome disabled={!post || loading} {voteDetails} />
   {:else}
     <UpDownVoteControls
       {score}
+      {tutorialStep}
       disabled={$authState.isLoggedIn ? !post || loading : false}
       on:votePlaced={({ detail }) => handlePlaceVote(detail)} />
   {/if}
