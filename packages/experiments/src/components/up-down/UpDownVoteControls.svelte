@@ -90,6 +90,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
         {
           'opacity-30':
             tutorialStep === 2 || tutorialStep == 3 || tutorialStep === 5,
+          'grayscale': vote.loading && vote.direction === 'up',
         },
       )}>
       {#if vote.loading && vote.direction === 'down'}
@@ -123,6 +124,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
         {
           'opacity-30':
             tutorialStep === 2 || tutorialStep == 3 || tutorialStep === 5,
+          'grayscale': vote.loading && vote.direction === 'down',
         },
       )}>
       {#if vote.loading && vote.direction === 'up'}
