@@ -45,3 +45,24 @@ jobs:
           command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+      - name: Get preview deployment URL
+        id: preview-url
+        working-directory: "packages/experiments/"
+        run: |
+          echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
+
+  comment-on-pr:
+    name: Add a comment with the deployment link on the PR
+    if: github.actor != 'dependabot[bot]'
+    needs: ["experiments-deploy-pages"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Experiments preview build: ${{ needs.deploy-preview.outputs.previewUrl }}'
+            })
