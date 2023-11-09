@@ -80,3 +80,4 @@ export type IconName =
   | 'stars-graphics'
   | 'heart-broken'
   | 'heart-broken-fill'
+  | 'coin-token'
