@@ -96,7 +96,7 @@ onMount(() => getTransactions())
         <LoginButton />
       {/if}
       <div class="flex flex-col items-center gap-1">
-        <div class="text-xs font-bold uppercase">Your coYn balance</div>
+        <div class="text-xs font-bold uppercase">Your token balance</div>
         <div class="text-5xl font-bold">{walletBalance}</div>
       </div>
     </div>

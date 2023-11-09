@@ -62,7 +62,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
       class:bg-primary={selectedAmount === 10}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-dollar" class="h-4 w-4" />
-      <div class="whitespace-nowrap text-xs">10 COYNs</div>
+      <div class="whitespace-nowrap text-xs">10 Tokens</div>
     </button>
     <button
       disabled={vote.loading || !!tutorialStep}
@@ -70,7 +70,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
       class:bg-primary={selectedAmount === 50}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-dollar" class="h-4 w-4" />
-      <div class="whitespace-nowrap text-xs">50 COYNs</div>
+      <div class="whitespace-nowrap text-xs">50 Tokens</div>
     </button>
     <button
       disabled={vote.loading || !!tutorialStep}
@@ -78,7 +78,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
       class:bg-primary={selectedAmount === 100}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-dollar" class="h-4 w-4" />
-      <div class="whitespace-nowrap text-xs">100 COYNs</div>
+      <div class="whitespace-nowrap text-xs">100 Tokens</div>
     </button>
   </div>
   <div class="flex items-center justify-between gap-4 px-4">
