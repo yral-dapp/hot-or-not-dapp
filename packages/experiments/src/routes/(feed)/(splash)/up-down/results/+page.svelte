@@ -49,7 +49,7 @@ onMount(() => {
       <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {#each votes as vote}
           <a
-            href="/up-down/{vote.videoUoid}@{vote.videoOid}"
+            href="/up-down/votes/{vote.videoUoid}@{vote.videoOid}"
             data-sveltekit-preload-code="eager"
             class="relative aspect-[3/5] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
             <div

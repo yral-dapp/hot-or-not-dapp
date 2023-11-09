@@ -27,6 +27,7 @@ onDestroy(() => {
 $: pathname = browser ? $page.url.pathname : ''
 $: resultPage = pathname.includes('result')
 $: walletPage = pathname.includes('wallet')
+$: votesPage = pathname.includes('votes')
 </script>
 
 <HomeLayout>
@@ -38,7 +39,7 @@ $: walletPage = pathname.includes('wallet')
         class={c(
           'absolute inset-x-0 z-[1] h-9 rounded-full bg-primary transition-all duration-200',
           {
-            'opacity-0': walletPage,
+            'opacity-0': walletPage || votesPage,
             'w-20 translate-x-[10.25rem]': resultPage,
             'w-40 translate-x-2': !walletPage && !resultPage,
           },
@@ -50,6 +51,7 @@ $: walletPage = pathname.includes('wallet')
         class="z-[2] shrink-0">
         Up & Down Game
       </a>
+
       <a
         on:click={() => (resultPage = true)}
         href="/up-down/results"
