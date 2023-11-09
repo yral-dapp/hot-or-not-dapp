@@ -35,35 +35,35 @@ beforeNavigate(() => {
 </svelte:head>
 
 <div class="flex h-full w-full snap-always items-center justify-center">
-  <PlayerLayout
-    bind:post={video}
-    index={0}
-    source="ud-feed"
-    showLikeButton
-    showDislikeButton
-    showTimer
-    showShareButton
-    let:recordView
-    let:updateStats>
-    <VideoPlayer
-      on:loaded={() => hideSplashScreen(500)}
-      index={0}
-      playFormat="hls"
-      {Hls}
-      inView
-      uid={video.video_uid} />
-
-    <svelte:fragment slot="controls">
-      <UpDownVote post={video} score={video.score} />
-    </svelte:fragment>
-  </PlayerLayout>
-
-  {#if loading}
+  {#if loading || !video}
     <div class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">Loading</div>
       </div>
     </div>
+  {:else}
+    <PlayerLayout
+      bind:post={video}
+      index={0}
+      source="ud-feed"
+      showLikeButton
+      showDislikeButton
+      showTimer
+      showShareButton
+      let:recordView
+      let:updateStats>
+      <VideoPlayer
+        on:loaded={() => hideSplashScreen(500)}
+        index={0}
+        playFormat="hls"
+        {Hls}
+        inView
+        uid={video.video_uid} />
+
+      <svelte:fragment slot="controls">
+        <UpDownVote post={video} score={video.score} />
+      </svelte:fragment>
+    </PlayerLayout>
   {/if}
 </div>
