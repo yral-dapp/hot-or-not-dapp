@@ -1,6 +1,7 @@
 <script lang="ts">
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
+import { upDownPost } from '$lib/utils/constants'
 import { hideSplashScreen } from '$stores/popups'
 import { onMount, tick } from 'svelte'
 
@@ -17,6 +18,6 @@ onMount(async () => {
     There are no videos to vote on
   </div>
   <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-    <UpDownVote score={100} />
+    <UpDownVote post={upDownPost} />
   </div>
 </div>

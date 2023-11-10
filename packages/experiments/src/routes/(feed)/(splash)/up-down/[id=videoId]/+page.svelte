@@ -118,7 +118,7 @@ beforeNavigate(() => {
             uid={post.video_uid} />
 
           <svelte:fragment slot="controls">
-            <UpDownVote {post} score={post.score} />
+            <UpDownVote {post} />
           </svelte:fragment>
         </PlayerLayout>
       {/if}

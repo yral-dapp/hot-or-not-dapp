@@ -3,9 +3,11 @@ import Icon from '$components/icon/Icon.svelte'
 import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { authState } from '$stores/auth'
+import c from 'clsx'
 
 export let score: number
 export let disabled = false
+export let tutorialStep: number | undefined = undefined
 
 const dispatch = createEventDispatcher<{
   votePlaced: UpDownVoteDetails
@@ -40,40 +42,57 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
 </script>
 
 <div
-  class="flex flex-col items-center justify-center gap-3 pt-4 transition-opacity
-  {disabled ? 'pointer-events-none opacity-50' : 'pointer-events-auto'}">
+  class={c(
+    'flex flex-col items-center justify-center gap-3 pt-4 transition-opacity',
+    disabled || tutorialStep ? 'pointer-events-none' : 'pointer-events-auto',
+    {
+      'opacity-50': disabled,
+    },
+  )}>
   <div
-    class="mx-8 flex items-center justify-between gap-1 rounded-xl bg-black/30 p-1">
+    class={c(
+      'mx-8 flex items-center justify-between gap-1 rounded-xl bg-black/30 p-1',
+      {
+        'opacity-30': tutorialStep && tutorialStep !== 3,
+      },
+    )}>
     <button
-      disabled={vote.loading}
+      disabled={vote.loading || !!tutorialStep}
       on:click={(e) => (selectedAmount = 10)}
       class:bg-primary={selectedAmount === 10}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
-      <Icon name="coin-dollar" class="h-4 w-4" />
-      <div class="whitespace-nowrap text-xs">10 COYNs</div>
+      <Icon name="coin-token" class="h-4 w-4" />
+      <div class="whitespace-nowrap text-xs">10 Tokens</div>
     </button>
     <button
-      disabled={vote.loading}
+      disabled={vote.loading || !!tutorialStep}
       on:click={() => (selectedAmount = 50)}
       class:bg-primary={selectedAmount === 50}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
-      <Icon name="coin-dollar" class="h-4 w-4" />
-      <div class="whitespace-nowrap text-xs">50 COYNs</div>
+      <Icon name="coin-token" class="h-4 w-4" />
+      <div class="whitespace-nowrap text-xs">50 Tokens</div>
     </button>
     <button
-      disabled={vote.loading}
+      disabled={vote.loading || !!tutorialStep}
       on:click={() => (selectedAmount = 100)}
       class:bg-primary={selectedAmount === 100}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
-      <Icon name="coin-dollar" class="h-4 w-4" />
-      <div class="whitespace-nowrap text-xs">100 COYNs</div>
+      <Icon name="coin-token" class="h-4 w-4" />
+      <div class="whitespace-nowrap text-xs">100 Tokens</div>
     </button>
   </div>
   <div class="flex items-center justify-between gap-4 px-4">
     <button
-      disabled={vote.loading}
+      disabled={vote.loading || !!tutorialStep}
       on:click={() => placeVote('down', selectedAmount)}
-      class="flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-red-500">
+      class={c(
+        'flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-red-500',
+        {
+          'opacity-30':
+            tutorialStep === 2 || tutorialStep == 3 || tutorialStep === 5,
+          'grayscale': vote.loading && vote.direction === 'up',
+        },
+      )}>
       {#if vote.loading && vote.direction === 'down'}
         <Icon name="loading" class="h-8 w-8 animate-spin-slow text-white" />
       {:else}
@@ -84,7 +103,11 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
         <div class="text-sm">Down</div>
       {/if}
     </button>
-    <div class="flex flex-col items-center justify-center">
+    <div
+      class={c('flex flex-col items-center justify-center', {
+        'opacity-30':
+          tutorialStep === 3 || tutorialStep == 4 || tutorialStep === 5,
+      })}>
       <div
         class="text-5xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
         {score}
@@ -94,9 +117,16 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
       </div>
     </div>
     <button
-      disabled={vote.loading}
+      disabled={vote.loading || !!tutorialStep}
       on:click={() => placeVote('up', selectedAmount)}
-      class="flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-green-500 py-3">
+      class={c(
+        'flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-green-500 py-3',
+        {
+          'opacity-30':
+            tutorialStep === 2 || tutorialStep == 3 || tutorialStep === 5,
+          'grayscale': vote.loading && vote.direction === 'down',
+        },
+      )}>
       {#if vote.loading && vote.direction === 'up'}
         <Icon name="loading" class="h-8 w-8 animate-spin-slow text-white" />
       {:else}

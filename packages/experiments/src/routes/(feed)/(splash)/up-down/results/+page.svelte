@@ -1,16 +1,13 @@
 <script lang="ts">
 import LoginButton from '$components/auth/LoginButton.svelte'
-import Avatar from '$components/avatar/Avatar.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import { getDb } from '$lib/db'
 import type { CollectionName, VoteRecord } from '$lib/db/db.types'
-import { getThumbnailUrl } from '$lib/utils/cloudflare'
-import { pluralize } from '$lib/utils/pluralize'
 import { authState } from '$stores/auth'
-import userProfile from '$stores/userProfile'
-import { collection, getDocs, query, where } from 'firebase/firestore/lite'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { onMount, tick } from 'svelte'
 import { fade } from 'svelte/transition'
+import ResultCard from './ResultCard.svelte'
 
 let votes: VoteRecord[] = []
 let loading = true
@@ -48,41 +45,7 @@ onMount(() => {
     {#if votes.length}
       <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
         {#each votes as vote}
-          <a
-            href="/up-down/{vote.videoUoid}@{vote.videoOid}"
-            data-sveltekit-preload-code="eager"
-            class="relative aspect-[3/5] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
-            <div
-              class="absolute inset-0 scale-110 bg-cover bg-center"
-              style="background-image: url('{getThumbnailUrl(
-                vote.videoUid,
-              )}')" />
-            <div
-              style="background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);"
-              class="pointer-events-none absolute inset-0 z-[2] flex flex-col justify-between p-2 md:p-4">
-              <div class="flex items-center space-x-2">
-                <Avatar class="h-6 w-6" src={$userProfile.photoUrl} />
-                <div class="text-xs font-semibold sm:text-sm">
-                  {$userProfile.name}
-                </div>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-xs font-thin uppercase">
-                  {vote.voteDirection} from {vote.currentScore}
-                </span>
-                <span class="pb-2 text-sm font-bold md:text-lg">
-                  {vote.voteAmount}
-                  {pluralize('Token', vote.voteAmount)}
-                </span>
-
-                <div
-                  class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-1 text-sm text-white md:py-2">
-                  <Icon name="stopwatch" class="h-5 w-5" />
-                  <span>30:00</span>
-                </div>
-              </div>
-            </div>
-          </a>
+          <ResultCard {vote} />
         {/each}
       </div>
     {:else}

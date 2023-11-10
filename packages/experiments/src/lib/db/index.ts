@@ -4,7 +4,7 @@ import { anonUser, authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { getAuth as _getAuth, type Auth, type User } from 'firebase/auth'
-import { getFirestore, type Firestore } from 'firebase/firestore/lite'
+import { getFirestore, type Firestore } from 'firebase/firestore'
 import { get } from 'svelte/store'
 import { registerUser } from './auth'
 

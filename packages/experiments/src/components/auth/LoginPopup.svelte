@@ -63,9 +63,8 @@ function signIn() {
           <div>You're logged in!</div>
         </div>
       {:else}
-        <span class="text-center text-3xl font-bold">
-          Join Hot or Not Experiments
-        </span>
+        <span class="text-center text-3xl font-bold">Login</span>
+        <span class="text-center text-lg">Login to start playing</span>
         <div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
           <Button
             disabled={$loading}

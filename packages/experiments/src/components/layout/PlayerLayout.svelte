@@ -17,8 +17,8 @@ import {
   viewVideo,
 } from '$lib/db/actions'
 import { getDb } from '$lib/db'
-import { collection, doc, getDoc } from 'firebase/firestore/lite'
-import { getMsLeftForBetResult } from '$lib/utils/countdown'
+import { doc, getDoc } from 'firebase/firestore'
+import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
 
 export let index: number
 export let post: UpDownPost
@@ -100,7 +100,7 @@ const increaseWatchCount = debounce(500, () => {
 async function handleLike() {
   if (!isLoggedIn()) return
 
-  post.likes_count++
+  liked = !liked
 
   await toggleLike({
     videoId: post.id,
@@ -128,7 +128,7 @@ async function handleLike() {
 async function handleDislike() {
   if (!isLoggedIn()) return
 
-  post.likes_count++
+  disliked = !disliked
 
   await toggleDislike({
     videoId: post.id,
@@ -191,9 +191,8 @@ async function updateStats() {
 
 $: avatarUrl = getDefaultImageUrl(post.ouid)
 
-const sixtyMinutes = new Date()
-sixtyMinutes.setMinutes(sixtyMinutes.getMinutes() + 59)
-let timeLeft = getMsLeftForBetResult(sixtyMinutes)
+const endTime = getVoteEndTime(new Date(post.created_at), new Date())
+let timeLeft = getMsLeftForResult(endTime)
 </script>
 
 <player-layout

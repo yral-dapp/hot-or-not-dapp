@@ -1,14 +1,46 @@
 <script lang="ts">
 import Icon from '$components/icon/Icon.svelte'
-import { getMsLeftForBetResult } from '$lib/utils/countdown'
+import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
+import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
+import { doc, onSnapshot, type Unsubscribe } from 'firebase/firestore'
+import { onDestroy } from 'svelte'
+import { getDb } from '$lib/db'
 
 export let voteDetails: UpDownVoteDetails
+export let voteDocId: string | undefined = undefined
+export let post: UpDownPost
 export let disabled = false
 
-const sixtyMinutes = new Date()
-sixtyMinutes.setMinutes(sixtyMinutes.getMinutes() + 59)
-let timeLeft = getMsLeftForBetResult(sixtyMinutes)
+const endTime = getVoteEndTime(new Date(post.created_at), new Date())
+let timeLeft = getMsLeftForResult(endTime)
+let unsubscribe: Unsubscribe | undefined = undefined
+
+onDestroy(() => unsubscribe?.())
+
+$: if (voteDocId) {
+  observeDoc()
+}
+
+async function observeDoc() {
+  try {
+    if (unsubscribe || !voteDocId) return
+    const db = getDb()
+    const docRef = doc(db, 'votes' as CollectionName, voteDocId)
+    unsubscribe = onSnapshot(docRef, (doc) => {
+      const data = doc.data() as VoteRecord
+      voteDetails = {
+        direction: data.voteDirection,
+        created_at: data.created_at,
+        status: data.status,
+        result: data.result,
+        voteAmount: data.voteAmount,
+      }
+    })
+  } catch (e) {
+    console.log('error while observing vote', e)
+  }
+}
 </script>
 
 <div
