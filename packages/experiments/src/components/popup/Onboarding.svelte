@@ -6,25 +6,9 @@ import right from '$assets/decore-right.png'
 import Button from '$components/button/Button.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
-import type { UpDownPost } from '$lib/db/db.types'
+import { upDownPost } from '$lib/utils/constants'
 
 let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
-const post: UpDownPost = {
-  share_count: 0,
-  score: 100,
-  hashtags: [],
-  video_uid: '6288522c9bf743ff9242bcb4cd09ee1f',
-  ouid: '3vhay',
-  description: '',
-  created_at: 1698981713112,
-  oid: 1,
-  status: 'active',
-  ouname: 'user',
-  likes_count: 0,
-  dislikes_count: 0,
-  views_count: 0,
-  id: '5r5BvSkKGA7C4GLtFLJ4',
-}
 </script>
 
 {#if $showOnboardingPopup}
@@ -79,7 +63,7 @@ const post: UpDownPost = {
         </button>
 
         <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
-          <UpDownVote {post} tutorialStep={2} />
+          <UpDownVote post={upDownPost} tutorialStep={2} />
         </div>
       </div>
     {:else if step == 3}
@@ -101,7 +85,7 @@ const post: UpDownPost = {
         </button>
 
         <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
-          <UpDownVote tutorialStep={3} {post} />
+          <UpDownVote tutorialStep={3} post={upDownPost} />
         </div>
       </div>
     {:else if step == 4}
@@ -131,7 +115,7 @@ const post: UpDownPost = {
         </button>
 
         <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
-          <UpDownVote tutorialStep={4} {post} />
+          <UpDownVote tutorialStep={4} post={upDownPost} />
         </div>
       </div>
     {:else if step == 5}
@@ -165,7 +149,7 @@ const post: UpDownPost = {
         </div>
 
         <div class="pointer-events-none absolute inset-x-0 bottom-4 z-[5]">
-          <UpDownVote tutorialStep={5} {post} />
+          <UpDownVote tutorialStep={5} post={upDownPost} />
         </div>
       </div>
     {:else if step == 6}
