@@ -1,3 +1,10 @@
+export type CollectionName =
+  | 'ud-videos'
+  | 'profile'
+  | 'transactions'
+  | 'votes'
+  | 'view-updates'
+
 export type UpDownPost = {
   id: string
   oid: number
@@ -7,6 +14,7 @@ export type UpDownPost = {
   description: string
   created_at: number
   likes_count: number
+  vote_count: number
   dislikes_count: number
   video_uid: string
   score: number
@@ -14,8 +22,6 @@ export type UpDownPost = {
   ouname: string
   ouid: string
 }
-
-export type CollectionName = 'ud-videos' | 'profile' | 'transactions'
 
 export type LikeRecord = {
   uid: string
