@@ -20,7 +20,7 @@ import {
   getDocs,
   query,
   where,
-} from 'firebase/firestore/lite'
+} from 'firebase/firestore'
 import { onMount, tick } from 'svelte'
 
 let transactions: TransanctionRecord[] = []

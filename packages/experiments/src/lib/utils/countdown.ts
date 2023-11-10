@@ -1,16 +1,18 @@
 import { readable } from 'svelte/store'
 import { getTimeStringFromMs } from './timeLeft'
 
-export function getMsLeftForBetResult(betEndTime: Date) {
+const HOUR_IN_MS = 36_00_000
+
+export function getMsLeftForResult(endTime: Date) {
   const now = new Date()
-  let diff = betEndTime.getTime() - now.getTime()
+  let diff = endTime.getTime() - now.getTime()
 
   if (diff > 0) {
     const dt = getTimeStringFromMs(diff)
     const initialValue =
       dt.minutes + ':' + (dt.seconds < 10 ? '0' : '') + dt.seconds
 
-    return readable('', (set) => {
+    return readable(initialValue, (set) => {
       let counter = 1
       const updateMs = () => {
         if (diff - counter * 1000 > 0) {
@@ -20,7 +22,7 @@ export function getMsLeftForBetResult(betEndTime: Date) {
           set(minutes + ':' + (seconds < 10 ? '0' : '') + seconds)
         } else {
           counter = 1
-          diff = 36_00_000
+          diff = HOUR_IN_MS
         }
       }
 
@@ -36,4 +38,12 @@ export function getMsLeftForBetResult(betEndTime: Date) {
   } else {
     return readable('')
   }
+}
+
+export function getVoteEndTime(postCreatedAt: Date, voteCreatedAt: Date) {
+  const startTime = postCreatedAt.getTime()
+  const diff = voteCreatedAt.getTime() - startTime
+  const slotNumber = Math.ceil(diff / 36_00_000)
+  const endTime = new Date(startTime + slotNumber * 36_00_000)
+  return endTime
 }

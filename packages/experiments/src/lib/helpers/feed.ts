@@ -4,7 +4,7 @@ import {
   getDocs,
   limit,
   QueryDocumentSnapshot,
-} from 'firebase/firestore/lite'
+} from 'firebase/firestore'
 import type { CollectionName, UpDownPost } from '../db/db.types'
 import { getDb } from '$lib/db'
 

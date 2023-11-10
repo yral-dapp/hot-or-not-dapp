@@ -83,6 +83,7 @@ export type VoteRecord = {
   voteDirection: 'up' | 'down'
   voteAmount: number
   created_at: number
+  result_at: number
   anon: boolean
   status: 'pending' | 'final'
   result?: {

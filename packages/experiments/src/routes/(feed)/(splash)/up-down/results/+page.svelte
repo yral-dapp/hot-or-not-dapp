@@ -8,7 +8,7 @@ import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { pluralize } from '$lib/utils/pluralize'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
-import { collection, getDocs, query, where } from 'firebase/firestore/lite'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { onMount, tick } from 'svelte'
 import { fade } from 'svelte/transition'
 
