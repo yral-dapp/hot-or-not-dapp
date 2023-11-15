@@ -4,7 +4,7 @@ import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
 import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { doc, onSnapshot, type Unsubscribe } from 'firebase/firestore'
-import { onDestroy } from 'svelte'
+import { createEventDispatcher, onDestroy } from 'svelte'
 import { getDb } from '$lib/db'
 import { writable } from 'svelte/store'
 
@@ -12,6 +12,10 @@ export let voteDetails: UpDownVoteDetails
 export let voteDocId: string | undefined = undefined
 export let post: UpDownPost
 export let disabled = false
+
+const dispatch = createEventDispatcher<{
+  voteAgain: void
+}>()
 
 let voteDetailsStore = writable<UpDownVoteDetails>(voteDetails)
 
@@ -55,29 +59,41 @@ $: console.log({ voteDetails })
 
 <div
   class:opacity-50={disabled}
-  class="pointer-events-none flex w-full flex-col items-center justify-center gap-2 p-4 transition-opacity">
+  class="fade-in pointer-events-auto flex w-full select-none flex-col items-center justify-center gap-2 p-4 transition-opacity">
   <div
     class="mx-8 flex items-center justify-between gap-1 rounded-xl bg-black/30 p-1">
     <div
       class:bg-zinc-500={$voteDetailsStore.voteAmount === 10}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
-      <Icon name="coin-token" class="h-4 w-4" />
+      {#if $voteDetailsStore.voteAmount === 10}
+        <Icon name="coin-token" class="h-4 w-4" />
+      {:else}
+        <div class="h-3 w-3 rounded-full bg-zinc-500"></div>
+      {/if}
       <div class="whitespace-nowrap text-xs">10 Tokens</div>
     </div>
     <div
       class:bg-zinc-500={$voteDetailsStore.voteAmount === 50}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
-      <Icon name="coin-token" class="h-4 w-4" />
+      {#if $voteDetailsStore.voteAmount === 50}
+        <Icon name="coin-token" class="h-4 w-4" />
+      {:else}
+        <div class="h-3 w-3 rounded-full bg-zinc-500"></div>
+      {/if}
       <div class="whitespace-nowrap text-xs">50 Tokens</div>
     </div>
     <div
       class:bg-zinc-500={$voteDetailsStore.voteAmount === 100}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
-      <Icon name="coin-token" class="h-4 w-4" />
+      {#if $voteDetailsStore.voteAmount === 100}
+        <Icon name="coin-token" class="h-4 w-4" />
+      {:else}
+        <div class="h-3 w-3 rounded-full bg-zinc-500"></div>
+      {/if}
       <div class="whitespace-nowrap text-xs">100 Tokens</div>
     </div>
   </div>
-  <div class="flex w-full items-center gap-8 px-8">
+  <div class="flex w-full items-center gap-4 px-8">
     <div class="relative flex shrink-0 flex-col items-center justify-center">
       <div
         class="text-5xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
@@ -100,10 +116,10 @@ $: console.log({ voteDetails })
 
     {#if $voteDetailsStore.status === 'final'}
       <div
-        class="flex w-full items-center justify-center space-x-2 rounded-full px-3 py-2 shadow-button-primary
+        class="flex w-full items-center justify-center space-x-2 rounded-full p-3
     {$voteDetailsStore.result?.status === 'won'
-          ? 'bg-green-500'
-          : 'bg-red-500'}">
+          ? 'bg-green-500/80'
+          : 'bg-red-500/80'}">
         {#if $voteDetailsStore.result?.status === 'won'}
           You won {$voteDetailsStore.result?.won_amount
             ? `${$voteDetailsStore.result.won_amount} tokens`
@@ -112,10 +128,15 @@ $: console.log({ voteDetails })
           You lost
         {/if}
       </div>
+      <button
+        on:click={() => dispatch('voteAgain')}
+        class="button flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-primary to-red-700 p-3 shadow-button-primary ring-2 ring-primary">
+        <div class="text-center text-xs">Vote again</div>
+      </button>
     {:else if $timeLeft}
       <div class="flex flex-1 flex-col items-center justify-center gap-1">
         <div
-          class="flex w-full items-center justify-center space-x-2 rounded-full bg-primary px-3 py-2 shadow-button-primary">
+          class="flex w-full items-center justify-center space-x-2 rounded-full bg-primary p-3 shadow-button-primary">
           <Icon name="stopwatch" class="h-5 w-5" />
           <span
             class:loading={$timeLeft === '...'}

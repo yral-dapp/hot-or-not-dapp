@@ -44,7 +44,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
 
 <div
   class={c(
-    'flex flex-col items-center justify-center gap-3 pt-4 transition-opacity',
+    'fade-in flex flex-col items-center justify-center gap-3 pt-4 transition-opacity',
     disabled || tutorialStep ? 'pointer-events-none' : 'pointer-events-auto',
     {
       'opacity-50': disabled,

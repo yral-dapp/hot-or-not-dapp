@@ -24,6 +24,7 @@ import {
   onSnapshot,
   type Unsubscribe,
   limit,
+  orderBy,
 } from 'firebase/firestore'
 
 import UpDownVoteControls from './UpDownVoteControls.svelte'
@@ -39,6 +40,7 @@ let voteDetails: UpDownVoteDetails | undefined = undefined
 let voteDocId: string | undefined = undefined
 let unsubscribe: Unsubscribe | undefined = undefined
 let postStore = writable<UpDownPost>(post)
+let voteAgain = false
 
 $: if (post.id && !tutorialStep && $authState.isLoggedIn && $authState.userId) {
   loadVoteDetails()
@@ -69,6 +71,7 @@ async function loadVoteDetails() {
       collection(db, 'votes'),
       where('videoId', '==', post.id),
       where('uid', '==', $authState.userId),
+      orderBy('created_at', 'desc'),
       limit(1),
     ),
   )
@@ -108,12 +111,13 @@ onDestroy(() => {
 </script>
 
 <up-down class="pointer-events-none block h-full w-full">
-  {#if voteDetails && !tutorialStep}
+  {#if voteDetails && !tutorialStep && !voteAgain}
     <UpDownVoteOutcome
       {post}
       disabled={!post || loading}
       {voteDocId}
-      {voteDetails} />
+      {voteDetails}
+      on:voteAgain={() => (voteAgain = true)} />
   {:else}
     <UpDownVoteControls
       score={$postStore.score}
