@@ -55,7 +55,7 @@ $: console.log({ voteDetails })
 
 <div
   class:opacity-50={disabled}
-  class="pointer-events-none flex w-full flex-col items-center justify-center gap-2 p-3 transition-opacity">
+  class="pointer-events-none flex w-full flex-col items-center justify-center gap-2 p-4 transition-opacity">
   <div
     class="mx-8 flex items-center justify-between gap-1 rounded-xl bg-black/30 p-1">
     <div
