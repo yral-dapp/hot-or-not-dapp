@@ -10,24 +10,16 @@ import { writable } from 'svelte/store'
 
 export let voteDetails: UpDownVoteDetails
 export let voteDocId: string | undefined = undefined
-export let post: UpDownPost
 export let disabled = false
+export let showVoteAgainButton = false
 
 const dispatch = createEventDispatcher<{
   voteAgain: void
 }>()
 
 let voteDetailsStore = writable<UpDownVoteDetails>(voteDetails)
-
-const endTime = getVoteEndTime(
-  new Date(post.created_at),
-  new Date(voteDetails.created_at),
-)
-
-let timeLeft = getMsLeftForResult(endTime)
+let timeLeft = getMsLeftForResult(new Date(voteDetails.result_at))
 let unsubscribe: Unsubscribe | undefined = undefined
-
-onDestroy(() => unsubscribe?.())
 
 $: if (voteDocId) {
   observeDoc()
@@ -42,7 +34,7 @@ async function observeDoc() {
       const data = doc.data() as VoteRecord
       $voteDetailsStore = {
         direction: data.voteDirection,
-        created_at: data.created_at,
+        result_at: data.result_at,
         status: data.status,
         score: data.currentScore,
         result: data.result,
@@ -54,7 +46,7 @@ async function observeDoc() {
   }
 }
 
-$: console.log({ voteDetails })
+onDestroy(() => unsubscribe?.())
 </script>
 
 <div
@@ -128,11 +120,13 @@ $: console.log({ voteDetails })
           You lost
         {/if}
       </div>
-      <button
-        on:click={() => dispatch('voteAgain')}
-        class="button flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-primary to-red-700 p-3 shadow-button-primary ring-2 ring-primary">
-        <div class="text-center text-xs">Vote again</div>
-      </button>
+      {#if showVoteAgainButton}
+        <button
+          on:click={() => dispatch('voteAgain')}
+          class="button flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-primary to-red-700 p-3 shadow-button-primary ring-2 ring-primary">
+          <div class="text-center text-xs">Vote again</div>
+        </button>
+      {/if}
     {:else if $timeLeft}
       <div class="flex flex-1 flex-col items-center justify-center gap-1">
         <div
