@@ -192,7 +192,7 @@ async function updateStats() {
 $: avatarUrl = getDefaultImageUrl(post.ouid)
 
 const endTime = getVoteEndTime(new Date(post.created_at), new Date())
-let timeLeft = getMsLeftForResult(endTime)
+let timeLeft = getMsLeftForResult(endTime, true)
 </script>
 
 <player-layout
