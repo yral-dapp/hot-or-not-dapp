@@ -110,7 +110,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
       })}>
       <div
         class="text-5xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-        {score}
+        {Math.round(score)}
       </div>
       <div class="text-sm drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
         Current scrore
