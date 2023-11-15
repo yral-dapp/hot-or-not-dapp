@@ -9,9 +9,7 @@ import userProfile from '$stores/userProfile'
 
 export let vote: VoteRecord
 
-const timeLeft = getMsLeftForResult(
-  getVoteEndTime(new Date(vote.result_at), new Date()),
-)
+const timeLeft = getMsLeftForResult(new Date(vote.result_at))
 </script>
 
 <a
@@ -40,20 +38,35 @@ const timeLeft = getMsLeftForResult(
           </span>
         </div>
         <div
-          class="mb-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-full
-          {vote.voteDirection === 'up' ? 'bg-green-500' : 'bg-red-500'}">
-          <Icon
-            name="arrow-up"
-            class="h-5 w-5  {vote.voteDirection === 'down'
-              ? 'rotate-180'
-              : ''}" />
+          class="relative pb-2 text-4xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+          {Math.round(vote.currentScore)}
+          <div
+            class="absolute -left-3 top-0 mb-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full
+            {vote.voteDirection === 'down' ? 'bg-red-500' : 'bg-green-500'}">
+            <Icon
+              name="arrow-up"
+              class="h-4 w-4 
+              {vote.voteDirection === 'down' ? 'rotate-180' : ''}" />
+          </div>
         </div>
       </div>
-      {#if $timeLeft}
+      {#if vote.status === 'final'}
+        <div
+          class="flex w-full items-center justify-center space-x-1 rounded-full py-2 text-xs font-bold text-white md:py-2
+          {vote.result?.status === 'won' ? 'bg-green-500' : 'bg-red-500'}">
+          {#if vote.result?.status === 'won'}
+            You won {vote.result?.won_amount
+              ? `${vote.result.won_amount} tokens`
+              : ''}
+          {:else}
+            You lost
+          {/if}
+        </div>
+      {:else if $timeLeft}
         <div
           class="flex w-full items-center justify-center space-x-1 rounded-full bg-orange-500 py-1 text-sm text-white md:py-2">
           <Icon name="stopwatch" class="h-5 w-5" />
-          <span>{$timeLeft}</span>
+          <span class:loading={$timeLeft === '...'}>{$timeLeft}</span>
         </div>
       {/if}
     </div>
