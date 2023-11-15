@@ -85,6 +85,7 @@ export type ShareRecord = {
 }
 
 export type VoteRecord = {
+  id: string
   uid: string
   videoId: string
   videoOid: number
