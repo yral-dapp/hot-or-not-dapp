@@ -18,8 +18,8 @@ const firebaseConfig = {
   measurementId: 'G-WLVV7NBKTG',
 }
 
-export const BACKEND_HOST = 'https://experiments-hon.uc.r.appspot.com/ud'
-// export const BACKEND_HOST = 'http://localhost:7887/ud'
+// export const BACKEND_HOST = 'https://experiments-hon.uc.r.appspot.com/ud'
+export const BACKEND_HOST = 'http://localhost:7887/ud'
 
 // Initialize Firebase
 let app: FirebaseApp
