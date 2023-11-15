@@ -19,6 +19,7 @@ import {
 import { getDb } from '$lib/db'
 import { doc, getDoc } from 'firebase/firestore'
 import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
+import type { Readable } from 'svelte/store'
 
 export let index: number
 export let post: UpDownPost
@@ -39,14 +40,20 @@ let watchProgress = {
 
 async function updateLikeDislikeStatus() {
   const db = getDb()
-  const likeDoc = (
-    await getDoc(doc(db, `ud-videos/${post.id}/likes/${$authState.userId}`))
-  ).data() as LikeRecord
-  const dislikeDoc = (
-    await getDoc(doc(db, `ud-videos/${post.id}/dislikes/${$authState.userId}`))
-  ).data() as DislikeRecord
-  likeDoc && (liked = likeDoc.liked)
-  dislikeDoc && (disliked = dislikeDoc.disliked)
+  if (showLikeButton) {
+    const likeDoc = (
+      await getDoc(doc(db, `ud-videos/${post.id}/likes/${$authState.userId}`))
+    ).data() as LikeRecord
+    likeDoc && (liked = likeDoc.liked)
+  }
+  if (showDislikeButton) {
+    const dislikeDoc = (
+      await getDoc(
+        doc(db, `ud-videos/${post.id}/dislikes/${$authState.userId}`),
+      )
+    ).data() as DislikeRecord
+    dislikeDoc && (disliked = dislikeDoc.disliked)
+  }
 }
 
 $: if ($authState.isLoggedIn) {
@@ -192,7 +199,10 @@ async function updateStats() {
 $: avatarUrl = getDefaultImageUrl(post.ouid)
 
 const endTime = getVoteEndTime(new Date(post.created_at), new Date())
-let timeLeft = getMsLeftForResult(endTime, true)
+let timeLeft: Readable<string>
+if (showTimer) {
+  timeLeft = getMsLeftForResult(endTime, true)
+}
 </script>
 
 <player-layout
