@@ -18,6 +18,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   where,
 } from 'firebase/firestore'
@@ -51,7 +52,11 @@ async function getTransactions() {
     const col = collection(db, 'transactions' as CollectionName)
     if ($authState.isLoggedIn) {
       const data = await getDocs(
-        query(col, where('uid', '==', $authState.userId)),
+        query(
+          col,
+          where('uid', '==', $authState.userId),
+          orderBy('created_at', 'desc'),
+        ),
       )
       data.forEach((doc) => {
         transactions.push(doc.data() as TransanctionRecord)
@@ -67,7 +72,7 @@ async function getTransactions() {
 onMount(() => getTransactions())
 </script>
 
-<div class="mt-20 flex h-full w-full flex-col overflow-hidden bg-black px-4">
+<div class="flex h-full w-full flex-col overflow-hidden bg-black px-4">
   {#if loading}
     <div class="mt-20 flex w-full flex-col items-center justify-center gap-2">
       <Icon name="loading" class="h-4 w-4 animate-spin-slow" />
@@ -77,7 +82,7 @@ onMount(() => getTransactions())
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
         <IconButton
-          href="/up-down"
+          on:click={() => history.back()}
           iconName="caret-left"
           iconClass="text-white w-6 h-6" />
         <div class="flex flex-col items-center py-4">
@@ -111,7 +116,9 @@ onMount(() => getTransactions())
         class="flex h-full flex-col divide-y-[1px] divide-white/10 overflow-hidden overflow-y-auto py-4">
         {#each transactions as transaction}
           <div class="flex items-center justify-between py-4">
-            <div class="flex items-center space-x-4">
+            <a
+              href="/up-down/votes/{transaction.voteId}"
+              class="flex w-full items-center space-x-4">
               <div
                 class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 p-2">
                 <div
@@ -128,10 +135,10 @@ onMount(() => getTransactions())
                   {/if}
                 </div>
                 <div class="flex items-center space-x-1 text-xs text-white/50">
-                  <span>{transaction.amount} Coins</span>
+                  <span>{transaction.amount} Tokens</span>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
         {/each}
       </div>
