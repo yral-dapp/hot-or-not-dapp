@@ -132,6 +132,8 @@ onMount(() => getTransactions())
                 <div class="text-sm">
                   {#if transaction.type === 'vote-placed'}
                     Placed vote on a video
+                  {:else if transaction.type === 'vote-result' && !transaction.debit}
+                    Won Up-Down vote
                   {/if}
                 </div>
                 <div class="flex items-center space-x-1 text-xs text-white/50">
