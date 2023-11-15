@@ -3,7 +3,7 @@ export type UpDownVoteDetails = {
   direction: VoteRecord['voteDirection']
   voteAmount: number
   status: VoteRecord['status']
-  created_at: number
+  result_at: number
   score: number
   result?: VoteRecord['result']
 }
@@ -81,7 +81,7 @@ async function loadVoteDetails() {
     voteDetails = {
       score: vote.currentScore,
       direction: vote.voteDirection,
-      created_at: vote.created_at,
+      result_at: vote.result_at,
       status: vote.status,
       result: vote.result,
       voteAmount: vote.voteAmount,
@@ -118,7 +118,7 @@ onDestroy(() => {
 <up-down class="pointer-events-none block h-full w-full">
   {#if voteDetails && !tutorialStep && !voteAgain}
     <UpDownVoteOutcome
-      {post}
+      showVoteAgainButton
       disabled={!post || loading}
       {voteDocId}
       {voteDetails}
@@ -126,6 +126,7 @@ onDestroy(() => {
   {:else}
     <UpDownVoteControls
       score={$postStore.score}
+      postCreatedAt={post.created_at}
       {tutorialStep}
       disabled={$authState.isLoggedIn ? !post || loading : false}
       on:votePlaced={({ detail }) => handlePlaceVote(detail)} />
