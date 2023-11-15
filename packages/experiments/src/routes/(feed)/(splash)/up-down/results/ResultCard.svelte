@@ -10,7 +10,7 @@ import userProfile from '$stores/userProfile'
 export let vote: VoteRecord
 
 const timeLeft = getMsLeftForResult(
-  getVoteEndTime(new Date(vote.created_at), new Date()),
+  getVoteEndTime(new Date(vote.result_at), new Date()),
 )
 </script>
 
