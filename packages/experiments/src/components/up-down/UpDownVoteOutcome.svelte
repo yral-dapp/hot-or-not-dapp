@@ -130,7 +130,7 @@ $: console.log({ voteDetails })
       </div>
       <button
         on:click={() => dispatch('voteAgain')}
-        class="button flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-primary to-red-700 p-3 shadow-button-primary ring-2 ring-primary">
+        class="button flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-primary to-red-700 p-3 shadow-button-primary ring-2 ring-primary">
         <div class="text-center text-xs">Vote again</div>
       </button>
     {:else if $timeLeft}

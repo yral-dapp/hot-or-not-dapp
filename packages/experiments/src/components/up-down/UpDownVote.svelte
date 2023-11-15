@@ -92,17 +92,22 @@ async function loadVoteDetails() {
 
 async function handlePlaceVote(vote: UpDownVoteDetails) {
   if (!post) return
-  const res = await placeVote(
-    {
-      videoId: post.id,
-      videoOid: post.oid,
-      videoUoid: post.ouid,
-      videoUid: post.video_uid,
-    },
-    vote.voteAmount,
-    vote.direction,
-  )
-  voteDetails = vote
+  try {
+    const res = await placeVote(
+      {
+        videoId: post.id,
+        videoOid: post.oid,
+        videoUoid: post.ouid,
+        videoUid: post.video_uid,
+      },
+      vote.voteAmount,
+      vote.direction,
+    )
+    voteDetails = vote
+  } catch (e) {
+    console.error('Error while placing vote', e)
+    loading = false
+  }
 }
 
 onDestroy(() => {
