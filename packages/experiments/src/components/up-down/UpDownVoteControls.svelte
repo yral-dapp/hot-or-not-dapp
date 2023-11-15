@@ -34,6 +34,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
 
   dispatch('votePlaced', {
     direction,
+    score,
     voteAmount,
     status: 'pending',
     created_at: Date.now(),
