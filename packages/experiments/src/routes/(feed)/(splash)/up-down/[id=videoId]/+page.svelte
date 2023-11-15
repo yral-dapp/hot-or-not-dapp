@@ -157,7 +157,7 @@ beforeNavigate(() => {
           There are no more videos to vote on
         </div>
         <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-          <UpDownVoteControls score={100} />
+          <UpDownVoteControls disabled score={100} />
         </div>
       </div>
     </SwiperSlide>
