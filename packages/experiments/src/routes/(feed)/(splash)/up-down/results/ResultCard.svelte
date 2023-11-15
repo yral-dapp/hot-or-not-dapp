@@ -13,7 +13,7 @@ const timeLeft = getMsLeftForResult(new Date(vote.result_at))
 </script>
 
 <a
-  href="/up-down/votes/{vote.videoUoid}@{vote.videoOid}"
+  href="/up-down/votes/{vote.id}"
   data-sveltekit-preload-code="eager"
   class="relative aspect-[3/5] w-full cursor-pointer overflow-hidden rounded-md bg-cover">
   <div
