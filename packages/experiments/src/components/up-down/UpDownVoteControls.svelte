@@ -4,8 +4,10 @@ import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { authState } from '$stores/auth'
 import c from 'clsx'
+import { getVoteEndTime } from '$lib/utils/countdown'
 
 export let score: number
+export let postCreatedAt: number | undefined = undefined
 export let disabled = false
 export let tutorialStep: number | undefined = undefined
 
@@ -37,7 +39,10 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
     score,
     voteAmount,
     status: 'pending',
-    created_at: Date.now(),
+    result_at: getVoteEndTime(
+      postCreatedAt ? new Date(postCreatedAt) : new Date(),
+      new Date(),
+    ).getTime(),
   })
 }
 </script>
