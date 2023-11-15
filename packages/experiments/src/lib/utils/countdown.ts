@@ -3,7 +3,7 @@ import { getTimeStringFromMs } from './timeLeft'
 
 const HOUR_IN_MS = 36_00_000
 
-export function getMsLeftForResult(endTime: Date) {
+export function getMsLeftForResult(endTime: Date, loop: boolean = false) {
   const now = new Date()
   let diff = endTime.getTime() - now.getTime()
 
@@ -20,9 +20,12 @@ export function getMsLeftForResult(endTime: Date) {
             diff - counter * 1000,
           )
           set(minutes + ':' + (seconds < 10 ? '0' : '') + seconds)
-        } else {
+        } else if (loop) {
           counter = 1
           diff = HOUR_IN_MS
+        } else {
+          clearInterval(interval)
+          set('...')
         }
       }
 
