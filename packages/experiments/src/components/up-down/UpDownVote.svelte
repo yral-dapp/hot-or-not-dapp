@@ -3,7 +3,8 @@ export type UpDownVoteDetails = {
   direction: VoteRecord['voteDirection']
   voteAmount: number
   status: VoteRecord['status']
-  created_at: number
+  result_at: number
+  score: number
   result?: VoteRecord['result']
 }
 </script>
@@ -23,6 +24,7 @@ import {
   onSnapshot,
   type Unsubscribe,
   limit,
+  orderBy,
 } from 'firebase/firestore'
 
 import UpDownVoteControls from './UpDownVoteControls.svelte'
@@ -34,14 +36,14 @@ export let post: UpDownPost
 export let tutorialStep: number | undefined = undefined
 
 let loading = true
+let voteDetails: UpDownVoteDetails | undefined = undefined
 let voteDocId: string | undefined = undefined
-let unsubscribePost: Unsubscribe | undefined = undefined
-let unsubscribeVote: Unsubscribe | undefined = undefined
+let unsubscribe: Unsubscribe | undefined = undefined
 let postStore = writable<UpDownPost>(post)
-let voteDetails = writable<UpDownVoteDetails | undefined>(undefined)
+let voteAgain = false
 
 $: if (post.id && !tutorialStep && $authState.isLoggedIn && $authState.userId) {
-  observeVote()
+  loadVoteDetails()
 }
 
 if (post.id && !tutorialStep) {
@@ -50,10 +52,10 @@ if (post.id && !tutorialStep) {
 
 async function observePost() {
   try {
-    if (unsubscribePost) return
+    if (unsubscribe) return
     const db = getDb()
-    const watchRef = doc(db, 'ud-videos' as CollectionName, post.id)
-    unsubscribePost = onSnapshot(watchRef, (doc) => {
+    const docRef = doc(db, 'ud-videos' as CollectionName, post.id)
+    unsubscribe = onSnapshot(docRef, (doc) => {
       $postStore = doc.data() as UpDownPost
     })
   } catch (e) {
@@ -61,79 +63,70 @@ async function observePost() {
   }
 }
 
-async function observeVote() {
-  if (unsubscribeVote) return
+async function loadVoteDetails() {
+  if (voteDetails) return
   const db = getDb()
   const docRef = await getDocs(
     query(
-      collection(db, 'votes' satisfies CollectionName),
+      collection(db, 'votes'),
       where('videoId', '==', post.id),
       where('uid', '==', $authState.userId),
+      orderBy('created_at', 'desc'),
       limit(1),
     ),
   )
   if (!docRef.empty) {
     const vote = docRef.docs[0].data() as VoteRecord
     voteDocId = docRef.docs[0].id
-    console.log({ voteDocId })
-    $voteDetails = {
+    voteDetails = {
+      score: vote.currentScore,
       direction: vote.voteDirection,
-      created_at: vote.created_at,
+      result_at: vote.result_at,
       status: vote.status,
       result: vote.result,
       voteAmount: vote.voteAmount,
     }
-
-    const watchRef = doc(
-      db,
-      'votes' satisfies CollectionName,
-      docRef.docs[0].id,
-    )
-    unsubscribeVote = onSnapshot(watchRef, (doc) => {
-      const d = doc.data() as VoteRecord
-      $voteDetails = {
-        direction: d.voteDirection,
-        created_at: d.created_at,
-        status: d.status,
-        result: d.result,
-        voteAmount: d.voteAmount,
-      }
-    })
   }
   loading = false
 }
 
 async function handlePlaceVote(vote: UpDownVoteDetails) {
   if (!post) return
-  const res = await placeVote(
-    {
-      videoId: post.id,
-      videoOid: post.oid,
-      videoUoid: post.ouid,
-      videoUid: post.video_uid,
-    },
-    vote.voteAmount,
-    vote.direction,
-  )
-  $voteDetails = vote
+  try {
+    const res = await placeVote(
+      {
+        videoId: post.id,
+        videoOid: post.oid,
+        videoUoid: post.ouid,
+        videoUid: post.video_uid,
+      },
+      vote.voteAmount,
+      vote.direction,
+    )
+    voteDetails = vote
+  } catch (e) {
+    console.error('Error while placing vote', e)
+    loading = false
+  }
 }
 
 onDestroy(() => {
-  unsubscribePost?.()
-  unsubscribeVote?.()
+  unsubscribe?.()
 })
 </script>
 
 <up-down class="pointer-events-none block h-full w-full">
-  {#if $voteDetails && !tutorialStep}
+  {#if voteDetails && !tutorialStep && !voteAgain}
     <UpDownVoteOutcome
-      {post}
+      showVoteAgainButton
       disabled={!post || loading}
       {voteDocId}
-      voteDetails={$voteDetails} />
+      {voteDetails}
+      on:voteAgain={() => (voteAgain = true)} />
   {:else}
     <UpDownVoteControls
       score={$postStore.score}
+      postCreatedAt={post.created_at}
       {tutorialStep}
       disabled={$authState.isLoggedIn ? !post || loading : false}
       on:votePlaced={({ detail }) => handlePlaceVote(detail)} />

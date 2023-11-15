@@ -39,7 +39,7 @@ export function getMsLeftForResult(endTime: Date, loop: boolean = false) {
       }
     })
   } else {
-    return readable('')
+    return readable('...')
   }
 }
 

@@ -3,6 +3,12 @@ export type CollectionName =
   | 'profile'
   | 'transactions'
   | 'votes'
+  | 'views'
+
+export type UpDownSubCollections =
+  | 'likes'
+  | 'dislikes'
+  | 'shares'
   | 'view-updates'
 
 export type UpDownPost = {
@@ -79,6 +85,7 @@ export type ShareRecord = {
 }
 
 export type VoteRecord = {
+  id: string
   uid: string
   videoId: string
   videoOid: number
@@ -94,6 +101,7 @@ export type VoteRecord = {
   status: 'pending' | 'final'
   result?: {
     status: 'won' | 'lost' | 'tie'
+    won_amount?: number
     published_at: number
     winning_transaction_id?: string
   }
@@ -111,6 +119,38 @@ export type TransanctionRecord = {
   amount: number
   created_at: number
   anon: boolean
+}
+
+export type ViewUpdateRecord = {
+  uid: string
+  videoId: string
+  videoOid: number
+  videoUoid: string
+  videoUid: string
+  created_at: number
+  anon: boolean
+  secondsFromStart: number
+  minutesFromStart: number
+  like: number
+  dislike: number
+  share: number
+  fullyWatched: number
+  videoWatchedPercentage: number
+  thresholdView: number
+  minutePassedAge: number
+  viewsPerMinute: number
+  change: {
+    like: number
+    dislike: number
+    share: number
+    videoWatchedPercentage: number
+    thresholdView: number
+    fullyWatched: number
+    minutePassedAge: number
+    viewsPerMinute: number
+    totalChange: number
+    totalScore: number
+  }
 }
 
 export type VideoRef = {

@@ -4,8 +4,10 @@ import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { authState } from '$stores/auth'
 import c from 'clsx'
+import { getVoteEndTime } from '$lib/utils/countdown'
 
 export let score: number
+export let postCreatedAt: number | undefined = undefined
 export let disabled = false
 export let tutorialStep: number | undefined = undefined
 
@@ -34,16 +36,20 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
 
   dispatch('votePlaced', {
     direction,
+    score,
     voteAmount,
     status: 'pending',
-    created_at: Date.now(),
+    result_at: getVoteEndTime(
+      postCreatedAt ? new Date(postCreatedAt) : new Date(),
+      new Date(),
+    ).getTime(),
   })
 }
 </script>
 
 <div
   class={c(
-    'flex flex-col items-center justify-center gap-3 pt-4 transition-opacity',
+    'fade-in flex flex-col items-center justify-center gap-3 pt-4 transition-opacity',
     disabled || tutorialStep ? 'pointer-events-none' : 'pointer-events-auto',
     {
       'opacity-50': disabled,
