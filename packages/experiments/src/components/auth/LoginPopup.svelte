@@ -16,6 +16,8 @@ let error = ''
 function signIn() {
   $loading = true
   const provider = new GoogleAuthProvider()
+  provider.addScope('profile')
+  provider.addScope('email')
 
   const app = getApp()
   const auth = getAuth(app)
