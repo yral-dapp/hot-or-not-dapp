@@ -43,7 +43,7 @@ let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
       </div>
     {:else if step == 2}
       <div
-        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
           class="flex w-full flex-col items-center justify-center space-y-6 text-center">
           <div class="text-3xl font-bold">Current Score Overview</div>
@@ -90,7 +90,7 @@ let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
       </div>
     {:else if step == 4}
       <div
-        class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
+        class="relative flex h-full w-full max-w-md flex-col items-center justify-center space-y-8">
         <div
           class="flex w-full flex-col items-center justify-center space-y-6 text-center">
           <div class="text-3xl font-bold">Cast your Vote</div>
@@ -103,7 +103,7 @@ let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
           <Icon name="arrow-long-down" class="h-52 w-8" />
         </div>
         <div
-          style="transform: scaleX(-1);"
+          style="transform: scaleX(-1)"
           class="absolute bottom-24 right-10 z-[10]">
           <Icon name="arrow-long-down" class="h-56 w-8" />
         </div>
@@ -131,7 +131,7 @@ let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
         </div>
 
         <div
-          style="transform: scaleX(-1);"
+          style="transform: scaleX(-1)"
           class="absolute bottom-60 right-0 z-[10]">
           <Icon name="arrow-long-down" class="h-56 w-8" />
         </div>

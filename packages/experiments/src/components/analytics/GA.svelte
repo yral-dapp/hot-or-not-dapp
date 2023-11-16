@@ -12,7 +12,7 @@ export const registerPageView = (url: URL = new URL(window.location.href)) => {
 
 export const updateConfig = (params?: Gtag.CustomParams) => {
   if (window.gtag) {
-    window.gtag('config', import.meta.env.VITE_GA_TRACKING_ID, {
+    window.gtag('config', 'G-PPE5XD2VKV', {
       ...params,
       ...(debugMode && { debug_mode: true }),
     })

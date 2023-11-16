@@ -72,7 +72,7 @@ beforeNavigate(() => {
       </div>
     </div>
   {:else}
-    <PlayerLayout bind:post index={0} source="ud-feed" showShareButton>
+    <PlayerLayout bind:post index={0} showShareButton>
       <VideoPlayer
         on:loaded={() => hideSplashScreen(500)}
         index={0}

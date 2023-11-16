@@ -43,7 +43,6 @@ async function fetchNextVideos() {
 
   loading = true
   const res = await getVideos()
-  console.log({ res })
   if (!res.ok || !res.videos) {
     return
   }
@@ -99,7 +98,6 @@ beforeNavigate(() => {
         <PlayerLayout
           bind:post
           index={i}
-          source="ud-feed"
           showLikeButton
           showDislikeButton
           showTimer

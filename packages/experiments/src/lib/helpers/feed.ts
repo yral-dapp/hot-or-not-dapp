@@ -9,9 +9,8 @@ import {
 import type { CollectionName, UpDownPost } from '../db/db.types'
 import { getDb } from '$lib/db'
 
-export async function getVideos(lastRef?: QueryDocumentSnapshot) {
+export async function getVideos(_lastRef?: QueryDocumentSnapshot) {
   try {
-    console.log({ lastRef })
     const videos: UpDownPost[] = []
     const db = getDb()
     const q = query(

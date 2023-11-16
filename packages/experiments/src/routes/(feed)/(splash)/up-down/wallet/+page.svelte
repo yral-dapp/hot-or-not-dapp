@@ -158,14 +158,15 @@ onMount(() => getTransactions())
           href="/up-down"
           iconName="caret-left"
           iconClass="text-white w-6 h-6" />
-        <div class="flex flex-col items-center py-4">
+        <div class="flex flex-col items-start py-4">
           <div class="self-start text-xs">Welcome!</div>
-          <div class="text-lg font-bold text-white">
-            {generateRandomName('name', $anonUser.id)}
-          </div>
+          <div class="text-lg font-bold text-white">User</div>
         </div>
       </div>
-      <Avatar src={getDefaultImageUrl($anonUser.id)} class="h-10 w-10" />
+      <div
+        class="flex h-10 w-10 items-center justify-center rounded-full ring-2 ring-white">
+        <Icon name="user-single" class="h-6 w-6 text-white/50" />
+      </div>
     </div>
     <div class="mt-8 flex flex-col items-center gap-4">
       <div>Login to view your wallet</div>

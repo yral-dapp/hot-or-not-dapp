@@ -25,6 +25,7 @@ let GA: any
 async function initializeGA() {
   try {
     GA = (await import('$components/analytics/GA.svelte')).default
+    console.info('loaded GA')
   } catch (_) {
     Log('warn', 'Could not load GA')
   }
