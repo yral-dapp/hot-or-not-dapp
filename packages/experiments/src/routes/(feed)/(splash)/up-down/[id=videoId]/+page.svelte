@@ -16,6 +16,7 @@ import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
 import type { UpDownPost } from '$lib/db/db.types'
 import { getVideos } from '$lib/helpers/feed'
+import type { DocumentReference } from 'firebase/firestore'
 
 const fetchWhenVideosLeft = 5
 const keepVideosLoadedCount: number = 3
@@ -25,15 +26,14 @@ let currentVideoIndex = 0
 let lastWatchedVideoIndex = -1
 let noMoreVideos = false
 let loading = false
+let lastLoadedVideoRef: DocumentReference | undefined = undefined
 
-let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
-let errorCount = 0
 let showError = false
 
 async function fetchNextVideos() {
-  console.log('called fetchNextVideos')
+  console.log('f1')
   if (noMoreVideos) {
-    console.log('No more videos to load')
+    console.log('r1')
     return
   }
 
@@ -41,13 +41,17 @@ async function fetchNextVideos() {
     return
   }
 
+  console.log('f2')
+
   loading = true
-  const res = await getVideos()
+  const res = await getVideos(lastLoadedVideoRef)
   if (!res.ok || !res.videos) {
+    console.log('r2')
     return
   }
 
   videos = joinArrayUniquely(videos, res.videos)
+  lastLoadedVideoRef = res.lastRef
   noMoreVideos = !res.more
   loading = false
 }

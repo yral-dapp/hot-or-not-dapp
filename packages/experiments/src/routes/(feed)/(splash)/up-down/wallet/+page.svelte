@@ -13,6 +13,8 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { anonUser, authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
+import { getApp } from 'firebase/app'
+import { getAuth, signOut } from 'firebase/auth'
 import {
   collection,
   doc,
@@ -69,6 +71,15 @@ async function getTransactions() {
   }
 }
 
+async function logoutUser() {
+  const app = getApp()
+  const auth = getAuth(app)
+  await signOut(auth)
+  $authState.isLoggedIn = false
+  $authState.userId = $anonUser.id
+  $authState.accessToken = undefined
+}
+
 onMount(() => getTransactions())
 </script>
 
@@ -87,7 +98,12 @@ onMount(() => getTransactions())
           iconClass="text-white w-6 h-6" />
         <div class="flex flex-col items-center py-4">
           <div class="self-start text-xs">Welcome!</div>
-          <div class="text-lg font-bold text-white">{$userProfile.name}</div>
+          <div class="flex space-x-2">
+            <div class="text-lg font-bold text-white">{$userProfile.name}</div>
+            <button class="pt-1 text-xs underline" on:click={logoutUser}>
+              Logout
+            </button>
+          </div>
         </div>
       </div>
       <Avatar
