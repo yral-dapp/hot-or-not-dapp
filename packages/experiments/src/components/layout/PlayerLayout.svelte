@@ -6,7 +6,6 @@ import { registerEvent } from '$components/analytics/GA.svelte'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
-import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import { debounce } from 'throttle-debounce'
 import type { DislikeRecord, LikeRecord, UpDownPost } from '$lib/db/db.types'
@@ -28,7 +27,6 @@ export let showLikeButton = false
 export let showTimer = false
 export let showDislikeButton = false
 export let unavailable = false
-export let source: 'ud-feed' | 'result'
 
 let liked = false
 let disliked = false
@@ -74,19 +72,23 @@ async function handleShare() {
       text: `Check out this video at UpDown! \n${post.description}`,
       url: `https://experiments.hotornot.wtf/up-down/${post.ouid}@${post.oid}`,
     })
-  } catch (_) {}
-  registerEvent('share_video', {
-    source,
-    userId: $authState.userId,
-    video_publisher_id: post.ouid,
-    video_id: post.oid,
-  })
-  await shareVideo({
-    videoId: post.id,
-    videoOid: post.oid,
-    videoUoid: post.ouid,
-    videoUid: post.video_uid,
-  })
+  } catch (e) {
+    console.warn("Can't share", e)
+  } finally {
+    await shareVideo({
+      videoId: post.id,
+      videoOid: post.oid,
+      videoUoid: post.ouid,
+      videoUid: post.video_uid,
+    })
+
+    registerEvent('share_video', {
+      userId: $authState.userId,
+      video_id: post.id,
+      share_count: post.share_count,
+      anon: !!$authState.isLoggedIn,
+    })
+  }
 }
 
 function recordView(percentageWatched: number) {
@@ -121,15 +123,12 @@ async function handleLike() {
   //   like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
   // })
 
-  // registerEvent('like_video', {
-  //   source,
-  //   userId: $userProfile.principal_id,
-  //   video_publisher_id:
-  //     post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
-  //   video_publisher_canister_id: post.publisher_canister_id,
-  //   video_id: post.id,
-  //   likes: post.like_count,
-  // })
+  registerEvent('like_video', {
+    userId: $authState.userId,
+    video_id: post.id,
+    likes: post.likes_count,
+    anon: !!$authState.isLoggedIn,
+  })
 }
 
 async function handleDislike() {
@@ -149,15 +148,12 @@ async function handleDislike() {
   //   like_count: post.like_count + BigInt(post.liked_by_me ? -1 : 1),
   // })
 
-  // registerEvent('like_video', {
-  //   source,
-  //   userId: $userProfile.principal_id,
-  //   video_publisher_id:
-  //     post.created_by_unique_user_name[0] ?? post.created_by_user_principal_id,
-  //   video_publisher_canister_id: post.publisher_canister_id,
-  //   video_id: post.id,
-  //   likes: post.like_count,
-  // })
+  registerEvent('dislike_video', {
+    userId: $authState.userId,
+    video_id: post.id,
+    likes: post.likes_count,
+    anon: !!$authState.isLoggedIn,
+  })
 }
 
 async function updateStats() {
@@ -178,13 +174,6 @@ async function updateStats() {
 
   if (!watchCount) return
 
-  registerEvent('view_video', {
-    source,
-    id: post.oid,
-    i: index,
-    watch_count: watchCount,
-  })
-
   await viewVideo(
     {
       videoId: post.id,
@@ -194,6 +183,13 @@ async function updateStats() {
     },
     watchCount,
   )
+
+  registerEvent('view_video', {
+    userId: $authState.userId,
+    video_id: post.id,
+    view_count: post.views_count,
+    anon: !!$authState.isLoggedIn,
+  })
 }
 
 $: avatarUrl = getDefaultImageUrl(post.ouid)
