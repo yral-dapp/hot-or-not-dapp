@@ -5,8 +5,8 @@ import {
   limit,
   orderBy,
   Query,
-  startAt,
   DocumentReference,
+  startAfter,
 } from 'firebase/firestore'
 import type { CollectionName, UpDownPost } from '../db/db.types'
 import { getDb } from '$lib/db'
@@ -20,14 +20,14 @@ export async function getVideos(_lastRef?: DocumentReference) {
       q = query(
         collection(db, 'ud-videos' as CollectionName),
         orderBy('created_at', 'desc'),
-        limit(5),
-        startAt(_lastRef),
+        limit(50),
+        startAfter(_lastRef),
       )
     } else {
       q = query(
         collection(db, 'ud-videos' as CollectionName),
         orderBy('created_at', 'desc'),
-        limit(5),
+        limit(50),
       )
     }
     const snapshot = await getDocs(q)
