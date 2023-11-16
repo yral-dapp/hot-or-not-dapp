@@ -4,6 +4,7 @@ import {
   getDocs,
   limit,
   QueryDocumentSnapshot,
+  orderBy,
 } from 'firebase/firestore'
 import type { CollectionName, UpDownPost } from '../db/db.types'
 import { getDb } from '$lib/db'
@@ -13,7 +14,11 @@ export async function getVideos(lastRef?: QueryDocumentSnapshot) {
     console.log({ lastRef })
     const videos: UpDownPost[] = []
     const db = getDb()
-    const q = query(collection(db, 'ud-videos' as CollectionName), limit(30))
+    const q = query(
+      collection(db, 'ud-videos' as CollectionName),
+      orderBy('created_at', 'desc'),
+      limit(50),
+    )
     const snapshot = await getDocs(q)
     if (snapshot.empty) {
       return { ok: true, videos, more: false }
