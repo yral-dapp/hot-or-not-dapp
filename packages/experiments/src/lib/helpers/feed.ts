@@ -3,21 +3,33 @@ import {
   collection,
   getDocs,
   limit,
-  QueryDocumentSnapshot,
   orderBy,
+  Query,
+  startAt,
+  DocumentReference,
 } from 'firebase/firestore'
 import type { CollectionName, UpDownPost } from '../db/db.types'
 import { getDb } from '$lib/db'
 
-export async function getVideos(_lastRef?: QueryDocumentSnapshot) {
+export async function getVideos(_lastRef?: DocumentReference) {
   try {
     const videos: UpDownPost[] = []
     const db = getDb()
-    const q = query(
-      collection(db, 'ud-videos' as CollectionName),
-      orderBy('created_at', 'desc'),
-      limit(50),
-    )
+    let q: Query
+    if (_lastRef) {
+      q = query(
+        collection(db, 'ud-videos' as CollectionName),
+        orderBy('created_at', 'desc'),
+        limit(5),
+        startAt(_lastRef),
+      )
+    } else {
+      q = query(
+        collection(db, 'ud-videos' as CollectionName),
+        orderBy('created_at', 'desc'),
+        limit(5),
+      )
+    }
     const snapshot = await getDocs(q)
     if (snapshot.empty) {
       return { ok: true, videos, more: false }
@@ -28,7 +40,7 @@ export async function getVideos(_lastRef?: QueryDocumentSnapshot) {
     return {
       ok: true,
       videos,
-      lastRef: snapshot.docs[snapshot.docs.length - 1],
+      lastRef: snapshot.docs[snapshot.docs.length - 1].ref,
       more: true,
     }
   } catch (e) {
