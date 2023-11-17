@@ -21,17 +21,19 @@ let loggedIn = false
 
       <Button on:click={() => window.close()}>Take me back!</Button>
     {:else}
-      <div class="flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center space-y-4">
         <div class="text-3xl font-bold">Success!</div>
         <div>You are reaunticating your profile to connect to our dapp</div>
         <div>Make sure this is your profile for the same:</div>
-        <img
-          alt="profile"
-          class="h-24 w-24 rounded-full object-cover"
-          src={$userProfile.profile_picture_url} />
-        <div class="flex flex-col space-y-1">
-          <div class="text-xl">
-            {$userProfile.display_name}
+        <div class="flex items-center space-x-2 py-4">
+          <img
+            alt="profile"
+            class="h-12 w-12 rounded-full object-cover"
+            src={$userProfile.profile_picture_url} />
+          <div class="flex flex-col space-y-1">
+            <div class="text-xl">
+              {$userProfile.display_name}
+            </div>
           </div>
         </div>
 
