@@ -19,6 +19,7 @@ import { getDb } from '$lib/db'
 import { doc, getDoc } from 'firebase/firestore'
 import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
 import type { Readable } from 'svelte/store'
+import { updatePostInWatchHistory } from '$lib/idb/history'
 
 export let index: number
 export let post: UpDownPost
@@ -110,6 +111,9 @@ async function handleLike() {
   if (!isLoggedIn()) return
 
   liked = !liked
+  if (liked && disliked) {
+    disliked = false
+  }
 
   await toggleLike({
     videoId: post.id,
@@ -135,6 +139,10 @@ async function handleDislike() {
   if (!isLoggedIn()) return
 
   disliked = !disliked
+
+  if (liked && disliked) {
+    liked = false
+  }
 
   await toggleDislike({
     videoId: post.id,
@@ -164,7 +172,7 @@ async function updateStats() {
     return
   }
 
-  // updatePostInWatchHistory(watchHistoryDb, post)
+  updatePostInWatchHistory('up-down-watch-history', post)
 
   const watchCount =
     (watchProgress?.totalCount || 0) +

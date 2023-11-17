@@ -22,8 +22,8 @@ export const load: PageLoad = async () => {
   }
   const data = res.docs[0].data() as UpDownPost
 
-  if (data?.ouid && data?.oid) {
-    throw redirect(307, `/up-down/${data.ouid}@${data.oid}`)
+  if (data) {
+    throw redirect(307, `/up-down/${res.docs[0].id}`)
   } else {
     throw redirect(307, '/up-down/no-videos')
   }

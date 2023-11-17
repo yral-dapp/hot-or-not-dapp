@@ -10,6 +10,6 @@ export const playerState = writable<{
   initialized: false,
   muted: true,
   visible: true,
-  selectedCoins: 10,
+  selectedCoins: 50,
   currentFeedUrl: '',
 })

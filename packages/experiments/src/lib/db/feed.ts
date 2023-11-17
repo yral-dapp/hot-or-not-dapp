@@ -8,8 +8,9 @@ import {
   DocumentReference,
   startAfter,
 } from 'firebase/firestore'
-import type { CollectionName, UpDownPost } from '../db/db.types'
+import type { CollectionName, UpDownPost } from './db.types'
 import { getDb } from '$lib/db'
+import type { IDBStores } from '$lib/idb/idb'
 
 export async function getVideos(_lastRef?: DocumentReference) {
   try {
@@ -34,9 +35,18 @@ export async function getVideos(_lastRef?: DocumentReference) {
     if (snapshot.empty) {
       return { ok: true, videos, more: false }
     }
-    snapshot.forEach((doc) =>
-      videos.push({ ...doc.data(), id: doc.id } as UpDownPost),
+
+    const alreadyWatchedPosts = await getAlreadyWatchedPostsIds(
+      'up-down-watch-history',
     )
+
+    console.log({ alreadyWatchedPosts })
+
+    snapshot.forEach((doc) => {
+      if (!alreadyWatchedPosts.includes(doc.id)) {
+        videos.push({ ...doc.data(), id: doc.id } as UpDownPost)
+      }
+    })
     return {
       ok: true,
       videos,
@@ -46,5 +56,23 @@ export async function getVideos(_lastRef?: DocumentReference) {
   } catch (e) {
     console.log('Error fetching videos', e)
     return { ok: false }
+  }
+}
+
+async function getAlreadyWatchedPostsIds(
+  dbStore: IDBStores,
+): Promise<string[]> {
+  try {
+    const idb = (await import('$lib/idb')).idb
+    const keys = (await idb.keys(dbStore)) as string[]
+    if (!keys?.length) return []
+    return keys
+  } catch (e) {
+    console.error('Error while accessing IDB', {
+      error: e,
+      from: 'getAlreadyWatchedPostsIds',
+      type: 'idb',
+    })
+    return []
   }
 }

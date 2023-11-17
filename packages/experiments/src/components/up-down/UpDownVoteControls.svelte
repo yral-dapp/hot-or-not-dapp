@@ -5,6 +5,7 @@ import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { authState } from '$stores/auth'
 import c from 'clsx'
 import { getVoteEndTime } from '$lib/utils/countdown'
+import { playerState } from '$stores/playerState'
 
 export let score: number
 export let postCreatedAt: number | undefined = undefined
@@ -15,7 +16,6 @@ const dispatch = createEventDispatcher<{
   votePlaced: UpDownVoteDetails
 }>()
 
-let selectedAmount = 50
 let vote: {
   direction?: 'up' | 'down'
   loading: boolean
@@ -64,24 +64,24 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
     )}>
     <button
       disabled={vote.loading || !!tutorialStep}
-      on:click={(e) => (selectedAmount = 10)}
-      class:bg-primary={selectedAmount === 10}
+      on:click={(e) => ($playerState.selectedCoins = 10)}
+      class:bg-primary={$playerState.selectedCoins === 10}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-token" class="h-4 w-4" />
       <div class="whitespace-nowrap text-xs">10 Tokens</div>
     </button>
     <button
       disabled={vote.loading || !!tutorialStep}
-      on:click={() => (selectedAmount = 50)}
-      class:bg-primary={selectedAmount === 50}
+      on:click={() => ($playerState.selectedCoins = 50)}
+      class:bg-primary={$playerState.selectedCoins === 50}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-token" class="h-4 w-4" />
       <div class="whitespace-nowrap text-xs">50 Tokens</div>
     </button>
     <button
       disabled={vote.loading || !!tutorialStep}
-      on:click={() => (selectedAmount = 100)}
-      class:bg-primary={selectedAmount === 100}
+      on:click={() => ($playerState.selectedCoins = 100)}
+      class:bg-primary={$playerState.selectedCoins === 100}
       class="flex flex-nowrap items-center gap-1 rounded-lg p-3">
       <Icon name="coin-token" class="h-4 w-4" />
       <div class="whitespace-nowrap text-xs">100 Tokens</div>
@@ -90,7 +90,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
   <div class="flex items-center justify-between gap-4 px-4">
     <button
       disabled={vote.loading || !!tutorialStep}
-      on:click={() => placeVote('down', selectedAmount)}
+      on:click={() => placeVote('down', $playerState.selectedCoins)}
       class={c(
         'flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-red-500',
         {
@@ -124,7 +124,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
     </div>
     <button
       disabled={vote.loading || !!tutorialStep}
-      on:click={() => placeVote('up', selectedAmount)}
+      on:click={() => placeVote('up', $playerState.selectedCoins)}
       class={c(
         'flex w-24 flex-col items-center justify-center gap-1 self-stretch rounded-md bg-green-500 py-3',
         {
