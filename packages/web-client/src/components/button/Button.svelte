@@ -5,6 +5,7 @@ export let type: 'primary' | 'secondary' = 'primary'
 export let disabled = false
 export let href = ''
 export let preload = false
+export let target: string | undefined = undefined
 export { exportClass as class }
 let exportClass: any = ''
 
@@ -24,11 +25,11 @@ $: classes = c(
 </script>
 
 {#if href && !preload}
-  <a {href} class={classes}>
+  <a {target} {href} class={classes}>
     <slot />
   </a>
 {:else if href && preload}
-  <a data-sveltekit-preload-data="tap" {href} class={classes}>
+  <a {target} data-sveltekit-preload-data="tap" {href} class={classes}>
     <slot />
   </a>
 {:else}
