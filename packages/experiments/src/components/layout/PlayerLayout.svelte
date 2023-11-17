@@ -110,6 +110,9 @@ async function handleLike() {
   if (!isLoggedIn()) return
 
   liked = !liked
+  if (liked && disliked) {
+    disliked = false
+  }
 
   await toggleLike({
     videoId: post.id,
@@ -135,6 +138,10 @@ async function handleDislike() {
   if (!isLoggedIn()) return
 
   disliked = !disliked
+
+  if (liked && disliked) {
+    liked = false
+  }
 
   await toggleDislike({
     videoId: post.id,
