@@ -1,8 +1,7 @@
-import type { IDBStores } from '$lib/idb/idb'
-import Log from '$lib/utils/Log'
-import type { UpDownPost } from '../db/db.types'
+import type { UpDownPost } from '$lib/db/db.types'
+import type { IDBStores } from './idb'
 
-export interface UpDownPostHistory extends UpDownPost {
+export type UpDownPostHistory = UpDownPost & {
   watched_at: number
 }
 
@@ -19,12 +18,11 @@ export async function updatePostInWatchHistory(
   }
   try {
     const idb = (await import('$lib/idb')).idb
-
-    await idb.set(store, post.ouid + '@' + post.oid, postHistory)
+    await idb.set(store, post.id, postHistory)
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    console.error('Error while accessing IDB', {
       error: e,
-      from: 'feed.updatePostInWatchHistory',
+      from: 'updatePostInWatchHistory',
       type: 'idb',
     })
   }
