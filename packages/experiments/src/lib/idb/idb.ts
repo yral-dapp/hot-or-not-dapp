@@ -3,28 +3,10 @@ import Log from '../utils/Log'
 
 export type IDBStores = 'up-down-watch-history'
 
-const dbPromise = openDB('keyval-store', 7, {
+const dbPromise = openDB('keyval-store', 8, {
   upgrade(db) {
-    if (!db.objectStoreNames.contains('keyval')) {
-      db.createObjectStore('keyval')
-    }
-    if (!db.objectStoreNames.contains('canisters')) {
-      db.createObjectStore('canisters')
-    }
-    if (!db.objectStoreNames.contains('watch')) {
-      db.createObjectStore('watch')
-    }
-    if (!db.objectStoreNames.contains('watch-hon')) {
-      db.createObjectStore('watch-hon')
-    }
-    if (!db.objectStoreNames.contains('bets')) {
-      db.createObjectStore('bets')
-    }
-    if (!db.objectStoreNames.contains('wallet')) {
-      db.createObjectStore('wallet')
-    }
-    if (!db.objectStoreNames.contains('reported')) {
-      db.createObjectStore('reported')
+    if (!db.objectStoreNames.contains('up-down-watch-history')) {
+      db.createObjectStore('up-down-watch-history')
     }
   },
 }).catch((e) => {
