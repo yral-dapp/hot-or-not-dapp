@@ -9,10 +9,9 @@ import { getDb } from '$lib/db'
 import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
 import { playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/popups'
-import { doc, getDoc, onSnapshot, type Unsubscribe } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import Hls from 'hls.js/dist/hls.min.js'
 import { onMount } from 'svelte'
-import 'swiper/css'
 
 let loading = true
 let voteDetails: UpDownVoteDetails | undefined = undefined
@@ -72,7 +71,7 @@ beforeNavigate(() => {
       </div>
     </div>
   {:else}
-    <PlayerLayout bind:post index={0} showShareButton>
+    <PlayerLayout show bind:post index={0} showShareButton>
       <VideoPlayer
         on:loaded={() => hideSplashScreen(500)}
         index={0}
