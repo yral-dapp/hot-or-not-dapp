@@ -5,7 +5,7 @@ export function joinArrayUniquely(
   b: UpDownPost[],
 ): UpDownPost[] {
   b.forEach((o) => {
-    const duplicates = a.findIndex((v) => v.oid === o.oid && v.ouid === o.ouid)
+    const duplicates = a.findIndex((p) => p.id === o.id)
     if (duplicates < 0) {
       a.push(o)
     }
