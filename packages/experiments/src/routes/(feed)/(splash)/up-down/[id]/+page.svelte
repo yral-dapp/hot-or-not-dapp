@@ -8,25 +8,26 @@ import { joinArrayUniquely } from '$lib/utils/video'
 import { playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/popups'
 import Hls from 'hls.js/dist/hls.min.js'
-import { onMount } from 'svelte'
+import { onMount, tick } from 'svelte'
 import 'swiper/css'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
 import type { UpDownPost } from '$lib/db/db.types'
 import { getVideos } from '$lib/db/feed'
-import type { DocumentReference } from 'firebase/firestore'
+import type { QueryDocumentSnapshot } from 'firebase/firestore'
+import PlayerRenderer from '$components/layout/PlayerRenderer.svelte'
+import { debounce } from 'throttle-debounce'
 
 const fetchWhenVideosLeft = 5
-const keepVideosLoadedCount: number = 3
+const keepVideosLoadedCount: number = 4
 
 let videos: UpDownPost[] = []
 let currentVideoIndex = 0
 let lastWatchedVideoIndex = -1
 let noMoreVideos = false
 let loading = false
-let lastLoadedVideoRef: DocumentReference | undefined = undefined
+let lastLoadedVideoRef: QueryDocumentSnapshot | undefined = undefined
 
 let showError = false
 
@@ -51,18 +52,18 @@ async function fetchNextVideos() {
   }
 
   videos = joinArrayUniquely(videos, res.videos)
+
   lastLoadedVideoRef = res.lastRef
   noMoreVideos = !res.more
   loading = false
 }
 
-async function handleChange(e: CustomEvent) {
+const handleChange = debounce(250, (newIndex: number) => {
   lastWatchedVideoIndex = currentVideoIndex
-  const newIndex = e.detail[0].realIndex
   currentVideoIndex = newIndex
   fetchNextVideos()
   updateURL(videos[currentVideoIndex])
-}
+})
 
 async function handleUnavailableVideo(index: number) {
   videos.splice(index, 1)
@@ -81,53 +82,53 @@ beforeNavigate(() => {
   $playerState.visible = false
   $playerState.muted = true
 })
+
+// $: console.log({ videos })
+// $: console.log({ currentVideoIndex })
 </script>
 
 <svelte:head>
   <title>Up Down | Hot or Not</title>
 </svelte:head>
 
-<Swiper
-  direction={'vertical'}
-  observer
-  cssMode
-  slidesPerView={1}
-  on:slideChange={handleChange}
-  spaceBetween={300}
-  class="h-full w-full">
-  {#each videos as post, i (i)}
-    <SwiperSlide
-      class="flex h-full w-full snap-always items-center justify-center">
-      {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
-        <PlayerLayout
-          bind:post
-          index={i}
-          showLikeButton
-          showDislikeButton
-          showTimer
-          showShareButton
-          let:recordView
-          let:updateStats>
-          <VideoPlayer
-            on:watchComplete={updateStats}
-            on:loaded={() => hideSplashScreen(500)}
-            on:watchedPercentage={({ detail }) => recordView(detail)}
-            on:videoUnavailable={() => handleUnavailableVideo(i)}
-            index={i}
-            playFormat="hls"
-            {Hls}
-            inView={i == currentVideoIndex && $playerState.visible}
-            uid={post.video_uid} />
+<div
+  class="hide-scrollbar relative flex h-full w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
+  {#each videos as post, index (post.id)}
+    <PlayerRenderer
+      {keepVideosLoadedCount}
+      {index}
+      activeIndex={currentVideoIndex}
+      let:show>
+      <PlayerLayout
+        bind:post
+        {index}
+        {show}
+        showLikeButton
+        showDislikeButton
+        showTimer
+        showShareButton
+        let:recordView
+        on:view={({ detail }) => handleChange(detail)}
+        let:updateStats>
+        <VideoPlayer
+          on:watchComplete={updateStats}
+          on:loaded={() => hideSplashScreen(500)}
+          on:watchedPercentage={({ detail }) => recordView(detail)}
+          on:videoUnavailable={() => handleUnavailableVideo(index)}
+          {index}
+          playFormat="hls"
+          {Hls}
+          inView={index == currentVideoIndex && $playerState.visible}
+          uid={post.video_uid} />
 
-          <svelte:fragment slot="controls">
-            <UpDownVote {post} />
-          </svelte:fragment>
-        </PlayerLayout>
-      {/if}
-    </SwiperSlide>
+        <svelte:fragment slot="controls">
+          <UpDownVote {post} />
+        </svelte:fragment>
+      </PlayerLayout>
+    </PlayerRenderer>
   {/each}
   {#if showError}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <div class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">
@@ -140,18 +141,18 @@ beforeNavigate(() => {
           Clear here to refresh
         </Button>
       </div>
-    </SwiperSlide>
+    </div>
   {/if}
   {#if loading}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
+    <div class="flex h-full w-full items-center justify-center">
       <div
         class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
         <div class="text-center text-lg font-bold">Loading</div>
       </div>
-    </SwiperSlide>
+    </div>
   {/if}
   {#if noMoreVideos}
-    <SwiperSlide class="relative h-full w-full items-center justify-center">
+    <div class="relative h-full w-full items-center justify-center">
       <div
         class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8">
         <Icon name="votes-graphics" class="w-56" />
@@ -162,6 +163,6 @@ beforeNavigate(() => {
           <UpDownVoteControls disabled score={100} />
         </div>
       </div>
-    </SwiperSlide>
+    </div>
   {/if}
-</Swiper>
+</div>
