@@ -3,7 +3,6 @@ import '../css/app.css'
 import { onMount } from 'svelte'
 import { authState } from '$stores/auth'
 import Log from '$lib/utils/Log'
-import { registerEvent } from '$components/analytics/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { page } from '$app/stores'
 import { deferredPrompt } from '$stores/deferredPrompt'
@@ -11,6 +10,7 @@ import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { initDb } from '$lib/db'
 import { browser } from '$app/environment'
 import LoginPopup from '$components/auth/LoginPopup.svelte'
+import { registerEvent } from '$components/analytics/GA.utils'
 
 function registerServiceWorker() {
   if (!browser) return
