@@ -1,4 +1,4 @@
-import { registerPageView } from '$components/analytics/GA.svelte'
+import { registerPageView } from '$components/analytics/GA.utils'
 import type { UpDownPost } from '$lib/db/db.types'
 import { playerState } from '$stores/playerState'
 
