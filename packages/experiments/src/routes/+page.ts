@@ -1,4 +1,4 @@
-export const ssr = true
+export const ssr = false
 
 import { loadFirstVideo } from './loadFirstVideo'
 
