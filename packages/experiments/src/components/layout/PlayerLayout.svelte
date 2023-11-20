@@ -150,7 +150,7 @@ onDestroy(unload)
       <img
         alt="background"
         class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-        src={getThumbnailUrl(post.video_uid)} />
+        src={getThumbnailUrl(post.video_uid, 80)} />
     {/if}
 
     <div
@@ -182,7 +182,7 @@ onDestroy(unload)
             <IconButton
               iconName={liked ? 'heart-fill-color' : 'heart-fill'}
               iconClass="h-8 w-8"
-              ariaLabel="Toggle like on this post"
+              ariaLabel="Like this post"
               on:click={(e) => {
                 e.stopImmediatePropagation()
                 handleLike()
@@ -192,7 +192,7 @@ onDestroy(unload)
             <IconButton
               iconName={disliked ? 'heart-broken-fill' : 'heart-broken'}
               iconClass="h-8 w-8"
-              ariaLabel="Toggle like on this post"
+              ariaLabel="Dislike this post"
               on:click={(e) => {
                 e.stopImmediatePropagation()
                 handleDislike()
@@ -201,6 +201,7 @@ onDestroy(unload)
           {#if showShareButton}
             <IconButton
               iconName="share-message"
+              ariaLabel="Share this button"
               iconClass="h-6 w-6 drop-shadow-md"
               on:click={(e) => {
                 e.stopImmediatePropagation()
