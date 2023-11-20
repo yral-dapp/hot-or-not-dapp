@@ -7,8 +7,7 @@ import { updateURL } from '$lib/utils/feedUrl'
 import { joinArrayUniquely } from '$lib/utils/video'
 import { playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/popups'
-import Hls from 'hls.js/dist/hls.min.js'
-import { onMount, tick } from 'svelte'
+import { onMount } from 'svelte'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
@@ -116,10 +115,8 @@ beforeNavigate(() => {
           on:videoUnavailable={() => handleUnavailableVideo(index)}
           {index}
           playFormat="hls"
-          {Hls}
           inView={index == currentVideoIndex && $playerState.visible}
           uid={post.video_uid} />
-
         <svelte:fragment slot="controls">
           <UpDownVote {post} />
         </svelte:fragment>

@@ -10,7 +10,6 @@ import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
 import { playerState } from '$stores/playerState'
 import { hideSplashScreen } from '$stores/popups'
 import { doc, getDoc } from 'firebase/firestore'
-import Hls from 'hls.js/dist/hls.min.js'
 import { onMount } from 'svelte'
 
 let loading = true
@@ -76,7 +75,6 @@ beforeNavigate(() => {
         on:loaded={() => hideSplashScreen(500)}
         index={0}
         playFormat="hls"
-        {Hls}
         inView
         uid={post.video_uid} />
       <svelte:fragment slot="controls">
