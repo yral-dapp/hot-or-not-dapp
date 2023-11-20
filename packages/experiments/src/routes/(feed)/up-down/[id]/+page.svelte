@@ -6,7 +6,6 @@ import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { updateURL } from '$lib/utils/feedUrl'
 import { joinArrayUniquely } from '$lib/utils/video'
 import { playerState } from '$stores/playerState'
-import { hideSplashScreen } from '$stores/popups'
 import { onMount } from 'svelte'
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
@@ -16,6 +15,7 @@ import { getVideos } from '$lib/db/feed'
 import type { QueryDocumentSnapshot } from 'firebase/firestore'
 import PlayerRenderer from '$components/layout/PlayerRenderer.svelte'
 import { debounce } from 'throttle-debounce'
+import { removeSplashScreen } from '$stores/popups'
 
 const fetchWhenVideosLeft = 5
 const keepVideosLoadedCount: number = 4
@@ -110,7 +110,7 @@ beforeNavigate(() => {
         let:updateStats>
         <VideoPlayer
           on:watchComplete={updateStats}
-          on:loaded={() => hideSplashScreen(500)}
+          on:loaded={() => removeSplashScreen()}
           on:watchedPercentage={({ detail }) => recordView(detail)}
           on:videoUnavailable={() => handleUnavailableVideo(index)}
           {index}

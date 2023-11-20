@@ -8,7 +8,7 @@ import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { getDb } from '$lib/db'
 import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
 import { playerState } from '$stores/playerState'
-import { hideSplashScreen } from '$stores/popups'
+import { removeSplashScreen } from '$stores/popups'
 import { doc, getDoc } from 'firebase/firestore'
 import { onMount } from 'svelte'
 
@@ -72,7 +72,7 @@ beforeNavigate(() => {
   {:else}
     <PlayerLayout show bind:post index={0} showShareButton>
       <VideoPlayer
-        on:loaded={() => hideSplashScreen(500)}
+        on:loaded={() => removeSplashScreen()}
         index={0}
         playFormat="hls"
         inView

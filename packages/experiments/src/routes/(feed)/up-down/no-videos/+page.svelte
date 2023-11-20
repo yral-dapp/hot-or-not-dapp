@@ -2,13 +2,6 @@
 import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import { upDownPost } from '$lib/utils/constants'
-import { hideSplashScreen } from '$stores/popups'
-import { onMount, tick } from 'svelte'
-
-onMount(async () => {
-  await tick()
-  hideSplashScreen(500)
-})
 </script>
 
 <div
