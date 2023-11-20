@@ -22,7 +22,6 @@ const keepVideosLoadedCount: number = 4
 
 let videos: UpDownPost[] = []
 let currentVideoIndex = 0
-let lastWatchedVideoIndex = -1
 let noMoreVideos = false
 let loading = false
 let lastLoadedVideoRef: QueryDocumentSnapshot | undefined = undefined
@@ -57,7 +56,6 @@ async function fetchNextVideos() {
 }
 
 const handleChange = debounce(250, (newIndex: number) => {
-  lastWatchedVideoIndex = currentVideoIndex
   currentVideoIndex = newIndex
   fetchNextVideos()
   updateURL(videos[currentVideoIndex])
