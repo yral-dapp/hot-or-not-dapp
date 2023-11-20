@@ -49,13 +49,14 @@ async function fetchNextVideos() {
   }
 
   videos = joinArrayUniquely(videos, res.videos)
-
   lastLoadedVideoRef = res.lastRef
+
   if (!videos.length) {
     noMoreVideos = true
   } else {
     noMoreVideos = !res.more
   }
+
   loading = false
 }
 
