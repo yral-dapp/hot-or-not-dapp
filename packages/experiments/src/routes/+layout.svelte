@@ -22,10 +22,12 @@ function registerServiceWorker() {
 }
 
 let GA: any
-async function initializeGA() {
+function initializeGA() {
   try {
-    GA = (await import('$components/analytics/GA.svelte')).default
-    console.info('loaded GA')
+    import('$components/analytics/GA.svelte').then((d) => {
+      GA = d.default
+      console.info('loaded GA')
+    })
   } catch (_) {
     Log('warn', 'Could not load GA')
   }
@@ -45,7 +47,9 @@ onMount(() => {
   initDb()
   listenForUnhandledRejections()
   registerServiceWorker()
-  initializeGA()
+  setTimeout(() => {
+    initializeGA()
+  }, 6000)
 })
 </script>
 
