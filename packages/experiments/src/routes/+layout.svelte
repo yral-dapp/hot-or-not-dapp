@@ -11,6 +11,7 @@ import { initDb } from '$lib/db'
 import { browser } from '$app/environment'
 import LoginPopup from '$components/auth/LoginPopup.svelte'
 import { registerEvent } from '$components/analytics/GA.utils'
+import { removeSplashScreen } from '$stores/popups'
 
 function registerServiceWorker() {
   if (!browser) return
@@ -50,6 +51,7 @@ onMount(() => {
   setTimeout(() => {
     initializeGA()
   }, 6000)
+  removeSplashScreen()
 })
 </script>
 
