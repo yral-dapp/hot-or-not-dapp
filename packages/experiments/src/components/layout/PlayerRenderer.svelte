@@ -10,11 +10,11 @@ let show = false
 
 const checkToShow = debounce(200, async (activeIndex: number) => {
   await tick()
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     show =
       index > activeIndex - keepVideosLoadedCount &&
       index < activeIndex + keepVideosLoadedCount
-  }, 0)
+  })
 })
 
 $: checkToShow(activeIndex)
