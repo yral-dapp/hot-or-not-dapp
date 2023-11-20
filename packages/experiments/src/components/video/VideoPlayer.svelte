@@ -4,15 +4,14 @@ import { getHlsUrl, getMp4Url } from '$lib/utils/cloudflare'
 import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
 import { playerState } from '$stores/playerState'
-import type Hls from 'hls.js'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { debounce, throttle } from 'throttle-debounce'
+import type { default as HLSType } from 'hls.js'
 
 export let uid: string
 export let index: number
 export let inView = false
 export let thumbnail = ''
-export let Hls: any
 export let playFormat: 'hls' | 'mp4'
 
 let ios = isiPhone()
@@ -28,7 +27,7 @@ let videoEl: HTMLVideoElement
 let currentTime = 0
 let duration = 0
 let loaded = false
-let hls: Hls | null = null
+let hls: HLSType | null = null
 let waiting = false
 let playing = true
 let videoUnavailable = false
@@ -167,7 +166,7 @@ $: if (!inView) {
   }
 }
 
-onMount(() => {
+function init() {
   if (playFormat === 'mp4' || ios) {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
@@ -197,7 +196,9 @@ onMount(() => {
       })
     }
   }
-})
+}
+
+onMount(() => init())
 
 onDestroy(() => {
   if (hls && hls.destroy) {
@@ -228,8 +229,6 @@ onDestroy(() => {
   disablepictureinpicture
   disableremoteplayback
   playsinline
-  bind:currentTime
-  bind:duration
   preload={ios ? 'metadata' : 'auto'}
   poster={thumbnail}
   class="object-fit absolute z-[3] h-full w-full" />
