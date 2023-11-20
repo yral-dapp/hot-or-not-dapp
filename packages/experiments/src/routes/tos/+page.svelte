@@ -14,7 +14,11 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
       class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
       Terms of service
       <div class="absolute left-4 top-4">
-        <IconButton iconName="caret-left" iconClass="h-5 w-5" href="/menu" />
+        <IconButton
+          ariaLabel="Go back"
+          iconName="caret-left"
+          iconClass="h-5 w-5"
+          href="/up-down" />
       </div>
     </div>
   </svelte:fragment>
