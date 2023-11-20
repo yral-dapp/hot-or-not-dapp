@@ -1,4 +1,4 @@
-export const ssr = false
+export const ssr = true
 
 import { getDb } from '$lib/db'
 import { collection, getDocs, limit, query } from 'firebase/firestore'
