@@ -1,6 +1,14 @@
 <script lang="ts">
-import SplashScreen from '$components/layout/SplashScreen.svelte'
+import { browser } from '$app/environment'
+
+function removeSplashScreen() {
+  const el = document.querySelector('splash-screen')
+  el?.remove()
+}
+
+$: if (browser) {
+  removeSplashScreen()
+}
 </script>
 
-<SplashScreen />
 <slot />

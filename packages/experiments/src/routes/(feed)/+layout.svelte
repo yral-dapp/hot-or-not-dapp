@@ -17,11 +17,15 @@ function handleVisibilityChange() {
 }
 
 onMount(async () => {
-  document.addEventListener('visibilitychange', handleVisibilityChange)
+  if (browser) {
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 onDestroy(() => {
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  if (browser) {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 $: pathname = browser ? $page.url.pathname : ''
@@ -67,12 +71,14 @@ $: votesPage = pathname.includes('votes')
       </div>
       {#if votesPage}
         <IconButton
+          ariaLabel="Go back"
           on:click={() => history.back()}
           class="absolute left-4"
           iconName="chevron-up"
           iconClass="h-4 w-4 rotate-[270deg] text-white" />
       {/if}
       <IconButton
+        ariaLabel="Go to wallet"
         href="/up-down/wallet"
         class="absolute right-4"
         iconName="wallet-fill"
