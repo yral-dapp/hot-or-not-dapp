@@ -17,7 +17,7 @@
   "dependencies": {
     "clsx": "^2.0.0",
     "google-auth-library": "9.2.0",
-    "hls.js": "^1.4.11",
+    "hls.js": "^1.4.12",
     "idb": "^7.1.1",
     "firebase": "10.5.2",
     "svelte-local-storage-store": "^0.6.0",
