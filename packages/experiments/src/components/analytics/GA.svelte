@@ -16,7 +16,10 @@ $: if (href || shown) {
 </script>
 
 <svelte:head>
-  <script async defer src="https://www.googletagmanager.com/gtag/js"></script>
+  <script
+    async
+    defer
+    src="https://www.googletagmanager.com/gtag/js?id=G-PPE5XD2VKV"></script>
   <script>
   window.dataLayer = window.dataLayer || []
   function gtag() {
