@@ -10,7 +10,6 @@ import type {
   TransanctionRecord,
 } from '$lib/db/db.types'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
-import { generateRandomName } from '$lib/utils/randomUsername'
 import { anonUser, authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import { getApp } from 'firebase/app'
@@ -93,6 +92,7 @@ onMount(() => getTransactions())
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
         <IconButton
+          ariaLabel="Go back"
           on:click={() => history.back()}
           iconName="caret-left"
           iconClass="text-white w-6 h-6" />
@@ -171,6 +171,7 @@ onMount(() => getTransactions())
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
         <IconButton
+          ariaLabel="Go back"
           href="/up-down"
           iconName="caret-left"
           iconClass="text-white w-6 h-6" />
