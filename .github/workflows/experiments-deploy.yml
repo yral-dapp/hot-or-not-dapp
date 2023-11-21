@@ -64,5 +64,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Experiments preview build: ${{ needs.deploy-preview.outputs.previewUrl }}'
+              body: 'Experiments preview build: ${{ needs.experiments-deploy-pages.outputs.previewUrl }}'
             })
