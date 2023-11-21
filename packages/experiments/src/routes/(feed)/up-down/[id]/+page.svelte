@@ -42,6 +42,7 @@ async function fetchNextVideos() {
   console.log('f2')
 
   loading = true
+
   const res = await getVideos(lastLoadedVideoRef)
   if (!res.ok || !res.videos) {
     console.log('r2')
@@ -127,40 +128,34 @@ beforeNavigate(() => {
     </PlayerRenderer>
   {/each}
   {#if showError}
-    <div class="flex h-full w-full items-center justify-center">
-      <div
-        class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-        <div class="text-center text-lg font-bold">
-          Error loading posts. Please, refresh the page.
-        </div>
-        <Button
-          type="primary"
-          on:click={(e) => e.preventDefault()}
-          href="/up-down">
-          Clear here to refresh
-        </Button>
+    <div
+      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+      <div class="text-center text-lg font-bold">
+        Error loading posts. Please, refresh the page.
       </div>
+      <Button
+        type="primary"
+        on:click={(e) => e.preventDefault()}
+        href="/up-down">
+        Clear here to refresh
+      </Button>
     </div>
   {/if}
   {#if loading}
-    <div class="flex h-full w-full items-center justify-center">
-      <div
-        class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-        <div class="text-center text-lg font-bold">Loading</div>
-      </div>
+    <div
+      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+      <div class="text-center text-lg font-bold">Loading</div>
     </div>
   {/if}
   {#if noMoreVideos}
-    <div class="relative h-full w-full items-center justify-center">
-      <div
-        class="absolute flex h-full w-full flex-col items-center justify-center space-y-8 bg-black/50 px-8">
-        <Icon name="votes-graphics" class="w-56" />
-        <div class="text-center text-lg font-bold">
-          There are no more videos to vote on
-        </div>
-        <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
-          <UpDownVoteControls disabled score={100} />
-        </div>
+    <div
+      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+      <Icon name="votes-graphics" class="w-56" />
+      <div class="text-center text-lg font-bold">
+        There are no more videos to vote on
+      </div>
+      <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
+        <UpDownVoteControls disabled score={100} />
       </div>
     </div>
   {/if}
