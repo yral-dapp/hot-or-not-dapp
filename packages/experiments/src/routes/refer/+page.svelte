@@ -28,6 +28,8 @@ async function loadReferrals() {
   const db = getDb()
   const res = await getDocs(collection(db, 'ud-referrals'))
 
+  if (res.empty) return
+
   res.forEach((r) => {
     history.push(r)
   })
