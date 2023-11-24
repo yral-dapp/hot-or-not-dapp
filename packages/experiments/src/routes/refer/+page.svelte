@@ -84,7 +84,7 @@ onMount(() => {
 
 $: link = !$authState.isLoggedIn
   ? ''
-  : `https://${$page.url.host}/refer?userId=${$authState.userId}`
+  : `https://${$page.url.host}/invite?userId=${$authState.userId}`
 </script>
 
 <svelte:head>
