@@ -55,6 +55,8 @@ onMount(() => {
             Join now
           </Button>
         </div>
+        <div>or you can visit our homepage to check out hottest videos!</div>
+        <Button href="/">Go to homepage</Button>
       {/if}
     </div>
   </svelte:fragment>
