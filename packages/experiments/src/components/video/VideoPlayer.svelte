@@ -223,6 +223,8 @@ onDestroy(() => {
     inView && play()
   }}
   bind:this={videoEl}
+  bind:duration
+  bind:currentTime
   loop
   data-index={index}
   muted={$playerState.muted}
