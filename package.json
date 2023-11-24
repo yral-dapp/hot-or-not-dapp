@@ -15,6 +15,7 @@
     "build": "npm run wc:build",
     "ex:check": "npm run check --w @hnn/experiments",
     "ex:build": "npm run build --w @hnn/experiments",
+    "ex:preview": "npm run preview --w @hnn/experiments",
     "ex:dev": "npm run dev --w @hnn/experiments",
     "wc:check": "npm run check --w @hnn/web-client",
     "wc:tsc": "npm run tsc --w @hnn/web-client",

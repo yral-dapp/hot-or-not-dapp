@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -13,6 +13,23 @@
       content="Hot or Not - Hottest videos on this planet!" />
     <meta name="keywords" content="Shorts, Videos, Fun, Hot, Not" />
     <link rel="manifest" href="/manifest.json" />
+
+    <script
+      async
+      src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.light.min.js"></script>
+
+    <!-- preconnects -->
+
+    <link rel="dns-prefetch" href="https://hotornot.wtf" />
+    <link rel="dns-prefetch" href="https://www.googleapis.com" />
+    <link rel="dns-prefetch" href="https://apis.google.com" />
+    <link rel="dns-prefetch" href="https://experiments-hon.firebaseapp.com" />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+    <link
+      rel="dns-prefetch"
+      href="https://customer-2p3jflss4r4hmpnz.cloudflarestream.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     <meta name="theme-color" content="#E96B25" />
     %sveltekit.head%
   </head>
@@ -20,6 +37,34 @@
     data-sveltekit-preload-data="hover"
     style="overflow: hidden; background-color: black"
     class="h-screen">
+    <splash-screen
+      style="
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        z-index: 15;
+      ">
+      <svg style="height: 14rem; width: 14rem">
+        <use xlink:href="/icons.sprite.svg#hot-or-not-logo" />
+      </svg>
+      <svg
+        style="
+          margin-top: 2rem;
+          height: 1.25rem;
+          width: 1.25rem;
+          fill: white;
+          color: white;
+          opacity: 50%;
+        "
+        class="animate-spin-slow">
+        <use xlink:href="/icons.sprite.svg#loading" />
+      </svg>
+    </splash-screen>
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>

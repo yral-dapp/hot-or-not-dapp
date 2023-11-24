@@ -4,6 +4,7 @@ import { writable } from 'svelte/store'
 export const authState = persisted<{
   isLoggedIn: boolean
   userId?: string
+  refById?: string
   accessToken?: string
   showLogin: boolean
 }>('auth-state', {

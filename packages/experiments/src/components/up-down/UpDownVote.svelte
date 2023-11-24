@@ -50,7 +50,7 @@ if (post.id && !tutorialStep) {
   observePost()
 }
 
-async function observePost() {
+function observePost() {
   try {
     if (unsubscribe) return
     const db = getDb()
@@ -63,10 +63,10 @@ async function observePost() {
   }
 }
 
-async function loadVoteDetails() {
+function loadVoteDetails() {
   if (voteDetails) return
   const db = getDb()
-  const docRef = await getDocs(
+  getDocs(
     query(
       collection(db, 'votes'),
       where('videoId', '==', post.id),
@@ -74,19 +74,20 @@ async function loadVoteDetails() {
       orderBy('created_at', 'desc'),
       limit(1),
     ),
-  )
-  if (!docRef.empty) {
-    const vote = docRef.docs[0].data() as VoteRecord
-    voteDocId = docRef.docs[0].id
-    voteDetails = {
-      score: vote.currentScore,
-      direction: vote.voteDirection,
-      result_at: vote.result_at,
-      status: vote.status,
-      result: vote.result,
-      voteAmount: vote.voteAmount,
+  ).then((docRef) => {
+    if (!docRef.empty) {
+      const vote = docRef.docs[0].data() as VoteRecord
+      voteDocId = docRef.docs[0].id
+      voteDetails = {
+        score: vote.currentScore,
+        direction: vote.voteDirection,
+        result_at: vote.result_at,
+        status: vote.status,
+        result: vote.result,
+        voteAmount: vote.voteAmount,
+      }
     }
-  }
+  })
   loading = false
 }
 

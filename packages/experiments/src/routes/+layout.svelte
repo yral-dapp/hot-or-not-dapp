@@ -3,7 +3,6 @@ import '../css/app.css'
 import { onMount } from 'svelte'
 import { authState } from '$stores/auth'
 import Log from '$lib/utils/Log'
-import { registerEvent } from '$components/analytics/GA.svelte'
 import userProfile from '$stores/userProfile'
 import { page } from '$app/stores'
 import { deferredPrompt } from '$stores/deferredPrompt'
@@ -11,6 +10,8 @@ import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { initDb } from '$lib/db'
 import { browser } from '$app/environment'
 import LoginPopup from '$components/auth/LoginPopup.svelte'
+import { registerEvent } from '$components/analytics/GA.utils'
+import { removeSplashScreen } from '$stores/popups'
 
 function registerServiceWorker() {
   if (!browser) return
@@ -22,10 +23,12 @@ function registerServiceWorker() {
 }
 
 let GA: any
-async function initializeGA() {
+function initializeGA() {
   try {
-    GA = (await import('$components/analytics/GA.svelte')).default
-    console.info('loaded GA')
+    import('$components/analytics/GA.svelte').then((d) => {
+      GA = d.default
+      console.info('loaded GA')
+    })
   } catch (_) {
     Log('warn', 'Could not load GA')
   }
@@ -45,7 +48,10 @@ onMount(() => {
   initDb()
   listenForUnhandledRejections()
   registerServiceWorker()
-  initializeGA()
+  setTimeout(() => {
+    initializeGA()
+  }, 6000)
+  removeSplashScreen()
 })
 </script>
 

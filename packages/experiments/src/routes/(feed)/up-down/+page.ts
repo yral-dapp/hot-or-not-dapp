@@ -1,5 +1,5 @@
 export const ssr = false
 
-import { loadFirstVideo } from './loadFirstVideo'
+import { loadFirstVideo } from '$routes/loadFirstVideo'
 
 export const load = loadFirstVideo

@@ -1,12 +1,10 @@
-export const ssr = false
-
 import { getDb } from '$lib/db'
 import { collection, getDocs, limit, query } from 'firebase/firestore'
 import type { PageLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
 import type { CollectionName, UpDownPost } from '$lib/db/db.types'
 
-export const load: PageLoad = async () => {
+export const loadFirstVideo: PageLoad = async () => {
   // const cachedVideos = await getWatchedVideosFromCache('watch')
   // if (cachedVideos.length) {
   //   throw redirect(
