@@ -1,5 +1,4 @@
 <script lang="ts">
-import { goto } from '$app/navigation'
 import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
 import IconButton from '$components/button/IconButton.svelte'
