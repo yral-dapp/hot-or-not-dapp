@@ -3,6 +3,7 @@ export type CollectionName =
   | 'profile'
   | 'transactions'
   | 'votes'
+  | 'referrals'
   | 'views'
 
 export type UpDownSubCollections =
@@ -69,8 +70,16 @@ export type ProfileRecord = {
   anon: boolean
   photoUrl?: string
   email?: string
+  refId?: string
   experimentsBalance: number
   anonId?: string
+  created_at: number
+}
+
+export type ReferralRecord = {
+  referred_by_uid: string
+  referred_uid: string
+  transaction_id: string
   created_at: number
 }
 
@@ -109,12 +118,12 @@ export type VoteRecord = {
 
 export type TransanctionRecord = {
   uid: string
-  videoId: string
-  videoOid: number
-  videoUoid: string
-  videoUid: string
+  videoId?: string
+  videoOid?: number
+  videoUoid?: string
+  videoUid?: string
   debit: boolean
-  type: 'vote-placed' | 'vote-result'
+  type: 'vote-placed' | 'vote-result' | 'referral'
   voteId?: string
   amount: number
   created_at: number
