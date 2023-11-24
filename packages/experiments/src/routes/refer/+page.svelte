@@ -34,9 +34,9 @@ async function loadReferrals() {
     ),
   )
 
-  if (refDocs.empty) return
-
-  refDocs.forEach((r) => history.push(r.data() as ReferralRecord))
+  if (!refDocs.empty) {
+    refDocs.forEach((r) => history.push(r.data() as ReferralRecord))
+  }
   loading = false
 }
 
@@ -130,7 +130,7 @@ $: link = !$authState.isLoggedIn
 
           <div class="absolute right-0 bg-black px-3">
             <IconButton
-              iconName="caret-left"
+              iconName="copy"
               iconClass="h-5 w-5 pr-1"
               on:click={shareLink} />
           </div>
