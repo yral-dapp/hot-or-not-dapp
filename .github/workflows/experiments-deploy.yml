@@ -17,6 +17,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   experiments-deploy-pages:
     runs-on: ubuntu-latest
@@ -42,7 +47,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/experiments/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
+          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true | tee url.txt
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
       - name: Get preview deployment URL
@@ -64,5 +69,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Experiments preview build: ${{ needs.experiments-deploy-pages.outputs.previewUrl }}'
+              body: 'Experiments app deployed at: ${{ needs.experiments-deploy-pages.outputs.previewUrl }}'
             })
