@@ -93,7 +93,7 @@ onMount(() => getTransactions())
       <div class="flex items-center gap-4">
         <IconButton
           ariaLabel="Go back"
-          on:click={() => history.back()}
+          href="/up-down"
           iconName="caret-left"
           iconClass="text-white w-6 h-6" />
         <div class="flex flex-col items-center py-4">
