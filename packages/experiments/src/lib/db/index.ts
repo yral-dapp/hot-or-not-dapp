@@ -48,12 +48,14 @@ export function getAuth() {
 }
 
 async function onAuthStateChanged(user: User | null) {
+  const refById = get(authState).refById
   if (user) {
     authState.set({
       isLoggedIn: true,
       showLogin: false,
       userId: user.uid,
       accessToken: await user.getIdToken(),
+      refById,
     })
     userProfile.set({
       id: user.uid,
@@ -70,6 +72,7 @@ async function onAuthStateChanged(user: User | null) {
     authState.set({
       isLoggedIn: false,
       showLogin: false,
+      refById,
     })
 
     userProfile.set({
