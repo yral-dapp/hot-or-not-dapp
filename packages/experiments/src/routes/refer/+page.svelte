@@ -8,17 +8,18 @@ import IconButton from '$components/button/IconButton.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import HomeLayout from '$components/layout/HomeLayout.svelte'
 import { getDb } from '$lib/db'
+import type { CollectionName, ReferralRecord } from '$lib/db/db.types'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { onMount } from 'svelte'
 
 let loading = true
 let error = false
-let history: any = []
+let history: ReferralRecord[] = []
 
 const INVITE_WIN_TOKENS = 500
 
@@ -26,13 +27,16 @@ async function loadReferrals() {
   loading = true
   error = false
   const db = getDb()
-  const res = await getDocs(collection(db, 'ud-referrals'))
+  const refDocs = await getDocs(
+    query(
+      collection(db, 'referrals' satisfies CollectionName),
+      where('referred_by_uid', '==', $authState.userId),
+    ),
+  )
 
-  if (res.empty) return
+  if (refDocs.empty) return
 
-  res.forEach((r) => {
-    history.push(r)
-  })
+  refDocs.forEach((r) => history.push(r.data() as ReferralRecord))
   loading = false
 }
 
@@ -174,11 +178,7 @@ $: link = !$authState.isLoggedIn
       </div>
       {#if $authState.isLoggedIn}
         {#each history as item, i}
-          {@const date = new Date(Number(item.timestamp.secs_since_epoch))
-            .toDateString()
-            .substring(4)}
-          {@const tokenCount =
-            item.subType === 'NewUserSignup' ? 1000 : { INVITE_WIN_TOKENS }}
+          {@const date = new Date(item.created_at).toDateString().substring(4)}
           <div class="flex w-full items-center justify-between py-2 text-white">
             <div class="flex items-center space-x-8">
               <img
@@ -190,7 +190,7 @@ $: link = !$authState.isLoggedIn
                 <span class="text-sm text-white/50">{date}</span>
               </div>
             </div>
-            <span>{tokenCount} Coins</span>
+            <span>{item.amount} Coins</span>
           </div>
         {/each}
         {#if loading}

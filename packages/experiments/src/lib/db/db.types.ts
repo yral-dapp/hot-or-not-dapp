@@ -79,6 +79,7 @@ export type ProfileRecord = {
 export type ReferralRecord = {
   referred_by_uid: string
   referred_uid: string
+  amount: number
   transaction_id: string
   created_at: number
 }
