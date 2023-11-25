@@ -127,12 +127,7 @@ onMount(() => getTransactions())
         <span>Loading ...</span>
       </div>
     {:else if transactions.length}
-      <div class="flex justify-between pt-10">
-        <div class="text-sm">Recent transactions</div>
-        <a href="/refer" class="text-sm text-primary underline">
-          Refer and Earn
-        </a>
-      </div>
+      <div class="pt-10 text-xs">Recent transactions</div>
       <div
         class="flex h-full flex-col divide-y-[1px] divide-white/10 overflow-hidden overflow-y-auto py-4">
         {#each transactions as transaction}
