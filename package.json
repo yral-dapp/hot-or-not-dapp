@@ -1,7 +1,8 @@
 {
   "name": "hnn",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "private": true,
   "workspaces": [
     "./packages/web-client",
     "./packages/experiments",
@@ -45,6 +46,5 @@
     "prettier": "^3.0.3",
     "prettier-plugin-svelte": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4"
-  },
-  "private": true
+  }
 }
