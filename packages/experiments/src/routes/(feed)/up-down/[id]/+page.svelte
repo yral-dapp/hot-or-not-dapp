@@ -94,7 +94,8 @@ beforeNavigate(() => {
 </svelte:head>
 
 <div
-  class="hide-scrollbar relative flex h-full w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
+  style="height: 100dvh;"
+  class="hide-scrollbar relative flex w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
   {#each videos as post, index (post.id)}
     <PlayerRenderer
       {keepVideosLoadedCount}

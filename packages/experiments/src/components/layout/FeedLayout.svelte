@@ -1,16 +1,12 @@
 <script lang="ts">
-import { browser } from '$app/environment'
-
 export let testMode = false
-
 $: testClasses = testMode ? 'border-2 border-white/30' : ''
-$: innerHeight = browser ? window?.innerHeight : 0
 </script>
 
 <svelte:window on:resize={() => (innerHeight = window?.innerHeight)} />
 
-<home
-  style="height: {innerHeight ? `${innerHeight}px` : '100vh;'}"
+<feed
+  style="height: 100vh;"
   class="relative block h-full w-full overflow-hidden text-white"
   on:keyup>
   <slot name="content" />
@@ -21,4 +17,4 @@ $: innerHeight = browser ? window?.innerHeight : 0
     class="pointer-events-none absolute inset-x-0 bottom-0 z-[5] max-h-48 {testClasses}">
     <slot name="bottom-navigation" />
   </div>
-</home>
+</feed>
