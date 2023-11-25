@@ -5,7 +5,7 @@ $: testClasses = testMode ? 'border-2 border-white/30' : ''
 </script>
 
 <home
-  style="height: 100vh;"
+  style="height: 100dvh;"
   class="relative block h-full w-full overflow-hidden text-white"
   on:keyup>
   <slot name="content" />

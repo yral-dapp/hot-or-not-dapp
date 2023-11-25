@@ -144,7 +144,8 @@ onDestroy(unload)
 <player-layout
   bind:this={playerLayoutEl}
   data-index={index}
-  class="relative flex h-screen w-full shrink-0 snap-center snap-always items-center justify-center">
+  style="height: 100dvh;"
+  class="relative flex w-full shrink-0 snap-center snap-always items-center justify-center">
   {#if show}
     {#if !unavailable}
       <img
