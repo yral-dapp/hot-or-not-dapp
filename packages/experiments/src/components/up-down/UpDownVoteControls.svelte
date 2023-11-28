@@ -119,7 +119,7 @@ function placeVote(direction: 'up' | 'down', voteAmount: number) {
         {Math.round(score)}
       </div>
       <div class="text-sm drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-        Current scrore
+        Virality score
       </div>
     </div>
     <button
