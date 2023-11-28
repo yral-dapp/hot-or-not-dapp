@@ -31,6 +31,7 @@ import UpDownVoteControls from './UpDownVoteControls.svelte'
 import UpDownVoteOutcome from './UpDownVoteOutcome.svelte'
 import { authState } from '$stores/auth'
 import { onDestroy } from 'svelte'
+import { registerEvent } from '$components/analytics/GA.utils'
 
 export let post: UpDownPost
 export let tutorialStep: number | undefined = undefined
@@ -105,6 +106,12 @@ async function handlePlaceVote(vote: UpDownVoteDetails) {
       vote.direction,
     )
     voteDetails = vote
+    registerEvent('like_video', {
+      userId: $authState.userId,
+      video_id: post.id,
+      likes: post.likes_count,
+      anon: !!$authState.isLoggedIn,
+    })
   } catch (e) {
     console.error('Error while placing vote', e)
     loading = false

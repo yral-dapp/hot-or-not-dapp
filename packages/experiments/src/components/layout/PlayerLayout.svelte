@@ -147,13 +147,14 @@ onDestroy(unload)
   style="height: 100dvh;"
   class="relative flex w-full shrink-0 snap-center snap-always items-center justify-center">
   {#if show}
+    <slot {recordView} {updateStats} />
+
     {#if !unavailable}
       <img
         alt="background"
         class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
         src={getThumbnailUrl(post.video_uid, 80)} />
     {/if}
-
     <div
       style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
       class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
@@ -225,7 +226,6 @@ onDestroy(unload)
         </div>
       {/if}
     </div>
-    <slot {recordView} {updateStats} />
   {/if}
 </player-layout>
 
