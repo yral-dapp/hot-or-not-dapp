@@ -97,11 +97,11 @@ export async function viewPost(
   const { totalCount, partialWatchedPercentage } = watchProgress
   if (totalCount === 0 && partialWatchedPercentage === 0) return
 
+  const viewCount = (totalCount || 0) + (partialWatchedPercentage || 0) / 100
+
+  if (!viewCount) return
+
   updatePostInWatchHistory('up-down-watch-history', post)
-
-  const watchCount = (totalCount || 0) + (partialWatchedPercentage || 0)
-
-  if (!watchCount) return
 
   await viewVideo(
     {
@@ -110,7 +110,7 @@ export async function viewPost(
       videoUoid: post.ouid,
       videoUid: post.video_uid,
     },
-    watchCount,
+    viewCount,
   )
 
   const authStateData = get(authState)
