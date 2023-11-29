@@ -3,6 +3,7 @@ import Button from '$components/button/Button.svelte'
 import { getDb } from '$lib/db'
 import type { ViewChangeParameters } from '$lib/db/db.types'
 import { createNewConfig, isDev } from '$lib/db/dev'
+import { authState } from '$stores/auth'
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore'
 import { onMount } from 'svelte'
 
@@ -45,8 +46,9 @@ let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
 }
 
 async function checkIfAllowed() {
+  if (!$authState.isLoggedIn) return
   const req = await isDev()
-  allowed = req.ok
+  allowed = req.allow
   if (allowed) {
     fetchCurrentParams()
   }
@@ -55,7 +57,7 @@ async function checkIfAllowed() {
 async function sendConfigData() {
   try {
     loading = true
-    const config = await createNewConfig(newParams as ViewChangeParameters)
+    await createNewConfig(newParams as ViewChangeParameters)
     await fetchCurrentParams()
   } finally {
     loading = false
@@ -93,7 +95,7 @@ onMount(() => checkIfAllowed())
 {:else}
   <div class="select-text p-4 text-white">
     <div class="border border-white/50 p-4">
-      <div>Current config:</div>
+      <div class="py-2 text-xl">Current config:</div>
       {#if loading}
         <div>Loading ...</div>
       {:else if currentParams}
