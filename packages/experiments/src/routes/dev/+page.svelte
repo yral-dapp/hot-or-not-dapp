@@ -10,8 +10,8 @@ let allowed = false
 let currentParams: ViewChangeParameters | undefined = undefined
 let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
   liked: {
-    yes: 0,
-    no: 1,
+    yes: 1,
+    no: -1,
   },
   unliked: {
     yes: -1,
@@ -19,10 +19,10 @@ let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
   },
   shared: {
     yes: 1,
-    no: -1,
+    no: 0,
   },
   watched: {
-    minPercentage: 25,
+    divisor: 5,
     multiplier: 0.5,
   },
   threshold: {
@@ -34,10 +34,10 @@ let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
     yes: 1,
     no: 0,
   },
-  minutePassed: 1,
+  minutePassed: -1,
   viewsPerMinute: {
-    divideBy: 10,
-    greaterThan: 1,
+    divisor: 10,
+    threshold: 1,
     yes: 0.5,
     no: -0.2,
   },
@@ -69,14 +69,14 @@ async function fetchCurrentParams() {
 onMount(() => checkIfAllowed())
 </script>
 
-{#if !allowed}
+{#if false && !allowed}
   <div
     class="text-fg-1 flex h-full w-full flex-col items-center justify-center bg-black text-white">
     <div>Oops! Seems like you are lost</div>
     <Button href="/">Go to Home</Button>
   </div>
 {:else}
-  <div class="text-white">
+  <div class="select-text text-white">
     <div class="border border-white/50 p-4">
       <div>Current view params:</div>
       {#if currentParams}
@@ -86,95 +86,243 @@ onMount(() => checkIfAllowed())
       {/if}
     </div>
 
-    <div class="flex flex-col">
-      <div class="flex items-start space-x-4">
-        <label class="flex flex-col">
-          <span>If video is liked:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If video is not liked:</span>
-          <input type="number" />
-        </label>
+    <div class="flex flex-col space-y-4 divide-y divide-gray-500 p-4">
+      <div class="pb-4 pt-2 text-xl">Create new config:</div>
+
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change by like:</div>
+        <div class="font-mono text-xs">Formula: (score) ± (like-change)</div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>If video is liked:</span>
+            <input bind:value={newParams.liked.yes} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>If video is not liked:</span>
+            <input bind:value={newParams.liked.no} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Preview if score is 50:</div>
+        <div class="font-mono text-xs">
+          Liked: 50 + ({newParams.liked.yes}) = {50 + newParams.liked.yes}
+        </div>
+        <div class="font-mono text-xs">
+          Not liked: 50 + ({newParams.liked.no}) = {50 + newParams.liked.no}
+        </div>
       </div>
-      <div class="flex items-start space-x-4">
-        <label class="flex flex-col">
-          <span>If video is unliked:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If video is not unliked:</span>
-          <input type="number" />
-        </label>
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change by unlike:</div>
+        <div class="font-mono text-xs">Formula: (score) ± (unlike-change)</div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>If video is unliked:</span>
+            <input bind:value={newParams.unliked.yes} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>If video is not unliked:</span>
+            <input bind:value={newParams.unliked.no} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Preview if score is 50:</div>
+        <div class="font-mono text-xs">
+          Unliked: 50 + ({newParams.unliked.yes}) = {50 + newParams.unliked.yes}
+        </div>
+        <div class="font-mono text-xs">
+          Not unliked: 50 + ({newParams.unliked.no}) = {50 +
+            newParams.unliked.no}
+        </div>
       </div>
-      <div class="flex items-start space-x-4">
-        <label class="flex flex-col">
-          <span>If video is shared:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If video is not shared:</span>
-          <input type="number" />
-        </label>
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change by share:</div>
+        <div class="font-mono text-xs">Formula: (score) ± (share-change)</div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>If video is shared:</span>
+            <input bind:value={newParams.shared.yes} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>If video is not shared:</span>
+            <input bind:value={newParams.shared.no} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Preview if score is 50:</div>
+        <div class="font-mono text-xs">
+          Shared: 50 + ({newParams.shared.yes}) = {50 + newParams.shared.yes}
+        </div>
+        <div class="font-mono text-xs">
+          Not shared: 50 + ({newParams.shared.no}) = {50 + newParams.shared.no}
+        </div>
       </div>
-      <div class="flex items-start space-x-4">
-        <label class="flex flex-col">
-          <span>If video is watched minimum of percentage:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>Then change multiplier becomes:</span>
-          <input type="number" />
-        </label>
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change by watching a percentage of video:</div>
+        <div class="font-mono text-xs">
+          Formula: (score) + (percentage of video watched)/(divisor) *
+          (multiplier)
+        </div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>Divisor:</span>
+            <input bind:value={newParams.watched.divisor} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>Change multiplier:</span>
+            <input bind:value={newParams.watched.multiplier} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">
+          Preview if score is 50, and watched percentage is 25:
+        </div>
+        <div class="font-mono text-xs">
+          Change: 50 + 5/{newParams.watched.divisor} * {newParams.watched
+            .multiplier} = {50 +
+            (5 / newParams.watched.divisor) * newParams.watched.multiplier}
+        </div>
       </div>
-      <div>Formula for watched is: minPercentage * multiplier</div>
-      <div class="flex items-start space-x-4">
-        <label class="flex flex-col">
-          <span>If video is watched minimum of percentage:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>Change above threshold:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>Change below threshold:</span>
-          <input type="number" />
-        </label>
+
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change by watching a minimum-percentage of video:</div>
+        <div class="font-mono text-xs">
+          Formula: (score) ± (threshold change)
+        </div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>Minimum watched percentage:</span>
+            <input
+              bind:value={newParams.threshold.minPercentage}
+              type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>Change above threshold:</span>
+            <input bind:value={newParams.threshold.yes} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>Change below threshold:</span>
+            <input bind:value={newParams.threshold.no} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Preview if score is 50:</div>
+        <div class="font-mono text-xs">
+          Watched percentage is 20: 50 + ({newParams.threshold.minPercentage >=
+          20
+            ? newParams.threshold.yes
+            : newParams.threshold.no}) = {50 +
+            Number(
+              newParams.threshold.minPercentage >= 20
+                ? newParams.threshold.yes
+                : newParams.threshold.no,
+            )}
+        </div>
+        <div class="font-mono text-xs">
+          Watched percentage is 50: 50 + ({newParams.threshold.minPercentage >=
+          50
+            ? newParams.threshold.yes
+            : newParams.threshold.no}) = {50 +
+            Number(
+              newParams.threshold.minPercentage >= 50
+                ? newParams.threshold.yes
+                : newParams.threshold.no,
+            )}
+        </div>
       </div>
-      <div class="flex items-start space-x-4">
-        <label class="flex flex-col">
-          <span>If video is watched fully:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If video is not watched fully:</span>
-          <input type="number" />
-        </label>
+
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change by watching the video completely:</div>
+        <div class="font-mono text-xs">Formula: (score) ± (watch-change)</div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>If video is watched 100%:</span>
+            <input bind:value={newParams.fullyWatched.yes} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>If video is not watched 100%:</span>
+            <input bind:value={newParams.fullyWatched.no} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Preview if score is 50:</div>
+        <div class="font-mono text-xs">
+          Fully watched: 50 + ({newParams.fullyWatched.yes}) = {50 +
+            newParams.fullyWatched.yes}
+        </div>
+        <div class="font-mono text-xs">
+          Not fully watched: 50 + ({newParams.fullyWatched.no}) = {50 +
+            newParams.fullyWatched.no}
+        </div>
       </div>
-      <label class="flex flex-col">
-        <span>Change in score when a minute passes:</span>
-        <input type="number" />
-      </label>
-      <div class="flex flex-col space-y-4">
-        <div>Views per minute formula:</div>
-        <div>score / divideBy > greaterThan</div>
-        <label class="flex flex-col">
-          <span>If video is watched fully:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If video is not watched fully:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If greater than (greaterThan) value:</span>
-          <input type="number" />
-        </label>
-        <label class="flex flex-col">
-          <span>If less than (greaterThan) value:</span>
-          <input type="number" />
-        </label>
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>
+          Score change when a minute has passed (counted from upload time):
+        </div>
+        <div class="font-mono text-xs">Formula: (score) ± (minute-change)</div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>Score change when a minute passes:</span>
+            <input bind:value={newParams.minutePassed} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Preview if score is 50:</div>
+        <div class="font-mono text-xs">
+          A minute has passed: 50 + ({newParams.minutePassed}) = {50 +
+            newParams.minutePassed}
+        </div>
+      </div>
+      <div class="flex flex-col space-y-1 pt-3">
+        <div>Score change on the basis of views/minute:</div>
+        <div class="font-mono text-xs">
+          Formula: (score) ± ( (v/m)/(divisor) > (threshold) ? (greaterThan) :
+          (lessThan) )
+        </div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>Divisor:</span>
+            <input
+              bind:value={newParams.viewsPerMinute.divisor}
+              type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>Threshold:</span>
+            <input
+              bind:value={newParams.viewsPerMinute.threshold}
+              type="number" />
+          </label>
+        </div>
+        <div class="flex items-start space-x-4">
+          <label class="flex flex-col">
+            <span>Greater-than change:</span>
+            <input bind:value={newParams.viewsPerMinute.yes} type="number" />
+          </label>
+          <label class="flex flex-col">
+            <span>Less-than change:</span>
+            <input bind:value={newParams.viewsPerMinute.no} type="number" />
+          </label>
+        </div>
+        <div class="text-xs">Change in score:</div>
+        <div class="font-mono text-xs">VPM is 0: 0</div>
+        <div class="font-mono text-xs">
+          VPM is 5: ( 1 / {newParams.viewsPerMinute.divisor} > {newParams
+            .viewsPerMinute.threshold} ? ( {newParams.viewsPerMinute.yes} : {newParams
+            .viewsPerMinute.no} ) ) = {Number(
+            1 / newParams.viewsPerMinute.divisor >
+              newParams.viewsPerMinute.threshold
+              ? newParams.viewsPerMinute.yes
+              : newParams.viewsPerMinute.no,
+          )}
+        </div>
+        <div class="font-mono text-xs">
+          VPM is 11: ( 11 / {newParams.viewsPerMinute.divisor} > {newParams
+            .viewsPerMinute.threshold} ? ( {newParams.viewsPerMinute.yes} : {newParams
+            .viewsPerMinute.no} ) ) = {11 / newParams.viewsPerMinute.divisor >
+          newParams.viewsPerMinute.threshold
+            ? newParams.viewsPerMinute.yes
+            : newParams.viewsPerMinute.no}
+        </div>
+        <div class="font-mono text-xs">
+          VPM is 20: ( 20 / {newParams.viewsPerMinute.divisor} > {newParams
+            .viewsPerMinute.threshold} ? ( {newParams.viewsPerMinute.yes} : {newParams
+            .viewsPerMinute.no} ) ) = {20 / newParams.viewsPerMinute.divisor >
+          newParams.viewsPerMinute.threshold
+            ? newParams.viewsPerMinute.yes
+            : newParams.viewsPerMinute.no}
+        </div>
       </div>
     </div>
   </div>
@@ -187,7 +335,7 @@ input {
 }
 
 span {
-  font-size: 14px;
+  font-size: 12px;
   color: rgb(255, 255, 255, 0.8);
 }
 </style>
