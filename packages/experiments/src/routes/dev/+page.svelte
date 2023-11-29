@@ -14,8 +14,8 @@ let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
     yes: 1,
     no: -1,
   },
-  unliked: {
-    yes: -1,
+  disliked: {
+    yes: -5,
     no: 0,
   },
   shared: {
@@ -133,24 +133,24 @@ onMount(() => checkIfAllowed())
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">
-        <div>Score change by unlike:</div>
-        <div class="font-mono text-xs">Formula: (score) ± (unlike-change)</div>
+        <div>Score change by dislike:</div>
+        <div class="font-mono text-xs">Formula: (score) ± (dislik-change)</div>
         <div class="flex items-start space-x-4">
           <label class="flex flex-col">
-            <span>If video is unliked:</span>
-            <input bind:value={newParams.unliked.yes} type="number" />
+            <span>If video is disliked:</span>
+            <input bind:value={newParams.disliked.yes} type="number" />
           </label>
           <label class="flex flex-col">
-            <span>If video is not unliked:</span>
-            <input bind:value={newParams.unliked.no} type="number" />
+            <span>If video is not disliked:</span>
+            <input bind:value={newParams.disliked.no} type="number" />
           </label>
         </div>
         <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          Unliked: ({newParams.unliked.yes}) = {newParams.unliked.yes}
+          Disliked: ({newParams.disliked.yes}) = {newParams.disliked.yes}
         </div>
         <div class="font-mono text-xs">
-          Not unliked: ({newParams.unliked.no}) = {newParams.unliked.no}
+          Not disliked: ({newParams.disliked.no}) = {newParams.disliked.no}
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">

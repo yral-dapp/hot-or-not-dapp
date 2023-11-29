@@ -175,7 +175,7 @@ export type ViewChangeParameters = {
     yes: number
     no: number
   }
-  unliked: {
+  disliked: {
     yes: number
     no: number
   }
