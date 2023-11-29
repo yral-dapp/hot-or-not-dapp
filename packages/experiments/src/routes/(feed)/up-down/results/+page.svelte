@@ -8,8 +8,9 @@ import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { onMount, tick } from 'svelte'
 import { fade } from 'svelte/transition'
 import ResultCard from './ResultCard.svelte'
+import type { VoteRecordWithId } from '$components/up-down/UpDownVote.svelte'
 
-let votes: VoteRecord[] = []
+let votes: VoteRecordWithId[] = []
 let loading = true
 
 async function getVotes() {

@@ -7,6 +7,10 @@ export type UpDownVoteDetails = {
   score: number
   result?: VoteRecord['result']
 }
+
+export type VoteRecordWithId = VoteRecord & {
+  id: string
+}
 </script>
 
 <script lang="ts">
