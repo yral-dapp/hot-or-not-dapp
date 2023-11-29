@@ -45,7 +45,6 @@ let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
 
 async function checkIfAllowed() {
   const req = await isDev()
-  console.log({ req })
   allowed = req.ok
   if (allowed) {
     fetchCurrentParams()
