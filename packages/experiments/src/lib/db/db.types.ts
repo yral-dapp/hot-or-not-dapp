@@ -198,8 +198,8 @@ export type ViewChangeParameters = {
   }
   minutePassed: number
   viewsPerMinute: {
-    divideBy: number
-    greaterThan: number
+    divisor: number
+    threshold: number
     yes: number
     no: number
   }
