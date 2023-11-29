@@ -69,14 +69,14 @@ async function fetchCurrentParams() {
 onMount(() => checkIfAllowed())
 </script>
 
-{#if false && !allowed}
+{#if !allowed}
   <div
     class="text-fg-1 flex h-full w-full flex-col items-center justify-center bg-black text-white">
     <div>Oops! Seems like you are lost</div>
     <Button href="/">Go to Home</Button>
   </div>
 {:else}
-  <div class="select-text text-white">
+  <div class="select-text p-4 text-white">
     <div class="border border-white/50 p-4">
       <div>Current view params:</div>
       {#if currentParams}
@@ -85,10 +85,9 @@ onMount(() => checkIfAllowed())
         <div>No config found</div>
       {/if}
     </div>
-
-    <div class="flex flex-col space-y-4 divide-y divide-gray-500 p-4">
-      <div class="pb-4 pt-2 text-xl">Create new config:</div>
-
+    <div class="pb-2 pt-8 text-xl">Create new config:</div>
+    <div
+      class="flex flex-col space-y-4 divide-y divide-gray-500 border border-white/50 p-4">
       <div class="flex flex-col space-y-1 pt-3">
         <div>Score change by like:</div>
         <div class="font-mono text-xs">Formula: (score) ± (like-change)</div>
