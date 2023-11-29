@@ -93,11 +93,17 @@ onMount(() => checkIfAllowed())
 {:else}
   <div class="select-text p-4 text-white">
     <div class="border border-white/50 p-4">
-      <div>Current view params:</div>
+      <div>Current config:</div>
       {#if loading}
         <div>Loading ...</div>
       {:else if currentParams}
-        <div></div>
+        {#each Object.keys(currentParams).sort() as key}
+          <pre class="font-mono text-sm"><span>{key}</span> : {JSON.stringify(
+              currentParams[key],
+              null,
+              4,
+            )}</pre>
+        {/each}
       {:else}
         <div>No config found</div>
       {/if}
