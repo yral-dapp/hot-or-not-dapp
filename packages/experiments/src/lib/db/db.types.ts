@@ -5,6 +5,7 @@ export type CollectionName =
   | 'votes'
   | 'referrals'
   | 'views'
+  | 'view-change-parameters'
 
 export type UpDownSubCollections =
   | 'likes'
@@ -95,7 +96,6 @@ export type ShareRecord = {
 }
 
 export type VoteRecord = {
-  id: string
   uid: string
   videoId: string
   videoOid: number
@@ -168,4 +168,41 @@ export type VideoRef = {
   videoOid: number
   videoUoid: string
   videoUid: string
+}
+
+export type ViewChangeParameters = {
+  liked: {
+    yes: number
+    no: number
+  }
+  disliked: {
+    yes: number
+    no: number
+  }
+  shared: {
+    yes: number
+    no: number
+  }
+  watched: {
+    divisor: number
+    multiplier: number
+  }
+  threshold: {
+    minPercentage: number
+    yes: number
+    no: number
+  }
+  fullyWatched: {
+    yes: number
+    no: number
+  }
+  minutePassed: number
+  viewsPerMinute: {
+    divisor: number
+    threshold: number
+    yes: number
+    no: number
+  }
+  created_at: number
+  created_by: string
 }

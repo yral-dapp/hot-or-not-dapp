@@ -7,6 +7,10 @@ export type UpDownVoteDetails = {
   score: number
   result?: VoteRecord['result']
 }
+
+export type VoteRecordWithId = VoteRecord & {
+  id: string
+}
 </script>
 
 <script lang="ts">
@@ -106,10 +110,12 @@ async function handlePlaceVote(vote: UpDownVoteDetails) {
       vote.direction,
     )
     voteDetails = vote
-    registerEvent('like_video', {
+    registerEvent('place_vote', {
       userId: $authState.userId,
       video_id: post.id,
       likes: post.likes_count,
+      amount: vote.voteAmount,
+      direction: vote.direction,
       anon: !!$authState.isLoggedIn,
     })
   } catch (e) {
