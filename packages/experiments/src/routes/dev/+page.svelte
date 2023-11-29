@@ -2,11 +2,12 @@
 import Button from '$components/button/Button.svelte'
 import { getDb } from '$lib/db'
 import type { ViewChangeParameters } from '$lib/db/db.types'
-import { isDev } from '$lib/db/dev'
+import { createNewConfig, isDev } from '$lib/db/dev'
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore'
 import { onMount } from 'svelte'
 
 let allowed = false
+let loading = true
 let currentParams: ViewChangeParameters | undefined = undefined
 let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
   liked: {
@@ -23,7 +24,7 @@ let newParams: Omit<ViewChangeParameters, 'created_at' | 'created_by'> = {
   },
   watched: {
     divisor: 5,
-    multiplier: 0.5,
+    multiplier: 0.02,
   },
   threshold: {
     minPercentage: 25,
@@ -51,18 +52,33 @@ async function checkIfAllowed() {
   }
 }
 
-async function fetchCurrentParams() {
-  const db = getDb()
-  const docs = await getDocs(
-    query(
-      collection(db, 'view-change-parameters'),
-      orderBy('created_at', 'desc'),
-      limit(1),
-    ),
-  )
+async function sendConfigData() {
+  try {
+    loading = true
+    const config = await createNewConfig(newParams as ViewChangeParameters)
+    await fetchCurrentParams()
+  } finally {
+    loading = false
+  }
+}
 
-  if (docs.empty) return
-  currentParams = docs.docs[0].data() as ViewChangeParameters
+async function fetchCurrentParams() {
+  try {
+    loading = true
+    const db = getDb()
+    const docs = await getDocs(
+      query(
+        collection(db, 'view-change-parameters'),
+        orderBy('created_at', 'desc'),
+        limit(1),
+      ),
+    )
+
+    if (docs.empty) return
+    currentParams = docs.docs[0].data() as ViewChangeParameters
+  } finally {
+    loading = false
+  }
 }
 
 onMount(() => checkIfAllowed())
@@ -78,7 +94,9 @@ onMount(() => checkIfAllowed())
   <div class="select-text p-4 text-white">
     <div class="border border-white/50 p-4">
       <div>Current view params:</div>
-      {#if currentParams}
+      {#if loading}
+        <div>Loading ...</div>
+      {:else if currentParams}
         <div></div>
       {:else}
         <div>No config found</div>
@@ -100,12 +118,12 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.liked.no} type="number" />
           </label>
         </div>
-        <div class="text-xs">Preview if score is 50:</div>
+        <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          Liked: 50 + ({newParams.liked.yes}) = {50 + newParams.liked.yes}
+          Liked: ({newParams.liked.yes}) = {newParams.liked.yes}
         </div>
         <div class="font-mono text-xs">
-          Not liked: 50 + ({newParams.liked.no}) = {50 + newParams.liked.no}
+          Not liked: ({newParams.liked.no}) = {newParams.liked.no}
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">
@@ -121,13 +139,12 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.unliked.no} type="number" />
           </label>
         </div>
-        <div class="text-xs">Preview if score is 50:</div>
+        <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          Unliked: 50 + ({newParams.unliked.yes}) = {50 + newParams.unliked.yes}
+          Unliked: ({newParams.unliked.yes}) = {newParams.unliked.yes}
         </div>
         <div class="font-mono text-xs">
-          Not unliked: 50 + ({newParams.unliked.no}) = {50 +
-            newParams.unliked.no}
+          Not unliked: ({newParams.unliked.no}) = {newParams.unliked.no}
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">
@@ -143,12 +160,12 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.shared.no} type="number" />
           </label>
         </div>
-        <div class="text-xs">Preview if score is 50:</div>
+        <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          Shared: 50 + ({newParams.shared.yes}) = {50 + newParams.shared.yes}
+          Shared: ({newParams.shared.yes}) = {newParams.shared.yes}
         </div>
         <div class="font-mono text-xs">
-          Not shared: 50 + ({newParams.shared.no}) = {50 + newParams.shared.no}
+          Not shared: ({newParams.shared.no}) = {newParams.shared.no}
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">
@@ -167,13 +184,22 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.watched.multiplier} type="number" />
           </label>
         </div>
-        <div class="text-xs">
-          Preview if score is 50, and watched percentage is 25:
+        <div class="text-xs">Change in score:</div>
+        <div class="font-mono text-xs">
+          Watched percentage is 15: quotient(15 / {newParams.watched.divisor}) * {newParams
+            .watched.multiplier} = {Math.floor(15 / newParams.watched.divisor) *
+            newParams.watched.multiplier}
         </div>
         <div class="font-mono text-xs">
-          Change: 50 + 5/{newParams.watched.divisor} * {newParams.watched
-            .multiplier} = {50 +
-            (5 / newParams.watched.divisor) * newParams.watched.multiplier}
+          Watched percentage is 29: quotient(29 / {newParams.watched.divisor}) * {newParams
+            .watched.multiplier} = {Math.floor(29 / newParams.watched.divisor) *
+            newParams.watched.multiplier}
+        </div>
+        <div class="font-mono text-xs">
+          Watched percentage is 100: quotient(100 / {newParams.watched.divisor})
+          * {newParams.watched.multiplier} = {Math.floor(
+            100 / newParams.watched.divisor,
+          ) * newParams.watched.multiplier}
         </div>
       </div>
 
@@ -198,28 +224,20 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.threshold.no} type="number" />
           </label>
         </div>
-        <div class="text-xs">Preview if score is 50:</div>
+        <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          Watched percentage is 20: 50 + ({newParams.threshold.minPercentage >=
-          20
+          Watched percentage is 20: 20% >= {newParams.threshold.minPercentage} ?
+          {newParams.threshold.yes}
+          : {newParams.threshold.no} = {20 >= newParams.threshold.minPercentage
             ? newParams.threshold.yes
-            : newParams.threshold.no}) = {50 +
-            Number(
-              newParams.threshold.minPercentage >= 20
-                ? newParams.threshold.yes
-                : newParams.threshold.no,
-            )}
+            : newParams.threshold.no}
         </div>
         <div class="font-mono text-xs">
-          Watched percentage is 50: 50 + ({newParams.threshold.minPercentage >=
-          50
+          Watched percentage is 50: 50% >= {newParams.threshold.minPercentage} ?
+          {newParams.threshold.yes}
+          : {newParams.threshold.no} = {50 >= newParams.threshold.minPercentage
             ? newParams.threshold.yes
-            : newParams.threshold.no}) = {50 +
-            Number(
-              newParams.threshold.minPercentage >= 50
-                ? newParams.threshold.yes
-                : newParams.threshold.no,
-            )}
+            : newParams.threshold.no}
         </div>
       </div>
 
@@ -236,14 +254,14 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.fullyWatched.no} type="number" />
           </label>
         </div>
-        <div class="text-xs">Preview if score is 50:</div>
+        <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          Fully watched: 50 + ({newParams.fullyWatched.yes}) = {50 +
-            newParams.fullyWatched.yes}
+          Fully watched: ({newParams.fullyWatched.yes}) = {newParams
+            .fullyWatched.yes}
         </div>
         <div class="font-mono text-xs">
-          Not fully watched: 50 + ({newParams.fullyWatched.no}) = {50 +
-            newParams.fullyWatched.no}
+          Not fully watched: ({newParams.fullyWatched.no}) = {newParams
+            .fullyWatched.no}
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">
@@ -257,10 +275,9 @@ onMount(() => checkIfAllowed())
             <input bind:value={newParams.minutePassed} type="number" />
           </label>
         </div>
-        <div class="text-xs">Preview if score is 50:</div>
+        <div class="text-xs">Change in score:</div>
         <div class="font-mono text-xs">
-          A minute has passed: 50 + ({newParams.minutePassed}) = {50 +
-            newParams.minutePassed}
+          When a minute passes: ({newParams.minutePassed}) = {newParams.minutePassed}
         </div>
       </div>
       <div class="flex flex-col space-y-1 pt-3">
@@ -294,9 +311,9 @@ onMount(() => checkIfAllowed())
           </label>
         </div>
         <div class="text-xs">Change in score:</div>
-        <div class="font-mono text-xs">VPM is 0: 0</div>
+        <div class="font-mono text-xs">Views Per Minute is 0: 0</div>
         <div class="font-mono text-xs">
-          VPM is 5: ( 1 / {newParams.viewsPerMinute.divisor} > {newParams
+          Views Per Minute is 5: ( 1 / {newParams.viewsPerMinute.divisor} > {newParams
             .viewsPerMinute.threshold} ? ( {newParams.viewsPerMinute.yes} : {newParams
             .viewsPerMinute.no} ) ) = {Number(
             1 / newParams.viewsPerMinute.divisor >
@@ -306,7 +323,7 @@ onMount(() => checkIfAllowed())
           )}
         </div>
         <div class="font-mono text-xs">
-          VPM is 11: ( 11 / {newParams.viewsPerMinute.divisor} > {newParams
+          Views Per Minute is 11: ( 11 / {newParams.viewsPerMinute.divisor} > {newParams
             .viewsPerMinute.threshold} ? ( {newParams.viewsPerMinute.yes} : {newParams
             .viewsPerMinute.no} ) ) = {11 / newParams.viewsPerMinute.divisor >
           newParams.viewsPerMinute.threshold
@@ -314,12 +331,21 @@ onMount(() => checkIfAllowed())
             : newParams.viewsPerMinute.no}
         </div>
         <div class="font-mono text-xs">
-          VPM is 20: ( 20 / {newParams.viewsPerMinute.divisor} > {newParams
+          Views Per Minute is 20: ( 20 / {newParams.viewsPerMinute.divisor} > {newParams
             .viewsPerMinute.threshold} ? ( {newParams.viewsPerMinute.yes} : {newParams
             .viewsPerMinute.no} ) ) = {20 / newParams.viewsPerMinute.divisor >
           newParams.viewsPerMinute.threshold
             ? newParams.viewsPerMinute.yes
             : newParams.viewsPerMinute.no}
+        </div>
+        <div class="pt-4">
+          <Button on:click={sendConfigData} disabled={loading}>
+            {#if loading}
+              Creating config ...
+            {:else}
+              Create new config
+            {/if}
+          </Button>
         </div>
       </div>
     </div>
