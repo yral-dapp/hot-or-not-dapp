@@ -184,7 +184,7 @@ export type ViewChangeParameters = {
     no: number
   }
   watched: {
-    minPercentage: number
+    divisor: number
     multiplier: number
   }
   threshold: {
