@@ -16,6 +16,7 @@ import type { QueryDocumentSnapshot } from 'firebase/firestore'
 import PlayerRenderer from '$components/layout/PlayerRenderer.svelte'
 import { debounce } from 'throttle-debounce'
 import { removeSplashScreen } from '$stores/popups'
+import { page } from '$app/stores'
 
 const fetchWhenVideosLeft = 5
 const keepVideosLoadedCount: number = 4
@@ -24,6 +25,7 @@ let videos: UpDownPost[] = []
 let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = false
+let first = true
 let lastLoadedVideoRef: QueryDocumentSnapshot | undefined = undefined
 
 let showError = false
@@ -43,7 +45,10 @@ async function fetchNextVideos() {
 
   loading = true
 
-  const res = await getVideos(lastLoadedVideoRef)
+  const res = await getVideos(
+    lastLoadedVideoRef,
+    first ? $page.params.id : undefined,
+  )
   if (!res.ok || !res.videos) {
     console.log('r2')
     return

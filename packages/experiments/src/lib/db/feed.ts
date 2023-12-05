@@ -21,7 +21,10 @@ import type { IDBStores } from '$lib/idb/idb'
 import { get } from 'svelte/store'
 import { authState } from '$stores/auth'
 
-export async function getVideos(lastRef?: QueryDocumentSnapshot) {
+export async function getVideos(
+  lastRef?: QueryDocumentSnapshot,
+  keepId?: string,
+) {
   try {
     const videos: UpDownPost[] = []
     const db = getDb()
@@ -51,7 +54,7 @@ export async function getVideos(lastRef?: QueryDocumentSnapshot) {
     )
 
     snapshot.forEach((doc) => {
-      if (!alreadyWatchedPosts.includes(doc.id)) {
+      if (!alreadyWatchedPosts.includes(doc.id) || doc.id === keepId) {
         videos.push({ ...doc.data(), id: doc.id } as UpDownPost)
       }
     })
