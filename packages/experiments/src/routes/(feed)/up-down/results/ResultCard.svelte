@@ -2,7 +2,6 @@
 import Avatar from '$components/avatar/Avatar.svelte'
 import Icon from '$components/icon/Icon.svelte'
 import type { VoteRecordWithId } from '$components/up-down/UpDownVote.svelte'
-import type { VoteRecord } from '$lib/db/db.types'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
 import { pluralize } from '$lib/utils/pluralize'
