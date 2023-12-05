@@ -20,6 +20,7 @@
     "google-auth-library": "9.2.0",
     "hls.js": "^1.4.12",
     "idb": "^7.1.1",
+    "json-2-csv": "5.0.1",
     "firebase": "10.6.0",
     "svelte-local-storage-store": "^0.6.4",
     "throttle-debounce": "^5.0.0"
