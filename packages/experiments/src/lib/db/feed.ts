@@ -20,8 +20,10 @@ import { getDb } from '$lib/db'
 import type { IDBStores } from '$lib/idb/idb'
 import { get } from 'svelte/store'
 import { authState } from '$stores/auth'
+import type { UpDownPostHistory } from '$lib/idb/history'
 
 export async function getVideos(
+  fetchCount: number,
   lastRef?: QueryDocumentSnapshot,
   keepId?: string,
 ) {
@@ -35,13 +37,13 @@ export async function getVideos(
         collection(db, 'ud-videos' as CollectionName),
         orderBy('created_at', 'desc'),
         startAfter(lastRef),
-        limit(50),
+        limit(fetchCount),
       )
     } else {
       q = query(
         collection(db, 'ud-videos' as CollectionName),
         orderBy('created_at', 'desc'),
-        limit(50),
+        limit(fetchCount),
       )
     }
     const snapshot = await getDocs(q)
@@ -63,7 +65,7 @@ export async function getVideos(
       ok: true,
       videos,
       lastRef: snapshot.docs[snapshot.docs.length - 1],
-      more: true,
+      more: videos.length < fetchCount,
     }
   } catch (e) {
     console.log('Error fetching videos', e)
@@ -83,6 +85,27 @@ async function getAlreadyWatchedPostsIds(
     console.error('Error while accessing IDB', {
       error: e,
       from: 'getAlreadyWatchedPostsIds',
+      type: 'idb',
+    })
+    return []
+  }
+}
+
+export async function getAlreadyWatchedPosts(
+  fetchCount: number,
+  dbStore: IDBStores,
+): Promise<UpDownPost[]> {
+  try {
+    const idb = (await import('$lib/idb')).idb
+    const values = ((await idb.values(dbStore)) || []).sort(
+      (a, b) => a.watched_at - b.watched_at,
+    ) as UpDownPostHistory[]
+    if (!values?.length) return []
+    return values.slice(fetchCount)
+  } catch (e) {
+    console.error('Error while accessing IDB', {
+      error: e,
+      from: 'getAlreadyWatchedPosts',
       type: 'idb',
     })
     return []

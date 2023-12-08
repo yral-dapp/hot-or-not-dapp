@@ -11,7 +11,7 @@ import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
 import type { UpDownPost } from '$lib/db/db.types'
-import { getVideos } from '$lib/db/feed'
+import { getAlreadyWatchedPosts, getVideos } from '$lib/db/feed'
 import type { QueryDocumentSnapshot } from 'firebase/firestore'
 import PlayerRenderer from '$components/layout/PlayerRenderer.svelte'
 import { debounce } from 'throttle-debounce'
@@ -19,6 +19,7 @@ import { removeSplashScreen } from '$stores/popups'
 import { page } from '$app/stores'
 
 const fetchWhenVideosLeft = 5
+const videoFetchCount = 50
 const keepVideosLoadedCount: number = 4
 
 let videos: UpDownPost[] = []
@@ -31,39 +32,46 @@ let lastLoadedVideoRef: QueryDocumentSnapshot | undefined = undefined
 let showError = false
 
 async function fetchNextVideos() {
-  console.log('f1')
-  if (noMoreVideos) {
-    console.log('r1')
-    return
-  }
+  try {
+    console.log('f1')
+    if (noMoreVideos) {
+      console.log('r1')
+      return
+    }
 
-  if (videos.length - currentVideoIndex > fetchWhenVideosLeft) {
-    return
-  }
+    if (videos.length - currentVideoIndex > fetchWhenVideosLeft) {
+      return
+    }
 
-  console.log('f2')
+    console.log('f2')
 
-  loading = true
+    loading = true
 
-  const res = await getVideos(
-    lastLoadedVideoRef,
-    first ? $page.params.id : undefined,
-  )
-  if (!res.ok || !res.videos) {
-    console.log('r2')
-    return
-  }
+    const res = await getVideos(
+      videoFetchCount,
+      lastLoadedVideoRef,
+      first ? $page.params.id : undefined,
+    )
+    if (!res.ok || !res.videos) {
+      console.log('r2')
+      return
+    }
 
-  videos = joinArrayUniquely(videos, res.videos)
-  lastLoadedVideoRef = res.lastRef
+    videos = joinArrayUniquely(videos, res.videos)
+    lastLoadedVideoRef = res.lastRef
 
-  if (!videos.length) {
-    noMoreVideos = true
-  } else {
     noMoreVideos = !res.more
-  }
 
-  loading = false
+    if (noMoreVideos) {
+      const watchedPosts = await getAlreadyWatchedPosts(
+        100,
+        'up-down-watch-history',
+      )
+      videos = joinArrayUniquely(videos, watchedPosts)
+    }
+  } finally {
+    loading = false
+  }
 }
 
 const handleChange = debounce(250, (newIndex: number) => {
