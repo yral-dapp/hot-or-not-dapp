@@ -90,6 +90,7 @@ export type HotOrNotOutcomePayoutEvent = {
   };
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
+  'url_to_send_canister_metrics_to' : [] | [string],
   'profile_owner' : [] | [Principal],
   'upgrade_version_number' : [] | [bigint],
 }
@@ -313,6 +314,7 @@ export interface _SERVICE {
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
+  'get_user_caniser_cycle_balance' : ActorMethod<[], bigint>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result_5
@@ -354,7 +356,10 @@ export interface _SERVICE {
     [Array<Principal>],
     undefined
   >,
-  'return_cycles_to_user_index_canister' : ActorMethod<[], undefined>,
+  'return_cycles_to_user_index_canister' : ActorMethod<
+    [[] | [bigint]],
+    undefined
+  >,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
     undefined
