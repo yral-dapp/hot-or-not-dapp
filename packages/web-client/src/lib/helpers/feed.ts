@@ -62,7 +62,7 @@ async function filterReportedPosts(posts: PostScoreIndexItem[]) {
       idb = (await import('$lib/idb')).idb
     }
     const keys = (await idb.keys('reported')) as string[]
-    if (!keys.length) return posts
+    if (!keys?.length) return posts
     const filtered = posts.filter(
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
     )
@@ -184,9 +184,8 @@ export async function getHotOrNotPosts(
       )
     if ('Ok' in res) {
       const filteredNonBetPosts = await filterBets(res.Ok)
-      const filteredReportedPosts = await filterReportedPosts(
-        filteredNonBetPosts,
-      )
+      const filteredReportedPosts =
+        await filterReportedPosts(filteredNonBetPosts)
       // const filteredPosts = await filterPosts(filteredNonBetPosts, 'watch-hon')
       const populatedRes = await populatePosts(filteredReportedPosts, true)
       if (populatedRes.error) {
