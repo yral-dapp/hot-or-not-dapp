@@ -33,7 +33,7 @@ let videos: PostPopulated[] = []
 let currentVideoIndex = 0
 let lastWatchedVideoIndex = -1
 let noMoreVideos = false
-let loading = false
+let loading = true
 let fetchedVideosCount = 0
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
@@ -66,7 +66,6 @@ async function fetchNextVideos(force = false) {
         } else {
           clearTimeout(loadTimeout)
           showError = true
-          loading = false
         }
         return
       } else {
@@ -87,7 +86,6 @@ async function fetchNextVideos(force = false) {
       }
 
       await tick()
-      loading = false
 
       Log('info', 'Fetched videos for feed', {
         noMoreVideos,
@@ -101,6 +99,7 @@ async function fetchNextVideos(force = false) {
         noMoreVideos,
         source: 'hotOrNot.fetchNextVideos',
       })
+    } finally {
       loading = false
     }
   }
