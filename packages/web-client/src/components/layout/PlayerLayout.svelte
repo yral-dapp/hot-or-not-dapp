@@ -226,7 +226,7 @@ $: avatarUrl =
     style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
     class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
     {#if showExperimentsButton}
-      <div class="pointer-events-auto absolute right-1 top-16">
+      <div class="pointer-events-auto absolute left-1 top-12">
         <IconButton
           iconName="stamp"
           class="relative text-primary transition-colors active:text-primary/50"
