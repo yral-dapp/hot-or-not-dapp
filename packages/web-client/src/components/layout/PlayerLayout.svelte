@@ -15,6 +15,7 @@ import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
+import ExperimentsPopup from '$components/popup/ExperimentsPopup.svelte'
 
 export let index: number
 export let post: PostPopulated
@@ -25,6 +26,7 @@ export let showLikeButton = false
 export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
+export let showExperimentsButton = false
 export let unavailable = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
@@ -35,6 +37,7 @@ let watchProgress = {
   partialWatchedPercentage: 0,
 }
 let showReportPopup = false
+let showExperimentsPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -205,6 +208,10 @@ $: avatarUrl =
     }} />
 {/if}
 
+{#if showExperimentsButton}
+  <ExperimentsPopup bind:show={showExperimentsPopup} />
+{/if}
+
 <player-layout
   data-index={index}
   class="relative block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
@@ -220,9 +227,8 @@ $: avatarUrl =
     class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
-      class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2 {$$slots.hotOrNot
-        ? 'bottom-40'
-        : 'bottom-20'}">
+      class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
+      {$$slots.hotOrNot ? 'bottom-40' : 'bottom-20'}">
       <div class="flex grow flex-col justify-end space-y-4">
         <div
           aria-roledescription="video-info"
@@ -254,7 +260,23 @@ $: avatarUrl =
         <slot name="betRoomInfo" />
       </div>
       <div
-        class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
+        class="max-w-16 pointer-events-auto flex shrink-0 flex-col items-end justify-end space-y-6 pb-2">
+        {#if showExperimentsButton}
+          <IconButton
+            iconName="stamp"
+            class="relative text-primary transition-colors active:text-primary/50"
+            iconClass="h-16 w-16 mr-2 animate-spin-slower drop-shadow-xl"
+            ariaLabel="Experiments!"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              showExperimentsPopup = true
+            }}>
+            <div
+              class="absolute inset-0 mr-2 flex items-center justify-center font-bold text-white">
+              NEW!
+            </div>
+          </IconButton>
+        {/if}
         {#if showReportButton}
           <IconButton
             iconName="flag"
