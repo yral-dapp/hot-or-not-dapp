@@ -78,3 +78,4 @@ export type IconName =
   | 'votes-graphics'
   | 'on-chain-dfinity-graphics'
   | 'stars-graphics'
+  | 'stamp'

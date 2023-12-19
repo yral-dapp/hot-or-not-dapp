@@ -3,7 +3,7 @@ import Log from '../utils/Log'
 
 export type IDBStores = 'up-down-watch-history'
 
-const dbPromise = openDB('keyval-store', 8, {
+const dbPromise = openDB('hot-or-not-experiments', 8, {
   upgrade(db) {
     if (!db.objectStoreNames.contains('up-down-watch-history')) {
       db.createObjectStore('up-down-watch-history')

@@ -24,29 +24,6 @@ export const idlFactory = ({ IDL }) => {
       IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(UserAccessRole)))
     ),
   });
-  const CanisterStatusType = IDL.Variant({
-    'stopped' : IDL.Null,
-    'stopping' : IDL.Null,
-    'running' : IDL.Null,
-  });
-  const DefiniteCanisterSettings = IDL.Record({
-    'freezing_threshold' : IDL.Nat,
-    'controllers' : IDL.Vec(IDL.Principal),
-    'memory_allocation' : IDL.Nat,
-    'compute_allocation' : IDL.Nat,
-  });
-  const CanisterStatusResponse = IDL.Record({
-    'status' : CanisterStatusType,
-    'memory_size' : IDL.Nat,
-    'cycles' : IDL.Nat,
-    'settings' : DefiniteCanisterSettings,
-    'idle_cycles_burned_per_day' : IDL.Nat,
-    'module_hash' : IDL.Opt(IDL.Vec(IDL.Nat8)),
-  });
-  const Result = IDL.Variant({
-    'Ok' : CanisterStatusResponse,
-    'Err' : IDL.Text,
-  });
   const SystemTime = IDL.Record({
     'nanos_since_epoch' : IDL.Nat32,
     'secs_since_epoch' : IDL.Nat64,
@@ -54,7 +31,9 @@ export const idlFactory = ({ IDL }) => {
   const UpgradeStatus = IDL.Record({
     'version_number' : IDL.Nat64,
     'last_run_on' : SystemTime,
-    'failed_canister_ids' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal)),
+    'failed_canister_ids' : IDL.Vec(
+      IDL.Tuple(IDL.Principal, IDL.Principal, IDL.Text)
+    ),
     'successful_upgrade_count' : IDL.Nat32,
   });
   const SetUniqueUsernameError = IDL.Variant({
@@ -62,7 +41,7 @@ export const idlFactory = ({ IDL }) => {
     'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_1 = IDL.Variant({
+  const Result = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
@@ -73,11 +52,6 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     'backup_all_individual_user_canisters' : IDL.Func([], [], []),
-    'get_canister_status_from_management_canister' : IDL.Func(
-        [IDL.Principal],
-        [Result],
-        [],
-      ),
     'get_index_details_is_user_name_taken' : IDL.Func(
         [IDL.Text],
         [IDL.Bool],
@@ -103,6 +77,12 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
+    'get_user_index_canister_count' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_user_index_canister_cycle_balance' : IDL.Func(
+        [],
+        [IDL.Nat],
+        ['query'],
+      ),
     'get_well_known_principal_value' : IDL.Func(
         [KnownPrincipalType],
         [IDL.Opt(IDL.Principal)],
@@ -113,20 +93,9 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
-    'retry_upgrade_for_canisters_that_failed_upgrade_with_the_latest_wasm' : IDL.Func(
-        [],
-        [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Principal, IDL.Text))],
-        [],
-      ),
-    'topup_canisters_that_need_it' : IDL.Func([], [], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
-        [Result_1],
-        [],
-      ),
-    'update_user_index_upgrade_user_canisters_with_latest_wasm' : IDL.Func(
-        [],
-        [IDL.Text],
+        [Result],
         [],
       ),
     'upgrade_specific_individual_user_canister_with_latest_wasm' : IDL.Func(

@@ -494,7 +494,7 @@ async function transformHistoryRecords(
 
 export async function setBetDetailToDb(
   post: PostPopulated,
-  betDetail: PlacedBetDetail,
+  betDetail?: PlacedBetDetail,
 ) {
   if (!post) return
 

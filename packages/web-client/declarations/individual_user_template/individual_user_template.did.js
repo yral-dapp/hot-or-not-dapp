@@ -14,6 +14,7 @@ export const idlFactory = ({ IDL }) => {
     'known_principal_ids' : IDL.Opt(
       IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
+    'url_to_send_canister_metrics_to' : IDL.Opt(IDL.Text),
     'profile_owner' : IDL.Opt(IDL.Principal),
     'upgrade_version_number' : IDL.Opt(IDL.Nat64),
   });
@@ -350,6 +351,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'get_rewarded_for_signing_up' : IDL.Func([], [], []),
+    'get_user_caniser_cycle_balance' : IDL.Func([], [IDL.Nat], ['query']),
     'get_user_utility_token_transaction_history_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [Result_5],
@@ -401,7 +403,11 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
-    'return_cycles_to_user_index_canister' : IDL.Func([], [], []),
+    'return_cycles_to_user_index_canister' : IDL.Func(
+        [IDL.Opt(IDL.Nat)],
+        [],
+        [],
+      ),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
         [],
@@ -456,6 +462,7 @@ export const init = ({ IDL }) => {
     'known_principal_ids' : IDL.Opt(
       IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
+    'url_to_send_canister_metrics_to' : IDL.Opt(IDL.Text),
     'profile_owner' : IDL.Opt(IDL.Principal),
     'upgrade_version_number' : IDL.Opt(IDL.Nat64),
   });
