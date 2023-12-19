@@ -7,6 +7,7 @@ import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { Principal } from '@dfinity/principal'
 import { individualUser, postCache } from './backend'
+import { setBetDetailToDb } from './profile'
 
 export interface PostPopulated
   extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -77,6 +78,28 @@ async function filterReportedPosts(posts: PostScoreIndexItem[]) {
   }
 }
 
+async function filterStuckCanisterPosts(posts: PostScoreIndexItem[]) {
+  try {
+    const stuckCanisters = [
+      '6l6jz-kaaaa-aaaao-actmq-cai',
+      'rw62l-xyaaa-aaaao-aayca-cai',
+      '4thmb-taaaa-aaaao-aavfq-cai',
+      'du74r-syaaa-aaaao-aa47q-cai',
+      'u6qff-cqaaa-aaaao-aczfa-cai',
+    ]
+    return posts.filter(
+      (o) => !stuckCanisters.includes(o.publisher_canister_id.toText()),
+    )
+  } catch (e) {
+    Log('error', 'Error while accessing IDB', {
+      error: e,
+      from: 'feed.filterReportedPosts',
+      type: 'idb',
+    })
+    return posts
+  }
+}
+
 export async function getWatchedVideosFromCache(
   dbStore: 'watch' | 'watch-hon',
 ): Promise<PostPopulatedHistory[]> {
@@ -112,10 +135,11 @@ export async function getTopPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const filteredReportedPosts = await filterReportedPosts(res.Ok)
-      const filteredPosts = await filterPosts(filteredReportedPosts, 'watch')
+      const nonReportedPosts = await filterReportedPosts(res.Ok)
+      const notStuckPosts = await filterStuckCanisterPosts(nonReportedPosts)
+      const notWatchedPosts = await filterPosts(notStuckPosts, 'watch')
       const populatedRes = await populatePosts(
-        filterViewed ? filteredPosts : filteredReportedPosts,
+        filterViewed ? notWatchedPosts : notStuckPosts,
       )
       if (populatedRes.error) {
         throw new Error(
@@ -183,11 +207,11 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const filteredNonBetPosts = await filterBets(res.Ok)
-      const filteredReportedPosts =
-        await filterReportedPosts(filteredNonBetPosts)
-      // const filteredPosts = await filterPosts(filteredNonBetPosts, 'watch-hon')
-      const populatedRes = await populatePosts(filteredReportedPosts, true)
+      const notBetPosts = await filterBets(res.Ok)
+      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
+      const notReportedPosts = await filterReportedPosts(notStuckPosts)
+      // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
+      const populatedRes = await populatePosts(notReportedPosts, true)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -265,6 +289,17 @@ async function populatePosts(
             Principal.from(post.publisher_canister_id),
           ).get_individual_post_details_by_id(post.post_id)
           if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
+            Log('warn', 'Already bet on post', {
+              post,
+              from: 'feed.populatePosts.fetch',
+            })
+            setBetDetailToDb({
+              ...r,
+              ...post,
+              created_by_user_principal_id:
+                r.created_by_user_principal_id.toText(),
+              publisher_canister_id: post.publisher_canister_id.toText(),
+            })
             return undefined
           }
           return {
@@ -274,7 +309,12 @@ async function populatePosts(
               r.created_by_user_principal_id.toText(),
             publisher_canister_id: post.publisher_canister_id.toText(),
           }
-        } catch (_) {
+        } catch (e) {
+          Log('error', 'Error while populating post', {
+            error: e,
+            post,
+            from: 'feed.populatePosts.fetch',
+          })
           return undefined
         }
       }),
