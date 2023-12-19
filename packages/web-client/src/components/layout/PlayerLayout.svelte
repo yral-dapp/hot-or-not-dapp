@@ -225,6 +225,24 @@ $: avatarUrl =
   <div
     style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
     class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
+    {#if showExperimentsButton}
+      <div class="pointer-events-auto absolute left-2 top-12">
+        <IconButton
+          iconName="stamp"
+          class="relative text-primary transition-colors active:text-primary/50"
+          iconClass="h-16 w-16 m-2 animate-spin-slower drop-shadow-xl"
+          ariaLabel="Experiments!"
+          on:click={(e) => {
+            e.stopImmediatePropagation()
+            showExperimentsPopup = true
+          }}>
+          <div
+            class="absolute inset-0 m-2 flex items-center justify-center font-bold text-white">
+            NEW!
+          </div>
+        </IconButton>
+      </div>
+    {/if}
     <div
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
@@ -259,24 +277,9 @@ $: avatarUrl =
         {/if}
         <slot name="betRoomInfo" />
       </div>
+
       <div
         class="max-w-16 pointer-events-auto flex shrink-0 flex-col items-end justify-end space-y-6 pb-2">
-        {#if showExperimentsButton}
-          <IconButton
-            iconName="stamp"
-            class="relative text-primary transition-colors active:text-primary/50"
-            iconClass="h-16 w-16 mr-2 animate-spin-slower drop-shadow-xl"
-            ariaLabel="Experiments!"
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              showExperimentsPopup = true
-            }}>
-            <div
-              class="absolute inset-0 mr-2 flex items-center justify-center font-bold text-white">
-              NEW!
-            </div>
-          </IconButton>
-        {/if}
         {#if showReportButton}
           <IconButton
             iconName="flag"
