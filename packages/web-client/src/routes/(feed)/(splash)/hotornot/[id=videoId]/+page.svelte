@@ -91,6 +91,8 @@ async function fetchNextVideos(force = false) {
 
       Log('info', 'Fetched videos for feed', {
         noMoreVideos,
+        from: res.from,
+        fetchedCount: res.posts.length,
         source: 'hotOrNot.fetchNextVideos',
       })
     } catch (e) {
@@ -165,6 +167,7 @@ beforeNavigate(() => {
           watchHistoryDb="watch-hon"
           showWalletLink
           showReportButton
+          showExperimentsButton
           let:recordView
           let:updateStats>
           <VideoPlayer
