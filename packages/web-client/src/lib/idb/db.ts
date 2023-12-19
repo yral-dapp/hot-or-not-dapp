@@ -9,7 +9,7 @@ type DBStores =
   | 'wallet'
   | 'reported'
 
-const dbPromise = openDB('keyval-store', 7, {
+const dbPromise = openDB('hot-or-not-web-client', 8, {
   upgrade(db) {
     if (!db.objectStoreNames.contains('keyval')) {
       db.createObjectStore('keyval')
