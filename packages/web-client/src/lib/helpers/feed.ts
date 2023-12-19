@@ -8,6 +8,8 @@ import Log from '$lib/utils/Log'
 import { Principal } from '@dfinity/principal'
 import { individualUser, postCache } from './backend'
 import { setBetDetailToDb } from './profile'
+import sleep from '$lib/utils/sleep'
+import { chunk } from '$lib/utils/chunk'
 
 export interface PostPopulated
   extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -273,6 +275,43 @@ function hasUserBetOnPost(post: PostDetailsForFrontend) {
   return false
 }
 
+async function fetchPostDetailById(
+  post: PostScoreIndexItem,
+  filterBetPosts = false,
+) {
+  try {
+    const r = await individualUser(
+      Principal.from(post.publisher_canister_id),
+    ).get_individual_post_details_by_id(post.post_id)
+    if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
+      Log('warn', 'Already bet on post', {
+        post,
+        from: 'feed.populatePosts.fetch',
+      })
+      setBetDetailToDb({
+        ...r,
+        ...post,
+        created_by_user_principal_id: r.created_by_user_principal_id.toText(),
+        publisher_canister_id: post.publisher_canister_id.toText(),
+      } satisfies PostPopulated)
+      return undefined
+    }
+    return {
+      ...r,
+      ...post,
+      created_by_user_principal_id: r.created_by_user_principal_id.toText(),
+      publisher_canister_id: post.publisher_canister_id.toText(),
+    } as PostPopulated
+  } catch (e) {
+    Log('error', 'Error while populating post', {
+      error: e,
+      post,
+      from: 'feed.populatePosts.fetch',
+    })
+    return undefined
+  }
+}
+
 async function populatePosts(
   posts: PostScoreIndexItem[],
   filterBetPosts = false,
@@ -282,44 +321,24 @@ async function populatePosts(
       return { posts: [], error: false }
     }
 
-    const res = await Promise.all(
-      posts.map(async (post) => {
-        try {
-          const r = await individualUser(
-            Principal.from(post.publisher_canister_id),
-          ).get_individual_post_details_by_id(post.post_id)
-          if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
-            Log('warn', 'Already bet on post', {
-              post,
-              from: 'feed.populatePosts.fetch',
-            })
-            setBetDetailToDb({
-              ...r,
-              ...post,
-              created_by_user_principal_id:
-                r.created_by_user_principal_id.toText(),
-              publisher_canister_id: post.publisher_canister_id.toText(),
-            })
-            return undefined
-          }
-          return {
-            ...r,
-            ...post,
-            created_by_user_principal_id:
-              r.created_by_user_principal_id.toText(),
-            publisher_canister_id: post.publisher_canister_id.toText(),
-          }
-        } catch (e) {
-          Log('error', 'Error while populating post', {
-            error: e,
-            post,
-            from: 'feed.populatePosts.fetch',
-          })
-          return undefined
-        }
-      }),
-    )
-    return { posts: res.filter((o) => !!o) as PostPopulated[], error: false }
+    const populatedPosts: PostPopulated[] = []
+
+    const chunkedPosts = chunk(posts, 10)
+    while (chunkedPosts.length) {
+      const batch = chunkedPosts.shift()
+      if (batch) {
+        const results = await Promise.all(
+          batch.map((post) => fetchPostDetailById(post, filterBetPosts)),
+        )
+        populatedPosts.push(...(results.filter((o) => !!o) as PostPopulated[]))
+        await sleep(200)
+      }
+    }
+
+    return {
+      posts: populatedPosts,
+      error: false,
+    }
   } catch (e) {
     Log('error', 'Error while loading posts', {
       error: e,
