@@ -12,13 +12,15 @@ declare namespace App {
   // interface Stuff {}
 }
 
-namespace svelte.JSX {
+declare namespace svelteHTML {
   interface SvelteWindowProps {
-    onbeforeinstallprompt?:
-      | EventHandler<BeforeInstallPromptEvent, Window>
-      | undefined
-      | null
-    onappinstalled?: EventHandler<Event, Window> | undefined | null
+    'on:beforeinstallprompt'?: (
+      event: EventHandler<BeforeInstallPromptEvent, Window> | undefined | null,
+    ) => any
+
+    'on:appinstalled'?: (
+      event: EventHandler<Event, Window> | undefined | null,
+    ) => any
   }
 
   interface HTMLProps<T> {

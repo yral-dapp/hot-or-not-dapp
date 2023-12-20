@@ -7,8 +7,7 @@ $: testClasses = testMode ? 'border-2 border-white/30' : ''
 
 <feed
   style="height: 100vh;"
-  class="relative block h-full w-full overflow-hidden text-white"
-  on:keyup>
+  class="relative block h-full w-full overflow-hidden text-white">
   <slot name="content" />
   <div class="absolute inset-x-0 top-0 z-[5] {testClasses}">
     <slot name="top" />
