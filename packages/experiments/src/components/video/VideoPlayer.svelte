@@ -245,18 +245,17 @@ onDestroy(() => {
     </div>
   </div>
 {:else if $playerState.muted || !playing}
-  <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
-    <div class="flex h-full items-center justify-center">
-      {#if !playing}
-        <Icon
-          name="play"
-          class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
-      {:else if $playerState.muted}
-        <Icon
-          name="speaker-max"
-          class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
-      {/if}
-    </div>
+  <div
+    class="fade-in pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
+    {#if !playing}
+      <Icon
+        name="play"
+        class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+    {:else if $playerState.muted}
+      <Icon
+        name="speaker-max"
+        class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+    {/if}
   </div>
 {/if}
 
