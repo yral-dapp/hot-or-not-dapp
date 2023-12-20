@@ -9,14 +9,14 @@ import type { PageLoad } from './$types'
 export const load: PageLoad = async ({ params, fetch }) => {
   const id = params.id
   if (!id) {
-    throw redirect(307, '/404')
+    redirect(307, '/404')
   }
   try {
     const profile = await individualUser(undefined, fetch).get_profile_details()
     const me =
       profile.unique_user_name[0] === id || profile.principal_id.toText() === id
     if (!me) {
-      throw redirect(307, `/profile/${params.id}`)
+      redirect(307, `/profile/${params.id}`)
     }
     updateProfile(profile)
     return {
@@ -31,6 +31,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
       error: e,
       from: 'editLoad',
     })
-    throw redirect(307, `/profile/${params.id}`)
+    redirect(307, `/profile/${params.id}`)
   }
 }

@@ -12,7 +12,7 @@ export const load: PageLoad = async ({ url, fetch }) => {
   }
   const cachedVideos = await getWatchedVideosFromCache('watch')
   if (cachedVideos.length) {
-    throw redirect(
+    redirect(
       307,
       `/feed/${cachedVideos[0].publisher_canister_id}@${cachedVideos[0].post_id}`,
     )
@@ -26,13 +26,13 @@ export const load: PageLoad = async ({ url, fetch }) => {
   )
 
   if ('Ok' in res && res.Ok[0]) {
-    throw redirect(
+    redirect(
       307,
       `/feed/${res.Ok[0].publisher_canister_id.toText()}@${
         res.Ok[0].post_id
       }${searchParams}`,
     )
   } else {
-    throw redirect(307, `/feed/no-videos${searchParams}`)
+    redirect(307, `/feed/no-videos${searchParams}`)
   }
 }

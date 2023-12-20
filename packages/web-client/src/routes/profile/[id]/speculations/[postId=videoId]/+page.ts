@@ -22,7 +22,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
     const canId = await getCanisterId(profileId)
     if (!canId) {
-      throw redirect(307, '/profile')
+      redirect(307, '/profile')
+      return
     }
 
     const userProfileData = get(userProfile)
@@ -51,7 +52,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
     )
 
     if (!betDetail[0]) {
-      throw redirect(307, '/profile')
+      redirect(307, '/profile')
+      return
     }
 
     const post: PostPopulatedWithBetDetails = {
@@ -74,6 +76,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
       postId: params.postId,
       error: e,
     })
-    throw redirect(307, '/profile')
+    redirect(307, '/profile')
   }
 }

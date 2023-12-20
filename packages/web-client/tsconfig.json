@@ -18,7 +18,6 @@
     "allowJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "importsNotUsedAsValues": "error",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,

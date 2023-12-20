@@ -17,12 +17,13 @@ export const load: PageLoad = async ({ params, fetch }) => {
     let me = false
     if (!pid || isNaN(Number(pid))) {
       Log('warn', 'Invalid post ID', { from: 'loadProfilePostId', pid, id })
-      throw redirect(307, '/profile')
+      redirect(307, '/profile')
     }
 
     const canId = await getCanisterId(id)
     if (!canId) {
-      throw redirect(307, '/profile')
+      redirect(307, '/profile')
+      return
     }
 
     const userProfileData = get(userProfile)
@@ -47,7 +48,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
       created_by_user_principal_id: post.created_by_user_principal_id.toText(),
     }
     if (!video) {
-      throw redirect(307, '/profile')
+      redirect(307, '/profile')
     }
     return { me, video }
   } catch (e) {
@@ -58,6 +59,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
       postId: params.postId,
     })
 
-    throw redirect(307, '/profile')
+    redirect(307, '/profile')
   }
 }

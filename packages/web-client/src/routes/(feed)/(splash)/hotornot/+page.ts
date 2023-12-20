@@ -13,13 +13,13 @@ export const load: PageLoad = async ({ fetch }) => {
   )
 
   if ('Ok' in res && res.Ok[0]) {
-    throw redirect(
+    redirect(
       307,
       `/hotornot/${res.Ok[0].publisher_canister_id.toText()}@${
         res.Ok[0].post_id
       }`,
     )
   } else {
-    throw redirect(307, '/hotornot/no-videos')
+    redirect(307, '/hotornot/no-videos')
   }
 }

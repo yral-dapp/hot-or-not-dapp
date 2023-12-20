@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
   if (!id) {
     Log('warn', 'No profile ID', { from: 'loadProfile', id: params.id })
-    throw redirect(307, '/menu')
+    redirect(307, '/menu')
   }
 
   const userProfileData = get(userProfile)
@@ -34,7 +34,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
   ) {
     if (isUserAnon && isLoggedInAsAnon) {
       // Logged in as an anon user
-      throw redirect(307, '/menu?logout=true')
+      redirect(307, '/menu?logout=true')
     }
     await updateProfile()
     const updatedProfile = get(userProfile)
@@ -42,12 +42,12 @@ export const load: PageLoad = async ({ params, fetch }) => {
   } else {
     if (isUserAnon) {
       // Logged in as an anon user
-      throw redirect(307, '/menu')
+      redirect(307, '/menu')
     }
     const canId = await getCanisterId(id)
     if (!canId) {
       Log('warn', 'No canister ID', { from: 'loadProfile', id: params.id })
-      throw error(404, "Couldn't find canister Id")
+      error(404, "Couldn't find canister Id")
     }
     Log('info', 'Found canister ID', { from: 'loadProfile', canId })
     const fetchedProfile = await individualUser(

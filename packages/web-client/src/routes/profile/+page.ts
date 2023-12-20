@@ -10,11 +10,11 @@ export const load = async () => {
   const authStateData = get(authState)
 
   if (authStateData.isLoggedIn) {
-    throw redirect(
+    redirect(
       307,
       `/profile/${
         userProfileData.unique_user_name || userProfileData.principal_id
       }`,
     )
-  } else throw redirect(307, '/menu')
+  } else redirect(307, '/menu')
 }
