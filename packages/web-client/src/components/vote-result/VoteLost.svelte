@@ -5,7 +5,7 @@ import { fade } from 'svelte/transition'
 </script>
 
 <vote-lost
-  transition:fade|local
+  transition:fade
   class="absolute z-[100] flex h-full w-full flex-col items-center justify-center space-y-10 bg-black px-8 text-white">
   <Avatar
     class="h-24 w-24"

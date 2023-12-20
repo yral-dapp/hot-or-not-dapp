@@ -48,7 +48,7 @@ function toggleAccordion(i: number) {
         expanded={expandedIndex == 0}>
         <div class="w-full truncate" slot="title">Android</div>
         <div
-          transition:slide|local
+          transition:slide
           slot="body"
           class="flex flex-col gap-4 py-3">
           <span class="text-sm opacity-70">
@@ -74,7 +74,7 @@ function toggleAccordion(i: number) {
         expanded={expandedIndex == 1}>
         <div class="w-full truncate" slot="title">iOS</div>
         <div
-          transition:slide|local
+          transition:slide
           slot="body"
           class="flex flex-col gap-4 py-3">
           <span class="text-sm opacity-70">1. Click on share button</span>

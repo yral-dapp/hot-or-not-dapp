@@ -371,7 +371,7 @@ onDestroy(async () => {
     <div class="realtive h-full w-full bg-black">
       {#if initState != 'allowed'}
         <div
-          transition:fade|local
+          transition:fade
           class="flex h-full flex-col items-center justify-center space-y-8 px-10">
           <Icon name="camera-graphic" class="h-56 w-56" />
 
@@ -399,8 +399,8 @@ onDestroy(async () => {
         {#if timerInterval}
           {#key timerCountdown}
             <div
-              in:fade|local={{ duration: 500, delay: 100 }}
-              out:fade|local={{ duration: 100 }}
+              in:fade={{ duration: 500, delay: 100 }}
+              out:fade={{ duration: 100 }}
               class={c(
                 'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
                 timerCountdown > 3 ? 'text-white' : 'text-primary',
@@ -439,7 +439,7 @@ onDestroy(async () => {
   <svelte:fragment slot="bottom-camera-controls">
     {#if initState == 'allowed'}
       <!-- Snap Point -->
-      <div transition:fade|local class="flex items-end justify-start pt-3">
+      <div transition:fade class="flex items-end justify-start pt-3">
         <button
           bind:this={cameraEl}
           on:click={() => !loading && startRecording()}
@@ -458,7 +458,7 @@ onDestroy(async () => {
       {#if !recording && useCanvas}
         <button
           on:click={(e) => !loading && checkClickAndStartRecording(e)}
-          transition:fade|local
+          transition:fade
           bind:this={filtersEl}
           on:scroll={checkWhichEl}
           class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto">

@@ -16,7 +16,7 @@ const dispatch = createEventDispatcher<{ close: void }>()
 
 {#if show}
   <div
-    transition:fade|local={{ duration: 100 }}
+    transition:fade={{ duration: 100 }}
     on:keyup
     on:click={() => {
       show = false

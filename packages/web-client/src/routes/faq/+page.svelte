@@ -44,7 +44,7 @@ function toggleAccordion(i: number) {
             on:click={() => toggleAccordion(i)}
             expanded={expandedIndex == i}>
             <div class="w-full truncate" slot="title">{q.title}</div>
-            <div transition:slide|local slot="body" class="text-sm opacity-70">
+            <div transition:slide slot="body" class="text-sm opacity-70">
               {q.body}
             </div>
           </Accordion>
@@ -55,7 +55,7 @@ function toggleAccordion(i: number) {
             on:click={() => toggleAccordion(i)}
             expanded={expandedIndex == i}>
             <div class="w-full truncate" slot="title">{q.title}</div>
-            <div transition:slide|local slot="body" class="text-sm opacity-70">
+            <div transition:slide slot="body" class="text-sm opacity-70">
               {q.body}
             </div>
           </Accordion>
@@ -66,7 +66,7 @@ function toggleAccordion(i: number) {
             on:click={() => toggleAccordion(i)}
             expanded={expandedIndex == i}>
             <div class="w-full truncate" slot="title">{q.title}</div>
-            <div transition:slide|local slot="body" class="text-sm opacity-70">
+            <div transition:slide slot="body" class="text-sm opacity-70">
               {q.body}
             </div>
           </Accordion>

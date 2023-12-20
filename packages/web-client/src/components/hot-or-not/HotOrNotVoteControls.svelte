@@ -61,7 +61,7 @@ function placeVote(direction: 'Hot' | 'Not') {
 
 <div
   class="pointer-events-none absolute inset-0 top-0 flex items-center justify-center space-x-12 px-4"
-  transition:fade|local>
+  transition:fade>
   <div
     class={c(
       'relative flex flex-col items-center space-y-1',

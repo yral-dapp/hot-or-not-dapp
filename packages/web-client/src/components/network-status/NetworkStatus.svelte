@@ -17,7 +17,7 @@ let networkStatus: 'offline' | 'online' = 'online'
 
 {#if networkStatus === 'offline'}
   <network-status
-    transition:slide|local
+    transition:slide
     class="fixed z-[51] flex h-5 w-full items-center justify-center text-xs text-white {offline
       ? 'bg-red-500'
       : 'bg-green-500'}">
