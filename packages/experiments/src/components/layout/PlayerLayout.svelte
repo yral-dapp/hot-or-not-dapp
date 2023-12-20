@@ -179,7 +179,7 @@ onDestroy(unload)
           <slot name="betRoomInfo" />
         </div>
         <div
-          class="max-w-16 pointer-events-auto flex shrink-0 flex-col justify-end space-y-6 pb-2">
+          class="pointer-events-auto flex max-w-16 shrink-0 flex-col justify-end space-y-6 pb-2">
           {#if showLikeButton}
             <IconButton
               iconName={liked ? 'heart-fill-color' : 'heart-fill'}
@@ -228,27 +228,3 @@ onDestroy(unload)
     </div>
   {/if}
 </player-layout>
-
-<style>
-:global(.animate-wobble) {
-  animation: 6s ease 1s wobble infinite;
-}
-@keyframes wobble {
-  30% {
-    transform: scale(1.2);
-  }
-  40%,
-  60% {
-    transform: rotate(-10deg) scale(1.2);
-  }
-  50% {
-    transform: rotate(10deg) scale(1.2);
-  }
-  70% {
-    transform: rotate(0deg) scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-</style>

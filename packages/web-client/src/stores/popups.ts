@@ -1,5 +1,6 @@
 import { writable, get } from 'svelte/store'
 import { persisted } from 'svelte-local-storage-store'
+import { browser } from '$app/environment'
 
 export const showOnboardingPopup = persisted('hot-or-not-ob', true)
 
@@ -16,6 +17,12 @@ export const shownAirdropPopup = persisted<boolean>(
   'waitlist-form-submitted',
   false,
 )
+
+export function removeSplashScreen() {
+  if (!browser) return
+  const el = document.querySelector('splash-screen')
+  el?.remove()
+}
 
 let splashScreenTimeOut: NodeJS.Timeout
 

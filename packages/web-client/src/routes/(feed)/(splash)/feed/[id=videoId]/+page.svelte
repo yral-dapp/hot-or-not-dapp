@@ -1,8 +1,9 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
-import { page } from '$app/stores'
 import Button from '$components/button/Button.svelte'
+import Icon from '$components/icon/Icon.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
+import PlayerRenderer from '$components/video/PlayerRenderer.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import {
   getTopPosts,
@@ -10,18 +11,15 @@ import {
   updatePostInWatchHistory,
   type PostPopulated,
 } from '$lib/helpers/feed'
-import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
+import { updateURL } from '$lib/utils/feedUrl'
 import { handleParams } from '$lib/utils/params'
-import { joinArrayUniquely, updateMetadata } from '$lib/utils/video'
+import { joinArrayUniquely } from '$lib/utils/video'
 import { homeFeedVideos, playerState } from '$stores/playerState'
-import { hideSplashScreen } from '$stores/popups'
-import Hls from 'hls.js/dist/hls.min.js'
+import { removeSplashScreen } from '$stores/popups'
 import { onMount, tick } from 'svelte'
-import 'swiper/css'
-import { Swiper, SwiperSlide } from 'swiper/svelte'
+import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
-import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -38,8 +36,6 @@ let fetchedVideosCount = 0
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
 let showError = false
-
-$: pathname = $page.url.pathname
 
 async function fetchNextVideos(force = false) {
   // console.log(
@@ -109,13 +105,11 @@ async function handleUnavailableVideo(index: number) {
   videos = videos
 }
 
-async function handleChange(e: CustomEvent) {
-  const newIndex = e.detail[0].realIndex
+const handleChange = debounce(250, (newIndex: number) => {
   currentVideoIndex = newIndex
   fetchNextVideos()
   updateURL(videos[currentVideoIndex])
-  updateMetadata(videos[currentVideoIndex])
-}
+})
 
 onMount(async () => {
   updateURL()
@@ -147,75 +141,69 @@ beforeNavigate(() => {
   <title>Home Feed | Hot or Not</title>
 </svelte:head>
 
-<Swiper
-  direction={'vertical'}
-  observer
-  cssMode
-  slidesPerView={1}
-  on:slideChange={handleChange}
-  spaceBetween={300}
-  class="h-full w-full">
-  {#each videos as post, i (i)}
-    <SwiperSlide
-      class="flex h-full w-full snap-always items-center justify-center">
-      {#if currentVideoIndex - 2 < i && currentVideoIndex + keepVideosLoadedCount > i}
-        <PlayerLayout
-          bind:post
-          index={i}
-          source="main_feed"
-          watchHistoryDb="watch"
-          showReportButton
-          showLikeButton
-          showReferAndEarnLink
-          showShareButton
-          showDescription
-          showHotOrNotButton
-          let:recordView
-          let:updateStats>
-          <VideoPlayer
-            on:watchComplete={updateStats}
-            on:loaded={() => hideSplashScreen(500)}
-            on:watchedPercentage={({ detail }) => recordView(detail)}
-            on:videoUnavailable={() => handleUnavailableVideo(i)}
-            index={i}
-            playFormat="hls"
-            {Hls}
-            inView={i == currentVideoIndex && $playerState.visible}
-            uid={post.video_uid} />
-        </PlayerLayout>
-      {/if}
-    </SwiperSlide>
+<div
+  style="height: 100dvh;"
+  class="hide-scrollbar relative flex w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
+  {#each videos as post, index (index)}
+    <PlayerRenderer
+      {keepVideosLoadedCount}
+      {index}
+      activeIndex={currentVideoIndex}
+      let:show>
+      <PlayerLayout
+        bind:post
+        {index}
+        {show}
+        source="main_feed"
+        watchHistoryDb="watch"
+        showReportButton
+        showLikeButton
+        showReferAndEarnLink
+        showShareButton
+        showDescription
+        showHotOrNotButton
+        let:recordView
+        let:updateStats
+        on:view={({ detail }) => handleChange(detail)}>
+        <VideoPlayer
+          on:watchComplete={updateStats}
+          on:loaded={() => removeSplashScreen()}
+          on:watchedPercentage={({ detail }) => recordView(detail)}
+          on:videoUnavailable={() => handleUnavailableVideo(index)}
+          {index}
+          playFormat="hls"
+          inView={index == currentVideoIndex && $playerState.visible}
+          uid={post.video_uid} />
+      </PlayerLayout>
+    </PlayerRenderer>
   {/each}
   {#if showError}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
-      <div
-        class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-        <div class="text-center text-lg font-bold">
-          Error loading posts. Please, refresh the page.
-        </div>
-        <Button type="primary" on:click={(e) => e.preventDefault()} href="/">
-          Clear here to refresh
-        </Button>
+    <div
+      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+      <div class="text-center text-lg font-bold">
+        Error loading posts. Please, refresh the page.
       </div>
-    </SwiperSlide>
+      <Button
+        type="primary"
+        on:click={(e) => e.preventDefault()}
+        href="/hotornot">
+        Clear here to refresh
+      </Button>
+    </div>
   {/if}
   {#if loading}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
-      <div
-        class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-        <div class="text-center text-lg font-bold">Loading</div>
-      </div>
-    </SwiperSlide>
+    <div
+      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+      <div class="text-center text-lg font-bold">Loading</div>
+    </div>
   {/if}
   {#if noMoreVideos}
-    <SwiperSlide class="flex h-full w-full items-center justify-center">
-      <div
-        class="relative flex h-full w-full flex-col items-center justify-center space-y-8 px-8">
-        <Icon name="videos-graphic" class="w-56" />
-        <div class="text-center text-lg font-bold">
-          No more videos to display today
-        </div>
+    <div
+      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+      <Icon name="videos-graphic" class="w-56" />
+      <div class="text-center text-lg font-bold">
+        No more videos to display today
       </div>
-    </SwiperSlide>
+    </div>
   {/if}
-</Swiper>
+</div>

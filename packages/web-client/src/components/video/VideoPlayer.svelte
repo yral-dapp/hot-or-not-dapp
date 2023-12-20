@@ -4,15 +4,14 @@ import { getHlsUrl, getMp4Url } from '$lib/utils/cloudflare'
 import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'
 import { playerState } from '$stores/playerState'
-import type Hls from 'hls.js'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { debounce, throttle } from 'throttle-debounce'
+import type { default as HLSType } from 'hls.js'
 
 export let uid: string
 export let index: number
 export let inView = false
 export let thumbnail = ''
-export let Hls: any
 export let playFormat: 'hls' | 'mp4'
 
 let ios = isiPhone()
@@ -28,7 +27,7 @@ let videoEl: HTMLVideoElement
 let currentTime = 0
 let duration = 0
 let loaded = false
-let hls: Hls | null = null
+let hls: HLSType | null = null
 let waiting = false
 let playing = true
 let videoUnavailable = false
@@ -167,8 +166,8 @@ $: if (!inView) {
   }
 }
 
-onMount(() => {
-  if (playFormat === 'mp4' || ios) {
+function init() {
+  if (playFormat === 'mp4') {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
   } else {
@@ -197,7 +196,9 @@ onMount(() => {
       })
     }
   }
-})
+}
+
+onMount(() => init())
 
 onDestroy(() => {
   if (hls && hls.destroy) {
@@ -244,18 +245,17 @@ onDestroy(() => {
     </div>
   </div>
 {:else if $playerState.muted || !playing}
-  <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
-    <div class="flex h-full items-center justify-center">
-      {#if !playing}
-        <Icon
-          name="play"
-          class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
-      {:else if $playerState.muted}
-        <Icon
-          name="speaker-max"
-          class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
-      {/if}
-    </div>
+  <div
+    class="fade-in pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
+    {#if !playing}
+      <Icon
+        name="play"
+        class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+    {:else if $playerState.muted}
+      <Icon
+        name="speaker-max"
+        class="breathe h-16 w-16 text-white/90 drop-shadow-lg" />
+    {/if}
   </div>
 {/if}
 

@@ -70,7 +70,7 @@ beforeNavigate(() => {
       </div>
     </div>
   {:else}
-    <PlayerLayout show bind:post index={0} showShareButton>
+    <PlayerLayout single show bind:post index={0} showShareButton>
       <VideoPlayer
         on:loaded={() => removeSplashScreen()}
         index={0}

@@ -16,6 +16,7 @@ import { authState } from '$stores/auth'
 import userProfile from '$stores/userProfile'
 import { debounce } from 'throttle-debounce'
 import ExperimentsPopup from '$components/popup/ExperimentsPopup.svelte'
+import { createEventDispatcher, onDestroy, tick } from 'svelte'
 
 export let index: number
 export let post: PostPopulated
@@ -29,8 +30,16 @@ export let showDescription = false
 export let showExperimentsButton = false
 export let unavailable = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
+export let single = false
 export let source: 'hon_feed' | 'main_feed' | 'speculation' | 'post'
+export let show = false
 
+const dispatch = createEventDispatcher<{
+  view: number
+}>()
+
+let observer: IntersectionObserver | null = null
+let playerLayoutEl: HTMLDivElement
 let showTruncatedDescription = true
 let watchProgress = {
   totalCount: 0,
@@ -193,6 +202,34 @@ async function updateStats() {
 $: avatarUrl =
   post.created_by_profile_photo_url[0] ||
   getDefaultImageUrl(post.created_by_user_principal_id)
+
+async function setupIO() {
+  if (single) return
+  await tick()
+  if (observer) return
+  observer = new IntersectionObserver(
+    async (entries) => {
+      if (entries[0].isIntersecting) {
+        dispatch('view', index)
+      }
+    },
+    { threshold: 0.85 },
+  )
+  observer.observe(playerLayoutEl)
+}
+
+function unload() {
+  observer?.disconnect()
+  observer = null
+}
+
+$: if (show) {
+  setupIO()
+} else {
+  unload()
+}
+
+onDestroy(unload)
 </script>
 
 {#if showReportPopup}
@@ -213,8 +250,10 @@ $: avatarUrl =
 {/if}
 
 <player-layout
+  bind:this={playerLayoutEl}
   data-index={index}
-  class="relative block h-full w-full items-center justify-center overflow-auto transition-all duration-500">
+  style="height: 100dvh;"
+  class="relative flex w-full shrink-0 snap-center snap-always items-center justify-center transition-all">
   {#if !unavailable}
     <img
       alt="background"
@@ -222,157 +261,135 @@ $: avatarUrl =
       src={getThumbnailUrl(post.video_uid)} />
   {/if}
 
-  <div
-    style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
-    class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
-    {#if showExperimentsButton}
-      <div class="pointer-events-auto absolute left-1 top-12">
-        <IconButton
-          iconName="stamp"
-          class="relative text-primary transition-colors active:text-primary/50"
-          iconClass="h-16 w-16 m-2 animate-spin-slower drop-shadow-xl"
-          ariaLabel="Experiments!"
-          on:click={(e) => {
-            e.stopImmediatePropagation()
-            showExperimentsPopup = true
-          }}>
-          <div
-            class="absolute inset-0 m-2 flex items-center justify-center font-bold text-white">
-            NEW!
-          </div>
-        </IconButton>
-      </div>
-    {/if}
+  {#if show}
     <div
-      style="-webkit-transform: translate3d(0, 0, 0);"
-      class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
-      {$$slots.hotOrNot ? 'bottom-40' : 'bottom-20'}">
-      <div class="flex grow flex-col justify-end space-y-4">
-        <div
-          aria-roledescription="video-info"
-          class="pointer-events-auto flex space-x-3">
-          <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
-            <Avatar class="h-12 w-12" src={avatarUrl} />
-          </a>
-          <div class="flex flex-col space-y-1">
-            <a href="/profile/{postPublisherId}">
-              {displayName ||
-                generateRandomName('name', post.created_by_user_principal_id)}
-            </a>
-            <div class="flex items-center space-x-1">
-              <Icon name="eye-open" class="h-4 w-4 text-white" />
-              <span class="text-sm">{Number(post.total_view_count)}</span>
+      style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
+      class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
+      {#if showExperimentsButton}
+        <div class="pointer-events-auto absolute left-1 top-12">
+          <IconButton
+            iconName="stamp"
+            class="relative text-primary transition-colors active:text-primary/50"
+            iconClass="h-16 w-16 m-2 animate-spin-slower drop-shadow-xl"
+            ariaLabel="Experiments!"
+            on:click={(e) => {
+              e.stopImmediatePropagation()
+              showExperimentsPopup = true
+            }}>
+            <div
+              class="absolute inset-0 m-2 flex items-center justify-center font-bold text-white">
+              NEW!
             </div>
-          </div>
+          </IconButton>
         </div>
-        {#if showDescription}
-          <button
-            class:max-h-10={showTruncatedDescription}
-            on:click|stopImmediatePropagation={(e) => {
-              showTruncatedDescription = !showTruncatedDescription
-            }}
-            class="pointer-events-auto truncate text-ellipsis whitespace-normal text-left text-sm">
-            {post.description}
-          </button>
-        {/if}
-        <slot name="betRoomInfo" />
-      </div>
-
-      <div
-        class="max-w-16 pointer-events-auto flex shrink-0 flex-col items-end justify-end space-y-6 pb-2">
-        {#if showReportButton}
-          <IconButton
-            iconName="flag"
-            iconClass="h-6 w-6 text-white drop-shadow-md"
-            ariaLabel="Report this post"
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              showReportPopup = true
-            }} />
-        {/if}
-
-        {#if showReferAndEarnLink}
-          <IconButton
-            iconName="giftbox-fill"
-            iconClass="h-7 w-7"
-            ariaLabel="Share this post"
-            href="/refer-earn" />
-        {/if}
-        {#if showLikeButton}
-          <div class="flex flex-col">
-            <IconButton
-              iconName={post.liked_by_me && $authState.isLoggedIn
-                ? 'heart-fill-color'
-                : 'heart-fill'}
-              iconClass="h-8 w-8"
-              ariaLabel="Toggle like on this post"
-              on:click={(e) => {
-                e.stopImmediatePropagation()
-                handleLike()
-              }} />
-            <span class="text-center text-sm drop-shadow-md">
-              {getShortNumber(Number(post.like_count))}
-            </span>
-          </div>
-        {/if}
-        {#if showWalletLink}
-          <IconButton
-            iconName="wallet-fill"
-            iconClass="h-6 w-6 text-white drop-shadow-md"
-            ariaLabel="Wallet"
-            href="/wallet" />
-        {/if}
-        {#if showShareButton}
-          <IconButton
-            iconName="share-message"
-            iconClass="h-6 w-6 drop-shadow-md"
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              handleShare()
-            }} />
-        {/if}
-        {#if showHotOrNotButton}
-          <IconButton
-            iconName="fire"
-            iconClass="h-5 w-5"
-            ariaLabel="Check out this post in Hot or Not"
-            disabled={!bettingStatusValue}
-            href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
-            class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2" />
-        {/if}
-      </div>
-    </div>
-    {#if $$slots.hotOrNot}
+      {/if}
       <div
         style="-webkit-transform: translate3d(0, 0, 0);"
-        class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
-        <slot name="hotOrNot" />
-      </div>
-    {/if}
-  </div>
-  <slot {recordView} {updateStats} />
-</player-layout>
+        class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
+      {$$slots.hotOrNot ? 'bottom-40' : 'bottom-20'}">
+        <div class="flex grow flex-col justify-end space-y-4">
+          <div
+            aria-roledescription="video-info"
+            class="pointer-events-auto flex space-x-3">
+            <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
+              <Avatar class="h-12 w-12" src={avatarUrl} />
+            </a>
+            <div class="flex flex-col space-y-1">
+              <a href="/profile/{postPublisherId}">
+                {displayName ||
+                  generateRandomName('name', post.created_by_user_principal_id)}
+              </a>
+              <div class="flex items-center space-x-1">
+                <Icon name="eye-open" class="h-4 w-4 text-white" />
+                <span class="text-sm">{Number(post.total_view_count)}</span>
+              </div>
+            </div>
+          </div>
+          {#if showDescription}
+            <button
+              class:max-h-10={showTruncatedDescription}
+              on:click|stopImmediatePropagation={(e) => {
+                showTruncatedDescription = !showTruncatedDescription
+              }}
+              class="pointer-events-auto truncate text-ellipsis whitespace-normal text-left text-sm">
+              {post.description}
+            </button>
+          {/if}
+          <slot name="betRoomInfo" />
+        </div>
 
-<style>
-:global(.animate-wobble) {
-  animation: 6s ease 1s wobble infinite;
-}
-@keyframes wobble {
-  30% {
-    transform: scale(1.2);
-  }
-  40%,
-  60% {
-    transform: rotate(-10deg) scale(1.2);
-  }
-  50% {
-    transform: rotate(10deg) scale(1.2);
-  }
-  70% {
-    transform: rotate(0deg) scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-</style>
+        <div
+          class="pointer-events-auto flex max-w-16 shrink-0 flex-col items-end justify-end space-y-6 pb-2">
+          {#if showReportButton}
+            <IconButton
+              iconName="flag"
+              iconClass="h-6 w-6 text-white drop-shadow-md"
+              ariaLabel="Report this post"
+              on:click={(e) => {
+                e.stopImmediatePropagation()
+                showReportPopup = true
+              }} />
+          {/if}
+
+          {#if showReferAndEarnLink}
+            <IconButton
+              iconName="giftbox-fill"
+              iconClass="h-7 w-7"
+              ariaLabel="Share this post"
+              href="/refer-earn" />
+          {/if}
+          {#if showLikeButton}
+            <div class="flex flex-col">
+              <IconButton
+                iconName={post.liked_by_me && $authState.isLoggedIn
+                  ? 'heart-fill-color'
+                  : 'heart-fill'}
+                iconClass="h-8 w-8"
+                ariaLabel="Toggle like on this post"
+                on:click={(e) => {
+                  e.stopImmediatePropagation()
+                  handleLike()
+                }} />
+              <span class="text-center text-sm drop-shadow-md">
+                {getShortNumber(Number(post.like_count))}
+              </span>
+            </div>
+          {/if}
+          {#if showWalletLink}
+            <IconButton
+              iconName="wallet-fill"
+              iconClass="h-6 w-6 text-white drop-shadow-md"
+              ariaLabel="Wallet"
+              href="/wallet" />
+          {/if}
+          {#if showShareButton}
+            <IconButton
+              iconName="share-message"
+              iconClass="h-6 w-6 drop-shadow-md"
+              on:click={(e) => {
+                e.stopImmediatePropagation()
+                handleShare()
+              }} />
+          {/if}
+          {#if showHotOrNotButton}
+            <IconButton
+              iconName="fire"
+              iconClass="h-5 w-5"
+              ariaLabel="Check out this post in Hot or Not"
+              disabled={!bettingStatusValue}
+              href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
+              class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2" />
+          {/if}
+        </div>
+      </div>
+      {#if $$slots.hotOrNot}
+        <div
+          style="-webkit-transform: translate3d(0, 0, 0);"
+          class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
+          <slot name="hotOrNot" />
+        </div>
+      {/if}
+    </div>
+    <slot {recordView} {updateStats} />
+  {/if}
+</player-layout>

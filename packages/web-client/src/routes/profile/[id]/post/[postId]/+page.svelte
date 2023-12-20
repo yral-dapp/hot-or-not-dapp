@@ -5,10 +5,8 @@ import HomeLayout from '$components/layout/HomeLayout.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import Hls from 'hls.js/dist/hls.min.js'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
-import Icon from '$components/icon/Icon.svelte'
 
 export let data: PageData
 
@@ -40,6 +38,7 @@ let unavailable = false
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
       <PlayerLayout
+        single
         bind:post={video}
         index={0}
         source="post"
@@ -57,7 +56,6 @@ let unavailable = false
           on:watchedPercentage={({ detail }) => recordView(detail)}
           index={0}
           playFormat="hls"
-          {Hls}
           inView
           uid={video.video_uid} />
       </PlayerLayout>

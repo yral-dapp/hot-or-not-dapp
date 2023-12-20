@@ -209,11 +209,12 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const notBetPosts = await filterBets(res.Ok)
-      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
-      const notReportedPosts = await filterReportedPosts(notStuckPosts)
       // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
-      const populatedRes = await populatePosts(notReportedPosts, true)
+
+      const notStuckPosts = await filterStuckCanisterPosts(res.Ok)
+      // const notBetPosts = await filterBets(notStuckPosts)
+      // const notReportedPosts = await filterReportedPosts(notBetPosts)
+      const populatedRes = await populatePosts(notStuckPosts, false)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
