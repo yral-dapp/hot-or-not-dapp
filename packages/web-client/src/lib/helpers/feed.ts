@@ -203,17 +203,29 @@ export async function getHotOrNotPosts(
   numberOfPosts: number = 10,
 ): Promise<FeedResponse> {
   try {
+    console.info('1. Fetching videos from index canister for hot or not feed', {
+      from,
+      numberOfPosts,
+    })
     const res =
       await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
         BigInt(from),
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
+      console.log('2. Fetched videos from index canister', res.Ok)
       const notBetPosts = await filterBets(res.Ok)
+      console.log(
+        '3. Filtered videos that user have already bet on',
+        notBetPosts,
+      )
       const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
+      console.log('4. Filtered blacklist canister videos', notStuckPosts)
       const notReportedPosts = await filterReportedPosts(notStuckPosts)
+      console.log('5. Filtered not reported posts', notReportedPosts)
       // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
       const populatedRes = await populatePosts(notReportedPosts, true)
+      console.warn('7. Final Populated posts', populatedRes)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -238,6 +250,9 @@ export async function getHotOrNotPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
+    console.log(
+      'ERROR @ Fetching videos from index canister for hot or not feed',
+    )
     Log('error', 'Error while loading posts', {
       error: e,
       from: 'feed.getHotOrNotPosts',
@@ -266,6 +281,8 @@ function hasUserBetOnPost(post: PostDetailsForFrontend) {
   const bettingStatus = post.hot_or_not_betting_status?.[0]
   const bettingStatusValue = Object.values(bettingStatus || {})?.[0]
 
+  console.log('betting status', bettingStatus)
+
   if (!bettingStatusValue) {
     return true
   }
@@ -280,22 +297,42 @@ async function fetchPostDetailById(
   filterBetPosts = false,
 ) {
   try {
+    console.log(
+      '6. Populating post id:',
+      post.publisher_canister_id.toText() + '@' + Number(post.post_id),
+    )
     const r = await individualUser(
       Principal.from(post.publisher_canister_id),
     ).get_individual_post_details_by_id(post.post_id)
-    if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
-      Log('warn', 'Already bet on post', {
-        post,
-        from: 'feed.populatePosts.fetch',
-      })
-      setBetDetailToDb({
-        ...r,
-        ...post,
-        created_by_user_principal_id: r.created_by_user_principal_id.toText(),
-        publisher_canister_id: post.publisher_canister_id.toText(),
-      } satisfies PostPopulated)
+    if (filterBetPosts && isBettingClosed(r)) {
+      console.error(
+        '6E2. Bet closed, Not including post id:',
+        post.publisher_canister_id.toText() + '@' + Number(post.post_id),
+        'POST WAS CREATED AT:',
+        new Date(Number(r.created_at.secs_since_epoch) * 1000).toDateString(),
+      )
+      // Log('warn', 'Betting closed on post', {
+      //   post,
+      //   from: 'feed.populatePosts.fetch',
+      // })
+
       return undefined
     }
+    if (filterBetPosts && hasUserBetOnPost(r)) {
+      // Log('warn', 'Already bet on post', {
+      //   post,
+      //   from: 'feed.populatePosts.fetch',
+      // })
+      console.error(
+        '6E2. Bet placed, Not including post id:',
+        post.publisher_canister_id.toText() + '@' + Number(post.post_id),
+        'POST WAS CREATED AT:',
+        new Date(Number(r.created_at.secs_since_epoch) * 1000).toDateString(),
+      )
+
+      return undefined
+    }
+
     return {
       ...r,
       ...post,
@@ -303,11 +340,15 @@ async function fetchPostDetailById(
       publisher_canister_id: post.publisher_canister_id.toText(),
     } as PostPopulated
   } catch (e) {
-    Log('error', 'Error while populating post', {
-      error: e,
-      post,
-      from: 'feed.populatePosts.fetch',
-    })
+    console.error(
+      '6E3. Could not populate post, network error',
+      post.publisher_canister_id.toText() + '@' + Number(post.post_id),
+    )
+    // Log('error', 'Error while populating post', {
+    //   error: e,
+    //   post,
+    //   from: 'feed.populatePosts.fetch',
+    // })
     return undefined
   }
 }

@@ -244,6 +244,17 @@ $: avatarUrl =
       </div>
     {/if}
     <div
+      class="absolute left-0 top-32 flex flex-col border bg-black/50 text-white">
+      <div>
+        CREATED AT: {new Date(
+          Number(post.created_at.secs_since_epoch) * 1000,
+        ).toDateString()}
+      </div>
+      <div>
+        SCORE: {post.score}
+      </div>
+    </div>
+    <div
       style="-webkit-transform: translate3d(0, 0, 0);"
       class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
       {$$slots.hotOrNot ? 'bottom-40' : 'bottom-20'}">
