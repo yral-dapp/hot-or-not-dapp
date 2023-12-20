@@ -17,7 +17,6 @@
     "allowJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "importsNotUsedAsValues": "error",
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./",
