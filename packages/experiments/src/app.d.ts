@@ -3,8 +3,7 @@
 
 declare let Hls: typeof import('hls.js').default
 
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
+// Info: https://kit.svelte.dev/docs/types#app
 declare namespace App {
   // interface Locals {}
   // interface Platform {}
@@ -13,20 +12,11 @@ declare namespace App {
 }
 
 declare namespace svelteHTML {
-  interface SvelteWindowProps {
-    'on:beforeinstallprompt'?: (
-      event: EventHandler<BeforeInstallPromptEvent, Window> | undefined | null,
-    ) => any
-
-    'on:appinstalled'?: (
-      event: EventHandler<Event, Window> | undefined | null,
-    ) => any
-  }
-
-  interface HTMLProps<T> {
-    'disableremoteplayback'?: boolean
-    'disablepictureinpicture'?: boolean
-    'x-webkit-airplay'?: 'deny' | 'allow'
+  interface HTMLAttributes<T> {
+    'on:beforeinstallprompt'?: (event: BeforeInstallPromptEvent) => any
+    'on:appinstalled'?: (event: Event) => any
+    'disablePictureInPicture'?: boolean
+    'disableRemotePlayback'?: boolean
   }
 }
 

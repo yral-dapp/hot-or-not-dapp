@@ -228,8 +228,8 @@ onDestroy(() => {
   loop
   data-index={index}
   muted={$playerState.muted}
-  disablepictureinpicture
-  disableremoteplayback
+  disablePictureInPicture
+  disableRemotePlayback
   playsinline
   preload={ios ? 'metadata' : 'auto'}
   poster={thumbnail}
