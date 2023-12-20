@@ -37,28 +37,30 @@ let unavailable = false
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
-      <PlayerLayout
-        single
-        bind:post={video}
-        index={0}
-        source="post"
-        watchHistoryDb="watch"
-        showReportButton
-        showLikeButton
-        showDescription
-        showReferAndEarnLink
-        showShareButton
-        showHotOrNotButton
-        {unavailable}
-        let:recordView>
-        <VideoPlayer
-          on:videoUnavailable={() => (unavailable = true)}
-          on:watchedPercentage={({ detail }) => recordView(detail)}
+      {#if video}
+        <PlayerLayout
+          single
+          bind:post={video}
           index={0}
-          playFormat="hls"
-          inView
-          uid={video.video_uid} />
-      </PlayerLayout>
+          source="post"
+          watchHistoryDb="watch"
+          showReportButton
+          showLikeButton
+          showDescription
+          showReferAndEarnLink
+          showShareButton
+          showHotOrNotButton
+          {unavailable}
+          let:recordView>
+          <VideoPlayer
+            on:videoUnavailable={() => (unavailable = true)}
+            on:watchedPercentage={({ detail }) => recordView(detail)}
+            index={0}
+            playFormat="hls"
+            inView
+            uid={video.video_uid} />
+        </PlayerLayout>
+      {/if}
     </div>
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">

@@ -17,14 +17,14 @@ const dispatch = createEventDispatcher<{ close: void }>()
 {#if show}
   <div
     transition:fade={{ duration: 100 }}
-    on:keyup
+    role="presentation"
     on:click={() => {
       show = false
       dispatch('close')
     }}
     class="absolute inset-0 z-[98] flex h-full w-full items-center justify-center bg-black/50">
     <div
-      on:keyup
+      role="presentation"
       on:click={(e) => e.stopImmediatePropagation()}
       style={exportStyle}
       class="relative z-[99] mx-8 w-full max-w-sm rounded-lg bg-white p-10 {exportClass}">

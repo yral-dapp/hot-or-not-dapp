@@ -123,7 +123,7 @@ onMount(() => {
       {#if !link.hide}
         <svelte:element
           this={link.href ? 'a' : 'button'}
-          on:keyup
+          role="presentation"
           on:click={link.onClick}
           target={link.href?.includes('http') ? '_blank' : ''}
           href={link.href}

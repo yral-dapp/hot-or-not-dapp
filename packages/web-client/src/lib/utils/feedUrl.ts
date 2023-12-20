@@ -1,3 +1,4 @@
+import { replaceState } from '$app/navigation'
 import { registerPageView } from '$components/analytics/GA.svelte'
 import type { PostPopulated } from '$lib/helpers/feed'
 import { navigateBack } from '$stores/navigation'
@@ -8,6 +9,6 @@ export function updateURL(post?: PostPopulated) {
   const url = post.publisher_canister_id + '@' + post.post_id
   navigateBack.set(url)
   playerState.update((o) => ({ ...o, currentFeedUrl: url }))
-  window.history.replaceState('', '', url)
+  replaceState(url, '')
   registerPageView(new URL(window.location.href))
 }

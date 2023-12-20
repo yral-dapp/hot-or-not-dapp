@@ -261,9 +261,9 @@ onDestroy(() => {
       {/if}
       {#if previewPaused}
         <div
+          role="presentation"
           on:click={() => (previewPaused = false)}
-          class="absolute inset-0 flex items-center justify-center"
-          on:keyup>
+          class="absolute inset-0 flex items-center justify-center">
           <IconButton
             iconName="play"
             iconClass="h-4 w-4"
@@ -325,8 +325,8 @@ onDestroy(() => {
             status={uploadStep === 'uploading'
               ? 'queued'
               : uploadStep === 'processing'
-              ? 'active'
-              : 'finished'} />
+                ? 'active'
+                : 'finished'} />
           <div class="flex w-full flex-col space-y-2">
             <span class="text-lg">Processing Checks</span>
             {#if uploadStep === 'processing' || uploadStep == 'verified'}

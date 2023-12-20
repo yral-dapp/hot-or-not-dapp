@@ -38,33 +38,35 @@ let unavailable = false
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
-      <PlayerLayout
-        single
-        bind:post
-        index={0}
-        source="speculation"
-        watchHistoryDb="watch-hon"
-        showReferAndEarnLink
-        showShareButton
-        showDescription
-        {unavailable}
-        let:recordView>
-        <VideoPlayer
-          on:videoUnavailable={() => (unavailable = true)}
-          on:watchedPercentage={({ detail }) => recordView(detail)}
+      {#if post}
+        <PlayerLayout
+          single
+          bind:post
           index={0}
-          playFormat="hls"
-          inView
-          uid={post.video_uid} />
-        <svelte:fragment slot="hotOrNot">
-          <HotOrNotVote
-            profileUserId={$page.params.id}
-            {post}
-            {me}
-            placedBetDetail={post.placed_bet_details}
-            inView />
-        </svelte:fragment>
-      </PlayerLayout>
+          source="speculation"
+          watchHistoryDb="watch-hon"
+          showReferAndEarnLink
+          showShareButton
+          showDescription
+          {unavailable}
+          let:recordView>
+          <VideoPlayer
+            on:videoUnavailable={() => (unavailable = true)}
+            on:watchedPercentage={({ detail }) => recordView(detail)}
+            index={0}
+            playFormat="hls"
+            inView
+            uid={post.video_uid} />
+          <svelte:fragment slot="hotOrNot">
+            <HotOrNotVote
+              profileUserId={$page.params.id}
+              {post}
+              {me}
+              placedBetDetail={post.placed_bet_details}
+              inView />
+          </svelte:fragment>
+        </PlayerLayout>
+      {/if}
     </div>
   </svelte:fragment>
 </HomeLayout>
