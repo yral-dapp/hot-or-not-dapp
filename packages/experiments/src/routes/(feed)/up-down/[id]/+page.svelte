@@ -89,9 +89,6 @@ beforeNavigate(() => {
   $playerState.visible = false
   $playerState.muted = true
 })
-
-// $: console.log({ videos })
-// $: console.log({ currentVideoIndex })
 </script>
 
 <svelte:head>
