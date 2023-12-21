@@ -8,7 +8,6 @@ import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import {
   getTopPosts,
   getWatchedVideosFromCache,
-  updatePostInWatchHistory,
   type PostPopulated,
 } from '$lib/helpers/feed'
 import Log from '$lib/utils/Log'
@@ -27,7 +26,7 @@ const fetchCount = 25
 const fetchWhenVideosLeft = 10
 const keepVideosLoadedCount: number = 3
 
-let videos: PostPopulated[] = []
+let videos: PostPopulated[] = data.post ? [data.post] : []
 let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = false
@@ -103,6 +102,9 @@ async function fetchNextVideos(force = false) {
 async function handleUnavailableVideo(index: number) {
   videos.splice(index, 1)
   videos = videos
+  if (videos.length) {
+    updateURL(videos[0])
+  }
 }
 
 const handleChange = debounce(250, (newIndex: number) => {
@@ -112,19 +114,20 @@ const handleChange = debounce(250, (newIndex: number) => {
 })
 
 onMount(async () => {
-  updateURL()
   $playerState.initialized = false
   $playerState.muted = true
   $playerState.visible = true
-  if ($homeFeedVideos.length) {
+  if (!data?.post) {
     videos = $homeFeedVideos
     $homeFeedVideos = []
-  } else if (data.post) {
-    videos = [data.post, ...videos]
-    await updatePostInWatchHistory('watch', data.post)
   }
   await tick()
-  await fetchNextVideos()
+  setTimeout(
+    () => {
+      fetchNextVideos()
+    },
+    data.post ? 3000 : 0,
+  )
   handleParams()
 })
 
