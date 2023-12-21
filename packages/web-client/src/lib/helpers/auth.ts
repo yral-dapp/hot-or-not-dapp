@@ -90,7 +90,7 @@ async function updateUserIndexCanister(): Promise<{
           userCanisterPrincipal.toText(),
         )
       } catch (e) {
-        Log('error', 'Error while accessing IDB', {
+        Log('warn', 'Error while accessing IDB', {
           error: e,
           source: 'auth.updateUserIndexCanister',
           type: 'idb',
@@ -105,7 +105,7 @@ async function updateUserIndexCanister(): Promise<{
     if (authFailed) {
       await logout()
     } else {
-      Log('error', 'Failed to authenticate', {
+      Log('warn', 'Failed to authenticate', {
         error: e,
         from: 'auth.updateUserIndexCanister',
       })

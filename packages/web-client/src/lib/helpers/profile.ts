@@ -39,7 +39,7 @@ async function fetchProfile() {
   try {
     return await individualUser().get_profile_details()
   } catch (e) {
-    Log('error', 'Could not fetch user profile', {
+    Log('warn', 'Could not fetch user profile', {
       error: e,
       from: 'profile.fetchProfile',
     })
@@ -178,7 +178,7 @@ export async function fetchPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'profile.fetchPosts',
     })
@@ -206,7 +206,7 @@ export async function fetchSpeculations(
       noMorePosts: res.length < 10,
     }
   } catch (e) {
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'profile.fetchSpeculations',
     })
@@ -244,7 +244,7 @@ async function populatePosts(posts: PlacedBetDetail[]) {
       error: false,
     }
   } catch (e) {
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'profile.populatePosts',
     })
@@ -274,7 +274,7 @@ export async function fetchLovers(id: string, from?: bigint) {
       noMoreLovers: res.length < 9,
     }
   } catch (e) {
-    Log('error', 'Error while loading followers', {
+    Log('warn', 'Error while loading followers', {
       error: e,
       from: 'profile.fetchLovers',
     })
@@ -304,7 +304,7 @@ export async function fetchLovingUsers(id: string, from?: bigint) {
       noMoreLovers: res.length < 10,
     }
   } catch (e) {
-    Log('error', 'Error while loading followers', {
+    Log('warn', 'Error while loading followers', {
       error: e,
       from: 'profile.fetchLovingUsers',
     })
@@ -345,7 +345,7 @@ async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
       error: false,
     }
   } catch (e) {
-    Log('error', 'Error while loading profile', {
+    Log('warn', 'Error while loading profile', {
       error: e,
       from: 'profile.populateProfiles',
     })
@@ -369,7 +369,7 @@ export async function doIFollowThisUser(principalId?: string) {
     })
     return !!res['Ok']
   } catch (e) {
-    Log('error', 'Error while loading following status', {
+    Log('warn', 'Error while loading following status', {
       error: e,
       from: 'profile.doIFollowThisUser',
     })
@@ -399,7 +399,7 @@ export async function loveUser(principalId: string) {
       return false
     }
   } catch (e) {
-    Log('error', 'Error while following a status', {
+    Log('warn', 'Error while following a status', {
       error: e,
       from: 'profile.loveUser',
     })
@@ -502,7 +502,7 @@ export async function setBetDetailToDb(
     const idb = (await import('$lib/idb')).idb
     idb.set('bets', post.publisher_canister_id + '@' + post.post_id, betDetail)
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'profile.setBetDetailToDb',
       type: 'idb',
@@ -540,7 +540,7 @@ export async function fetchHistory(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log('error', 'Error while loading transaction history', {
+    Log('warn', 'Error while loading transaction history', {
       error: e,
       from: 'profile.fetchHistory',
     })
@@ -605,7 +605,7 @@ export async function fetchNotifications(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log('error', 'Error while loading transaction history', {
+    Log('warn', 'Error while loading transaction history', {
       error: e,
       from: 'profile.fetchNotifications',
     })
@@ -621,7 +621,7 @@ export async function fetchTokenBalance(): Promise<
     const res = await individualUser().get_utility_token_balance()
     return { error: false, balance: Number(res) }
   } catch (e) {
-    Log('error', 'Error while loading token balance', {
+    Log('warn', 'Error while loading token balance', {
       error: e,
       from: 'profile.fetchTokenBalance',
     })

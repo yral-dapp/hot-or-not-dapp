@@ -62,7 +62,7 @@ export const stop = debounce(
         videoEl.pause()
       }
     } catch (e: any) {
-      Log('error', 'Error in video playback', {
+      Log('warn', 'Error in video playback', {
         error: e,
         index,
         uid,
@@ -126,7 +126,7 @@ async function handleClick() {
       }
     }
   } catch (e) {
-    Log('error', 'Error in video playback', {
+    Log('warn', 'Error in video playback', {
       error: e,
       index,
       uid,
@@ -244,7 +244,7 @@ onDestroy(() => {
     </div>
   </div>
 {:else if $playerState.muted || !playing}
-  <div class="fade-in max-w-16 pointer-events-none absolute inset-0 z-[5]">
+  <div class="fade-in pointer-events-none absolute inset-0 z-[5] max-w-16">
     <div class="flex h-full items-center justify-center">
       {#if !playing}
         <Icon
