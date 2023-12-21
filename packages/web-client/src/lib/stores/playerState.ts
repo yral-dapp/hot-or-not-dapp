@@ -18,5 +18,4 @@ export const playerState = writable<{
 })
 
 export const homeFeedVideos = writable<PostPopulated[]>([])
-
 export const hotOrNotFeedVideos = writable<PostPopulated[]>([])
