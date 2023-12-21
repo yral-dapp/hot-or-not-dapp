@@ -72,7 +72,7 @@ async function getBetDetailFromDb() {
     try {
       idb = (await import('$lib/idb')).idb
     } catch (e) {
-      Log('error', 'Error while accessing IDB', {
+      Log('warn', 'Error while accessing IDB', {
         error: e,
         source: 'HotOrNotVote.getBetDetailFromDb',
         type: 'idb',
@@ -86,7 +86,7 @@ async function getBetDetailFromDb() {
       post.publisher_canister_id + '@' + post.post_id,
     )) as PlacedBetDetail
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       source: 'HotOrNotVote.saveBetToDb',
       type: 'idb',
@@ -114,7 +114,7 @@ async function updatePlacedBetDetail() {
     }
   } catch (e) {
     //TODO: Add retries
-    Log('error', 'Could not fetch bet details', {
+    Log('warn', 'Could not fetch bet details', {
       error: e,
       source: 'HotOrNotVote.updatePlacedBetDetail',
     })
@@ -218,7 +218,7 @@ async function placeVote({ coins, direction }: PlaceVote) {
       loadingWithDirection = false
     }
   } catch (e) {
-    Log('error', 'Could not place bet', {
+    Log('warn', 'Could not place bet', {
       error: e,
       postId: post?.id,
       from: 'HotOrNotVote.placeVote',

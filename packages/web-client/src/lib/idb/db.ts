@@ -34,7 +34,7 @@ const dbPromise = openDB('hot-or-not-web-client', 8, {
     }
   },
 }).catch((e) => {
-  Log('error', 'Error while accessing IDB', {
+  Log('warn', 'Error while accessing IDB', {
     error: e,
     from: 'db.openDB',
     type: 'idb',

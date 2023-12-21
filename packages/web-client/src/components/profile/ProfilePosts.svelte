@@ -43,7 +43,7 @@ async function loadPosts() {
   } catch (e) {
     error = true
     loading = false
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'ProfilePosts.loadPosts',
     })

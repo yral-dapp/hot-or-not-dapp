@@ -181,7 +181,7 @@ async function updateStats() {
       post.publisher_canister_id,
     ).update_post_add_view_details(post.id, payload)
   } catch (e) {
-    Log('error', 'Could not update watch stats', {
+    Log('warn', 'Could not update watch stats', {
       from: 'PlayerLayout.updateStats',
       i: index,
       payload,
@@ -279,7 +279,7 @@ $: avatarUrl =
       </div>
 
       <div
-        class="max-w-16 pointer-events-auto flex shrink-0 flex-col items-end justify-end space-y-6 pb-2">
+        class="pointer-events-auto flex max-w-16 shrink-0 flex-col items-end justify-end space-y-6 pb-2">
         {#if showReportButton}
           <IconButton
             iconName="flag"

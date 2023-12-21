@@ -94,7 +94,7 @@ async function fetchNextVideos(force = false) {
         source: 'feed.fetchNextVideos',
       })
     } catch (e) {
-      Log('error', 'Could not fetch videos for feed', {
+      Log('warn', 'Could not fetch videos for feed', {
         error: e,
         noMoreVideos,
         source: 'feed.fetchNextVideos',
