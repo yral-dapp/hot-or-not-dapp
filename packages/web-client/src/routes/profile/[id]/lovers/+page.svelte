@@ -60,7 +60,7 @@ async function loadLovers() {
     }
     loading = false
   } catch (e) {
-    Log('error', 'Error while loading followers', {
+    Log('warn', 'Error while loading followers', {
       error: e,
       from: 'lovers.loadLovers',
     })

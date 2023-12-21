@@ -50,7 +50,7 @@ async function filterPosts(
     )
     return filtered
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.filterPosts',
       type: 'idb',
@@ -71,7 +71,7 @@ async function filterReportedPosts(posts: PostScoreIndexItem[]) {
     )
     return filtered
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.filterReportedPosts',
       type: 'idb',
@@ -98,7 +98,7 @@ async function filterStuckCanisterPosts(posts: PostScoreIndexItem[]) {
       (o) => !stuckCanisters.includes(o.publisher_canister_id.toText()),
     )
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.filterReportedPosts',
       type: 'idb',
@@ -121,7 +121,7 @@ export async function getWatchedVideosFromCache(
     const sorted = values.sort((a, b) => a.watched_at - b.watched_at)
     return sorted
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.getWatchedVideosFromCache',
       type: 'idb',
@@ -172,7 +172,7 @@ export async function getTopPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'feed.getTopPosts',
     })
@@ -194,7 +194,7 @@ async function filterBets(
     )
     return filtered
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.filterPosts',
       type: 'idb',
@@ -244,7 +244,7 @@ export async function getHotOrNotPosts(
       }
     } else throw new Error(`Unknown response, ${JSON.stringify(res)}`)
   } catch (e) {
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'feed.getHotOrNotPosts',
     })
@@ -309,7 +309,7 @@ async function fetchPostDetailById(
       publisher_canister_id: post.publisher_canister_id.toText(),
     } as PostPopulated
   } catch (e) {
-    Log('error', 'Error while populating post', {
+    Log('warn', 'Error while populating post', {
       error: e,
       post,
       from: 'feed.populatePosts.fetch',
@@ -346,7 +346,7 @@ async function populatePosts(
       error: false,
     }
   } catch (e) {
-    Log('error', 'Error while loading posts', {
+    Log('warn', 'Error while loading posts', {
       error: e,
       from: 'feed.populatePosts',
     })
@@ -375,7 +375,7 @@ export async function updatePostInWatchHistory(
       postHistory,
     )
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.updatePostInWatchHistory',
       type: 'idb',
@@ -390,7 +390,7 @@ export async function saveReportedPostInDb(postId: string, reason: string) {
     }
     await idb.set('reported', postId, reason)
   } catch (e) {
-    Log('error', 'Error while accessing IDB', {
+    Log('warn', 'Error while accessing IDB', {
       error: e,
       from: 'feed.saveReportedPostInDb',
       type: 'idb',

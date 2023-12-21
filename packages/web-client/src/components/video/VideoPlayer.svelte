@@ -61,7 +61,7 @@ export const stop = debounce(
         videoEl.pause()
       }
     } catch (e: any) {
-      Log('error', 'Error in video playback', {
+      Log('warn', 'Error in video playback', {
         error: e,
         index,
         uid,
@@ -125,7 +125,7 @@ async function handleClick() {
       }
     }
   } catch (e) {
-    Log('error', 'Error in video playback', {
+    Log('warn', 'Error in video playback', {
       error: e,
       index,
       uid,

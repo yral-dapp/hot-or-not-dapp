@@ -190,7 +190,7 @@ async function updateStats() {
       post.publisher_canister_id,
     ).update_post_add_view_details(post.id, payload)
   } catch (e) {
-    Log('error', 'Could not update watch stats', {
+    Log('warn', 'Could not update watch stats', {
       from: 'PlayerLayout.updateStats',
       i: index,
       payload,
