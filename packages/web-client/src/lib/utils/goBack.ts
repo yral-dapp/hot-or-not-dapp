@@ -1,5 +1,5 @@
 import { goto } from '$app/navigation'
-import { navigationHistory } from '$stores/navigation'
+import { navigationHistory } from '$lib/stores/navigation'
 import { get } from 'svelte/store'
 
 export default function (goBackTo?: string | null, replaceState?: boolean) {

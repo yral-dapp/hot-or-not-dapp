@@ -1,9 +1,9 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
-import Button from '$components/button/Button.svelte'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import Button from '$lib/components/button/Button.svelte'
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import HotOrNotVote from '$lib/components/hot-or-not/HotOrNotVote.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import {
   getHotOrNotPosts,
   updatePostInWatchHistory,
@@ -13,13 +13,13 @@ import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely } from '$lib/utils/video'
-import { hotOrNotFeedVideos, playerState } from '$stores/playerState'
-import { removeSplashScreen } from '$stores/popups'
+import { hotOrNotFeedVideos, playerState } from '$lib/stores/playerState'
+import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
-import HotOrNotRoomInfo from '$components/hot-or-not/HotOrNotRoomInfo.svelte'
+import HotOrNotRoomInfo from '$lib/components/hot-or-not/HotOrNotRoomInfo.svelte'
 import type { PageData } from './$types'
-import Icon from '$components/icon/Icon.svelte'
-import PlayerRenderer from '$components/video/PlayerRenderer.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import PlayerRenderer from '$lib/components/video/PlayerRenderer.svelte'
 import { debounce } from 'throttle-debounce'
 
 export let data: PageData

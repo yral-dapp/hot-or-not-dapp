@@ -1,7 +1,7 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
 </script>
 
 <svelte:head>

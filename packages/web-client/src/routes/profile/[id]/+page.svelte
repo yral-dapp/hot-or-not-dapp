@@ -1,12 +1,12 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import ProfileLayout from '$components/layout/ProfileLayout.svelte'
-import ProfilePosts from '$components/profile/ProfilePosts.svelte'
-import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
-import { registerEvent } from '$components/analytics/GA.svelte'
-import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
+import Button from '$lib/components/button/Button.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
+import ProfilePosts from '$lib/components/profile/ProfilePosts.svelte'
+import SpeculationPosts from '$lib/components/profile/SpeculationPosts.svelte'
+import { registerEvent } from '$lib/components/analytics/GA.svelte'
+import ProfileTabs from '$lib/components/tabs/ProfileTabs.svelte'
 import {
   doIFollowThisUser,
   loveUser,
@@ -15,18 +15,18 @@ import {
 import goBack from '$lib/utils/goBack'
 import { handleParams } from '$lib/utils/params'
 import { getShortNumber } from '$lib/utils/shortNumber'
-import { authState } from '$stores/auth'
-import { navigateBack } from '$stores/navigation'
-import userProfile from '$stores/userProfile'
+import { authState } from '$lib/stores/auth'
+import { navigateBack } from '$lib/stores/navigation'
+import userProfile from '$lib/stores/userProfile'
 import { onMount } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
 import { slide } from 'svelte/transition'
-import CopyButton from '$components/profile/CopyButton.svelte'
-import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
-import ReportPopup from '$components/popup/ReportPopup.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import CopyButton from '$lib/components/profile/CopyButton.svelte'
+import ShowMoreButton from '$lib/components/profile/ShowMoreButton.svelte'
+import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
 
 export let data: PageData
 let { me, profile, canId } = data

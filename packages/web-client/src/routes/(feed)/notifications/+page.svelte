@@ -1,16 +1,16 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '$components/layout/ProfileLayout.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import NotificationItem from '$components/notification/NotificationItem.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
+import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
+import LoginButton from '$lib/components/login/LoginButton.svelte'
+import NotificationItem from '$lib/components/notification/NotificationItem.svelte'
 import {
   fetchNotifications,
   type NotificationHistory,
 } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 
 let loading = true
 let errorWhileFetching = false

@@ -1,8 +1,8 @@
 import { replaceState } from '$app/navigation'
-import { registerPageView } from '$components/analytics/GA.svelte'
+import { registerPageView } from '$lib/components/analytics/GA.svelte'
 import type { PostPopulated } from '$lib/helpers/feed'
-import { navigateBack } from '$stores/navigation'
-import { playerState } from '$stores/playerState'
+import { navigateBack } from '$lib/stores/navigation'
+import { playerState } from '$lib/stores/playerState'
 
 export function updateURL(post?: PostPopulated) {
   if (!post) return

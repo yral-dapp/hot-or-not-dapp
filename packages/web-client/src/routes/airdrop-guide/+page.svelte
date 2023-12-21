@@ -1,11 +1,11 @@
 <script lang="ts">
 import './style.postcss'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
+import Button from '$lib/components/button/Button.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
-import { navigateBack } from '$stores/navigation'
+import { navigateBack } from '$lib/stores/navigation'
 </script>
 
 <svelte:head>

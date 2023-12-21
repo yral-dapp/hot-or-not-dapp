@@ -1,10 +1,10 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
-import Button from '$components/button/Button.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import PlayerRenderer from '$components/video/PlayerRenderer.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import Button from '$lib/components/button/Button.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import PlayerRenderer from '$lib/components/video/PlayerRenderer.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import {
   getTopPosts,
   getWatchedVideosFromCache,
@@ -15,8 +15,8 @@ import Log from '$lib/utils/Log'
 import { updateURL } from '$lib/utils/feedUrl'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely } from '$lib/utils/video'
-import { homeFeedVideos, playerState } from '$stores/playerState'
-import { removeSplashScreen } from '$stores/popups'
+import { homeFeedVideos, playerState } from '$lib/stores/playerState'
+import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'

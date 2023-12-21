@@ -1,10 +1,10 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '$components/layout/ProfileLayout.svelte'
+import Button from '$lib/components/button/Button.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
+import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
 import {
   fetchLovers,
   loveUser,
@@ -12,8 +12,8 @@ import {
 } from '$lib/helpers/profile'
 import goBack from '$lib/utils/goBack'
 import Log from '$lib/utils/Log'
-import { authState } from '$stores/auth'
-import userProfile from '$stores/userProfile'
+import { authState } from '$lib/stores/auth'
+import userProfile from '$lib/stores/userProfile'
 import type { PageData } from './$types'
 
 export let data: PageData

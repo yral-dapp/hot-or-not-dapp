@@ -7,7 +7,7 @@ import {
   type PostPopulatedWithBetDetails,
 } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
-import userProfile from '$stores/userProfile'
+import userProfile from '$lib/stores/userProfile'
 import { Principal } from '@dfinity/principal'
 import { redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'

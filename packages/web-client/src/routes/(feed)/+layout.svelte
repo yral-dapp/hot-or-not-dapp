@@ -1,12 +1,12 @@
 <script lang="ts">
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
-import Selector from '$components/home/Selector.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import BottomNavigation from '$lib/components/navigation/BottomNavigation.svelte'
+import Selector from '$lib/components/home/Selector.svelte'
 import { page } from '$app/stores'
-import { playerState } from '$stores/playerState'
+import { playerState } from '$lib/stores/playerState'
 import { onDestroy, onMount } from 'svelte'
-import { authState } from '$stores/auth'
-import Icon from '$components/icon/Icon.svelte'
+import { authState } from '$lib/stores/auth'
+import Icon from '$lib/components/icon/Icon.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {

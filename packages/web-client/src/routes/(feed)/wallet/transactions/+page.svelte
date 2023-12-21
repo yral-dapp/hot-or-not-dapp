@@ -1,13 +1,13 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '$components/layout/ProfileLayout.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import TransactionItem from '$components/wallet/TransactionItem.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
+import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
+import LoginButton from '$lib/components/login/LoginButton.svelte'
+import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { onMount } from 'svelte'
 
 let loading = true

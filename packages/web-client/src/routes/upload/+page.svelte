@@ -1,6 +1,6 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import CameraLayout from '$components/layout/CameraLayout.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import CameraLayout from '$lib/components/layout/CameraLayout.svelte'
 import {
   applyConstraintsOnVideoStream,
   getDevicesList,
@@ -11,16 +11,16 @@ import { fade } from 'svelte/transition'
 import c from 'clsx'
 import { allFilters, getFilterCss } from '$lib/utils/filtersMap'
 import { debounce } from 'throttle-debounce'
-import { fileToUpload } from '$stores/fileUpload'
+import { fileToUpload } from '$lib/stores/fileUpload'
 import { goto } from '$app/navigation'
 import { isiPhone } from '$lib/utils/isSafari'
-import type { CameraControls } from '$components/upload/UploadTypes'
-import Popup from '$components/popup/Popup.svelte'
-import Button from '$components/button/Button.svelte'
+import type { CameraControls } from '$lib/components/upload/UploadTypes'
+import Popup from '$lib/components/popup/Popup.svelte'
+import Button from '$lib/components/button/Button.svelte'
 import { linear } from 'svelte/easing'
 import { tweened, type Tweened } from 'svelte/motion'
 import Log from '$lib/utils/Log'
-import Icon from '$components/icon/Icon.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
 
 let videoEl: HTMLVideoElement
 let mediaStream: MediaStream

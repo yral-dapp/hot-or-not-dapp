@@ -1,6 +1,6 @@
 <script lang="ts">
-import HotOrNotLayout from '$components/layout/HotOrNotLayout.svelte'
-import HotorNotOnboarding from '$components/popup/HotorNotOnboarding.svelte'
+import HotOrNotLayout from '$lib/components/layout/HotOrNotLayout.svelte'
+import HotorNotOnboarding from '$lib/components/popup/HotorNotOnboarding.svelte'
 </script>
 
 <!-- Disabled -->

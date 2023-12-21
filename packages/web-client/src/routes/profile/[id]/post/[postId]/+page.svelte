@@ -1,10 +1,10 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import IconButton from '$components/button/IconButton.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import BottomNavigation from '$lib/components/navigation/BottomNavigation.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
 

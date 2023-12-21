@@ -1,9 +1,9 @@
 <script lang="ts">
-import Accordion from '$components/accordion/Accordion.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import DotTabs from '$components/tabs/DotTabs.svelte'
+import Accordion from '$lib/components/accordion/Accordion.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import DotTabs from '$lib/components/tabs/DotTabs.svelte'
 import faq from '$lib/utils/faq'
 import { slide } from 'svelte/transition'
 

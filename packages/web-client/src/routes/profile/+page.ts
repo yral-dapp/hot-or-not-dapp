@@ -1,7 +1,7 @@
 export const ssr = false
 
-import { authState } from '$stores/auth'
-import userProfile from '$stores/userProfile'
+import { authState } from '$lib/stores/auth'
+import userProfile from '$lib/stores/userProfile'
 import { redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import { hideSplashScreen } from '$stores/popups'
+import HotOrNotVote from '$lib/components/hot-or-not/HotOrNotVote.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import { hideSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 
 onMount(async () => {

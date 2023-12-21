@@ -1,18 +1,18 @@
 <script lang="ts">
 import '../css/app.css'
 import { onMount } from 'svelte'
-import { authState } from '$stores/auth'
-import LoginPopup from '$components/login/LoginPopup.svelte'
+import { authState } from '$lib/stores/auth'
+import LoginPopup from '$lib/components/login/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
-import { navigateBack, navigationHistory } from '$stores/navigation'
-import { registerEvent } from '$components/analytics/GA.svelte'
-import userProfile from '$stores/userProfile'
+import { navigateBack, navigationHistory } from '$lib/stores/navigation'
+import { registerEvent } from '$lib/components/analytics/GA.svelte'
+import userProfile from '$lib/stores/userProfile'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import { page } from '$app/stores'
-import { deferredPrompt } from '$stores/deferredPrompt'
-import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
-import { removeSplashScreen } from '$stores/popups'
+import { deferredPrompt } from '$lib/stores/deferredPrompt'
+import NetworkStatus from '$lib/components/network-status/NetworkStatus.svelte'
+import { removeSplashScreen } from '$lib/stores/popups'
 
 const ignoredPaths = ['edit', 'lovers', 'post', 'speculations']
 
@@ -27,7 +27,7 @@ function registerServiceWorker() {
 let GA: any
 async function initializeGA() {
   try {
-    GA = (await import('$components/analytics/GA.svelte')).default
+    GA = (await import('$lib/components/analytics/GA.svelte')).default
   } catch (_) {
     Log('warn', 'Could not load GA')
   }

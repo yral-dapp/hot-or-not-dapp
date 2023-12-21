@@ -1,8 +1,8 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import { authState } from '$stores/auth'
-import userProfile from '$stores/userProfile'
+import Button from '$lib/components/button/Button.svelte'
+import LoginButton from '$lib/components/login/LoginButton.svelte'
+import { authState } from '$lib/stores/auth'
+import userProfile from '$lib/stores/userProfile'
 </script>
 
 <div

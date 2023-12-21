@@ -1,6 +1,6 @@
 import { get } from 'svelte/store'
 import { page } from '$app/stores'
-import { authState, authHelper, referralId } from '$stores/auth'
+import { authState, authHelper, referralId } from '$lib/stores/auth'
 import { isPrincipal } from './isPrincipal'
 import { initializeAuthClient } from '$lib/helpers/auth'
 

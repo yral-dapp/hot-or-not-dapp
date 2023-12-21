@@ -1,8 +1,8 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import Input from '$components/input/Input.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import Input from '$lib/components/input/Input.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
 

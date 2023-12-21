@@ -1,15 +1,15 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import TransactionItem from '$components/wallet/TransactionItem.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import LoginButton from '$lib/components/login/LoginButton.svelte'
+import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import {
   fetchHistory,
   fetchTokenBalance,
   type TransactionHistory,
 } from '$lib/helpers/profile'
-import { authState } from '$stores/auth'
-import { loadingAuthStatus } from '$stores/loading'
-import userProfile from '$stores/userProfile'
+import { authState } from '$lib/stores/auth'
+import { loadingAuthStatus } from '$lib/stores/loading'
+import userProfile from '$lib/stores/userProfile'
 
 let loadBalanced = true
 let loadList = true

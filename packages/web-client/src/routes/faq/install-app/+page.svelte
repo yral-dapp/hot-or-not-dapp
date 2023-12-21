@@ -1,10 +1,10 @@
 <script lang="ts">
-import Accordion from '$components/accordion/Accordion.svelte'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import { deferredPrompt } from '$stores/deferredPrompt'
+import Accordion from '$lib/components/accordion/Accordion.svelte'
+import Button from '$lib/components/button/Button.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import Icon from '$lib/components/icon/Icon.svelte'
+import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import { deferredPrompt } from '$lib/stores/deferredPrompt'
 import { slide } from 'svelte/transition'
 
 async function promptInstall() {

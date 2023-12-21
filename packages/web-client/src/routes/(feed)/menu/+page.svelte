@@ -1,14 +1,14 @@
 <script lang="ts">
-import { authState } from '$stores/auth'
-import LogoutPopup from '$components/popup/LogoutPopup.svelte'
+import { authState } from '$lib/stores/auth'
+import LogoutPopup from '$lib/components/popup/LogoutPopup.svelte'
 import { page } from '$app/stores'
-import userProfile from '$stores/userProfile'
-import LoginButton from '$components/login/LoginButton.svelte'
+import userProfile from '$lib/stores/userProfile'
+import LoginButton from '$lib/components/login/LoginButton.svelte'
 import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
-import { loadingAuthStatus } from '$stores/loading'
-import type { IconName } from '$components/icon/icon.type'
-import Icon from '$components/icon/Icon.svelte'
+import { loadingAuthStatus } from '$lib/stores/loading'
+import type { IconName } from '$lib/components/icon/icon.type'
+import Icon from '$lib/components/icon/Icon.svelte'
 
 let links: {
   icon: IconName
