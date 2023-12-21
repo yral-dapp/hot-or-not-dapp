@@ -88,6 +88,11 @@ async function filterStuckCanisterPosts(posts: PostScoreIndexItem[]) {
       '4thmb-taaaa-aaaao-aavfq-cai',
       'du74r-syaaa-aaaao-aa47q-cai',
       'u6qff-cqaaa-aaaao-aczfa-cai',
+      'p7ngy-hyaaa-aaaao-aesjq-cai',
+      'ynvsv-3qaaa-aaaao-ae2gq-cai',
+      '4xvw2-giaaa-aaaao-aejwq-cai',
+      'nut4d-faaaa-aaaao-agaxa-cai',
+      'raidg-jaaaa-aaaao-afbxa-cai',
     ]
     return posts.filter(
       (o) => !stuckCanisters.includes(o.publisher_canister_id.toText()),
