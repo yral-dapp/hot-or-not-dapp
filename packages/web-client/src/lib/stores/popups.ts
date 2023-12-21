@@ -19,7 +19,6 @@ export const shownAirdropPopup = persisted<boolean>(
 )
 
 export function removeSplashScreen() {
-  console.log('remove called')
   if (!browser) return
   const el = document.querySelector('splash-screen')
   el?.remove()
