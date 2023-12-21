@@ -84,7 +84,7 @@ export default defineConfig(() => ({
   },
   plugins: [
     sentryVitePlugin({
-      disable: process.env.PRODUCTION !== 'true',
+      disable: true,
       org: 'gobazzinga',
       project: 'hot-or-not',
       authToken: process.env.SENTRY_AUTH_TOKEN,
