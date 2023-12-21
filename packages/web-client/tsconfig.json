@@ -4,16 +4,6 @@
     "ignoreDeprecations": "5.0",
     "composite": true,
     "noImplicitAny": false,
-    "paths": {
-      "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"],
-      "$canisters/*": ["./declarations/*"],
-      "$components/*": ["./src/components/*"],
-      "$routes/*": ["./src/routes/*"],
-      "$icons/*": ["./src/icons/*"],
-      "$stores/*": ["./src/stores/*"],
-      "$assets/*": ["./src/assets/*"]
-    },
     "module": "ES2020",
     "allowJs": false,
     "esModuleInterop": true,
@@ -24,14 +14,5 @@
     "outDir": "./",
     "strict": true,
     "types": ["gtag.js", "w3c-image-capture"]
-  },
-  "include": [
-    "src/**/*.d.ts",
-    "src/**/*.ts",
-    "src/**/*.js",
-    "src/**/*.svelte",
-    "declarations",
-    "tests/**/*.ts"
-  ],
-  "exclude": ["node_modules", "build"]
+  }
 }
