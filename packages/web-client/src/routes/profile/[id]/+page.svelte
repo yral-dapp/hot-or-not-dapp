@@ -18,7 +18,7 @@ import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$lib/stores/auth'
 import { navigateBack } from '$lib/stores/navigation'
 import userProfile from '$lib/stores/userProfile'
-import { onMount } from 'svelte'
+import { onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
 import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
@@ -27,16 +27,28 @@ import CopyButton from '$lib/components/profile/CopyButton.svelte'
 import ShowMoreButton from '$lib/components/profile/ShowMoreButton.svelte'
 import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
 import Icon from '$lib/components/icon/Icon.svelte'
+import type { Snapshot } from './$types'
+import { serializeBigIntHelper } from '$lib/utils/Log'
 
 export let data: PageData
-let { me, profile, canId } = data
+export const snapshot: Snapshot = {
+  capture: () => ({
+    posts: JSON.stringify(posts, serializeBigIntHelper),
+    scrollY,
+  }),
+  restore: async (value) => {
+    posts = JSON.parse(value.posts)
+    await tick()
+    scrollEl.scrollTop = value.scrollY
+  },
+}
 
+let { me, profile, canId } = data
 let follow = {
   doIFollow: false,
   error: false,
   loading: true,
 }
-
 let posts: {
   profile: {
     posts: PostDetailsForFrontend[]
@@ -60,7 +72,8 @@ let posts: {
     fetchedCount: 0,
   },
 }
-
+let scrollY = 0
+let scrollEl: HTMLDivElement
 let showMoreInfo = false
 let showReportPopup = false
 
@@ -129,6 +142,10 @@ onMount(() => {
 
 $: tab = $page.url.searchParams.get('tab')
 $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
+
+function handleScroll() {
+  scrollY = scrollEl?.scrollTop
+}
 </script>
 
 <svelte:head>
@@ -176,7 +193,11 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
     {/if}
   </div>
 
-  <div class="hide-scrollbar h-full w-full overflow-y-auto" slot="content">
+  <div
+    bind:this={scrollEl}
+    on:scroll={handleScroll}
+    class="hide-scrollbar h-full w-full overflow-y-auto"
+    slot="content">
     <div class="mx-auto flex max-w-5xl flex-col">
       <div class="flex w-full flex-col items-center justify-center py-8">
         <img

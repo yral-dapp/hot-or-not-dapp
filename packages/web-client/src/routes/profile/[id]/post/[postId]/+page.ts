@@ -9,6 +9,7 @@ import { Principal } from '@dfinity/principal'
 import { redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
 import type { PageLoad } from './$types'
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 
 export const load: PageLoad = async ({ params, fetch }) => {
   try {
@@ -45,6 +46,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
       post_id: BigInt(pid),
       publisher_canister_id: canId,
       score: BigInt(0),
+      created_by_profile_photo_url:
+        post.created_by_profile_photo_url[0] ||
+        getDefaultImageUrl(post.created_by_user_principal_id, 54),
       created_by_user_principal_id: post.created_by_user_principal_id.toText(),
     }
     if (!video) {

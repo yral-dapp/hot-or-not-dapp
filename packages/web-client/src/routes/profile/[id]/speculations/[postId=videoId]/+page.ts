@@ -12,6 +12,7 @@ import { Principal } from '@dfinity/principal'
 import { redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
 import type { PageLoad } from './$types'
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 
 export const load: PageLoad = async ({ params, fetch }) => {
   try {
@@ -61,6 +62,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
       post_id: postId,
       score: BigInt(0),
       publisher_canister_id: canId,
+      created_by_profile_photo_url:
+        postRes.created_by_profile_photo_url[0] ||
+        getDefaultImageUrl(postRes.created_by_user_principal_id, 54),
       created_by_user_principal_id:
         postRes.created_by_user_principal_id.toText(),
       placed_bet_details: betDetail[0],

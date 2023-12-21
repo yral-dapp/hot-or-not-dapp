@@ -41,6 +41,7 @@ let unavailable = false
       {#if post}
         <PlayerLayout
           single
+          show
           bind:post
           index={0}
           source="speculation"

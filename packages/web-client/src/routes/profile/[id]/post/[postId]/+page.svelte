@@ -12,6 +12,8 @@ export let data: PageData
 
 let { video, me } = data
 let unavailable = false
+
+$: console.log({ video })
 </script>
 
 <svelte:head>
@@ -40,6 +42,7 @@ let unavailable = false
       {#if video}
         <PlayerLayout
           single
+          show
           bind:post={video}
           index={0}
           source="post"
