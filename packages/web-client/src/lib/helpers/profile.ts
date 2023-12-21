@@ -23,8 +23,8 @@ import { get } from 'svelte/store'
 import { individualUser } from './backend'
 import { getCanisterId } from './canisterId'
 import type { PostPopulated } from './feed'
-import { setUser } from './sentry'
 import { isPrincipal } from '$lib/utils/isPrincipal'
+import { setUser } from '@sentry/sveltekit'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
@@ -102,7 +102,13 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
     userProfile.set(emptyProfileValues)
   }
   updateUserProperties() // GA
-  setUser(authStateData.idString) //Sentry
+  setUser(
+    authStateData?.idString
+      ? {
+          id: authStateData.idString,
+        }
+      : null,
+  ) //Sentry
   Log('info', 'Updated user profile', {
     profile: get(userProfile),
     from: 'profile.updateProfile',

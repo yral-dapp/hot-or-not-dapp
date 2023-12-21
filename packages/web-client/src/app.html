@@ -14,9 +14,19 @@
     <meta name="keywords" content="Shorts, Videos, Fun, Hot, Not" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#E96B25" />
+
+    <!-- JS DEPS -->
     <script
       async
       src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.light.min.js"></script>
+
+    <!-- PRECONNECTS -->
+    <link rel="dns-prefetch" href="https://hotornot.wtf" />
+    <link
+      rel="dns-prefetch"
+      href="https://customer-2p3jflss4r4hmpnz.cloudflarestream.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     %sveltekit.head%
   </head>
   <body
@@ -52,4 +62,5 @@
       </svg>
     </splash-screen>
     <div style="display: contents">%sveltekit.body%</div>
+  </body>
 </html>

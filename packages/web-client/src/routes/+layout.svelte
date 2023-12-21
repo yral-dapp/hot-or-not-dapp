@@ -12,33 +12,9 @@ import { initializeAuthClient } from '$lib/helpers/auth'
 import { page } from '$app/stores'
 import { deferredPrompt } from '$stores/deferredPrompt'
 import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
+import { removeSplashScreen } from '$stores/popups'
 
 const ignoredPaths = ['edit', 'lovers', 'post', 'speculations']
-
-async function initSentry() {
-  const Sentry = await import('@sentry/svelte')
-
-  Sentry.init({
-    dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-    integrations: [new Sentry.Replay()],
-    environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
-    replaysSessionSampleRate: 0.3,
-    replaysOnErrorSampleRate: 1,
-    denyUrls: [
-      // Chrome extensions
-      /extensions\//i,
-      /^chrome:\/\//i,
-    ],
-    beforeSend: $page.url.host.includes('t:')
-      ? (event) => {
-          console.log('[SENTRY LOG]', event)
-          return event
-        }
-      : undefined,
-  })
-  Sentry.makeMain(Sentry.getCurrentHub())
-  Log('info', 'Sentry initialized')
-}
 
 function registerServiceWorker() {
   if ($page.url.host.includes('t:')) return
@@ -69,11 +45,13 @@ function listenForUnhandledRejections() {
 
 onMount(() => {
   $navigateBack = null
-  initSentry()
   listenForUnhandledRejections()
   initializeAuthClient()
   registerServiceWorker()
-  initializeGA()
+  setTimeout(() => {
+    initializeGA()
+  }, 6000)
+  removeSplashScreen()
 })
 
 beforeNavigate(({ from, to, type }) => {
@@ -103,11 +81,6 @@ beforeNavigate(({ from, to, type }) => {
   }} />
 
 <NetworkStatus />
-
-<alpha-ribbon
-  class="pointer-events-none absolute -right-10 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary px-1 py-0.5 text-[0.5rem] font-bold uppercase text-white opacity-60">
-  Alpha
-</alpha-ribbon>
 
 {#if $authState.showLogin}
   <LoginPopup />

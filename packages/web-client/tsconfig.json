@@ -27,6 +27,7 @@
     "./tests/**/*.js",
     "./tests/**/*.ts",
     "./tests/**/*.svelte",
+    "./hooks/**/*.ts",
     "./canister_ids.json",
     "./vite.config.dfx.ts"
   ]

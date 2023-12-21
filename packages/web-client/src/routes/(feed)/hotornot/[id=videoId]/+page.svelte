@@ -167,7 +167,7 @@ beforeNavigate(() => {
         on:view={({ detail }) => handleChange(detail)}>
         <VideoPlayer
           on:watchComplete={updateStats}
-          on:loaded={() => removeSplashScreen()}
+          on:loaded={removeSplashScreen}
           on:watchedPercentage={({ detail }) => recordView(detail)}
           on:videoUnavailable={() => handleUnavailableVideo(index)}
           {index}

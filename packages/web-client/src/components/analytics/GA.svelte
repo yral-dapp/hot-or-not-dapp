@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-// const debugMode = import.meta.env.NODE_ENV === 'development';
+// const debugMode = import.meta.env.NODE_ENV === 'dev';
 const debugMode = true
 
 export const registerPageView = (url: URL = new URL(window.location.href)) => {

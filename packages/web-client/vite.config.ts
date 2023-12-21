@@ -1,12 +1,14 @@
 //@ts-ignore
+import { sentrySvelteKit } from '@sentry/sveltekit'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import { sentryVitePlugin } from '@sentry/vite-plugin'
 const dfxViteConfig = (await import('./vite.config.dfx')).default
 
 const isDev = process.env.NODE_ENV !== 'production'
 console.log(`Starting app in ${isDev ? 'dev' : 'prod'} mode`)
+
+console.log({ dfxViteConfig })
 
 export default defineConfig(() => ({
   build: {
@@ -28,16 +30,22 @@ export default defineConfig(() => ({
     'import.meta.env.PRODUCTION': process.env.PRODUCTION === 'true',
   },
   server: {
+    fs: {
+      allow: ['../'],
+    },
     hmr: process.env.CI ? false : undefined,
     proxy: dfxViteConfig.proxy,
   },
 
   plugins: [
-    sentryVitePlugin({
-      disable: true,
-      org: 'gobazzinga',
-      project: 'hot-or-not',
-      authToken: process.env.SENTRY_AUTH_TOKEN,
+    sentrySvelteKit({
+      sourceMapsUploadOptions: {
+        uploadSourceMaps: false,
+        org: 'gobazzinga',
+        project: 'hot-or-not',
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      },
+      autoInstrument: false,
     }),
     sveltekit(),
     ...dfxViteConfig.plugins,
@@ -46,16 +54,13 @@ export default defineConfig(() => ({
     esbuildOptions: dfxViteConfig.optimizeDeps.esbuildOptions,
     include: [
       '@dfinity/principal',
-      '@sentry/svelte',
-      '@sentry/tracing',
       'clsx',
       'svelte-local-storage-store',
       '@dfinity/auth-client',
       '@dfinity/agent',
-      '@sentry/browser',
+      '@sentry/sveltekit',
       'throttle-debounce',
       'idb',
-      'hls.js/dist/hls.min.js',
     ],
   },
 }))

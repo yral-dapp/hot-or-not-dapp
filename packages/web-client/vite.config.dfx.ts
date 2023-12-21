@@ -1,16 +1,17 @@
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import prodCanisterIds from './canister_ids.json'
 
-const isDev = process.env.NODE_ENV !== 'production'
 const DFX_PORT = 4943
-
+const devEnv = process.env.NODE_ENV !== 'production'
 const devCanisterJson = await getDevCanisterJson()
-const canisterIds = isDev && devCanisterJson ? devCanisterJson : prodCanisterIds
+const devMode = devEnv && devCanisterJson
+
+const canisterIds = devMode ? devCanisterJson : prodCanisterIds
 
 const canisterDefinitions = Object.entries(canisterIds).reduce(
   (acc, [key, val]) => ({
     ...acc,
-    [`process.env.${key.toUpperCase()}_CANISTER_ID`]: isDev
+    [`process.env.${key.toUpperCase()}_CANISTER_ID`]: devMode
       ? JSON.stringify((val as any).local)
       : JSON.stringify((val as any).ic),
   }),
@@ -24,9 +25,8 @@ async function getDevCanisterJson(): Promise<object | undefined> {
       '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
     )
   } catch (e) {
-    console.error(
-      '⚠️ Error finding dev canister JSON. Did you forget to run `dfx deploy`?',
-      e,
+    console.warn(
+      'Error finding dev canister JSON. Did you forget to run `dfx deploy`? App will now use production canister Ids',
     )
     return undefined
   }
@@ -38,10 +38,8 @@ export default {
     'process.env.INTERNET_IDENTITY_CANISTER_ID': JSON.stringify(
       'qhbym-qaaaa-aaaaa-aaafq-cai',
     ),
-    'process.env.DFX_NETWORK': JSON.stringify(isDev ? 'local' : 'ic'),
-    'import.meta.env.NODE_ENV': JSON.stringify(
-      isDev ? 'development' : 'production',
-    ),
+    'process.env.DFX_NETWORK': JSON.stringify(devMode ? 'local' : 'ic'),
+    'import.meta.env.NODE_ENV': JSON.stringify(devMode ? 'dev' : 'prod'),
   },
   proxy: {
     // This proxies all http requests made to /api to our running dfx instance
@@ -52,7 +50,7 @@ export default {
   plugins: [
     nodePolyfills({
       protocolImports: true,
-    }),
+    }) as any,
   ],
   optimizeDeps: {
     esbuildOptions: {

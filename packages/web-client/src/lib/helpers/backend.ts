@@ -23,7 +23,7 @@ import { get } from 'svelte/store'
 import { Principal } from '@dfinity/principal'
 
 export const host =
-  import.meta.env.NODE_ENV === 'development'
+  import.meta.env.NODE_ENV === 'dev'
     ? 'http://localhost:4943'
     : 'https://ic0.app'
 
