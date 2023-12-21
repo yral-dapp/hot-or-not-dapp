@@ -14,7 +14,7 @@ let showExperimentsPopup = false
 
 <HotOrNotLayout>
   <svelte:fragment slot="content">
-    <div class="pointer-events-auto absolute left-1 top-12 z-[50]">
+    <div class="pointer-events-auto absolute left-1 top-12 z-[10]">
       <IconButton
         title="What's new"
         iconName="stamp"
