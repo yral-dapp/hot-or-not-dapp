@@ -25,8 +25,9 @@ async function getDevCanisterJson(): Promise<object | undefined> {
       '../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
     )
   } catch (e) {
-    console.warn(
-      'Error finding dev canister JSON. Did you forget to run `dfx deploy`? App will now use production canister Ids',
+    console.log(
+      '\x1b[33m%s\x1b[33m',
+      '\nWarning: Dev canister_ids.json not found. App will now use production canister_ids.json. Did you forget to run `dfx deploy`?',
     )
     return undefined
   }

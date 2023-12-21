@@ -5,11 +5,6 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 const dfxViteConfig = (await import('./vite.config.dfx')).default
 
-const isDev = process.env.NODE_ENV !== 'production'
-console.log(`Starting app in ${isDev ? 'dev' : 'prod'} mode`)
-
-console.log({ dfxViteConfig })
-
 export default defineConfig(() => ({
   build: {
     sourcemap: true,
@@ -64,3 +59,8 @@ export default defineConfig(() => ({
     ],
   },
 }))
+
+console.log(
+  '\x1b[36m%s\x1b[0m',
+  `\nℹ️ Starting app in ${process.env.NODE_ENV} mode`,
+)
