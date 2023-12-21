@@ -115,7 +115,6 @@ export default defineConfig(() => ({
       'throttle-debounce',
       'idb',
       'hls.js/dist/hls.min.js',
-      'swiper/svelte',
     ],
   },
 }))
