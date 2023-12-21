@@ -268,10 +268,11 @@ onDestroy(unload)
       {#if showExperimentsButton}
         <div class="pointer-events-auto absolute left-1 top-12">
           <IconButton
+            title="What's new"
             iconName="stamp"
             class="relative text-primary transition-colors active:text-primary/50"
             iconClass="h-16 w-16 m-2 animate-spin-slower drop-shadow-xl"
-            ariaLabel="Experiments!"
+            ariaLabel="What's new"
             on:click={(e) => {
               e.stopImmediatePropagation()
               showExperimentsPopup = true
@@ -322,6 +323,7 @@ onDestroy(unload)
           class="pointer-events-auto flex max-w-16 shrink-0 flex-col items-end justify-end space-y-6 pb-2">
           {#if showReportButton}
             <IconButton
+              title="Report"
               iconName="flag"
               iconClass="h-6 w-6 text-white drop-shadow-md"
               ariaLabel="Report this post"
@@ -333,6 +335,7 @@ onDestroy(unload)
 
           {#if showReferAndEarnLink}
             <IconButton
+              title="Refer & Earn"
               iconName="giftbox-fill"
               iconClass="h-7 w-7"
               ariaLabel="Share this post"
@@ -341,6 +344,7 @@ onDestroy(unload)
           {#if showLikeButton}
             <div class="flex flex-col">
               <IconButton
+                title="Like"
                 iconName={post.liked_by_me && $authState.isLoggedIn
                   ? 'heart-fill-color'
                   : 'heart-fill'}
@@ -357,6 +361,7 @@ onDestroy(unload)
           {/if}
           {#if showWalletLink}
             <IconButton
+              title="Wallet"
               iconName="wallet-fill"
               iconClass="h-6 w-6 text-white drop-shadow-md"
               ariaLabel="Wallet"
@@ -364,6 +369,7 @@ onDestroy(unload)
           {/if}
           {#if showShareButton}
             <IconButton
+              title="Share"
               iconName="share-message"
               iconClass="h-6 w-6 drop-shadow-md"
               on:click={(e) => {
@@ -373,6 +379,7 @@ onDestroy(unload)
           {/if}
           {#if showHotOrNotButton}
             <IconButton
+              title="Hot or Not"
               iconName="fire"
               iconClass="h-5 w-5"
               ariaLabel="Check out this post in Hot or Not"

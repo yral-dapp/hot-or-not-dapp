@@ -7,6 +7,7 @@ export let disabled = false
 export let iconName: IconName
 export let iconClass: string
 export let href = ''
+export let title = ''
 export let preload = false
 export let ariaLabel = ''
 export { exportClass as class }
@@ -41,6 +42,7 @@ $: classes = c(
   </a>
 {:else}
   <button
+    {title}
     type="button"
     aria-label={ariaLabel}
     {style}

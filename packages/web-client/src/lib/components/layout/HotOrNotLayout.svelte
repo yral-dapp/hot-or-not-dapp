@@ -1,8 +1,5 @@
 <script lang="ts">
-import { browser } from '$app/environment'
-
 export let testMode = false
-
 $: testClasses = testMode ? 'border-2 border-white/30' : ''
 </script>
 

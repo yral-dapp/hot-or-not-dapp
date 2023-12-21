@@ -71,6 +71,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       <div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
     <IconButton
+      title="Vote Not"
       disabled={disabled || tutorialMode.highlightCoin}
       iconName="not-logo"
       iconClass={c('h-24 w-24 transition-transform', {
@@ -89,6 +90,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       _tutorialMode || error ? '!pointer-events-none' : 'pointer-events-auto',
     )}>
     <IconButton
+      title="Increase amount"
       iconName="chevron-up"
       iconClass="h-2 w-2"
       disabled={$playerState.selectedCoins == 100 || disabled || _tutorialMode}
@@ -126,6 +128,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       </div>
     </button>
     <IconButton
+      title="Decrease amount"
       iconName="chevron-up"
       iconClass="h-2 w-2 rotate-180"
       on:click={(e) => {
@@ -146,6 +149,7 @@ function placeVote(direction: 'Hot' | 'Not') {
       <div class="absolute -top-2 z-[-1] h-36 w-36 rounded-full bg-white/10" />
     {/if}
     <IconButton
+      title="Vote Hot"
       iconName="hot-logo"
       iconClass={c('h-24 w-24 transition-transform', {
         'scale-110': loadingWithDirection === 'Hot',

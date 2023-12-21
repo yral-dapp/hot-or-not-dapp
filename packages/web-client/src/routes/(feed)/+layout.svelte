@@ -6,7 +6,8 @@ import { page } from '$app/stores'
 import { playerState } from '$lib/stores/playerState'
 import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
-import Icon from '$lib/components/icon/Icon.svelte'
+import IconButton from '$lib/components/button/IconButton.svelte'
+import { browser } from '$app/environment'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -17,11 +18,15 @@ function handleVisibilityChange() {
 }
 
 onMount(async () => {
-  document.addEventListener('visibilitychange', handleVisibilityChange)
+  if (browser) {
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 onDestroy(() => {
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  if (browser) {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 $: pathname = $page.url.pathname
@@ -32,13 +37,13 @@ $: pathname = $page.url.pathname
     {#if pathname.includes('feed') || pathname.includes('hotornot')}
       <Selector
         selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
-      <a
+
+      <IconButton
         href="/notifications"
-        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center">
-        <Icon
-          name={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
-          class="h-6 w-6" />
-      </a>
+        ariaLabel="Notifications"
+        iconName={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
+        iconClass="h-6 w-6"
+        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center" />
     {:else if pathname.includes('menu')}
       <div
         class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
