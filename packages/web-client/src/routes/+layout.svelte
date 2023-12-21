@@ -24,12 +24,10 @@ async function initSentry() {
     environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
     replaysSessionSampleRate: 0.3,
     replaysOnErrorSampleRate: 1,
-    ignoreErrors: [
-      /Adding invalid event/i, // Replay Error
-      /Error in compression worker/i, // Replay Error
-      /e.getLastBreadcrumb/i, // Sentry error
-      /chrome-extension/i, // Chrome extensions error
-      /. is not defined/i, //Unknown error
+    denyUrls: [
+      // Chrome extensions
+      /extensions\//i,
+      /^chrome:\/\//i,
     ],
     beforeSend: $page.url.host.includes('t:')
       ? (event) => {
