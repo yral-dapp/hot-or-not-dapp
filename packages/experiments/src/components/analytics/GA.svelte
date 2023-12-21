@@ -1,13 +1,11 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import { splashScreenPopup } from '$stores/popups'
 import { registerPageView, updateConfig } from './GA.utils'
 
 let configured = false
 $: href = $page?.url?.href
-$: shown = !$splashScreenPopup?.show
 
-$: if (href || shown) {
+$: if (href) {
   if (!configured) {
     configured = updateConfig() || false
   }

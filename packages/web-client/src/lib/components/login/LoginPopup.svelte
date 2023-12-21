@@ -17,7 +17,7 @@ const NFID_AUTH_URL =
 <script lang="ts">
 import Button from '$lib/components/button/Button.svelte'
 import IconButton from '$lib/components/button/IconButton.svelte'
-import { registerEvent } from '$lib/components/analytics/GA.svelte'
+import { registerEvent } from '$lib/components/analytics/GA.utils'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import Log from '$lib/utils/Log'
 import { authHelper, authState } from '$lib/stores/auth'

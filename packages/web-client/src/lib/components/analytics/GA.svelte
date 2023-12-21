@@ -1,51 +1,11 @@
-<script lang="ts" context="module">
-// const debugMode = import.meta.env.NODE_ENV === 'dev';
-const debugMode = true
-
-export const registerPageView = (url: URL = new URL(window.location.href)) => {
-  if (url?.href) {
-    window.gtag?.('event', 'page_view', {
-      page_location: url.href,
-    })
-  }
-}
-
-export const updateConfig = (params?: Gtag.CustomParams) => {
-  if (window.gtag) {
-    window.gtag('config', import.meta.env.VITE_GA_TRACKING_ID, {
-      ...params,
-      ...(debugMode && { debug_mode: true }),
-    })
-    return true
-  }
-}
-
-export const setUserProperties = (params?: Gtag.CustomParams) => {
-  window.gtag?.('set', 'user_properties', {
-    ...params,
-  })
-}
-
-export const registerEvent = (
-  eventName: Gtag.EventNames | string,
-  eventParams?: Gtag.ControlParams | Gtag.EventParams | Gtag.CustomParams,
-) => {
-  window.gtag?.('event', eventName, {
-    ...eventParams,
-    ...(debugMode && { debug_mode: true }),
-  })
-}
-</script>
-
 <script lang="ts">
 import { page } from '$app/stores'
-import { splashScreenPopup } from '$lib/stores/popups'
+import { registerPageView, updateConfig } from './GA.utils'
 
 let configured = false
 $: href = $page?.url?.href
-$: shown = !$splashScreenPopup?.show
 
-$: if (href || shown) {
+$: if (href) {
   if (!configured) {
     configured = updateConfig() || false
   }
@@ -54,7 +14,10 @@ $: if (href || shown) {
 </script>
 
 <svelte:head>
-  <script async defer src="https://www.googletagmanager.com/gtag/js"></script>
+  <script
+    async
+    defer
+    src="https://www.googletagmanager.com/gtag/js?id=G-S9P26021F9"></script>
   <script>
   window.dataLayer = window.dataLayer || []
   function gtag() {

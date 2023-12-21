@@ -4,11 +4,7 @@ import Button from '$lib/components/button/Button.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
 import HotOrNotVote from '$lib/components/hot-or-not/HotOrNotVote.svelte'
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
-import {
-  getHotOrNotPosts,
-  updatePostInWatchHistory,
-  type PostPopulated,
-} from '$lib/helpers/feed'
+import { getHotOrNotPosts, type PostPopulated } from '$lib/helpers/feed'
 import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
@@ -28,7 +24,7 @@ const fetchCount = 25
 const fetchWhenVideosLeft = 10
 const keepVideosLoadedCount: number = 3
 
-let videos: PostPopulated[] = []
+let videos: PostPopulated[] = data.post ? [data.post] : []
 let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = true
@@ -106,9 +102,11 @@ async function fetchNextVideos(force = false) {
 }
 
 const handleChange = debounce(250, (newIndex: number) => {
-  currentVideoIndex = newIndex
-  fetchNextVideos()
-  updateURL(videos[currentVideoIndex])
+  if (newIndex != currentVideoIndex) {
+    currentVideoIndex = newIndex
+    fetchNextVideos()
+    updateURL(videos[currentVideoIndex])
+  }
 })
 
 async function handleUnavailableVideo(index: number) {
@@ -117,19 +115,20 @@ async function handleUnavailableVideo(index: number) {
 }
 
 onMount(async () => {
-  updateURL()
   $playerState.initialized = false
   $playerState.muted = true
   $playerState.visible = true
-  if (data?.post) {
-    videos = [data.post, ...videos]
-    updatePostInWatchHistory('watch-hon', data.post)
-  } else if ($hotOrNotFeedVideos.length) {
+  if (!data?.post) {
     videos = $hotOrNotFeedVideos
     $hotOrNotFeedVideos = []
   }
   await tick()
-  fetchNextVideos()
+  setTimeout(
+    () => {
+      fetchNextVideos()
+    },
+    data.post ? 3000 : 0,
+  )
   handleParams()
 })
 

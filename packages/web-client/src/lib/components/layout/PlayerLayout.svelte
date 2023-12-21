@@ -4,19 +4,18 @@ import Avatar from '$lib/components/avatar/Avatar.svelte'
 import IconButton from '$lib/components/button/IconButton.svelte'
 import Icon from '$lib/components/icon/Icon.svelte'
 import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
-import { registerEvent } from '$lib/components/analytics/GA.svelte'
+import { registerEvent } from '$lib/components/analytics/GA.utils'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
-import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { authState } from '$lib/stores/auth'
 import userProfile from '$lib/stores/userProfile'
 import { debounce } from 'throttle-debounce'
-import ExperimentsPopup from '$lib/components/popup/ExperimentsPopup.svelte'
 import { createEventDispatcher, onDestroy, tick } from 'svelte'
+import { browser } from '$app/environment'
 
 export let index: number
 export let post: PostPopulated
@@ -46,7 +45,6 @@ let watchProgress = {
   partialWatchedPercentage: 0,
 }
 let showReportPopup = false
-let showExperimentsPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -199,12 +197,8 @@ async function updateStats() {
   }
 }
 
-$: avatarUrl =
-  post.created_by_profile_photo_url[0] ||
-  getDefaultImageUrl(post.created_by_user_principal_id)
-
 async function setupIO() {
-  if (single) return
+  if (single || !browser) return
   await tick()
   if (observer) return
   observer = new IntersectionObserver(
@@ -245,10 +239,6 @@ onDestroy(unload)
     }} />
 {/if}
 
-{#if showExperimentsButton}
-  <ExperimentsPopup bind:show={showExperimentsPopup} />
-{/if}
-
 <player-layout
   bind:this={playerLayoutEl}
   data-index={index}
@@ -258,32 +248,13 @@ onDestroy(unload)
     <img
       alt="background"
       class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-      src={getThumbnailUrl(post.video_uid)} />
+      src={getThumbnailUrl(post.video_uid, 80)} />
   {/if}
 
   {#if show}
     <div
       style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
       class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
-      {#if showExperimentsButton}
-        <div class="pointer-events-auto absolute left-1 top-12">
-          <IconButton
-            title="What's new"
-            iconName="stamp"
-            class="relative text-primary transition-colors active:text-primary/50"
-            iconClass="h-16 w-16 m-2 animate-spin-slower drop-shadow-xl"
-            ariaLabel="What's new"
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              showExperimentsPopup = true
-            }}>
-            <div
-              class="absolute inset-0 m-2 flex items-center justify-center font-bold text-white">
-              NEW!
-            </div>
-          </IconButton>
-        </div>
-      {/if}
       <div
         style="-webkit-transform: translate3d(0, 0, 0);"
         class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
@@ -293,7 +264,9 @@ onDestroy(unload)
             aria-roledescription="video-info"
             class="pointer-events-auto flex space-x-3">
             <a href="/profile/{postPublisherId}" class="h-12 w-12 shrink-0">
-              <Avatar class="h-12 w-12" src={avatarUrl} />
+              <Avatar
+                class="h-12 w-12"
+                src={post.created_by_profile_photo_url} />
             </a>
             <div class="flex flex-col space-y-1">
               <a href="/profile/{postPublisherId}">

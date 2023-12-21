@@ -10,11 +10,16 @@ import { individualUser, postCache } from './backend'
 import { setBetDetailToDb } from './profile'
 import sleep from '$lib/utils/sleep'
 import { chunk } from '$lib/utils/chunk'
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 
 export interface PostPopulated
   extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
-    Omit<PostDetailsForFrontend, 'created_by_user_principal_id'> {
+    Omit<
+      PostDetailsForFrontend,
+      'created_by_user_principal_id' | 'created_by_profile_photo_url'
+    > {
   created_by_user_principal_id: string
+  created_by_profile_photo_url: string
   publisher_canister_id: string
 }
 
@@ -299,6 +304,9 @@ async function fetchPostDetailById(
         ...post,
         created_by_user_principal_id: r.created_by_user_principal_id.toText(),
         publisher_canister_id: post.publisher_canister_id.toText(),
+        created_by_profile_photo_url:
+          r.created_by_profile_photo_url[0] ||
+          getDefaultImageUrl(r.created_by_user_principal_id, 54),
       } satisfies PostPopulated)
       return undefined
     }
@@ -307,6 +315,9 @@ async function fetchPostDetailById(
       ...post,
       created_by_user_principal_id: r.created_by_user_principal_id.toText(),
       publisher_canister_id: post.publisher_canister_id.toText(),
+      created_by_profile_photo_url:
+        r.created_by_profile_photo_url[0] ||
+        getDefaultImageUrl(r.created_by_user_principal_id, 54),
     } as PostPopulated
   } catch (e) {
     Log('warn', 'Error while populating post', {

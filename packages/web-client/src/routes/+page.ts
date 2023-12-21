@@ -1,4 +1,4 @@
-export const ssr = false
+export const ssr = true
 
 import { redirect } from '@sveltejs/kit'
 export const load = async () => {

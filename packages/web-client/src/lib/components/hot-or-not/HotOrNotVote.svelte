@@ -9,7 +9,7 @@ import type {
   BetOnCurrentlyViewingPostError,
   PlacedBetDetail,
 } from '$canisters/individual_user_template/individual_user_template.did'
-import { registerEvent } from '$lib/components/analytics/GA.svelte'
+import { registerEvent } from '$lib/components/analytics/GA.utils'
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'
 import type { PostPopulated } from '$lib/helpers/feed'
@@ -23,6 +23,7 @@ import HotOrNotVoteControls, {
   type PlaceVote,
 } from './HotOrNotVoteControls.svelte'
 import HotOrNotVoteOutcome from './HotOrNotVoteOutcome.svelte'
+import { browser } from '$app/environment'
 
 export let tutorialMode: {
   highlightCoin: boolean
@@ -67,7 +68,7 @@ $: if (inView && fetchPlacedBetDetail) {
 }
 
 async function getBetDetailFromDb() {
-  if (!post) return
+  if (!post || !browser) return
   if (!idb) {
     try {
       idb = (await import('$lib/idb')).idb

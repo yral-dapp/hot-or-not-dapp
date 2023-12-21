@@ -26,7 +26,7 @@ const cfAvatarImageIds = [
   '098ae9bb-be53-4128-5918-2b794250ae00',
 ]
 
-export default (principal?: Principal | string) => {
+export default (principal?: Principal | string, width: number = 100) => {
   let string = 'random'
   if (typeof principal === 'string') {
     string = principal
@@ -34,5 +34,5 @@ export default (principal?: Principal | string) => {
     string = Principal.from(principal).toText()
   }
   const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0)
-  return `${imageHost}/${cfAvatarImageIds[sum % 20]}/public`
+  return `${imageHost}/${cfAvatarImageIds[sum % 20]}/w=${width}`
 }

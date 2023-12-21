@@ -1,6 +1,6 @@
 import { browser } from '$app/environment'
 import { replaceState } from '$app/navigation'
-import { registerPageView } from '$lib/components/analytics/GA.svelte'
+import { registerPageView } from '$lib/components/analytics/GA.utils'
 import type { PostPopulated } from '$lib/helpers/feed'
 import { navigateBack } from '$lib/stores/navigation'
 import { playerState } from '$lib/stores/playerState'

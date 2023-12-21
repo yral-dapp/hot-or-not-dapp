@@ -14,7 +14,7 @@ export let inView = false
 export let thumbnail = ''
 export let playFormat: 'hls' | 'mp4'
 
-let ios = isiPhone()
+let ios = false
 
 const dispatch = createEventDispatcher<{
   watchedPercentage: number
@@ -167,6 +167,7 @@ $: if (!inView) {
 }
 
 function init() {
+  ios = isiPhone()
   if (playFormat === 'mp4') {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`

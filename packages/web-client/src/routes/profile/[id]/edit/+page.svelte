@@ -13,7 +13,7 @@ import { getCanisterId } from '$lib/helpers/canisterId'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { authState } from '$lib/stores/auth'
 import { goto } from '$app/navigation'
-import { registerEvent } from '$lib/components/analytics/GA.svelte'
+import { registerEvent } from '$lib/components/analytics/GA.utils'
 import { individualUser, userIndex } from '$lib/helpers/backend'
 import goBack from '$lib/utils/goBack'
 
