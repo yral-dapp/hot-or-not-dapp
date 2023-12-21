@@ -4,7 +4,7 @@
     "ignoreDeprecations": "5.0",
     "composite": true,
     "noImplicitAny": false,
-    "module": "ES2020",
+    "module": "ES2022",
     "allowJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,5 +14,20 @@
     "outDir": "./",
     "strict": true,
     "types": ["gtag.js", "w3c-image-capture"]
-  }
+  },
+  "include": [
+    "ambient.d.ts",
+    "non-ambient.d.ts",
+    "./types/**/$types.d.ts",
+    "./vite.config.js",
+    "./vite.config.ts",
+    "./src/**/*.js",
+    "./src/**/*.ts",
+    "./src/**/*.svelte",
+    "./tests/**/*.js",
+    "./tests/**/*.ts",
+    "./tests/**/*.svelte",
+    "./canister_ids.json",
+    "./vite.config.dfx.ts"
+  ]
 }
