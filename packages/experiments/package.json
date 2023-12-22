@@ -35,7 +35,7 @@
     "@types/throttle-debounce": "^5.0.2",
     "@types/w3c-image-capture": "^1.0.7",
     "autoprefixer": "^10.4.16",
-    "date-fns": "^3.0.1",
+    "date-fns": "^3.0.5",
     "dotenv": "^16.3.1",
     "postcss": "^8.4.32",
     "@rajesh896/broprint.js": "2.1.1",
