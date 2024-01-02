@@ -167,7 +167,7 @@ $: if (!inView) {
 }
 
 function init() {
-  if (playFormat === 'mp4') {
+  if (playFormat === 'mp4' || !(window as any).Hls) {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
   } else {
