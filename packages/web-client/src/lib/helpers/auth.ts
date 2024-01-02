@@ -105,7 +105,7 @@ async function updateUserIndexCanister(): Promise<{
     if (authFailed) {
       await logout()
     } else {
-      Log('error', 'Failed to authenticate', {
+      Log('warn', 'Failed to authenticate', {
         error: e,
         from: 'auth.updateUserIndexCanister',
       })

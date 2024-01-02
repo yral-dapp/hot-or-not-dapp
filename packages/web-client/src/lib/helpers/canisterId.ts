@@ -40,7 +40,7 @@ export async function getCanisterId(id: string): Promise<string | undefined> {
       }
     }
   } catch (e) {
-    Log('error', 'Error while fetching canisterId', {
+    Log('warn', 'Error while fetching canisterId', {
       error: e,
       from: 'canisterId.getCanisterId',
     })
