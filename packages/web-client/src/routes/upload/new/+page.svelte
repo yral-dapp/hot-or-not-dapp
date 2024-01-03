@@ -43,6 +43,7 @@ let videoSrc = ''
 let previewMuted = true
 let uploadedVideoId = 0
 let enrollInHotOrNot = true
+let isNsfw = false
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH
 
@@ -145,6 +146,7 @@ const handleSuccessfulUpload = debounce(
       })
       const postRes = await individualUser().add_post_v2({
         description: videoDescription,
+        is_nsfw: isNsfw,
         hashtags,
         video_uid: videoUid,
         creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot,

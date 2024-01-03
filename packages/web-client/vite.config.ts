@@ -11,7 +11,6 @@ export default defineConfig(() => ({
   },
   resolve: {
     alias: {
-      $canisters: resolve('./declarations'),
       $components: resolve('./src/components'),
       $routes: resolve('./src/routes'),
       $icons: resolve('./src/icons'),

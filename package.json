@@ -4,8 +4,9 @@
   "type": "module",
   "private": true,
   "workspaces": [
-    "./packages/web-client",
+    "./packages/declarations",
     "./packages/experiments",
+    "./packages/web-client",
     "./packages/workers"
   ],
   "scripts": {

@@ -2,7 +2,7 @@
 import type {
   BetOutcomeForBetMaker,
   PlacedBetDetail,
-} from '$canisters/individual_user_template/individual_user_template.did'
+} from '@hnn/declarations/individual_user_template/individual_user_template.did'
 
 const betKeyword: Record<OutcomeStatus, string> = {
   Lost: 'lost',

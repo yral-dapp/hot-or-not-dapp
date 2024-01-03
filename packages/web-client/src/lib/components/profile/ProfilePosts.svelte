@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
+import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import Button from '$lib/components/button/Button.svelte'
 import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
 import { fetchPosts } from '$lib/helpers/profile'

@@ -20,7 +20,6 @@ const config = {
 
   kit: {
     alias: {
-      '$canisters/*': './declarations/*',
       '$routes/*': './src/routes/*',
     },
     // csp: isDev

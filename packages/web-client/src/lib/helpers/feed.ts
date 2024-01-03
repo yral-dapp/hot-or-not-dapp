@@ -1,8 +1,8 @@
-import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
+import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import type {
   PostScoreIndexItem,
   TopPostsFetchError,
-} from '$canisters/post_cache/post_cache.did'
+} from '@hnn/declarations/post_cache/post_cache.did'
 import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { Principal } from '@dfinity/principal'

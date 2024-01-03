@@ -18,7 +18,7 @@ import type {
   BetOutcomeForBetMaker,
   PlacedBetDetail,
   SystemTime,
-} from '$canisters/individual_user_template/individual_user_template.did'
+} from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { fade } from 'svelte/transition'
 import c from 'clsx'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
@@ -47,9 +47,7 @@ $: if (placedBetDetail) {
 }
 </script>
 
-<div
-  transition:fade
-  class="flex h-full w-full items-center space-x-8 px-4">
+<div transition:fade class="flex h-full w-full items-center space-x-8 px-4">
   <div
     class={c('flex items-center', {
       'translate-y-4 -space-x-8 -space-y-8': betOutcome !== 'AwaitingResult',

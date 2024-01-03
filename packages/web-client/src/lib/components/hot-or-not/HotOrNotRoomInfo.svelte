@@ -2,7 +2,7 @@
 import type {
   BettingStatus,
   SystemTime,
-} from '$canisters/individual_user_template/individual_user_template.did'
+} from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import Icon from '$lib/components/icon/Icon.svelte'
 
 type UnionValueOf<U> = U extends U ? U[keyof U] : never

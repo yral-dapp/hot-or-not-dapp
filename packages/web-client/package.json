@@ -31,6 +31,7 @@
     "@dfinity/identity": "^0.20.2",
     "@dfinity/identity-secp256k1": "^0.20.2",
     "@dfinity/principal": "^0.20.2",
+    "@hnn/declarations": "*",
     "@neoconfetti/svelte": "^2.2.0",
     "@sentry/sveltekit": "^7.90.0",
     "buffer": "^6.0.3",

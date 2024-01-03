@@ -8,7 +8,7 @@ import type {
   BetDirection,
   BetOnCurrentlyViewingPostError,
   PlacedBetDetail,
-} from '$canisters/individual_user_template/individual_user_template.did'
+} from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { registerEvent } from '$lib/components/analytics/GA.utils'
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'

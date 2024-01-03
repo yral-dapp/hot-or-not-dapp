@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-import type { BetDirection } from '$canisters/individual_user_template/individual_user_template.did'
+import type { BetDirection } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 
 type UnionKeyOf<U> = U extends U ? keyof U : never
 export type VoteDirectionString = UnionKeyOf<BetDirection>

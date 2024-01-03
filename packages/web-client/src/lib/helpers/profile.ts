@@ -8,7 +8,7 @@ import type {
   SystemTime,
   TokenEvent,
   UserProfileDetailsForFrontend,
-} from '$canisters/individual_user_template/individual_user_template.did'
+} from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { setUserProperties } from '$lib/components/analytics/GA.utils'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
@@ -234,12 +234,16 @@ async function populatePosts(posts: PlacedBetDetail[]) {
           ).get_individual_post_details_by_id(post.post_id)
           return {
             ...r,
+            post_id: post.post_id,
             placed_bet_details: post,
             score: BigInt(0),
             created_by_user_principal_id:
               r.created_by_user_principal_id.toText(),
             publisher_canister_id: post.canister_id.toText(),
-          } as PostPopulatedWithBetDetails
+            created_by_profile_photo_url:
+              r.created_by_profile_photo_url[0] ||
+              getDefaultImageUrl(r.created_by_user_principal_id, 54),
+          } satisfies PostPopulatedWithBetDetails
         } catch (_) {
           return undefined
         }
