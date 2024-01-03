@@ -130,6 +130,7 @@ export interface PlacedBetDetail {
 }
 export interface Post {
   'id' : bigint,
+  'is_nsfw' : boolean,
   'status' : PostStatus,
   'share_count' : bigint,
   'hashtags' : Array<string>,
@@ -144,6 +145,7 @@ export interface Post {
 }
 export interface PostDetailsForFrontend {
   'id' : bigint,
+  'is_nsfw' : boolean,
   'status' : PostStatus,
   'home_feed_ranking_score' : bigint,
   'hashtags' : Array<string>,
@@ -161,6 +163,7 @@ export interface PostDetailsForFrontend {
   'created_by_profile_photo_url' : [] | [string],
 }
 export interface PostDetailsFromFrontend {
+  'is_nsfw' : boolean,
   'hashtags' : Array<string>,
   'description' : string,
   'video_uid' : string,
@@ -314,12 +317,14 @@ export interface _SERVICE {
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
+  'get_stable_memory_size' : ActorMethod<[], number>,
   'get_user_caniser_cycle_balance' : ActorMethod<[], bigint>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
     Result_5
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
+  'get_version_number' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
     [] | [Principal]

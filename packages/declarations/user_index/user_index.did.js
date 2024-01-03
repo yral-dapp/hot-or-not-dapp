@@ -36,12 +36,44 @@ export const idlFactory = ({ IDL }) => {
     ),
     'successful_upgrade_count' : IDL.Nat32,
   });
+  const CanisterStatusType = IDL.Variant({
+    'stopped' : IDL.Null,
+    'stopping' : IDL.Null,
+    'running' : IDL.Null,
+  });
+  const DefiniteCanisterSettings = IDL.Record({
+    'freezing_threshold' : IDL.Nat,
+    'controllers' : IDL.Vec(IDL.Principal),
+    'memory_allocation' : IDL.Nat,
+    'compute_allocation' : IDL.Nat,
+  });
+  const CanisterStatusResponse = IDL.Record({
+    'status' : CanisterStatusType,
+    'memory_size' : IDL.Nat,
+    'cycles' : IDL.Nat,
+    'settings' : DefiniteCanisterSettings,
+    'idle_cycles_burned_per_day' : IDL.Nat,
+    'module_hash' : IDL.Opt(IDL.Vec(IDL.Nat8)),
+  });
+  const RejectionCode = IDL.Variant({
+    'NoError' : IDL.Null,
+    'CanisterError' : IDL.Null,
+    'SysTransient' : IDL.Null,
+    'DestinationInvalid' : IDL.Null,
+    'Unknown' : IDL.Null,
+    'SysFatal' : IDL.Null,
+    'CanisterReject' : IDL.Null,
+  });
+  const Result = IDL.Variant({
+    'Ok' : IDL.Tuple(CanisterStatusResponse),
+    'Err' : IDL.Tuple(RejectionCode, IDL.Text),
+  });
   const SetUniqueUsernameError = IDL.Variant({
     'UsernameAlreadyTaken' : IDL.Null,
     'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result = IDL.Variant({
+  const Result_1 = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
@@ -77,6 +109,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Principal)],
         ['query'],
       ),
+    'get_user_canister_status' : IDL.Func([IDL.Principal], [Result], []),
     'get_user_index_canister_count' : IDL.Func([], [IDL.Nat64], ['query']),
     'get_user_index_canister_cycle_balance' : IDL.Func(
         [],
@@ -93,13 +126,19 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'set_permission_to_upgrade_individual_canisters' : IDL.Func(
+        [IDL.Bool],
+        [IDL.Text],
+        [],
+      ),
+    'start_upgrades_for_individual_canisters' : IDL.Func([], [IDL.Text], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
-        [Result],
+        [Result_1],
         [],
       ),
     'upgrade_specific_individual_user_canister_with_latest_wasm' : IDL.Func(
-        [IDL.Principal, IDL.Principal, IDL.Opt(CanisterInstallMode)],
+        [IDL.Principal, IDL.Principal, IDL.Opt(CanisterInstallMode), IDL.Bool],
         [IDL.Text],
         [],
       ),

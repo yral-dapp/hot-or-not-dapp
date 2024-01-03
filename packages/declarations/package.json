@@ -7,11 +7,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "itty-router": "^4.0.24"
-  },
-  "devDependencies": {
-    "wrangler": "^3.22.1"
-  }
+  "license": "ISC"
 }

@@ -19,6 +19,7 @@ export const idlFactory = ({ IDL }) => {
     'upgrade_version_number' : IDL.Opt(IDL.Nat64),
   });
   const PostDetailsFromFrontend = IDL.Record({
+    'is_nsfw' : IDL.Bool,
     'hashtags' : IDL.Vec(IDL.Text),
     'description' : IDL.Text,
     'video_uid' : IDL.Text,
@@ -131,6 +132,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Post = IDL.Record({
     'id' : IDL.Nat64,
+    'is_nsfw' : IDL.Bool,
     'status' : PostStatus,
     'share_count' : IDL.Nat64,
     'hashtags' : IDL.Vec(IDL.Text),
@@ -162,6 +164,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const PostDetailsForFrontend = IDL.Record({
     'id' : IDL.Nat64,
+    'is_nsfw' : IDL.Bool,
     'status' : PostStatus,
     'home_feed_ranking_score' : IDL.Nat64,
     'hashtags' : IDL.Vec(IDL.Text),
@@ -351,6 +354,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'get_rewarded_for_signing_up' : IDL.Func([], [], []),
+    'get_stable_memory_size' : IDL.Func([], [IDL.Nat32], ['query']),
     'get_user_caniser_cycle_balance' : IDL.Func([], [IDL.Nat], ['query']),
     'get_user_utility_token_transaction_history_with_pagination' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
@@ -358,6 +362,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_utility_token_balance' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_version_number' : IDL.Func([], [IDL.Nat64], ['query']),
     'get_well_known_principal_value' : IDL.Func(
         [KnownPrincipalType],
         [IDL.Opt(IDL.Principal)],
