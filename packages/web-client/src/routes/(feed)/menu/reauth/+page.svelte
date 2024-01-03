@@ -1,8 +1,6 @@
 <script lang="ts">
-import Button from '$lib/components/button/Button.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
-import LoginButton from '$lib/components/login/LoginButton.svelte'
-import { authState } from '$lib/stores/auth'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import userProfile from '$lib/stores/userProfile'
 
 let loggedIn = false

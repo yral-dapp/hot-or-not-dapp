@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from '$lib/components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import type { NotificationHistory } from '$lib/helpers/profile'
 import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$lib/stores/auth'

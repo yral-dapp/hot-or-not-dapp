@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store'
 import { persisted } from 'svelte-local-storage-store'
 import { browser } from '$app/environment'
-import type { PostReportData } from '$lib/components/popup/ReportPopup.types'
+import type { PostReportData } from '@hnn/components/popup/ReportPopup.types'
 
 export const showOnboardingPopup = persisted('hot-or-not-ob', true)
 

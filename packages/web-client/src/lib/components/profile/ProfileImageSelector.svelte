@@ -1,7 +1,6 @@
 <script lang="ts">
-import IconButton from '$lib/components/button/IconButton.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
-import Popup from '$lib/components/popup/Popup.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Popup from '@hnn/components/popup/Popup.svelte'
 import { uploadProfilePicture } from '$lib/helpers/image'
 import { getCroppedImg } from '$lib/utils/canvas'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'

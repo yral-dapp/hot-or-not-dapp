@@ -9,7 +9,7 @@ import type {
   TokenEvent,
   UserProfileDetailsForFrontend,
 } from '@hnn/declarations/individual_user_template/individual_user_template.did'
-import { setUserProperties } from '$lib/components/analytics/GA.utils'
+import { setUserProperties } from '@hnn/components/analytics/GA.utils'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'

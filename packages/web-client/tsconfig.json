@@ -1,5 +1,17 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
+  "include": [
+    "ambient.d.ts",
+    "non-ambient.d.ts",
+    "./types/**/$types.d.ts",
+    "./vite.config.js",
+    "./vite.config.ts",
+    "./src/**/*.js",
+    "./src/**/*.ts",
+    "./src/**/*.svelte",
+    "../components/**/*.ts",
+    "../components/**/*.svelte"
+  ],
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
     "composite": true,
@@ -12,23 +24,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./",
+    "rootDir": "../",
     "strict": true,
     "types": ["gtag.js", "w3c-image-capture"]
-  },
-  "include": [
-    "ambient.d.ts",
-    "non-ambient.d.ts",
-    "./types/**/$types.d.ts",
-    "./vite.config.js",
-    "./vite.config.ts",
-    "./src/**/*.js",
-    "./src/**/*.ts",
-    "./src/**/*.svelte",
-    "./tests/**/*.js",
-    "./tests/**/*.ts",
-    "./tests/**/*.svelte",
-    "./hooks/**/*.ts",
-    "./canister_ids.json",
-    "./vite.config.dfx.ts"
-  ]
+  }
 }

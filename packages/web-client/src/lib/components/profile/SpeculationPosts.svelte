@@ -1,6 +1,6 @@
 <script lang="ts">
-import Button from '$lib/components/button/Button.svelte'
-import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import IntersectionObserver from '@hnn/components/intersection-observer/IntersectionObserver.svelte'
 import {
   fetchSpeculations,
   type PostPopulatedWithBetDetails,
@@ -8,7 +8,7 @@ import {
 import Log from '$lib/utils/Log'
 import { onMount } from 'svelte'
 import SpeculationPost from './SpeculationPost.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 export let me = false
 export let userId = ''

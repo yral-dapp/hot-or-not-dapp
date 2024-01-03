@@ -1,9 +1,8 @@
 <script lang="ts">
-import Accordion from '$lib/components/accordion/Accordion.svelte'
-import Button from '$lib/components/button/Button.svelte'
-import IconButton from '$lib/components/button/IconButton.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
-import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import Accordion from '@hnn/components/accordion/Accordion.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
 import { deferredPrompt } from '$lib/stores/deferredPrompt'
 import { slide } from 'svelte/transition'
 
@@ -47,10 +46,7 @@ function toggleAccordion(i: number) {
         on:click={() => toggleAccordion(0)}
         expanded={expandedIndex == 0}>
         <div class="w-full truncate" slot="title">Android</div>
-        <div
-          transition:slide
-          slot="body"
-          class="flex flex-col gap-4 py-3">
+        <div transition:slide slot="body" class="flex flex-col gap-4 py-3">
           <span class="text-sm opacity-70">
             Click on the button below to prompt installation
           </span>
@@ -73,10 +69,7 @@ function toggleAccordion(i: number) {
         on:click={() => toggleAccordion(1)}
         expanded={expandedIndex == 1}>
         <div class="w-full truncate" slot="title">iOS</div>
-        <div
-          transition:slide
-          slot="body"
-          class="flex flex-col gap-4 py-3">
+        <div transition:slide slot="body" class="flex flex-col gap-4 py-3">
           <span class="text-sm opacity-70">1. Click on share button</span>
           <span class="text-sm opacity-70">2. Click on Add to Home Screen</span>
           <span class="text-sm opacity-70">3. Click on Add</span>

@@ -1,6 +1,6 @@
 <script lang="ts">
-import Icon from '$lib/components/icon/Icon.svelte'
-import LoginButton from '$lib/components/login/LoginButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import LoginButton from '@hnn/components/login/LoginButton.svelte'
 import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import {
   fetchHistory,

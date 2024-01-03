@@ -1,9 +1,9 @@
 <script lang="ts">
-import IconButton from '$lib/components/button/IconButton.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
-import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
-import LoginButton from '$lib/components/login/LoginButton.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import IntersectionObserver from '@hnn/components/intersection-observer/IntersectionObserver.svelte'
+import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
+import LoginButton from '@hnn/components/login/LoginButton.svelte'
 import NotificationItem from '$lib/components/notification/NotificationItem.svelte'
 import {
   fetchNotifications,

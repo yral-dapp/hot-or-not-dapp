@@ -1,13 +1,13 @@
 <script lang="ts">
 import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
-import Button from '$lib/components/button/Button.svelte'
-import IntersectionObserver from '$lib/components/intersection-observer/IntersectionObserver.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import IntersectionObserver from '@hnn/components/intersection-observer/IntersectionObserver.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { fetchPosts } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import Log from '$lib/utils/Log'
 import { onMount } from 'svelte'
 import ProfilePost from './ProfilePost.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
 
 export let me = false
 export let userId = ''

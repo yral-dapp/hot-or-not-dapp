@@ -1,5 +1,5 @@
 <script lang="ts">
-import ComingSoon from '$lib/components/coming-soon/ComingSoon.svelte'
+import ComingSoon from '@hnn/components/coming-soon/ComingSoon.svelte'
 </script>
 
 <svelte:head>

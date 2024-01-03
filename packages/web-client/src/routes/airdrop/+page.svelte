@@ -1,14 +1,14 @@
 <script lang="ts">
-import IconButton from '$lib/components/button/IconButton.svelte'
-import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import AirdropCompleteGraphics from '$lib/components/airdrop-form/AirdropCompleteGraphics.svelte'
+import AirdropEndGraphics from '$lib/components/airdrop-form/AirdropEndGraphics.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$lib/stores/navigation'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { airdropEntryDetails, isNNSIdRegistered } from '$lib/helpers/airdrop'
-import Icon from '$lib/components/icon/Icon.svelte'
-import AirdropCompleteGraphics from '$lib/components/airdrop-form/AirdropCompleteGraphics.svelte'
-import Button from '$lib/components/button/Button.svelte'
-import AirdropEndGraphics from '$lib/components/airdrop-form/AirdropEndGraphics.svelte'
 
 let loading = true
 let participatedForNNS = false

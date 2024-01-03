@@ -1,8 +1,8 @@
 <script lang="ts">
-import Button from '$lib/components/button/Button.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import Log from '$lib/utils/Log'
 import { page } from '$app/stores'
-import Icon from '$lib/components/icon/Icon.svelte'
 
 const error = $page.error?.message
 const status = $page.status

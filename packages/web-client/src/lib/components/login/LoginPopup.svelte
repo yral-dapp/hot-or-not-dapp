@@ -15,9 +15,9 @@ const NFID_AUTH_URL =
 </script>
 
 <script lang="ts">
-import Button from '$lib/components/button/Button.svelte'
-import IconButton from '$lib/components/button/IconButton.svelte'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import Log from '$lib/utils/Log'
 import { authHelper, authState } from '$lib/stores/auth'
@@ -25,7 +25,7 @@ import userProfile from '$lib/stores/userProfile'
 import { goto } from '$app/navigation'
 import { tick } from 'svelte'
 import { get } from 'svelte/store'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 export let hideNfid = false
 

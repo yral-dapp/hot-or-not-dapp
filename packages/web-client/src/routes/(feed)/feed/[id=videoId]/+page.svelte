@@ -1,9 +1,9 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
-import Button from '$lib/components/button/Button.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
-import PlayerRenderer from '$lib/components/video/PlayerRenderer.svelte'
+import PlayerRenderer from '@hnn/components/video/PlayerRenderer.svelte'
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import {
   getTopPosts,
@@ -19,6 +19,7 @@ import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
+import { browser } from '$app/environment'
 
 export let data: PageData
 
@@ -149,6 +150,7 @@ beforeNavigate(() => {
   class="hide-scrollbar relative flex w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
   {#each videos as post, index (index)}
     <PlayerRenderer
+      {browser}
       {keepVideosLoadedCount}
       {index}
       activeIndex={currentVideoIndex}

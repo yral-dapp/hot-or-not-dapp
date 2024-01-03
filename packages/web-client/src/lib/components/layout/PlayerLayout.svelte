@@ -1,9 +1,9 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Avatar from '$lib/components/avatar/Avatar.svelte'
-import IconButton from '$lib/components/button/IconButton.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'

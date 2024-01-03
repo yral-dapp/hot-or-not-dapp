@@ -3,9 +3,9 @@ import { fade } from 'svelte/transition'
 import { showOnboardingPopup } from '$lib/stores/popups'
 import left from '$lib/assets/decore-left.png'
 import right from '$lib/assets/decore-right.png'
-import Button from '$lib/components/button/Button.svelte'
-import HotOrNotVote from '$lib/components/hot-or-not/HotOrNotVote.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import HotOrNotVote from '@hnn/components/web-client/hot-or-not/HotOrNotVote.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 let step: 1 | 2 | 3 | 4 = 1
 </script>

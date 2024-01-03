@@ -1,12 +1,12 @@
 <script lang="ts">
-import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
-import BottomNavigation from '$lib/components/navigation/BottomNavigation.svelte'
-import Selector from '$lib/components/home/Selector.svelte'
+import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
+import Selector from '@hnn/components/home/Selector.svelte'
 import { page } from '$app/stores'
 import { playerState } from '$lib/stores/playerState'
 import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
-import IconButton from '$lib/components/button/IconButton.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
 
 function handleVisibilityChange() {
@@ -36,6 +36,12 @@ $: pathname = $page.url.pathname
   <svelte:fragment slot="top">
     {#if pathname.includes('feed') || pathname.includes('hotornot')}
       <Selector
+        feedUrl={$playerState.currentFeedUrl == 'no-videos'
+          ? ''
+          : $playerState.currentFeedUrl}
+        hotOrNotUrl={$playerState.currentHotOrNotUrl == 'no-videos'
+          ? ''
+          : $playerState.currentFeedUrl}
         selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
 
       <IconButton
@@ -56,7 +62,11 @@ $: pathname = $page.url.pathname
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
     {#if !pathname.includes('hotornot')}
-      <BottomNavigation />
+      <BottomNavigation
+        feedUrl={$playerState.currentFeedUrl == 'no-videos'
+          ? ''
+          : $playerState.currentFeedUrl}
+        pathName={$page.url.pathname} />
     {/if}
   </div>
 </HomeLayout>

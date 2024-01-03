@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "workspaces": [
+    "./packages/components",
     "./packages/declarations",
     "./packages/experiments",
     "./packages/web-client",

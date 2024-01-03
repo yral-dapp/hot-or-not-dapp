@@ -1,5 +1,5 @@
 <script>
-import Input from '$lib/components/input/Input.svelte'
+import Input from '@hnn/components/input/Input.svelte'
 
 export let checked = false
 export let value = ''

@@ -1,21 +1,21 @@
 <script lang="ts">
-import IconButton from '$lib/components/button/IconButton.svelte'
-import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
 import ProfileImageSelector from '$lib/components/profile/ProfileImageSelector.svelte'
-import Input from '$lib/components/input/Input.svelte'
-import Button from '$lib/components/button/Button.svelte'
+import Input from '@hnn/components/input/Input.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import { onMount } from 'svelte'
 import Log from '$lib/utils/Log'
-import type { PageData } from './$types'
 import userProfile from '$lib/stores/userProfile'
 import type { Principal } from '@dfinity/principal'
 import { getCanisterId } from '$lib/helpers/canisterId'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { authState } from '$lib/stores/auth'
 import { goto } from '$app/navigation'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
 import { individualUser, userIndex } from '$lib/helpers/backend'
 import goBack from '$lib/utils/goBack'
+import type { PageData } from './$types'
 
 export let data: PageData
 

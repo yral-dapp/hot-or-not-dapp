@@ -1,9 +1,9 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import IconButton from '$lib/components/button/IconButton.svelte'
-import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
-import BottomNavigation from '$lib/components/navigation/BottomNavigation.svelte'
+import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'

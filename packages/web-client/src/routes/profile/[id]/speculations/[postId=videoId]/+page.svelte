@@ -1,8 +1,8 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import IconButton from '$lib/components/button/IconButton.svelte'
-import HotOrNotVote from '$lib/components/hot-or-not/HotOrNotVote.svelte'
-import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HotOrNotVote from '@hnn/components/web-client/hot-or-not/HotOrNotVote.svelte'
+import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'

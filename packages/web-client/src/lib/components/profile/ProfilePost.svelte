@@ -1,6 +1,6 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { getShortNumber } from '$lib/utils/shortNumber'
 import { onMount } from 'svelte'
 

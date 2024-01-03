@@ -1,12 +1,16 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Button from '$lib/components/button/Button.svelte'
-import IconButton from '$lib/components/button/IconButton.svelte'
-import ProfileLayout from '$lib/components/layout/ProfileLayout.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
 import ProfilePosts from '$lib/components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$lib/components/profile/SpeculationPosts.svelte'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
-import ProfileTabs from '$lib/components/tabs/ProfileTabs.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
+import ProfileTabs from '@hnn/components/tabs/ProfileTabs.svelte'
+import CopyButton from '@hnn/components/web-client/profile/CopyButton.svelte'
+import ShowMoreButton from '@hnn/components/web-client/profile/ShowMoreButton.svelte'
+import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import {
   doIFollowThisUser,
   loveUser,
@@ -23,10 +27,6 @@ import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
 import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { slide } from 'svelte/transition'
-import CopyButton from '$lib/components/profile/CopyButton.svelte'
-import ShowMoreButton from '$lib/components/profile/ShowMoreButton.svelte'
-import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
 import type { Snapshot } from './$types'
 import { serializeBigIntHelper } from '$lib/utils/Log'
 

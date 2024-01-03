@@ -20,14 +20,14 @@ function getBetOutcome(betDetails: PlacedBetDetail): OutcomeStatus {
 </script>
 
 <script lang="ts">
-import Avatar from '$lib/components/avatar/Avatar.svelte'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import type { PostPopulatedWithBetDetails } from '$lib/helpers/profile'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { pluralize } from '$lib/utils/pluralize'
 import { generateRandomName } from '$lib/utils/randomUsername'
-import { getMsLeftForBetResult, getTimeStringFromMs } from '$lib/utils/timeLeft'
+import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 import c from 'clsx'
 import { onMount } from 'svelte'
 

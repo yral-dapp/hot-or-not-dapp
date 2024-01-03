@@ -1,11 +1,11 @@
 <script lang="ts">
-import Button from '$lib/components/button/Button.svelte'
-import Popup from './Popup.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Popup from '@hnn/components/popup/Popup.svelte'
 import { authHelper } from '$lib/stores/auth'
 import { initializeAuthClient } from '$lib/helpers/auth'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import userProfile from '$lib/stores/userProfile'
-import Icon from '$lib/components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 export let show = false
 let loading = false

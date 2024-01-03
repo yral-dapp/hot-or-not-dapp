@@ -6,12 +6,12 @@ import LoginPopup from '$lib/components/login/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
 import { navigateBack, navigationHistory } from '$lib/stores/navigation'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import userProfile from '$lib/stores/userProfile'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import { page } from '$app/stores'
 import { deferredPrompt } from '$lib/stores/deferredPrompt'
-import NetworkStatus from '$lib/components/network-status/NetworkStatus.svelte'
+import NetworkStatus from '@hnn/components/network-status/NetworkStatus.svelte'
 import { removeSplashScreen } from '$lib/stores/popups'
 
 const ignoredPaths = ['edit', 'lovers', 'post', 'speculations']
@@ -27,7 +27,7 @@ function registerServiceWorker() {
 let GA: any
 async function initializeGA() {
   try {
-    GA = (await import('$lib/components/analytics/GA.svelte')).default
+    GA = (await import('@hnn/components/analytics/GA.svelte')).default
   } catch (_) {
     Log('warn', 'Could not load GA')
   }
@@ -91,5 +91,5 @@ beforeNavigate(({ from, to, type }) => {
 </div>
 
 {#if GA}
-  <svelte:component this={GA} />
+  <svelte:component this={GA} tagId="G-S9P26021F9" pageUrl={$page?.url?.href} />
 {/if}

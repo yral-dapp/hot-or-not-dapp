@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from '$lib/components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { handleParams } from '$lib/utils/params'
 import { hideSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'

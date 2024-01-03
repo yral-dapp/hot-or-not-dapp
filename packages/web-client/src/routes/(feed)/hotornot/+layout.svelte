@@ -1,8 +1,8 @@
 <script lang="ts">
-import IconButton from '$lib/components/button/IconButton.svelte'
-import HotOrNotLayout from '$lib/components/layout/HotOrNotLayout.svelte'
-import ExperimentsPopup from '$lib/components/popup/ExperimentsPopup.svelte'
-import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HotOrNotLayout from '@hnn/components/layout/HotOrNotLayout.svelte'
+import ExperimentsPopup from '@hnn/components/popup/ExperimentsPopup.svelte'
+import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
 import { postReportPopup } from '$lib/stores/popups'
 
 let showExperimentsPopup = false
