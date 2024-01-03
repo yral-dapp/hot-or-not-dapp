@@ -3,8 +3,7 @@ import IconButton from '$lib/components/button/IconButton.svelte'
 import HomeLayout from '$lib/components/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$lib/stores/navigation'
-import { authState } from '$lib/stores/auth'
-import { loadingAuthStatus } from '$lib/stores/loading'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { airdropEntryDetails, isNNSIdRegistered } from '$lib/helpers/airdrop'
 import Icon from '$lib/components/icon/Icon.svelte'
 import AirdropCompleteGraphics from '$lib/components/airdrop-form/AirdropCompleteGraphics.svelte'
@@ -79,7 +78,7 @@ $: !authorized && (loading = false)
       <div
         class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
         {#if participatedForNNS}
-          <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
+          <div class="mt-4 max-w-80 px-16 sm:mt-10 sm:!max-h-80">
             <AirdropEndGraphics class="h-full w-full" />
           </div>
           <div
@@ -128,7 +127,7 @@ $: !authorized && (loading = false)
             </a>
           </div>
         {:else}
-          <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
+          <div class="mt-4 max-w-80 px-16 sm:mt-10 sm:!max-h-80">
             <AirdropCompleteGraphics class="h-full w-full" />
           </div>
           <div

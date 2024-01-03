@@ -1,12 +1,11 @@
 <script lang="ts">
-import { authState } from '$lib/stores/auth'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import LogoutPopup from '$lib/components/popup/LogoutPopup.svelte'
 import { page } from '$app/stores'
 import userProfile from '$lib/stores/userProfile'
 import LoginButton from '$lib/components/login/LoginButton.svelte'
 import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
-import { loadingAuthStatus } from '$lib/stores/loading'
 import type { IconName } from '$lib/components/icon/icon.type'
 import Icon from '$lib/components/icon/Icon.svelte'
 

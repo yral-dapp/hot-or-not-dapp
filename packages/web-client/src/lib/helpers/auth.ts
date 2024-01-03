@@ -1,9 +1,13 @@
 import Log from '$lib/utils/Log'
 import { AuthClient } from '@dfinity/auth-client'
 import { get } from 'svelte/store'
-import { authState, authHelper, referralId } from '$lib/stores/auth'
+import {
+  authState,
+  authHelper,
+  referralId,
+  loadingAuthStatus,
+} from '$lib/stores/auth'
 import { updateProfile } from './profile'
-import { loadingAuthStatus } from '$lib/stores/loading'
 import { Principal } from '@dfinity/principal'
 import { userIndex } from './backend'
 import { checkSignupStatusCanister } from './signup'

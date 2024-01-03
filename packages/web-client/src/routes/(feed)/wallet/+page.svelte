@@ -7,8 +7,7 @@ import {
   fetchTokenBalance,
   type TransactionHistory,
 } from '$lib/helpers/profile'
-import { authState } from '$lib/stores/auth'
-import { loadingAuthStatus } from '$lib/stores/loading'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import userProfile from '$lib/stores/userProfile'
 
 let loadBalanced = true

@@ -26,3 +26,5 @@ export const referralId = persisted<{
   principalId?: string
   time?: number
 }>('referral-id', {})
+
+export const loadingAuthStatus = writable<boolean>(true)

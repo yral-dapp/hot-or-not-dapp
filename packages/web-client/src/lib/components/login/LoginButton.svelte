@@ -1,8 +1,7 @@
 <script lang="ts">
 import Button from '$lib/components/button/Button.svelte'
 import Icon from '$lib/components/icon/Icon.svelte'
-import { authState } from '$lib/stores/auth'
-import { loadingAuthStatus } from '$lib/stores/loading'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 </script>
 
 {#if $loadingAuthStatus}
