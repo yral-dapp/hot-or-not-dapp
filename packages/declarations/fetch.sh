@@ -23,9 +23,9 @@ then
   fi
   echo 'MacOS detected. Continuing ...'
   DIDCARCH=$DIDCMACOS
-elif [ $ARCH = "Linux" ] && [ ! -f $DIDCLINUX ]
+elif [ $ARCH = "Linux" ]
 then 
-  if [ ! -f $DIDCMACOS ]
+  if [ ! -f $DIDCLINUX ]
   then
     echo "didc-linux does not exist. Downloading ..."
     wget https://github.com/dfinity/candid/releases/latest/download/didc-macos -O "$DIDCLINUX"
