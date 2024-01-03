@@ -2,6 +2,8 @@
 import IconButton from '$lib/components/button/IconButton.svelte'
 import HotOrNotLayout from '$lib/components/layout/HotOrNotLayout.svelte'
 import ExperimentsPopup from '$lib/components/popup/ExperimentsPopup.svelte'
+import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
+import { postReportPopup } from '$lib/stores/popups'
 
 let showExperimentsPopup = false
 </script>
@@ -14,7 +16,7 @@ let showExperimentsPopup = false
 
 <HotOrNotLayout>
   <svelte:fragment slot="content">
-    <div class="pointer-events-auto absolute left-1 top-12 z-[10]">
+    <div class="pointer-events-auto absolute left-1 top-12 z-[12]">
       <IconButton
         title="What's new"
         iconName="stamp"
@@ -38,3 +40,18 @@ let showExperimentsPopup = false
     <slot />
   </svelte:fragment>
 </HotOrNotLayout>
+
+{#if $postReportPopup.show && $postReportPopup.data}
+  <ReportPopup
+    on:close={() =>
+      ($postReportPopup = {
+        show: false,
+      })}
+    show
+    type="post"
+    reportData={$postReportPopup.data} />
+{/if}
+
+{#if showExperimentsPopup}
+  <ExperimentsPopup bind:show={showExperimentsPopup} />
+{/if}

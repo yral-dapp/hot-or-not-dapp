@@ -1,5 +1,5 @@
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import prodCanisterIds from '@hnn/declarations/canister_ids.json'
+import prodCanisterIds from '@hnn/declarations/canister_ids.json' assert { type: 'json' }
 
 const DFX_PORT = 4943
 const devEnv = process.env.NODE_ENV !== 'production'

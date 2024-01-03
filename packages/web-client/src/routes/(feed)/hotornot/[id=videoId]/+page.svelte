@@ -160,7 +160,6 @@ beforeNavigate(() => {
         watchHistoryDb="watch-hon"
         showWalletLink
         showReportButton
-        showExperimentsButton
         let:recordView
         let:updateStats
         on:view={({ detail }) => handleChange(detail)}>

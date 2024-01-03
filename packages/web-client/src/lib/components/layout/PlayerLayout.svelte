@@ -3,9 +3,7 @@ import { page } from '$app/stores'
 import Avatar from '$lib/components/avatar/Avatar.svelte'
 import IconButton from '$lib/components/button/IconButton.svelte'
 import Icon from '$lib/components/icon/Icon.svelte'
-import ReportPopup from '$lib/components/popup/ReportPopup.svelte'
 import { registerEvent } from '$lib/components/analytics/GA.utils'
-import ExperimentsPopup from '$lib/components/popup/ExperimentsPopup.svelte'
 import { individualUser } from '$lib/helpers/backend'
 import { updatePostInWatchHistory, type PostPopulated } from '$lib/helpers/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
@@ -17,6 +15,7 @@ import userProfile from '$lib/stores/userProfile'
 import { debounce } from 'throttle-debounce'
 import { createEventDispatcher, onDestroy, tick } from 'svelte'
 import { browser } from '$app/environment'
+import { postReportPopup } from '$lib/stores/popups'
 
 export let index: number
 export let post: PostPopulated
@@ -27,7 +26,6 @@ export let showLikeButton = false
 export let showReportButton = false
 export let showHotOrNotButton = false
 export let showDescription = false
-export let showExperimentsButton = false
 export let unavailable = false
 export let watchHistoryDb: 'watch' | 'watch-hon'
 export let single = false
@@ -45,8 +43,6 @@ let watchProgress = {
   totalCount: 0,
   partialWatchedPercentage: 0,
 }
-let showReportPopup = false
-let showExperimentsPopup = false
 
 $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
@@ -228,23 +224,6 @@ $: if (show) {
 onDestroy(unload)
 </script>
 
-{#if showReportPopup}
-  <ReportPopup
-    bind:show={showReportPopup}
-    type="post"
-    reportData={{
-      postCanisterId: post.publisher_canister_id,
-      postId: post.id.toString(),
-      videoUid: post.video_uid,
-      postUploadedByUserId: post.created_by_user_principal_id,
-      reportedByUserId: $authState.idString || '2vxsx-fae',
-    }} />
-{/if}
-
-{#if showExperimentsButton}
-  <ExperimentsPopup bind:show={showExperimentsPopup} />
-{/if}
-
 <player-layout
   bind:this={playerLayoutEl}
   data-index={index}
@@ -261,24 +240,6 @@ onDestroy(unload)
     <div
       style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
       class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
-      {#if showExperimentsButton}
-        <div class="pointer-events-auto absolute left-1 top-12">
-          <IconButton
-            iconName="stamp"
-            class="relative text-primary transition-colors active:text-primary/50"
-            iconClass="h-16 w-16 m-2 animate-spin-slower drop-shadow-xl"
-            ariaLabel="Experiments!"
-            on:click={(e) => {
-              e.stopImmediatePropagation()
-              showExperimentsPopup = true
-            }}>
-            <div
-              class="absolute inset-0 m-2 flex items-center justify-center font-bold text-white">
-              NEW!
-            </div>
-          </IconButton>
-        </div>
-      {/if}
       <div
         style="-webkit-transform: translate3d(0, 0, 0);"
         class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2
@@ -326,7 +287,16 @@ onDestroy(unload)
               ariaLabel="Report this post"
               on:click={(e) => {
                 e.stopImmediatePropagation()
-                showReportPopup = true
+                postReportPopup.set({
+                  show: true,
+                  data: {
+                    postCanisterId: post.publisher_canister_id,
+                    postId: post.id.toString(),
+                    videoUid: post.video_uid,
+                    postUploadedByUserId: post.created_by_user_principal_id,
+                    reportedByUserId: $authState.idString || '2vxsx-fae',
+                  },
+                })
               }} />
           {/if}
 

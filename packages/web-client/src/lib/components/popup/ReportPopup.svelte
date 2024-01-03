@@ -1,24 +1,13 @@
-<script lang="ts" context="module">
-type ReportType = 'profile' | 'post'
-
-type PostReportData = {
-  postCanisterId: string
-  postUploadedByUserId: string
-  postId: string
-  reportedByUserId: string
-  videoUid: string
-}
-
-type ProfileReportData = {
-  userId: string
-  reportedByUserId: string
-}
-</script>
-
 <script lang="ts">
 import Button from '$lib/components/button/Button.svelte'
 import Popup from './Popup.svelte'
 import { saveReportedPostInDb } from '$lib/helpers/feed'
+import type {
+  PostReportData,
+  ProfileReportData,
+  ReportType,
+} from './ReportPopup.types'
+import { createEventDispatcher } from 'svelte'
 
 export let show = false
 export let type: ReportType
@@ -26,6 +15,8 @@ export let reportData: PostReportData | ProfileReportData
 
 let loading = false
 let selectedReason = ''
+
+const dispatch = createEventDispatcher<{ close: void }>()
 
 async function handleReport() {
   loading = true
@@ -67,10 +58,11 @@ async function handleReport() {
 
   loading = false
   show = false
+  dispatch('close')
 }
 </script>
 
-<Popup showCloseButton bind:show>
+<Popup on:close showCloseButton bind:show>
   <div class="flex flex-col space-y-4">
     <div class="text-md pb-2 text-center text-black">Report Video</div>
     <div class="text-md pb-2 text-center text-black">
