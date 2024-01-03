@@ -185,6 +185,7 @@ export async function getTopPosts(
   }
 }
 
+//@ts-ignore
 async function filterBets(
   posts: PostScoreIndexItem[],
 ): Promise<PostScoreIndexItem[]> {
