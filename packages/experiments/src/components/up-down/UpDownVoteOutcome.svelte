@@ -1,7 +1,7 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
-import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
-import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import type { CollectionName, VoteRecord } from '$lib/db/db.types'
+import { getMsLeftForResult } from '$lib/utils/countdown'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { doc, onSnapshot, type Unsubscribe } from 'firebase/firestore'
 import { createEventDispatcher, onDestroy } from 'svelte'

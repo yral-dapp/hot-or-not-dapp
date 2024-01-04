@@ -1,16 +1,16 @@
 <script lang="ts">
 import '../css/app.css'
+import NetworkStatus from '@hnn/components/network-status/NetworkStatus.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import { onMount } from 'svelte'
 import { authState } from '$stores/auth'
 import Log from '$lib/utils/Log'
 import userProfile from '$stores/userProfile'
 import { page } from '$app/stores'
 import { deferredPrompt } from '$stores/deferredPrompt'
-import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
 import { initDb } from '$lib/db'
 import { browser } from '$app/environment'
 import LoginPopup from '$components/auth/LoginPopup.svelte'
-import { registerEvent } from '$components/analytics/GA.utils'
 import { removeSplashScreen } from '$stores/popups'
 
 function registerServiceWorker() {
@@ -25,7 +25,7 @@ function registerServiceWorker() {
 let GA: any
 function initializeGA() {
   try {
-    import('$components/analytics/GA.svelte').then((d) => {
+    import('@hnn/components/analytics/GA.svelte').then((d) => {
       GA = d.default
       console.info('loaded GA')
     })
@@ -77,5 +77,5 @@ onMount(() => {
 {/if}
 
 {#if GA}
-  <svelte:component this={GA} />
+  <svelte:component this={GA} tagId="G-PPE5XD2VKV" pageUrl={$page?.url?.href} />
 {/if}

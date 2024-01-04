@@ -16,6 +16,7 @@
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "dependencies": {
+    "@hnn/components": "*",
     "clsx": "^2.0.0",
     "google-auth-library": "9.4.1",
     "hls.js": "^1.4.14",

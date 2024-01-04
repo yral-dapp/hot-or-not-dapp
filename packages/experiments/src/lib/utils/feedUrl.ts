@@ -1,5 +1,5 @@
+import { registerPageView } from '@hnn/components/analytics/GA.utils'
 import { replaceState } from '$app/navigation'
-import { registerPageView } from '$components/analytics/GA.utils'
 import type { UpDownPost } from '$lib/db/db.types'
 import { playerState } from '$stores/playerState'
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-import Avatar from '$components/avatar/Avatar.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import type { VoteRecordWithId } from '$components/up-down/UpDownVote.svelte'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
 import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'

@@ -1,5 +1,5 @@
 <script lang="ts">
-import FeedLayout from '$components/layout/FeedLayout.svelte'
+import FeedLayout from '@hnn/components/experiments/layout/FeedLayout.svelte'
 import { showOnboardingPopup } from '$stores/popups'
 import { onMount } from 'svelte'
 

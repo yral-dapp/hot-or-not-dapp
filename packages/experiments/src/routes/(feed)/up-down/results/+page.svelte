@@ -1,6 +1,6 @@
 <script lang="ts">
 import LoginButton from '$components/auth/LoginButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { getDb } from '$lib/db'
 import type { CollectionName, VoteRecord } from '$lib/db/db.types'
 import { authState } from '$stores/auth'

@@ -1,7 +1,7 @@
 <script lang="ts">
-import Avatar from '$components/avatar/Avatar.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import type { UpDownPost } from '$lib/db/db.types'
 import { getLikeDislikeStatus } from '$lib/db/feed'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'

@@ -1,5 +1,5 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
+import Button from '@hnn/components/button/Button.svelte'
 import { getDb } from '$lib/db'
 import type { ViewChangeParameters } from '$lib/db/db.types'
 import { createNewConfig, isDev } from '$lib/db/dev'

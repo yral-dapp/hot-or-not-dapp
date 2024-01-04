@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
 import { authState } from '$stores/auth'

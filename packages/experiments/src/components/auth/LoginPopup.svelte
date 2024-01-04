@@ -1,6 +1,7 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
 import { authState, loading } from '$stores/auth'
 import { getApp } from 'firebase/app'
 import {
@@ -9,7 +10,6 @@ import {
   getAuth,
   signInWithPopup,
 } from 'firebase/auth'
-import IconButton from '$components/button/IconButton.svelte'
 
 let error = ''
 

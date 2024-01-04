@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { getHlsUrl, getMp4Url } from '$lib/utils/cloudflare'
 import { isiPhone } from '$lib/utils/isSafari'
 import Log from '$lib/utils/Log'

@@ -1,8 +1,8 @@
 <script lang="ts">
 import LoginButton from '$components/auth/LoginButton.svelte'
-import Avatar from '$components/avatar/Avatar.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { getDb } from '$lib/db'
 import type {
   CollectionName,

@@ -1,22 +1,23 @@
 <script lang="ts">
-import { beforeNavigate } from '$app/navigation'
-import Button from '$components/button/Button.svelte'
 import PlayerLayout from '$components/layout/PlayerLayout.svelte'
 import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import PlayerRenderer from '@hnn/components/video/PlayerRenderer.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import { beforeNavigate } from '$app/navigation'
 import { updateURL } from '$lib/utils/feedUrl'
 import { joinArrayUniquely } from '$lib/utils/video'
 import { playerState } from '$stores/playerState'
 import { onMount } from 'svelte'
-import Icon from '$components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
 import type { UpDownPost } from '$lib/db/db.types'
 import { getVideos } from '$lib/db/feed'
 import type { QueryDocumentSnapshot } from 'firebase/firestore'
-import PlayerRenderer from '$components/layout/PlayerRenderer.svelte'
 import { debounce } from 'throttle-debounce'
 import { removeSplashScreen } from '$stores/popups'
 import { page } from '$app/stores'
+import { browser } from '$app/environment'
 
 const fetchWhenVideosLeft = 5
 const keepVideosLoadedCount: number = 4
@@ -100,6 +101,7 @@ beforeNavigate(() => {
   class="hide-scrollbar relative flex w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
   {#each videos as post, index (post.id)}
     <PlayerRenderer
+      {browser}
       {keepVideosLoadedCount}
       {index}
       activeIndex={currentVideoIndex}

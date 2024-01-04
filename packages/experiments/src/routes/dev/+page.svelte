@@ -1,5 +1,5 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
+import Button from '@hnn/components/button/Button.svelte'
 import { isDev } from '$lib/db/dev'
 import { authState } from '$stores/auth'
 import { onMount } from 'svelte'

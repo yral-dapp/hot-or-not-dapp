@@ -2,7 +2,7 @@
 import '../css/app.css'
 import { onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
-import LoginPopup from '$lib/components/login/LoginPopup.svelte'
+import LoginPopup from '$lib/components/auth/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
 import { navigateBack, navigationHistory } from '$lib/stores/navigation'

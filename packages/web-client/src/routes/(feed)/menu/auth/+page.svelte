@@ -1,6 +1,6 @@
 <script lang="ts">
 import Button from '@hnn/components/button/Button.svelte'
-import LoginButton from '@hnn/components/login/LoginButton.svelte'
+import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import userProfile from '$lib/stores/userProfile'
 </script>

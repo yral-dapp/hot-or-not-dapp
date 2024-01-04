@@ -1,4 +1,4 @@
-import { registerEvent } from '$components/analytics/GA.utils'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import {
   shareVideo,
   toggleDislike,

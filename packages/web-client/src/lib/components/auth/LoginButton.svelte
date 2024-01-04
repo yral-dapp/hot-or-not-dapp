@@ -1,6 +1,6 @@
 <script lang="ts">
-import Button from '../button/Button.svelte'
-import Icon from '../icon/Icon.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 export let loading = true
 </script>

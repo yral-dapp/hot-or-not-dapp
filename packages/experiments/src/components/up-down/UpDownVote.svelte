@@ -35,7 +35,7 @@ import UpDownVoteControls from './UpDownVoteControls.svelte'
 import UpDownVoteOutcome from './UpDownVoteOutcome.svelte'
 import { authState } from '$stores/auth'
 import { onDestroy } from 'svelte'
-import { registerEvent } from '$components/analytics/GA.utils'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 
 export let post: UpDownPost
 export let tutorialStep: number | undefined = undefined

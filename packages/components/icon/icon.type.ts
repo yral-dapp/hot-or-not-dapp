@@ -79,3 +79,6 @@ export type IconName =
   | 'on-chain-dfinity-graphics'
   | 'stars-graphics'
   | 'stamp'
+  | 'heart-broken'
+  | 'heart-broken-fill'
+  | 'coin-token'

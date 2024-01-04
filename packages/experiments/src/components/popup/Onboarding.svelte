@@ -1,10 +1,10 @@
 <script lang="ts">
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { fade } from 'svelte/transition'
 import { showOnboardingPopup } from '$stores/popups'
 import left from '$assets/decore-left.png'
 import right from '$assets/decore-right.png'
-import Button from '$components/button/Button.svelte'
-import Icon from '$components/icon/Icon.svelte'
 import UpDownVote from '$components/up-down/UpDownVote.svelte'
 import { upDownPost } from '$lib/utils/constants'
 
