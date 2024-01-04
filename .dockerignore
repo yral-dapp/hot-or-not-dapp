@@ -1,0 +1,15 @@
+# .dockerignore
+.github
+node_modules
+.dfx
+build
+dist
+.svelte-kit
+.env
+test-results
+playwright-report
+playwright/.cache
+cypress/videos
+cypress/screenshots
+cypress/reports
+didc

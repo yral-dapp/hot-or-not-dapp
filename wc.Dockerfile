@@ -28,7 +28,7 @@ RUN npm install --include=dev
 COPY --link . .
 
 # Build application
-RUN npm run build
+RUN npm run wc:build
 
 # Remove development dependencies
 RUN npm prune --omit=dev
@@ -42,4 +42,4 @@ COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "wc:start" ]
