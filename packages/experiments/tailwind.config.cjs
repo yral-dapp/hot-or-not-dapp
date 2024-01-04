@@ -1,3 +1,11 @@
 const tailwindConfig = require('@hnn/components/tailwind.config.cjs')
 
-module.exports = tailwindConfig
+const config = {
+  ...tailwindConfig,
+  content: [
+    './**/*.{html,js,svelte,ts}',
+    '../components/**/*.{html,js,svelte,ts}',
+  ],
+}
+
+module.exports = config
