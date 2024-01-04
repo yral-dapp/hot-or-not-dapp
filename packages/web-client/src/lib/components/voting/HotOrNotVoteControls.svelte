@@ -11,12 +11,12 @@ export type PlaceVote = {
 </script>
 
 <script lang="ts">
-import IconButton from '$lib/components/button/IconButton.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import { playerState } from '$lib/stores/playerState'
 import c from 'clsx'
 import { createEventDispatcher } from 'svelte'
 import { fade } from 'svelte/transition'
-import Icon from '$lib/components/icon/Icon.svelte'
 
 export let tutorialMode: {
   highlightCoin: boolean

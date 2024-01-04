@@ -9,7 +9,7 @@ import type {
   BetOnCurrentlyViewingPostError,
   PlacedBetDetail,
 } from '@hnn/declarations/individual_user_template/individual_user_template.did'
-import { registerEvent } from '$lib/components/analytics/GA.utils'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'
 import type { PostPopulated } from '$lib/helpers/feed'

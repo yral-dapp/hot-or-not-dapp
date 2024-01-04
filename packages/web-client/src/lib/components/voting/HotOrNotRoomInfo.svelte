@@ -3,7 +3,7 @@ import type {
   BettingStatus,
   SystemTime,
 } from '@hnn/declarations/individual_user_template/individual_user_template.did'
-import Icon from '../../icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 type UnionValueOf<U> = U extends U ? U[keyof U] : never
 type BetStatus = UnionValueOf<BettingStatus>
@@ -15,8 +15,8 @@ const systemTime: SystemTime = {
 </script>
 
 <script lang="ts">
-import Tooltip from '../../tooltip/Tooltip.svelte'
-import { getMsLeftForBetResult } from '../../utils/timeLeft'
+import Tooltip from '@hnn/components/tooltip/Tooltip.svelte'
+import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 
 export let bettingStatus: BettingStatus
 

@@ -13,6 +13,7 @@ function getBetDirection(direction: BetDirection): BetType {
 </script>
 
 <script lang="ts">
+import Icon from '@hnn/components/icon/Icon.svelte'
 import type {
   BetDirection,
   BetOutcomeForBetMaker,
@@ -24,7 +25,6 @@ import c from 'clsx'
 import { getMsLeftForBetResult } from '$lib/utils/timeLeft'
 import type { Readable } from 'svelte/store'
 import { pluralize } from '$lib/utils/pluralize'
-import Icon from '$lib/components/icon/Icon.svelte'
 
 export let placedBetDetail: PlacedBetDetail | undefined = undefined
 export let postCreatedAt: SystemTime | undefined = undefined
