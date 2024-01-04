@@ -72,8 +72,6 @@ async function fetchNextVideos(force = false) {
 
       videos = joinArrayUniquely(videos, res.posts)
 
-      console.log({ videos })
-
       if (res.noMorePosts) {
         noMoreVideos = res.noMorePosts
         // const watchedVideos = await getWatchedVideosFromCache('watch-hon')

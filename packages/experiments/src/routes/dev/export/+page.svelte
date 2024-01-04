@@ -42,8 +42,6 @@ async function collectionToJSON(name: string, snapshot: QuerySnapshot) {
   document.body.appendChild(downloadLink)
   downloadLink.click()
   document.body.removeChild(downloadLink)
-
-  console.log({ csv })
 }
 
 async function fetchAllUserActions() {

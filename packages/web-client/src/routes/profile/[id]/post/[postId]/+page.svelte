@@ -13,8 +13,6 @@ export let data: PageData
 
 let { video, me } = data
 let unavailable = false
-
-$: console.log({ video })
 </script>
 
 <svelte:head>

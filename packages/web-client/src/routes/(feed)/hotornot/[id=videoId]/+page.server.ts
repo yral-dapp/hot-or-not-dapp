@@ -6,15 +6,12 @@ import type { PageServerLoad } from './$types'
 import type { PostPopulated } from '$lib/helpers/feed'
 import { individualUser } from '$lib/helpers/backend'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
-import { browser } from '$app/environment'
 
 export const load: PageServerLoad = async ({ params }) => {
   try {
     const id = params.id.split('@')
     const postId = BigInt(Number(id[1]))
     const principal = Principal.from(id[0])
-
-    console.log({ browser })
 
     console.time('fetch:hotornot')
     const r =
