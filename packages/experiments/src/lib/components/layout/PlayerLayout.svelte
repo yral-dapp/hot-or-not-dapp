@@ -9,7 +9,7 @@ import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { authState } from '$lib/stores/auth'
-import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
+import { createEventDispatcher, onMount } from 'svelte'
 import type { Readable } from 'svelte/store'
 import { debounce } from 'throttle-debounce'
 import {
@@ -20,27 +20,22 @@ import {
   type WatchProgress,
 } from './PlayerLayout.actions'
 
-export let index: number
 export let post: UpDownPost
 export let showShareButton = false
 export let showLikeButton = false
 export let showTimer = false
 export let showDislikeButton = false
-export let unavailable = false
-export let single = false
-export let show = false
 
 const dispatch = createEventDispatcher<{
-  view: number
+  unavailable: void
 }>()
 
-let observer: IntersectionObserver | null = null
+let unavailable = false
 let liked = false
 let disliked = false
 let timeLeft: Readable<string>
 const endTime = getVoteEndTime(new Date(post.created_at), new Date())
 const avatarUrl = getDefaultImageUrl(post.ouid)
-let playerLayoutEl: HTMLDivElement
 let watchProgress: WatchProgress = {
   totalCount: 0,
   partialWatchedPercentage: 0,
@@ -92,25 +87,18 @@ const increaseWatchCount = debounce(500, () => {
 
 // Setup
 
+async function fetchThumbnail() {
+  const thumb = await fetch(getThumbnailUrl(post.video_uid, 80))
+  if (thumb.status === 404) {
+    unavailable = true
+    dispatch('unavailable')
+  }
+}
+
 async function updateLikeDislikeStatus() {
   const status = await getLikeDislikeStatus(post.id)
   liked = status.liked
   disliked = status.disliked
-}
-
-async function setupIO() {
-  if (single) return
-  await tick()
-  if (observer) return
-  observer = new IntersectionObserver(
-    async (entries) => {
-      if (entries[0].isIntersecting) {
-        dispatch('view', index)
-      }
-    },
-    { threshold: 0.85 },
-  )
-  observer.observe(playerLayoutEl)
 }
 
 // Reactive
@@ -127,104 +115,85 @@ $: if (showTimer) {
   timeLeft = getMsLeftForResult(endTime, true)
 }
 
-$: if (show) {
-  setupIO()
-} else {
-  unload()
-}
-
-function unload() {
-  observer?.disconnect()
-  observer = null
-}
-
-onDestroy(unload)
+onMount(() => fetchThumbnail())
 </script>
 
-<player-layout
-  bind:this={playerLayoutEl}
-  data-index={index}
-  style="height: 100dvh;"
-  class="relative flex w-full shrink-0 snap-center snap-always items-center justify-center">
-  {#if show}
-    <slot {recordView} {updateStats} />
+<slot {recordView} {updateStats} {unavailable} />
 
-    {#if !unavailable}
-      <img
-        alt="background"
-        class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
-        src={getThumbnailUrl(post.video_uid, 80)} />
-    {/if}
-    <div
-      style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
-      class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
+{#if !unavailable}
+  <img
+    alt="background"
+    class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
+    src={getThumbnailUrl(post.video_uid, 80)} />
+{/if}
+<div
+  style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);"
+  class="fade-in pointer-events-none absolute bottom-0 z-[10] block h-full w-full">
+  <div
+    style="-webkit-transform: translate3d(0, 0, 0);"
+    class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2 {$$slots.controls
+      ? 'bottom-40'
+      : 'bottom-20'}">
+    <div class="flex grow flex-col justify-end space-y-4">
       <div
-        style="-webkit-transform: translate3d(0, 0, 0);"
-        class="absolute z-[10] flex w-screen space-x-2 pl-4 pr-2 {$$slots.controls
-          ? 'bottom-40'
-          : 'bottom-20'}">
-        <div class="flex grow flex-col justify-end space-y-4">
-          <div
-            aria-roledescription="video-info"
-            class="pointer-events-auto flex space-x-3">
-            <Avatar class="h-12 w-12" src={avatarUrl} />
-            <div class="flex flex-col space-y-1">
-              {generateRandomName('name', post.ouid)}
-              <div class="flex items-center space-x-1">
-                <Icon name="eye-open" class="h-4 w-4 text-white" />
-                <span class="text-sm">{Math.round(post.views_count || 0)}</span>
-              </div>
-            </div>
+        aria-roledescription="video-info"
+        class="pointer-events-auto flex space-x-3">
+        <Avatar class="h-12 w-12" src={avatarUrl} />
+        <div class="flex flex-col space-y-1">
+          {generateRandomName('name', post.ouid)}
+          <div class="flex items-center space-x-1">
+            <Icon name="eye-open" class="h-4 w-4 text-white" />
+            <span class="text-sm">{Math.round(post.views_count || 0)}</span>
           </div>
-          <slot name="betRoomInfo" />
-        </div>
-        <div
-          class="pointer-events-auto flex max-w-16 shrink-0 flex-col justify-end space-y-6 pb-2">
-          {#if showLikeButton}
-            <IconButton
-              iconName={liked ? 'heart-fill-color' : 'heart-fill'}
-              iconClass="h-8 w-8"
-              ariaLabel="Like this post"
-              on:click={(e) => {
-                e.stopImmediatePropagation()
-                handleLike()
-              }} />
-          {/if}
-          {#if showDislikeButton}
-            <IconButton
-              iconName={disliked ? 'heart-broken-fill' : 'heart-broken'}
-              iconClass="h-8 w-8"
-              ariaLabel="Dislike this post"
-              on:click={(e) => {
-                e.stopImmediatePropagation()
-                handleDislike()
-              }} />
-          {/if}
-          {#if showShareButton}
-            <IconButton
-              iconName="share-message"
-              ariaLabel="Share this button"
-              iconClass="h-6 w-6 drop-shadow-md"
-              on:click={(e) => {
-                e.stopImmediatePropagation()
-                handleShare()
-              }} />
-          {/if}
-          {#if showTimer}
-            <div class="flex flex-col items-center gap-1">
-              <Icon name="stopwatch" class="h-7 w-7" />
-              <span class="text-fg-1 text-xs shadow-lg">{$timeLeft}</span>
-            </div>
-          {/if}
         </div>
       </div>
-      {#if $$slots.controls}
-        <div
-          style="-webkit-transform: translate3d(0, 0, 0);"
-          class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
-          <slot name="controls" />
+      <slot name="betRoomInfo" />
+    </div>
+    <div
+      class="pointer-events-auto flex max-w-16 shrink-0 flex-col justify-end space-y-6 pb-2">
+      {#if showLikeButton}
+        <IconButton
+          iconName={liked ? 'heart-fill-color' : 'heart-fill'}
+          iconClass="h-8 w-8"
+          ariaLabel="Like this post"
+          on:click={(e) => {
+            e.stopImmediatePropagation()
+            handleLike()
+          }} />
+      {/if}
+      {#if showDislikeButton}
+        <IconButton
+          iconName={disliked ? 'heart-broken-fill' : 'heart-broken'}
+          iconClass="h-8 w-8"
+          ariaLabel="Dislike this post"
+          on:click={(e) => {
+            e.stopImmediatePropagation()
+            handleDislike()
+          }} />
+      {/if}
+      {#if showShareButton}
+        <IconButton
+          iconName="share-message"
+          ariaLabel="Share this button"
+          iconClass="h-6 w-6 drop-shadow-md"
+          on:click={(e) => {
+            e.stopImmediatePropagation()
+            handleShare()
+          }} />
+      {/if}
+      {#if showTimer}
+        <div class="flex flex-col items-center gap-1">
+          <Icon name="stopwatch" class="h-7 w-7" />
+          <span class="text-fg-1 text-xs shadow-lg">{$timeLeft}</span>
         </div>
       {/if}
     </div>
+  </div>
+  {#if $$slots.controls}
+    <div
+      style="-webkit-transform: translate3d(0, 0, 0);"
+      class="absolute inset-x-0 bottom-0 z-[5] h-40 w-full">
+      <slot name="controls" />
+    </div>
   {/if}
-</player-layout>
+</div>

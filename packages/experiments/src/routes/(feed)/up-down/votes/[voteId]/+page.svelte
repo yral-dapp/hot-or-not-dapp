@@ -1,6 +1,7 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
 import { page } from '$app/stores'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
 import type { UpDownVoteDetails } from '$lib/components/vote/UpDownVote.svelte'
 import UpDownVoteOutcome from '$lib/components/vote/UpDownVoteOutcome.svelte'
@@ -11,6 +12,7 @@ import { playerState } from '$lib/stores/playerState'
 import { removeSplashScreen } from '$lib/stores/popups'
 import { doc, getDoc } from 'firebase/firestore'
 import { onMount } from 'svelte'
+import { browser } from '$app/environment'
 
 let loading = true
 let voteDetails: UpDownVoteDetails | undefined = undefined
@@ -70,18 +72,20 @@ beforeNavigate(() => {
       </div>
     </div>
   {:else}
-    <PlayerLayout single show bind:post index={0} showShareButton>
-      <VideoPlayer
-        on:loaded={() => removeSplashScreen()}
-        index={0}
-        playFormat="hls"
-        inView
-        uid={post.video_uid} />
-      <svelte:fragment slot="controls">
-        {#if voteDetails}
-          <UpDownVoteOutcome voteDocId={voteId} {voteDetails} />
-        {/if}
-      </svelte:fragment>
-    </PlayerLayout>
+    <VideoSlide index={0} single show {browser}>
+      <PlayerLayout bind:post showShareButton>
+        <VideoPlayer
+          on:loaded={() => removeSplashScreen()}
+          index={0}
+          playFormat="hls"
+          inView
+          uid={post.video_uid} />
+        <svelte:fragment slot="controls">
+          {#if voteDetails}
+            <UpDownVoteOutcome voteDocId={voteId} {voteDetails} />
+          {/if}
+        </svelte:fragment>
+      </PlayerLayout>
+    </VideoSlide>
   {/if}
 </div>

@@ -12,6 +12,7 @@ export let uid: string
 export let index: number
 export let inView = false
 export let thumbnail = ''
+export let unavailable = false
 export let playFormat: 'hls' | 'mp4'
 
 let ios = isiPhone()
@@ -33,6 +34,8 @@ let playing = true
 let videoUnavailable = false
 let watchingNow = false
 let watchedDispatchLock = true
+
+$: _unavailable = unavailable || videoUnavailable
 
 export const checkVideoIsPlaying = debounce(
   500,
@@ -235,7 +238,7 @@ onDestroy(() => {
   poster={thumbnail}
   class="object-fit absolute z-[3] h-full w-full" />
 
-{#if videoUnavailable}
+{#if _unavailable}
   <div
     class="absolute inset-0 z-[6] flex flex-col items-center justify-center space-y-3 px-8">
     <Icon name="cloud-not-available" class="h-12 w-12" />
@@ -259,7 +262,7 @@ onDestroy(() => {
   </div>
 {/if}
 
-{#if !loaded || waiting}
+{#if !_unavailable && (!loaded || waiting)}
   <Icon
     name="loading"
     class="absolute left-6 top-6 z-[5] h-6 w-6 animate-spin-slow text-white" />

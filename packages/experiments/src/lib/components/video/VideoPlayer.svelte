@@ -13,6 +13,7 @@ export let index: number
 export let inView = false
 export let thumbnail = ''
 export let playFormat: 'hls' | 'mp4'
+export let unavailable = false
 
 let ios = false
 
@@ -142,6 +143,7 @@ const dispatchWatchedPercentage = throttle(250, (progress: number) => {
 
 $: watchedPercentage = (currentTime / duration) * 100
 $: watchedPercentage > 2 && watchedDispatchLock && (watchedDispatchLock = false)
+$: _unavailable = unavailable || videoUnavailable
 
 $: if (inView && !videoEl?.paused && !watchedDispatchLock) {
   dispatchWatchedPercentage(watchedPercentage)
@@ -236,7 +238,7 @@ onDestroy(() => {
   poster={thumbnail}
   class="object-fit absolute z-[3] h-full w-full" />
 
-{#if videoUnavailable}
+{#if _unavailable}
   <div
     class="absolute inset-0 z-[6] flex flex-col items-center justify-center space-y-3 px-8">
     <Icon name="cloud-not-available" class="h-12 w-12" />
@@ -260,7 +262,7 @@ onDestroy(() => {
   </div>
 {/if}
 
-{#if !loaded || waiting}
+{#if !_unavailable && (!loaded || waiting)}
   <Icon
     name="loading"
     class="absolute left-6 top-6 z-[5] h-6 w-6 animate-spin-slow text-white" />

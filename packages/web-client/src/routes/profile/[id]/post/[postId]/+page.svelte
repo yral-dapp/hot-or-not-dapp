@@ -8,11 +8,12 @@ import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
 import { playerState } from '$lib/stores/playerState'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
+import { browser } from '$app/environment'
 
 export let data: PageData
 
 let { video, me } = data
-let unavailable = false
 </script>
 
 <svelte:head>
@@ -39,29 +40,29 @@ let unavailable = false
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
       {#if video}
-        <PlayerLayout
-          single
-          show
-          bind:post={video}
-          index={0}
-          source="post"
-          watchHistoryDb="watch"
-          showReportButton
-          showLikeButton
-          showDescription
-          showReferAndEarnLink
-          showShareButton
-          showHotOrNotButton
-          {unavailable}
-          let:recordView>
-          <VideoPlayer
-            on:videoUnavailable={() => (unavailable = true)}
-            on:watchedPercentage={({ detail }) => recordView(detail)}
+        <VideoSlide show single index={0} {browser}>
+          <PlayerLayout
+            bind:post={video}
             index={0}
-            playFormat="hls"
-            inView
-            uid={video.video_uid} />
-        </PlayerLayout>
+            source="post"
+            watchHistoryDb="watch"
+            showReportButton
+            showLikeButton
+            showDescription
+            showReferAndEarnLink
+            showShareButton
+            showHotOrNotButton
+            let:unavailable
+            let:recordView>
+            <VideoPlayer
+              on:watchedPercentage={({ detail }) => recordView(detail)}
+              {unavailable}
+              index={0}
+              playFormat="hls"
+              inView
+              uid={video.video_uid} />
+          </PlayerLayout>
+        </VideoSlide>
       {/if}
     </div>
   </svelte:fragment>

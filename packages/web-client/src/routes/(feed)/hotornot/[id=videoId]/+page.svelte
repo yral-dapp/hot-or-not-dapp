@@ -1,6 +1,7 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
 import Icon from '@hnn/components/icon/Icon.svelte'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
 import Button from '@hnn/components/button/Button.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
 import HotOrNotVote from '$lib/components/voting/HotOrNotVote.svelte'
@@ -152,39 +153,46 @@ beforeNavigate(() => {
       {browser}
       activeIndex={currentVideoIndex}
       let:show>
-      <PlayerLayout
-        bind:post
-        {index}
+      <VideoSlide
         {show}
-        source="hon_feed"
-        watchHistoryDb="watch-hon"
-        showWalletLink
-        showReportButton
-        let:recordView
-        let:updateStats
+        {index}
+        {browser}
         on:view={({ detail }) => handleChange(detail)}>
-        <VideoPlayer
-          on:watchComplete={updateStats}
-          on:loaded={removeSplashScreen}
-          on:watchedPercentage={({ detail }) => recordView(detail)}
-          on:videoUnavailable={() => handleUnavailableVideo(index)}
+        <PlayerLayout
+          bind:post
           {index}
-          playFormat="hls"
-          inView={index == currentVideoIndex && $playerState.visible}
-          uid={post.video_uid} />
-        <svelte:fragment slot="betRoomInfo">
-          {#if post.hot_or_not_betting_status[0]}
-            <HotOrNotRoomInfo
-              bettingStatus={post.hot_or_not_betting_status[0]} />
-          {/if}
-        </svelte:fragment>
-        <svelte:fragment slot="hotOrNot">
-          <HotOrNotVote
-            me
-            bind:post
-            inView={index == currentVideoIndex && $playerState.visible} />
-        </svelte:fragment>
-      </PlayerLayout>
+          source="hon_feed"
+          watchHistoryDb="watch-hon"
+          showWalletLink
+          showReportButton
+          let:recordView
+          let:updateStats
+          let:unavailable
+          on:videoUnavailable={() => handleUnavailableVideo(index)}>
+          <VideoPlayer
+            on:watchComplete={updateStats}
+            on:loaded={removeSplashScreen}
+            on:watchedPercentage={({ detail }) => recordView(detail)}
+            on:videoUnavailable={() => handleUnavailableVideo(index)}
+            {index}
+            {unavailable}
+            playFormat="hls"
+            inView={index == currentVideoIndex && $playerState.visible}
+            uid={post.video_uid} />
+          <svelte:fragment slot="betRoomInfo">
+            {#if post.hot_or_not_betting_status[0]}
+              <HotOrNotRoomInfo
+                bettingStatus={post.hot_or_not_betting_status[0]} />
+            {/if}
+          </svelte:fragment>
+          <svelte:fragment slot="hotOrNot">
+            <HotOrNotVote
+              me
+              bind:post
+              inView={index == currentVideoIndex && $playerState.visible} />
+          </svelte:fragment>
+        </PlayerLayout>
+      </VideoSlide>
     </PlayerRenderer>
   {/each}
   {#if showError}
@@ -202,14 +210,20 @@ beforeNavigate(() => {
     </div>
   {/if}
   {#if loading}
-    <div
-      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+    <VideoSlide
+      show
+      index={videos.length}
+      {browser}
+      on:view={({ detail }) => handleChange(detail)}>
       <div class="text-center text-lg font-bold">Loading</div>
-    </div>
+    </VideoSlide>
   {/if}
   {#if noMoreVideos}
-    <div
-      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+    <VideoSlide
+      show
+      index={videos.length}
+      {browser}
+      on:view={({ detail }) => handleChange(detail)}>
       <Icon name="votes-graphics" class="w-56" />
       <div class="text-center text-lg font-bold">
         There are no more videos to vote on
@@ -217,6 +231,6 @@ beforeNavigate(() => {
       <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
         <HotOrNotVote disabled />
       </div>
-    </div>
+    </VideoSlide>
   {/if}
 </div>
