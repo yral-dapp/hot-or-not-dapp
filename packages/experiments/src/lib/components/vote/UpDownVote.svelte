@@ -33,7 +33,7 @@ import {
 
 import UpDownVoteControls from './UpDownVoteControls.svelte'
 import UpDownVoteOutcome from './UpDownVoteOutcome.svelte'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { onDestroy } from 'svelte'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
 

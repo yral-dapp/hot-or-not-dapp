@@ -2,7 +2,7 @@
 import Button from '@hnn/components/button/Button.svelte'
 import { getDb } from '$lib/db'
 import { isDev } from '$lib/db/dev'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import {
   QuerySnapshot,
   collection,

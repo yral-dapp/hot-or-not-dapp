@@ -1,7 +1,7 @@
 import { BACKEND_HOST } from './index'
 import { getHeaders } from './db.utils'
 import { get } from 'svelte/store'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 
 export async function registerUser({
   name,

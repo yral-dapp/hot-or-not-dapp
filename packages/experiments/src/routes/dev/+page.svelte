@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '@hnn/components/button/Button.svelte'
 import { isDev } from '$lib/db/dev'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { onMount } from 'svelte'
 
 let allowed = false

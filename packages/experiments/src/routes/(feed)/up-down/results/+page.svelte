@@ -1,14 +1,14 @@
 <script lang="ts">
-import LoginButton from '$components/auth/LoginButton.svelte'
+import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import { getDb } from '$lib/db'
 import type { CollectionName, VoteRecord } from '$lib/db/db.types'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { onMount, tick } from 'svelte'
 import { fade } from 'svelte/transition'
 import ResultCard from './ResultCard.svelte'
-import type { VoteRecordWithId } from '$components/up-down/UpDownVote.svelte'
+import type { VoteRecordWithId } from '$lib/components/vote/UpDownVote.svelte'
 
 let votes: VoteRecordWithId[] = []
 let loading = true

@@ -2,10 +2,10 @@
 import Button from '@hnn/components/button/Button.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import { fade } from 'svelte/transition'
-import { showOnboardingPopup } from '$stores/popups'
-import left from '$assets/decore-left.png'
-import right from '$assets/decore-right.png'
-import UpDownVote from '$components/up-down/UpDownVote.svelte'
+import { showOnboardingPopup } from '$lib/stores/popups'
+import left from '$lib/assets/decore-left.png'
+import right from '$lib/assets/decore-right.png'
+import UpDownVote from '$lib/components/vote/UpDownVote.svelte'
 import { upDownPost } from '$lib/utils/constants'
 
 let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1

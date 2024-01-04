@@ -7,7 +7,7 @@ import {
 } from '$lib/db/actions'
 import type { UpDownPost } from '$lib/db/db.types'
 import { updatePostInWatchHistory } from '$lib/idb/history'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { get } from 'svelte/store'
 
 export type WatchProgress = {

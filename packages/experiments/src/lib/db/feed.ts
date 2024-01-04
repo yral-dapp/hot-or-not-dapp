@@ -19,7 +19,7 @@ import type {
 import { getDb } from '$lib/db'
 import type { IDBStores } from '$lib/idb/idb'
 import { get } from 'svelte/store'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 
 export async function getVideos(
   lastRef?: QueryDocumentSnapshot,

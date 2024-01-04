@@ -4,7 +4,7 @@ import Button from '@hnn/components/button/Button.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import HomeLayout from '@hnn/components/experiments/layout/HomeLayout.svelte'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { onMount } from 'svelte'
 
 function checkIfInviteIsValid() {

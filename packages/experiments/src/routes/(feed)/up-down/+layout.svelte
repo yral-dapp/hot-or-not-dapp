@@ -1,13 +1,13 @@
 <script lang="ts">
 import FeedLayout from '@hnn/components/experiments/layout/FeedLayout.svelte'
-import { showOnboardingPopup } from '$stores/popups'
+import { showOnboardingPopup } from '$lib/stores/popups'
 import { onMount } from 'svelte'
 
 let onboarding: any
 function mountOnboarding() {
   setTimeout(
     () =>
-      import('$components/popup/Onboarding.svelte').then(
+      import('$lib/components/popup/Onboarding.svelte').then(
         (d) => (onboarding = d.default),
       ),
     3000,

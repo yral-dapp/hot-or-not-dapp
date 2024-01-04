@@ -1,22 +1,12 @@
 //@ts-ignore
 import { sentrySvelteKit } from '@sentry/sveltekit'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { resolve } from 'path'
 import { defineConfig } from 'vite'
 const dfxViteConfig = (await import('./vite.config.dfx')).default
 
 export default defineConfig(() => ({
   build: {
     sourcemap: true,
-  },
-  resolve: {
-    alias: {
-      $components: resolve('./src/components'),
-      $routes: resolve('./src/routes'),
-      $icons: resolve('./src/icons'),
-      $stores: resolve('./src/stores'),
-      $assets: resolve('./src/assets'),
-    },
   },
   define: {
     ...dfxViteConfig.define,

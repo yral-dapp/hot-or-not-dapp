@@ -6,6 +6,5 @@
     "baseUrl": "./packages",
     "rootDir": "."
   },
-  "exclude": ["node_modules", "build"],
-  "references": [{ "path": "packages/web-client" }]
+  "exclude": ["node_modules", "build"]
 }

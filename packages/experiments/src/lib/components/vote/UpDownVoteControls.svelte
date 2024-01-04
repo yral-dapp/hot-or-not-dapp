@@ -2,10 +2,10 @@
 import Icon from '@hnn/components/icon/Icon.svelte'
 import { createEventDispatcher } from 'svelte'
 import type { UpDownVoteDetails } from './UpDownVote.svelte'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import c from 'clsx'
 import { getVoteEndTime } from '$lib/utils/countdown'
-import { playerState } from '$stores/playerState'
+import { playerState } from '$lib/stores/playerState'
 
 export let score: number
 export let postCreatedAt: number | undefined = undefined

@@ -1,5 +1,5 @@
 <script lang="ts">
-import LoginButton from '$components/auth/LoginButton.svelte'
+import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import Avatar from '@hnn/components/avatar/Avatar.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
@@ -10,8 +10,8 @@ import type {
   TransanctionRecord,
 } from '$lib/db/db.types'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
-import { anonUser, authState } from '$stores/auth'
-import userProfile from '$stores/userProfile'
+import { anonUser, authState } from '$lib/stores/auth'
+import userProfile from '$lib/stores/userProfile'
 import { getApp } from 'firebase/app'
 import { getAuth, signOut } from 'firebase/auth'
 import {

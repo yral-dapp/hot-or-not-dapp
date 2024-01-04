@@ -2,7 +2,7 @@
 import Button from '@hnn/components/button/Button.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import { authState, loading } from '$stores/auth'
+import { authState, loading } from '$lib/stores/auth'
 import { getApp } from 'firebase/app'
 import {
   GoogleAuthProvider,
