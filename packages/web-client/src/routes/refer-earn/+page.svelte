@@ -237,7 +237,9 @@ $: link = !loggedIn
         <div class="text-center text-sm opacity-70">
           Please login to see your referral history
         </div>
-        <LoginButton />
+        <LoginButton
+          loading={$loadingAuthStatus}
+          on:click={() => ($authState.showLogin = true)} />
       {/if}
     </div>
   </svelte:fragment>

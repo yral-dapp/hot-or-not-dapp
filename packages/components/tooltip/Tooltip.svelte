@@ -1,5 +1,5 @@
 <script lang="ts">
-import clickOutside from '../../utils/clickOutside'
+import clickOutside from '../utils/clickOutside'
 
 export let text = ''
 export let position: 'left' | 'right' | 'middle'

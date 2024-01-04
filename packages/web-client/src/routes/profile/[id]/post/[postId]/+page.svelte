@@ -7,6 +7,7 @@ import BottomNavigation from '@hnn/components/web-client/navigation/BottomNaviga
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
+import { playerState } from '$lib/stores/playerState'
 
 export let data: PageData
 
@@ -67,6 +68,10 @@ $: console.log({ video })
     </div>
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
-    <BottomNavigation />
+    <BottomNavigation
+      feedUrl={$playerState.currentFeedUrl == 'no-videos'
+        ? ''
+        : $playerState.currentFeedUrl}
+      pathName={$page.url.pathname} />
   </div>
 </HomeLayout>

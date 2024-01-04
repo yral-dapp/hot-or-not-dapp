@@ -7,7 +7,7 @@ import LoginButton from '@hnn/components/login/LoginButton.svelte'
 import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
-import { authState } from '$lib/stores/auth'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { onMount } from 'svelte'
 
 let loading = true
@@ -66,7 +66,9 @@ onMount(loadTransactions)
         <div class="text-center text-sm opacity-70">
           Please login to access your wallet
         </div>
-        <LoginButton />
+        <LoginButton
+          loading={$loadingAuthStatus}
+          on:click={() => ($authState.showLogin = true)} />
       {:else}
         {#if transactions.length}
           {#each transactions as item}

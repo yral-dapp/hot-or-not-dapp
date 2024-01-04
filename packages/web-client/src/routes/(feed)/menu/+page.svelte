@@ -114,7 +114,9 @@ onMount(() => {
       </div>
     {:else}
       <div class="flex items-center justify-center">
-        <LoginButton />
+        <LoginButton
+          loading={$loadingAuthStatus}
+          on:click={() => ($authState.showLogin = true)} />
       </div>
     {/if}
     <div class="my-8 h-[1px] w-full bg-white/10" />

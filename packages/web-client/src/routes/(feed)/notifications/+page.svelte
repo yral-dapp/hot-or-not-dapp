@@ -10,7 +10,7 @@ import {
   type NotificationHistory,
 } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
-import { authState } from '$lib/stores/auth'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 
 let loading = true
 let errorWhileFetching = false
@@ -69,7 +69,9 @@ $: $authState.isLoggedIn && loadTransactions()
           <div class="text-center text-sm opacity-70">
             Please login to view your notifications
           </div>
-          <LoginButton />
+          <LoginButton
+            loading={$loadingAuthStatus}
+            on:click={() => ($authState.showLogin = true)} />
         </div>
       {:else}
         {#if transactions.length}

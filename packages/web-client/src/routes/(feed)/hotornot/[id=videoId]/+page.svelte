@@ -17,6 +17,7 @@ import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 import type { PageData } from './$types'
 import { debounce } from 'throttle-debounce'
+import { browser } from '$app/environment'
 
 export let data: PageData
 
@@ -150,6 +151,7 @@ beforeNavigate(() => {
     <PlayerRenderer
       {keepVideosLoadedCount}
       {index}
+      {browser}
       activeIndex={currentVideoIndex}
       let:show>
       <PlayerLayout

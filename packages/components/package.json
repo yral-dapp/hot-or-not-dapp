@@ -9,6 +9,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build,tests --threshold warning --diagnostic-sources \"js,ts,svelte\""
   },
   "dependencies": {
+    "@hnn/components": "*",
     "clsx": "2.1.0",
     "throttle-debounce": "5.0.0"
   },

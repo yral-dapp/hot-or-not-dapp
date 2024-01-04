@@ -15,5 +15,5 @@
     "types": ["gtag.js", "w3c-image-capture"]
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.js", "**/*.ts", "./src/**/*.svelte"]
+  "include": ["**/*.js", "**/*.ts", "/**/*.svelte"]
 }

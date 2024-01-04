@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '@hnn/components/button/Button.svelte'
 import LoginButton from '@hnn/components/login/LoginButton.svelte'
-import { authState } from '$lib/stores/auth'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import userProfile from '$lib/stores/userProfile'
 </script>
 
@@ -24,7 +24,9 @@ import userProfile from '$lib/stores/userProfile'
       <Button href="/menu/reauth" target="_blank">Take me there</Button>
     {:else}
       <div class="flex items-center justify-center">
-        <LoginButton />
+        <LoginButton
+          loading={$loadingAuthStatus}
+          on:click={() => ($authState.showLogin = true)} />
       </div>
     {/if}
 

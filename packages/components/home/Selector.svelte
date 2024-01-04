@@ -6,13 +6,6 @@ export let feedUrl = ''
 export let hotOrNotUrl = ''
 export let selected: 'videos' | 'hot-or-not' = 'hot-or-not'
 export let showDot: 'videos' | 'hot-or-not' | null = null
-
-// $: feedUrl =
-//   $playerState.currentFeedUrl == 'no-videos' ? '' : $playerState.currentFeedUrl
-// $: hotOrNotUrl =
-//   $playerState.currentHotOrNotUrl == 'no-videos'
-//     ? ''
-//     : $playerState.currentFeedUrl
 </script>
 
 <home-selector class="flex w-full items-center justify-center pt-4">

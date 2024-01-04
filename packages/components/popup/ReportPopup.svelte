@@ -1,11 +1,7 @@
 <script lang="ts">
 import Button from '../button/Button.svelte'
 import Popup from './Popup.svelte'
-import type {
-  PostReportData,
-  ProfileReportData,
-  ReportType,
-} from './ReportPopup.types'
+import type { PostReportData, ProfileReportData } from './ReportPopup.types'
 import { createEventDispatcher } from 'svelte'
 
 export let show = false
