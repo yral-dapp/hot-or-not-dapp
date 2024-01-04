@@ -4,6 +4,7 @@ import HotOrNotLayout from '@hnn/components/layout/HotOrNotLayout.svelte'
 import ExperimentsPopup from '@hnn/components/popup/ExperimentsPopup.svelte'
 import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
 import { postReportPopup } from '$lib/stores/popups'
+import { reportPostOrUser } from '$lib/helpers/report'
 
 let showExperimentsPopup = false
 </script>
@@ -43,12 +44,13 @@ let showExperimentsPopup = false
 
 {#if $postReportPopup.show && $postReportPopup.data}
   <ReportPopup
+    type="post"
     on:close={() =>
       ($postReportPopup = {
         show: false,
       })}
     show
-    type="post"
+    on:report={({ detail }) => reportPostOrUser(detail)}
     reportData={$postReportPopup.data} />
 {/if}
 

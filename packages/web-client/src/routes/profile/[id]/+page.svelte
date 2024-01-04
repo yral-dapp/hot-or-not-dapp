@@ -29,6 +29,7 @@ import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_t
 import { slide } from 'svelte/transition'
 import type { Snapshot } from './$types'
 import { serializeBigIntHelper } from '$lib/utils/Log'
+import { reportPostOrUser } from '$lib/helpers/report'
 
 export let data: PageData
 export const snapshot: Snapshot = {
@@ -156,6 +157,7 @@ function handleScroll() {
   <ReportPopup
     bind:show={showReportPopup}
     type="profile"
+    on:report={({ detail }) => reportPostOrUser(detail)}
     reportData={{
       userId: profile.principal_id || '',
       reportedByUserId: $authState.idString || '2vxsx-fae',
