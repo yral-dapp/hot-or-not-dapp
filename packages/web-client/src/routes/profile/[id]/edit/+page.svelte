@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
+import ProfileLayout from '@hnn/components/web-client/layout/ProfileLayout.svelte'
 import ProfileImageSelector from '$lib/components/profile/ProfileImageSelector.svelte'
 import Input from '@hnn/components/input/Input.svelte'
 import Button from '@hnn/components/button/Button.svelte'

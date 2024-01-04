@@ -2,7 +2,7 @@
 import './style.postcss'
 import Button from '@hnn/components/button/Button.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 import goBack from '$lib/utils/goBack'
 import { navigateBack } from '$lib/stores/navigation'
 </script>

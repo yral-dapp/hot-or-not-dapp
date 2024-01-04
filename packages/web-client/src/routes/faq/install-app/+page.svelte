@@ -2,7 +2,7 @@
 import Accordion from '@hnn/components/accordion/Accordion.svelte'
 import Button from '@hnn/components/button/Button.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 import { deferredPrompt } from '$lib/stores/deferredPrompt'
 import { slide } from 'svelte/transition'
 

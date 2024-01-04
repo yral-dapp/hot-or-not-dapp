@@ -1,5 +1,5 @@
 <script lang="ts">
-import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
 import Selector from '@hnn/components/home/Selector.svelte'
 import { page } from '$app/stores'

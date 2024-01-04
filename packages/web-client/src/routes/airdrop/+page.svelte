@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 import Button from '@hnn/components/button/Button.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import AirdropCompleteGraphics from '$lib/components/airdrop-form/AirdropCompleteGraphics.svelte'

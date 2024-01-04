@@ -4,7 +4,7 @@ import Button from '@hnn/components/button/Button.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import IntersectionObserver from '@hnn/components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
+import ProfileLayout from '@hnn/components/web-client/layout/ProfileLayout.svelte'
 import {
   fetchLovers,
   loveUser,

@@ -1,5 +1,5 @@
 <script lang="ts">
-import '../css/app.css'
+import '@hnn/components/tailwind.css'
 import NetworkStatus from '@hnn/components/network-status/NetworkStatus.svelte'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import { onMount } from 'svelte'

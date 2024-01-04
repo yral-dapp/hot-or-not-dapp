@@ -1,5 +1,5 @@
 <script lang="ts">
-import '../css/app.css'
+import '@hnn/components/tailwind.css'
 import { onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import LoginPopup from '$lib/components/auth/LoginPopup.svelte'

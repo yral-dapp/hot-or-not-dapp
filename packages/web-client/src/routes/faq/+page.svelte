@@ -1,7 +1,7 @@
 <script lang="ts">
 import Accordion from '@hnn/components/accordion/Accordion.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 import DotTabs from '@hnn/components/tabs/DotTabs.svelte'
 import faq from '$lib/utils/faq'
 import { slide } from 'svelte/transition'

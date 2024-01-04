@@ -1,7 +1,7 @@
 <script lang="ts">
 import { page } from '$app/stores'
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import HomeLayout from '@hnn/components/layout/HomeLayout.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
 import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'

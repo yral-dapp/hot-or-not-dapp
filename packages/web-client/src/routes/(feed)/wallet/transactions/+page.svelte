@@ -2,7 +2,7 @@
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import IntersectionObserver from '@hnn/components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
+import ProfileLayout from '@hnn/components/web-client/layout/ProfileLayout.svelte'
 import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'

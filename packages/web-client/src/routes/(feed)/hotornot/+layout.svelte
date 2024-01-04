@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import HotOrNotLayout from '@hnn/components/layout/HotOrNotLayout.svelte'
+import HotOrNotLayout from '@hnn/components/web-client/layout/HotOrNotLayout.svelte'
 import ExperimentsPopup from '@hnn/components/popup/ExperimentsPopup.svelte'
 import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
 import { postReportPopup } from '$lib/stores/popups'

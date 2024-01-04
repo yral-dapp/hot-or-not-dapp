@@ -1,6 +1,6 @@
 <script lang="ts">
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import CameraLayout from '@hnn/components/layout/CameraLayout.svelte'
+import CameraLayout from '@hnn/components/web-client/layout/CameraLayout.svelte'
 import type { CameraControls } from '@hnn/components/upload/UploadTypes'
 import Popup from '@hnn/components/popup/Popup.svelte'
 import Button from '@hnn/components/button/Button.svelte'

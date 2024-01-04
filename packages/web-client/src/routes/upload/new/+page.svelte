@@ -2,7 +2,7 @@
 import Button from '@hnn/components/button/Button.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import InputBox from '@hnn/components/input/InputBox.svelte'
-import UploadLayout from '@hnn/components/layout/UploadLayout.svelte'
+import UploadLayout from '@hnn/components/web-client/layout/UploadLayout.svelte'
 import UploadStep from '@hnn/components/upload/UploadStep.svelte'
 import type { UploadStatus } from '@hnn/components/upload/UploadTypes'
 import TagsInput from '@hnn/components/tags-input/TagsInput.svelte'

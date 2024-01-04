@@ -2,7 +2,7 @@
 import { page } from '$app/stores'
 import Button from '@hnn/components/button/Button.svelte'
 import IconButton from '@hnn/components/button/IconButton.svelte'
-import ProfileLayout from '@hnn/components/layout/ProfileLayout.svelte'
+import ProfileLayout from '@hnn/components/web-client/layout/ProfileLayout.svelte'
 import ProfilePosts from '$lib/components/profile/ProfilePosts.svelte'
 import SpeculationPosts from '$lib/components/profile/SpeculationPosts.svelte'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
