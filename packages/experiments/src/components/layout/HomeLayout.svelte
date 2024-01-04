@@ -6,8 +6,7 @@ $: testClasses = testMode ? 'border-2 border-white/30' : ''
 
 <home
   style="height: 100dvh;"
-  class="relative block h-full w-full overflow-hidden text-white"
-  on:keyup>
+  class="relative block h-full w-full overflow-hidden text-white">
   <slot name="content" />
   <div class="absolute inset-x-0 top-4 z-[11] {testClasses}">
     <slot name="top" />

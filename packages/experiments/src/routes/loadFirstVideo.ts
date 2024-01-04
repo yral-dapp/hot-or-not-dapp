@@ -16,13 +16,13 @@ export const loadFirstVideo: PageLoad = async () => {
   const q = query(collection(db, 'ud-videos' as CollectionName), limit(1))
   const res = await getDocs(q)
   if (res.empty) {
-    throw redirect(307, '/up-down/no-videos')
+    redirect(307, '/up-down/no-videos');
   }
   const data = res.docs[0].data() as UpDownPost
 
   if (data) {
-    throw redirect(307, `/up-down/${res.docs[0].id}`)
+    redirect(307, `/up-down/${res.docs[0].id}`);
   } else {
-    throw redirect(307, '/up-down/no-videos')
+    redirect(307, '/up-down/no-videos');
   }
 }

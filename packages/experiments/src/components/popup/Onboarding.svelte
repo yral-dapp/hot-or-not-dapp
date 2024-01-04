@@ -13,7 +13,7 @@ let step: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1
 
 <onboarding
   class="fade-in absolute inset-0 z-[15] flex h-full w-full items-center justify-center bg-black/90 px-8 text-white"
-  out:fade|local={{ duration: 500 }}>
+  out:fade={{ duration: 500 }}>
   {#if step == 1}
     <div
       class="flex h-full w-full max-w-md flex-col items-center justify-center space-y-32">

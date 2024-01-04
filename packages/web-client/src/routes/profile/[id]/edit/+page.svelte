@@ -119,7 +119,7 @@ async function saveChanges() {
           const { idb } = await import('$lib/idb')
           idb.set('canisters', newUsername, canId)
         } catch (e) {
-          Log('error', 'Error while accessing IDB', {
+          Log('warn', 'Error while accessing IDB', {
             error: e,
             from: 'edit.saveChanges',
             type: 'idb',

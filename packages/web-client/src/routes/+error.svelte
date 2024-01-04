@@ -11,7 +11,7 @@ function getVariant() {
   return Math.random() < 0.5 ? 'hot-logo' : 'not-logo'
 }
 
-Log('error', 'Page load error', {
+Log('warn', 'Page load error', {
   details: error,
   status,
   from: 'errorPage',

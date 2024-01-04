@@ -46,7 +46,7 @@ onMount(() => {
 </script>
 
 <div
-  transition:fade|local
+  transition:fade
   class="mt-20 h-full w-full overflow-y-auto bg-black px-4 py-2">
   {#if loading}
     <div class="mt-20 flex w-full flex-col items-center justify-center gap-2">

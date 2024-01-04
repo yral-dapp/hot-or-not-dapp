@@ -38,7 +38,7 @@ $: votesPage = pathname.includes('votes')
   <div class="flex items-center justify-center" slot="top">
     {#if !walletPage}
       <div
-        transition:fade|local
+        transition:fade
         class="relative flex items-center justify-center space-x-6 rounded-full bg-black/50 py-3 pr-5 text-white">
         <selector
           class={c(
