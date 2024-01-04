@@ -10,7 +10,8 @@
     "./src/**/*.ts",
     "./src/**/*.svelte",
     "../components/**/*.ts",
-    "../components/**/*.svelte"
+    "../components/**/*.svelte",
+    "./vite.config.dfx.ts"
   ],
   "compilerOptions": {
     "ignoreDeprecations": "5.0",

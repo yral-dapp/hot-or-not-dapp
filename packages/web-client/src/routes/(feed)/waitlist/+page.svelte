@@ -1,5 +1,5 @@
 <script lang="ts">
-import Button from '$lib/components/button/Button.svelte'
+import Button from '@hnn/components/button/Button.svelte'
 import { handleParams } from '$lib/utils/params'
 import { onMount } from 'svelte'
 
@@ -13,7 +13,7 @@ onMount(() => {
 </svelte:head>
 
 <div
-  class="absolute flex h-full w-full flex-col items-center gap-8 overflow-hidden overflow-y-scroll px-12 pt-16 pb-32">
+  class="absolute flex h-full w-full flex-col items-center gap-8 overflow-hidden overflow-y-scroll px-12 pb-32 pt-16">
   <div class="flex flex-col items-center gap-4">
     <div class="text-3xl font-bold">Logins paused</div>
     <div class="text-center opacity-70">
