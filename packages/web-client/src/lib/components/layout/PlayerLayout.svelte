@@ -52,9 +52,11 @@ async function fetchThumbnail() {
     if (thumb.status === 404) {
       unavailable = true
       dispatch('unavailable')
+    } else {
+      imgLoaded = true
     }
-  } finally {
-    imgLoaded = true
+  } catch (_) {
+    unavailable = true
   }
 }
 
