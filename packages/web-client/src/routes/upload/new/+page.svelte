@@ -44,6 +44,7 @@ let previewMuted = true
 let uploadedVideoId = 0
 let enrollInHotOrNot = true
 let isNsfw = false
+let showNsfwPopup = false
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH
 
@@ -296,6 +297,17 @@ onDestroy(() => {
       {#if hashtagError}
         <div class="text-xs text-red-500">{hashtagError}</div>
       {/if}
+      <div class="flex w-full items-center justify-between space-x-8">
+        <span class="text-sm text-white/60">
+          Is this video <button
+            on:click={() => (showNsfwPopup = true)}
+            class="text-primary underline">
+            NSFW
+          </button>
+          ?
+        </span>
+        <Switch bind:checked={isNsfw} />
+      </div>
       <div class="flex w-full items-center justify-between space-x-8">
         <span class="text-sm text-white/60">
           Do you want to include this video in hot or not?
