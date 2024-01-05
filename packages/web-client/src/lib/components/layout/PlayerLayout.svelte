@@ -33,6 +33,7 @@ const dispatch = createEventDispatcher<{
 }>()
 
 let unavailable = false
+let imgLoaded = false
 let showTruncatedDescription = true
 let watchProgress = {
   totalCount: 0,
@@ -46,10 +47,14 @@ $: postPublisherId =
   post.created_by_unique_user_name[0] || post.created_by_user_principal_id
 
 async function fetchThumbnail() {
-  const thumb = await fetch(getThumbnailUrl(post.video_uid, 80))
-  if (thumb.status === 404) {
-    unavailable = true
-    dispatch('unavailable')
+  try {
+    const thumb = await fetch(getThumbnailUrl(post.video_uid, 80))
+    if (thumb.status === 404) {
+      unavailable = true
+      dispatch('unavailable')
+    }
+  } finally {
+    imgLoaded = true
   }
 }
 
@@ -201,7 +206,7 @@ async function updateStats() {
 onMount(() => fetchThumbnail())
 </script>
 
-{#if !unavailable}
+{#if imgLoaded}
   <img
     alt="background"
     class="absolute inset-0 z-[1] h-full w-full origin-center object-cover blur-xl"
