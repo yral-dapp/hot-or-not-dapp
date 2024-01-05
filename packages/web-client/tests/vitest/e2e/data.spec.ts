@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { HttpAgent } from '@dfinity/agent'
 //@ts-ignore
 import canisterIds from '../../../../hot-or-not-backend-canister/.dfx/local/canister_ids.json'
-import { createActor as createUserIndexActor } from '../../../declarations/user_index/index.js'
-import { createActor as createIndividualUserActor } from '../../../declarations/individual_user_template/index.js'
+import { createActor as createUserIndexActor } from '@hnn/declarations/user_index/index.js'
+import { createActor as createIndividualUserActor } from '@hnn/declarations/individual_user_template/index.js'
 import fetch from 'isomorphic-fetch'
 import { identity } from './identity'
 
@@ -63,6 +63,7 @@ describe('e2e test suite', () => {
     const posts = await Promise.all(
       cloudflareVideoUid.map((video_uid, i) =>
         individualUserActor.add_post_v2({
+          is_nsfw: false,
           description: `Test post #${i + 1}`,
           hashtags: ['test', 'video', `${i + 1}`],
           video_uid,

@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'vitest'
-import Avatar from '../../../src/components/avatar/Avatar.svelte'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
 
 let host: HTMLElement
 
@@ -8,7 +8,7 @@ afterEach(() => {
 })
 
 const imgSrc =
-  'https://hotornot.wtf/cdn-cgi/imagedelivery/abXI9nS4DYYtyR1yFFtziA/51434d58-119c-4dc6-ea36-079498eba400/public'
+  'https://imagedelivery.net/abXI9nS4DYYtyR1yFFtziA/51434d58-119c-4dc6-ea36-079498eba400/public'
 
 test('[Component] Avatar', async () => {
   host = document.createElement('div')
