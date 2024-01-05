@@ -2,7 +2,8 @@ import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
 import { get } from 'svelte/store'
 
-const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST
+export const cfWorkerHost =
+  'https://hot-or-not-upload-api-main.go-bazzinga.workers.dev'
 
 async function generateUrl() {
   const authStateData = get(authState)
@@ -25,37 +26,44 @@ export async function uploadVideoToStream(
   file: Blob | File,
   onProgress: any,
 ): Promise<UploadVideoToStream> {
-  const uploadRes = await generateUrl()
-  if (!uploadRes || !uploadRes.uploadURL) {
+  try {
+    const uploadRes = await generateUrl()
+    if (!uploadRes || !uploadRes.uploadURL) {
+      return {
+        success: false,
+        errorMessage: "Couldn't generate upload Url. E1",
+      }
+    }
+
+    return new Promise((resolve) => {
+      const xhr = new XMLHttpRequest()
+      xhr.upload.addEventListener('progress', (e) =>
+        onProgress(e.loaded / e.total),
+      )
+      xhr.addEventListener('load', () =>
+        resolve({ success: true, uid: uploadRes.uid }),
+      )
+      xhr.addEventListener('error', (e) =>
+        resolve({
+          success: false,
+          error: e,
+          errorMessage: 'Something went wrong while uploading file',
+        }),
+      )
+      xhr.addEventListener('abort', () =>
+        resolve({ success: false, errorMessage: 'Upload cancelled by user' }),
+      )
+      xhr.open('POST', uploadRes.uploadURL, true)
+      const formData = new FormData()
+      formData.append('file', file)
+      xhr.send(formData)
+    })
+  } catch (e) {
     return {
       success: false,
-      errorMessage: "Couldn't generate upload Url",
+      errorMessage: "Couldn't generate upload Url. E2",
     }
   }
-
-  return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest()
-    xhr.upload.addEventListener('progress', (e) =>
-      onProgress(e.loaded / e.total),
-    )
-    xhr.addEventListener('load', () =>
-      resolve({ success: true, uid: uploadRes.uid }),
-    )
-    xhr.addEventListener('error', (e) =>
-      resolve({
-        success: false,
-        error: e,
-        errorMessage: 'Something went wrong while uploading file',
-      }),
-    )
-    xhr.addEventListener('abort', () =>
-      resolve({ success: false, errorMessage: 'Upload cancelled by user' }),
-    )
-    xhr.open('POST', uploadRes.uploadURL, true)
-    const formData = new FormData()
-    formData.append('file', file)
-    xhr.send(formData)
-  })
 }
 
 export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {

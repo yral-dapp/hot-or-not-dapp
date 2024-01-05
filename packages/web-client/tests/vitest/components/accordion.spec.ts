@@ -1,6 +1,6 @@
 import { tick } from 'svelte'
 import { afterEach, expect, test } from 'vitest'
-import Accordion from '../../../src/components/accordion/Accordion.svelte'
+import Accordion from '@hnn/components/accordion/Accordion.svelte'
 
 let host: HTMLElement
 

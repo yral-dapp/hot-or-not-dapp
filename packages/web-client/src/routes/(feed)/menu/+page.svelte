@@ -170,9 +170,7 @@ onMount(() => {
       </a>
       {#if !$page.url.host.includes('ic0.app')}
         <a
-          href={`https://${
-            import.meta.env.VITE_WEBCLIENT_CANISTER_ID
-          }.raw.ic0.app`}
+          href="https://vyatz-hqaaa-aaaam-qauea-cai.raw.ic0.app"
           class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
           <Icon name="ic-app" class="h-5 w-5" />
         </a>

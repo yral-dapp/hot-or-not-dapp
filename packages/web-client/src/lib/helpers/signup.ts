@@ -1,7 +1,6 @@
 import Log from '$lib/utils/Log'
 import { configuration } from './backend'
-
-const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST
+import { cfWorkerHost } from './stream'
 
 export async function checkSignupStatusCf(): Promise<boolean> {
   try {

@@ -1,8 +1,7 @@
 import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
 import { get } from 'svelte/store'
-
-const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST
+import { cfWorkerHost } from './stream'
 
 async function generateUrl() {
   try {
