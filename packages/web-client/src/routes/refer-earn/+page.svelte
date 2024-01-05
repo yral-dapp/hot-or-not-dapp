@@ -97,11 +97,7 @@ $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
 $: link = !loggedIn
   ? ''
   : $page.url.host.includes('ic0.app')
-    ? `https://${
-        import.meta.env.VITE_WEBCLIENT_CANISTER_ID
-      }.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${
-        $userProfile.principal_id
-      }&login=true`
+    ? `https://vyatz-hqaaa-aaaam-qauea-cai.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
     : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
 </script>
 

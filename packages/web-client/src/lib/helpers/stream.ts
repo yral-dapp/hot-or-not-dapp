@@ -2,7 +2,7 @@ import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
 import { get } from 'svelte/store'
 
-const cfWorkerHost =
+export const cfWorkerHost =
   'https://hot-or-not-upload-api-main.go-bazzinga.workers.dev'
 
 async function generateUrl() {
