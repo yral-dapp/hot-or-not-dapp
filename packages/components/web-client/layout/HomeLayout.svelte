@@ -1,5 +1,5 @@
 <home
-  style="height:100vh;"
+  style="height:100dvh;"
   class="relative block h-full w-full overflow-hidden text-white">
   <slot name="content" />
   <div class="absolute inset-x-0 top-0 z-[11]">
