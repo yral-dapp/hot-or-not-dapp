@@ -12,11 +12,9 @@ export const load: PageServerLoad = async ({ params }) => {
     const id = params.id.split('@')
     const postId = BigInt(Number(id[1]))
     const principal = Principal.from(id[0])
-
-    console.time('fetch:hotornot')
     const r =
       await individualUser(principal).get_individual_post_details_by_id(postId)
-    console.timeEnd('fetch:hotornot')
+
     if (r.video_uid) {
       return {
         post: {
@@ -34,6 +32,7 @@ export const load: PageServerLoad = async ({ params }) => {
       return
     }
   } catch (e) {
+    console.log('error', e)
     return
   }
 }

@@ -219,11 +219,11 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const notBetPosts = await filterBets(res.Ok)
-      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
+      // const notBetPosts = await filterBets(res.Ok)
+      const notStuckPosts = await filterStuckCanisterPosts(res.Ok)
       const notReportedPosts = await filterReportedPosts(notStuckPosts)
       // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
-      const populatedRes = await populatePosts(notReportedPosts, true)
+      const populatedRes = await populatePosts(notReportedPosts, false)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -294,7 +294,7 @@ async function fetchPostDetailById(
       Principal.from(post.publisher_canister_id),
     ).get_individual_post_details_by_id(post.post_id)
     if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
-      Log('warn', 'Already bet on post', {
+      Log('warn', "Already bet on post or bet's been closed", {
         post,
         from: 'feed.populatePosts.fetch',
       })

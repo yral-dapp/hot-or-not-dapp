@@ -74,14 +74,17 @@ async function fetchNextVideos(force = false) {
       videos = joinArrayUniquely(videos, res.posts)
 
       if (res.noMorePosts) {
+        loading = false
         noMoreVideos = res.noMorePosts
         // const watchedVideos = await getWatchedVideosFromCache('watch-hon')
         // videos = joinArrayUniquely(videos, watchedVideos)
       } else if (!res.noMorePosts && res.posts.length < fetchCount - 10) {
         fetchNextVideos(true)
+        return
       }
 
       await tick()
+      loading = false
 
       Log('info', 'Fetched videos for feed', {
         noMoreVideos,
@@ -95,7 +98,6 @@ async function fetchNextVideos(force = false) {
         noMoreVideos,
         source: 'hotOrNot.fetchNextVideos',
       })
-    } finally {
       loading = false
     }
   }
