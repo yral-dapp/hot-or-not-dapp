@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
           created_by_user_principal_id: r.created_by_user_principal_id.toText(),
           post_id: postId,
           score: BigInt(0),
-        } as PostPopulated,
+        } satisfies PostPopulated,
       }
     } else {
       return

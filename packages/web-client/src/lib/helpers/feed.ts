@@ -185,7 +185,6 @@ export async function getTopPosts(
   }
 }
 
-//@ts-ignore
 async function filterBets(
   posts: PostScoreIndexItem[],
 ): Promise<PostScoreIndexItem[]> {
@@ -220,12 +219,11 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
+      const notBetPosts = await filterBets(res.Ok)
+      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
+      const notReportedPosts = await filterReportedPosts(notStuckPosts)
       // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
-
-      const notStuckPosts = await filterStuckCanisterPosts(res.Ok)
-      // const notBetPosts = await filterBets(notStuckPosts)
-      // const notReportedPosts = await filterReportedPosts(notBetPosts)
-      const populatedRes = await populatePosts(notStuckPosts, false)
+      const populatedRes = await populatePosts(notReportedPosts, true)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -319,7 +317,7 @@ async function fetchPostDetailById(
       created_by_profile_photo_url:
         r.created_by_profile_photo_url[0] ||
         getDefaultImageUrl(r.created_by_user_principal_id, 54),
-    } as PostPopulated
+    } satisfies PostPopulated
   } catch (e) {
     Log('warn', 'Error while populating post', {
       error: e,

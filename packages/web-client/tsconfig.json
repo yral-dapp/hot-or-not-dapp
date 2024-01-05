@@ -8,6 +8,7 @@
     "./vite.config.ts",
     "./src/**/*.js",
     "./src/**/*.ts",
+    "./hooks/**/*.ts",
     "./src/**/*.svelte",
     "../components/**/*.ts",
     "../components/**/*.svelte",
