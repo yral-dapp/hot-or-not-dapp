@@ -75,6 +75,9 @@ async function startUploading() {
   uploadStatus = 'uploading'
   const uploadRes = await uploadVideoToStream($fileToUpload, onProgress)
   if (!uploadRes.success) {
+    hashtagError = 'Uploading failed. Please try again'
+    uploadStatus = 'to-upload'
+    uploadProgress.set(0)
     Log('error', 'Could not start uploading', {
       ...uploadRes,
       from: 'upload-new.startUploading',
@@ -84,9 +87,6 @@ async function startUploading() {
       userId: $userProfile.principal_id,
       user_canister_id: $authState.userCanisterId,
     })
-    hashtagError = 'Uploading failed. Please try again'
-    uploadStatus = 'to-upload'
-    uploadProgress.set(0)
     return
   } else if (uploadRes.uid) {
     checkVideoProcessingStatus(uploadRes.uid)
