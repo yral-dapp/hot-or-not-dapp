@@ -6,7 +6,6 @@ const cfWorkerHost =
   'https://hot-or-not-upload-api-main.go-bazzinga.workers.dev'
 
 async function generateUrl() {
-  console.log('generating url for', `${cfWorkerHost}/video/getVideoUploadURL`)
   const authStateData = get(authState)
   const res = await fetch(`${cfWorkerHost}/video/getVideoUploadURL`, {
     method: 'POST',
@@ -69,10 +68,6 @@ export async function uploadVideoToStream(
 
 export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {
   try {
-    console.log(
-      'check video status url for',
-      `${cfWorkerHost}/video/getVideoUploadURL`,
-    )
     const req = await fetch(
       `${cfWorkerHost}/video/${uid}/getVideoProcessingStatus`,
       {
