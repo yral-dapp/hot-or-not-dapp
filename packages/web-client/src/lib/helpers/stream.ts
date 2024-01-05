@@ -2,9 +2,11 @@ import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
 import { get } from 'svelte/store'
 
-const cfWorkerHost = import.meta.env.VITE_CLOUDFLARE_WORKERS_API_HOST
+const cfWorkerHost =
+  'https://hot-or-not-upload-api-main.go-bazzinga.workers.dev'
 
 async function generateUrl() {
+  console.log('generating url for', `${cfWorkerHost}/video/getVideoUploadURL`)
   const authStateData = get(authState)
   const res = await fetch(`${cfWorkerHost}/video/getVideoUploadURL`, {
     method: 'POST',
@@ -67,6 +69,10 @@ export async function uploadVideoToStream(
 
 export async function checkVideoStatus(uid: string): Promise<CheckVideoStatus> {
   try {
+    console.log(
+      'check video status url for',
+      `${cfWorkerHost}/video/getVideoUploadURL`,
+    )
     const req = await fetch(
       `${cfWorkerHost}/video/${uid}/getVideoProcessingStatus`,
       {
