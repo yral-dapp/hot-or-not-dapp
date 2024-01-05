@@ -50,7 +50,10 @@ async function loadPosts() {
   }
 }
 
-onMount(() => loadPosts())
+onMount(() => {
+  fetchedCount = posts.length
+  loadPosts()
+})
 </script>
 
 {#if posts.length}

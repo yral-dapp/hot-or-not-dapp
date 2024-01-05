@@ -63,7 +63,7 @@ let posts: {
   }
 } = {
   profile: {
-    posts: [],
+    posts: data.posts ?? [],
     noMorePosts: false,
     fetchedCount: 0,
   },

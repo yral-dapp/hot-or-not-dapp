@@ -1,17 +1,23 @@
-export const ssr = false
+export const ssr = true
+export const prerender = false
 
 import { individualUser } from '$lib/helpers/backend'
 import { getCanisterId } from '$lib/helpers/canisterId'
-import { sanitizeProfile, updateProfile } from '$lib/helpers/profile'
+import {
+  fetchPosts,
+  sanitizeProfile,
+  serializeProfilePostsResponse,
+  updateProfile,
+} from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
 import userProfile from '$lib/stores/userProfile'
 import { Principal } from '@dfinity/principal'
 import { error, redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
-import type { PageLoad } from './$types'
+import type { PageServerLoad } from './$types'
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params, fetch }) => {
   const id = params.id
 
   if (!id) {
@@ -55,6 +61,15 @@ export const load: PageLoad = async ({ params, fetch }) => {
       fetch,
     ).get_profile_details()
     const profile = sanitizeProfile(fetchedProfile, id)
-    return { me: false, profile, canId }
+    let posts: any[] = []
+    try {
+      const res = await fetchPosts(id, 0)
+      if (!res.error) {
+        posts = serializeProfilePostsResponse(res.posts)
+      }
+    } catch (_) {
+      console.error('Error while fetching posts for user', id)
+    }
+    return { me: false, profile, posts, canId }
   }
 }

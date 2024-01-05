@@ -152,6 +152,20 @@ type ProfileSpeculationsResponse =
       noMorePosts: boolean
     }
 
+export function serializeProfilePostsResponse(posts: PostDetailsForFrontend[]) {
+  return posts.map((post) => {
+    return {
+      ...post,
+      created_by_user_principal_id: post.created_by_user_principal_id.toText(),
+      home_feed_ranking_score: Number(post.home_feed_ranking_score),
+      hot_or_not_feed_ranking_score: Number(post.hot_or_not_feed_ranking_score),
+      like_count: Number(post.like_count),
+      total_view_count: Number(post.total_view_count),
+      id: Number(post.id),
+    }
+  })
+}
+
 export async function fetchPosts(
   id: string,
   from: number,
