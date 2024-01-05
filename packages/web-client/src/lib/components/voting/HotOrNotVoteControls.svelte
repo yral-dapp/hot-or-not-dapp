@@ -13,7 +13,7 @@ export type PlaceVote = {
 <script lang="ts">
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
-import { playerState } from '$lib/stores/playerState'
+import { playerState } from '$lib/stores/app'
 import c from 'clsx'
 import { createEventDispatcher } from 'svelte'
 import { fade } from 'svelte/transition'

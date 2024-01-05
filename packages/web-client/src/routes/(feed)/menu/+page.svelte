@@ -2,7 +2,7 @@
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import LogoutPopup from '$lib/components/popup/LogoutPopup.svelte'
 import { page } from '$app/stores'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'

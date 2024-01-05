@@ -3,7 +3,7 @@ import { replaceState } from '$app/navigation'
 import { registerPageView } from '@hnn/components/analytics/GA.utils'
 import type { PostPopulated } from '$lib/helpers/feed'
 import { navigateBack } from '$lib/stores/navigation'
-import { playerState } from '$lib/stores/playerState'
+import { playerState } from '$lib/stores/app'
 
 export function updateURL(post?: PostPopulated) {
   if (!post || !browser) return

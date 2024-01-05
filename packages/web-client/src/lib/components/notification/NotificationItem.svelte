@@ -3,7 +3,7 @@ import Icon from '@hnn/components/icon/Icon.svelte'
 import type { NotificationHistory } from '$lib/helpers/profile'
 import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$lib/stores/auth'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import c from 'clsx'
 
 export let item: NotificationHistory

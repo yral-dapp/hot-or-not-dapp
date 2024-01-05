@@ -4,7 +4,7 @@ import Popup from '@hnn/components/popup/Popup.svelte'
 import { authHelper } from '$lib/stores/auth'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import Icon from '@hnn/components/icon/Icon.svelte'
 
 export let show = false

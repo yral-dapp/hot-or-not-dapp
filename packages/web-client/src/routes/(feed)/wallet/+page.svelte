@@ -8,7 +8,7 @@ import {
   type TransactionHistory,
 } from '$lib/helpers/profile'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 
 let loadBalanced = true
 let loadList = true

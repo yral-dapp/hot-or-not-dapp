@@ -2,7 +2,7 @@
 import Button from '@hnn/components/button/Button.svelte'
 import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 </script>
 
 <div

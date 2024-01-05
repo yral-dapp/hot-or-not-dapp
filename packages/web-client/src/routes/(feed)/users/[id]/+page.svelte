@@ -4,7 +4,7 @@ import BottomNavigation from '@hnn/components/web-client/navigation/BottomNaviga
 import IconButton from '@hnn/components/button/IconButton.svelte'
 
 import { page } from '$app/stores'
-import { playerState } from '$lib/stores/playerState'
+import { playerState } from '$lib/stores/app'
 </script>
 
 <svelte:head>

@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from '@hnn/components/button/Button.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 
 let loggedIn = false
 </script>

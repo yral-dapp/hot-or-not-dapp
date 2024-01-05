@@ -6,7 +6,7 @@ import type {
 } from '$lib/helpers/profile'
 import getTimeDifference from '$lib/utils/getTimeDifference'
 import { authState } from '$lib/stores/auth'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 
 export let item: TransactionHistory
 

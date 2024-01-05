@@ -14,10 +14,11 @@ import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { authState } from '$lib/stores/auth'
-import userProfile, {
+import {
+  userProfile,
   emptyProfileValues,
   type UserProfile,
-} from '$lib/stores/userProfile'
+} from '$lib/stores/app'
 import { Principal } from '@dfinity/principal'
 import { get } from 'svelte/store'
 import { individualUser } from './backend'

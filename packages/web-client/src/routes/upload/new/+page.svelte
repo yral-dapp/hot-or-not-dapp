@@ -16,7 +16,7 @@ import { goto } from '$app/navigation'
 import { authState } from '$lib/stores/auth'
 import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream'
 import Log from '$lib/utils/Log'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import { individualUser } from '$lib/helpers/backend'
 import { debounce } from 'throttle-debounce'
 

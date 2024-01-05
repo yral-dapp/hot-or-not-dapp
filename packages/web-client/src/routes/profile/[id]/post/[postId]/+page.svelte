@@ -7,7 +7,7 @@ import BottomNavigation from '@hnn/components/web-client/navigation/BottomNaviga
 import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
-import { playerState } from '$lib/stores/playerState'
+import { playerState } from '$lib/stores/app'
 import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
 import { browser } from '$app/environment'
 

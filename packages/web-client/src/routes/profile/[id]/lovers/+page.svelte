@@ -13,7 +13,7 @@ import {
 import goBack from '$lib/utils/goBack'
 import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import type { PageData } from './$types'
 
 export let data: PageData

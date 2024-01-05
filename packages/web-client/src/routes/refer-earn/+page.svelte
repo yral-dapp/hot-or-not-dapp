@@ -15,7 +15,7 @@ import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { navigateBack } from '$lib/stores/navigation'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import { onMount } from 'svelte'
 
 let selectedTab = 0

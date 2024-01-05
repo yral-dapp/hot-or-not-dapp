@@ -11,7 +11,7 @@ import {
 } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
 import { authState } from '$lib/stores/auth'
-import userProfile from '$lib/stores/userProfile'
+import { userProfile } from '$lib/stores/app'
 import { Principal } from '@dfinity/principal'
 import { error, redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
