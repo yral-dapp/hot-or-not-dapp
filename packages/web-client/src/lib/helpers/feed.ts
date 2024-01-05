@@ -11,6 +11,8 @@ import { setBetDetailToDb } from './profile'
 import sleep from '$lib/utils/sleep'
 import { chunk } from '$lib/utils/chunk'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { get } from 'svelte/store'
+import { appPrefs } from '$lib/stores/app'
 
 export interface PostPopulated
   extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
@@ -287,13 +289,14 @@ function hasUserBetOnPost(post: PostDetailsForFrontend) {
 
 async function fetchPostDetailById(
   post: PostScoreIndexItem,
-  filterBetPosts = false,
+  excludeIfBetClosed = false,
+  excludeIfNsfw = true,
 ) {
   try {
     const r = await individualUser(
       Principal.from(post.publisher_canister_id),
     ).get_individual_post_details_by_id(post.post_id)
-    if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
+    if (excludeIfBetClosed && (hasUserBetOnPost(r) || isBettingClosed(r))) {
       Log('warn', "Already bet on post or bet's been closed", {
         post,
         from: 'feed.populatePosts.fetch',
@@ -307,6 +310,9 @@ async function fetchPostDetailById(
           r.created_by_profile_photo_url[0] ||
           getDefaultImageUrl(r.created_by_user_principal_id, 54),
       } satisfies PostPopulated)
+      return undefined
+    }
+    if (excludeIfNsfw && r.is_nsfw) {
       return undefined
     }
     return {
@@ -337,6 +343,8 @@ async function populatePosts(
       return { posts: [], error: false }
     }
 
+    const appPrefsData = get(appPrefs)
+
     const populatedPosts: PostPopulated[] = []
 
     const chunkedPosts = chunk(posts, 10)
@@ -344,7 +352,13 @@ async function populatePosts(
       const batch = chunkedPosts.shift()
       if (batch) {
         const results = await Promise.all(
-          batch.map((post) => fetchPostDetailById(post, filterBetPosts)),
+          batch.map((post) =>
+            fetchPostDetailById(
+              post,
+              filterBetPosts,
+              !appPrefsData?.showNsfwVideos,
+            ),
+          ),
         )
         populatedPosts.push(...(results.filter((o) => !!o) as PostPopulated[]))
         await sleep(200)

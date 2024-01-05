@@ -2,12 +2,13 @@
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import LogoutPopup from '$lib/components/popup/LogoutPopup.svelte'
 import { page } from '$app/stores'
-import { userProfile } from '$lib/stores/app'
+import { appPrefs, userProfile } from '$lib/stores/app'
 import LoginButton from '$lib/components/auth/LoginButton.svelte'
 import { onMount } from 'svelte'
 import { handleParams } from '$lib/utils/params'
 import type { IconName } from '@hnn/components/icon/icon.type'
 import Icon from '@hnn/components/icon/Icon.svelte'
+import Switch from '@hnn/components/switch/Switch.svelte'
 
 let links: {
   icon: IconName
@@ -120,6 +121,13 @@ onMount(() => {
       </div>
     {/if}
     <div class="my-8 h-[1px] w-full bg-white/10" />
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4 text-white">
+        <Icon name="nsfw" class="h-6 w-6" />
+        <div>Show NSFW videos</div>
+      </div>
+      <Switch bind:checked={$appPrefs.showNsfwVideos} />
+    </div>
     {#each links as link}
       {#if !link.hide}
         <svelte:element
