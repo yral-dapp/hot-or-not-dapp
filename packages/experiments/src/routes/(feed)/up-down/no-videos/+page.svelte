@@ -1,6 +1,6 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
-import UpDownVote from '$components/up-down/UpDownVote.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import UpDownVote from '$lib/components/vote/UpDownVote.svelte'
 import { upDownPost } from '$lib/utils/constants'
 </script>
 

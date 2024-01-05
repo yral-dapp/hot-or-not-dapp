@@ -1,0 +1,11 @@
+<home
+  style="height: 100dvh;"
+  class="relative block h-full w-full overflow-hidden text-white">
+  <slot name="content" />
+  <div class="absolute inset-x-0 top-4 z-[11]">
+    <slot name="top" />
+  </div>
+  <div class="absolute inset-x-0 bottom-0 z-[10] max-h-16">
+    <slot name="bottom-navigation" />
+  </div>
+</home>

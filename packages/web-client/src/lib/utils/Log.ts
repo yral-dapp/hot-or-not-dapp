@@ -1,7 +1,7 @@
 import { browser } from '$app/environment'
-import * as Sentry from '@sentry/svelte'
+import { captureException } from '@sentry/sveltekit'
 
-function replaceErrors(_v: any, value) {
+export function serializeBigIntHelper(_v: any, value) {
   if (typeof value === 'bigint') {
     return Number(value)
   } else if (value instanceof Error) {
@@ -27,15 +27,15 @@ const logTypeMap: Record<Logs, string> = {
 }
 
 export default (type: Logs, message: string, data?: any) => {
-  const dataStr = JSON.stringify(data, replaceErrors) || data
+  const dataStr = JSON.stringify(data, serializeBigIntHelper) || data
   const localhost = browser
     ? location.host.includes('localhost')
-    : import.meta.env.NODE_ENV !== 'production'
+    : import.meta.env.NODE_ENV !== 'prod'
   if (localhost || type == 'error') {
     console[type](logTypeMap[type], message, dataStr)
   }
   if (type === 'error') {
-    Sentry.captureException(new Error(message), {
+    captureException(new Error(message), {
       extra: data,
     })
   }

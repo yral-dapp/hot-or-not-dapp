@@ -1,8 +1,8 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
+import Button from '@hnn/components/button/Button.svelte'
 import { getDb } from '$lib/db'
 import { isDev } from '$lib/db/dev'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import {
   QuerySnapshot,
   collection,
@@ -42,8 +42,6 @@ async function collectionToJSON(name: string, snapshot: QuerySnapshot) {
   document.body.appendChild(downloadLink)
   downloadLink.click()
   document.body.removeChild(downloadLink)
-
-  console.log({ csv })
 }
 
 async function fetchAllUserActions() {

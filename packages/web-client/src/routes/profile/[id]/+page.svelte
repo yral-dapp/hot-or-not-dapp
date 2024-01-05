@@ -1,12 +1,16 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import ProfileLayout from '$components/layout/ProfileLayout.svelte'
-import ProfilePosts from '$components/profile/ProfilePosts.svelte'
-import SpeculationPosts from '$components/profile/SpeculationPosts.svelte'
-import { registerEvent } from '$components/analytics/GA.svelte'
-import ProfileTabs from '$components/tabs/ProfileTabs.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import ProfileLayout from '@hnn/components/web-client/layout/ProfileLayout.svelte'
+import ProfilePosts from '$lib/components/profile/ProfilePosts.svelte'
+import SpeculationPosts from '$lib/components/profile/SpeculationPosts.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
+import ProfileTabs from '@hnn/components/tabs/ProfileTabs.svelte'
+import CopyButton from '@hnn/components/web-client/profile/CopyButton.svelte'
+import ShowMoreButton from '@hnn/components/web-client/profile/ShowMoreButton.svelte'
+import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import {
   doIFollowThisUser,
   loveUser,
@@ -15,28 +19,37 @@ import {
 import goBack from '$lib/utils/goBack'
 import { handleParams } from '$lib/utils/params'
 import { getShortNumber } from '$lib/utils/shortNumber'
-import { authState } from '$stores/auth'
-import { navigateBack } from '$stores/navigation'
-import userProfile from '$stores/userProfile'
-import { onMount } from 'svelte'
+import { authState } from '$lib/stores/auth'
+import { navigateBack } from '$lib/stores/navigation'
+import { userProfile } from '$lib/stores/app'
+import { onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
-import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
+import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { slide } from 'svelte/transition'
-import CopyButton from '$components/profile/CopyButton.svelte'
-import ShowMoreButton from '$components/profile/ShowMoreButton.svelte'
-import ReportPopup from '$components/popup/ReportPopup.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import type { Snapshot } from './$types'
+import { serializeBigIntHelper } from '$lib/utils/Log'
+import { reportPostOrUser } from '$lib/helpers/report'
 
 export let data: PageData
-let { me, profile, canId } = data
+export const snapshot: Snapshot = {
+  capture: () => ({
+    posts: JSON.stringify(posts, serializeBigIntHelper),
+    scrollY,
+  }),
+  restore: async (value) => {
+    posts = JSON.parse(value.posts)
+    await tick()
+    scrollEl.scrollTop = value.scrollY
+  },
+}
 
+let { me, profile, canId } = data
 let follow = {
   doIFollow: false,
   error: false,
   loading: true,
 }
-
 let posts: {
   profile: {
     posts: PostDetailsForFrontend[]
@@ -50,7 +63,7 @@ let posts: {
   }
 } = {
   profile: {
-    posts: [],
+    posts: data.posts ?? [],
     noMorePosts: false,
     fetchedCount: 0,
   },
@@ -60,7 +73,8 @@ let posts: {
     fetchedCount: 0,
   },
 }
-
+let scrollY = 0
+let scrollEl: HTMLDivElement
 let showMoreInfo = false
 let showReportPopup = false
 
@@ -129,6 +143,10 @@ onMount(() => {
 
 $: tab = $page.url.searchParams.get('tab')
 $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
+
+function handleScroll() {
+  scrollY = scrollEl?.scrollTop
+}
 </script>
 
 <svelte:head>
@@ -139,6 +157,7 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
   <ReportPopup
     bind:show={showReportPopup}
     type="profile"
+    on:report={({ detail }) => reportPostOrUser(detail)}
     reportData={{
       userId: profile.principal_id || '',
       reportedByUserId: $authState.idString || '2vxsx-fae',
@@ -176,7 +195,11 @@ $: selectedTab = tab === 'speculations' ? 'speculations' : 'posts'
     {/if}
   </div>
 
-  <div class="hide-scrollbar h-full w-full overflow-y-auto" slot="content">
+  <div
+    bind:this={scrollEl}
+    on:scroll={handleScroll}
+    class="hide-scrollbar h-full w-full overflow-y-auto"
+    slot="content">
     <div class="mx-auto flex max-w-5xl flex-col">
       <div class="flex w-full flex-col items-center justify-center py-8">
         <img

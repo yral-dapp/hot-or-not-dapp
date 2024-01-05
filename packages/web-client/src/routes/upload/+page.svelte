@@ -1,6 +1,10 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import CameraLayout from '$components/layout/CameraLayout.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import CameraLayout from '@hnn/components/web-client/layout/CameraLayout.svelte'
+import type { CameraControls } from '@hnn/components/upload/UploadTypes'
+import Popup from '@hnn/components/popup/Popup.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 import {
   applyConstraintsOnVideoStream,
   getDevicesList,
@@ -11,16 +15,12 @@ import { fade } from 'svelte/transition'
 import c from 'clsx'
 import { allFilters, getFilterCss } from '$lib/utils/filtersMap'
 import { debounce } from 'throttle-debounce'
-import { fileToUpload } from '$stores/fileUpload'
+import { fileToUpload } from '$lib/stores/fileUpload'
 import { goto } from '$app/navigation'
 import { isiPhone } from '$lib/utils/isSafari'
-import type { CameraControls } from '$components/upload/UploadTypes'
-import Popup from '$components/popup/Popup.svelte'
-import Button from '$components/button/Button.svelte'
 import { linear } from 'svelte/easing'
 import { tweened, type Tweened } from 'svelte/motion'
 import Log from '$lib/utils/Log'
-import Icon from '$components/icon/Icon.svelte'
 
 let videoEl: HTMLVideoElement
 let mediaStream: MediaStream
@@ -371,7 +371,7 @@ onDestroy(async () => {
     <div class="realtive h-full w-full bg-black">
       {#if initState != 'allowed'}
         <div
-          transition:fade|local
+          transition:fade
           class="flex h-full flex-col items-center justify-center space-y-8 px-10">
           <Icon name="camera-graphic" class="h-56 w-56" />
 
@@ -399,8 +399,8 @@ onDestroy(async () => {
         {#if timerInterval}
           {#key timerCountdown}
             <div
-              in:fade|local={{ duration: 500, delay: 100 }}
-              out:fade|local={{ duration: 100 }}
+              in:fade={{ duration: 500, delay: 100 }}
+              out:fade={{ duration: 100 }}
               class={c(
                 'absolute z-[6] flex h-full w-full items-center justify-center bg-transparent text-9xl font-bold',
                 timerCountdown > 3 ? 'text-white' : 'text-primary',
@@ -439,7 +439,7 @@ onDestroy(async () => {
   <svelte:fragment slot="bottom-camera-controls">
     {#if initState == 'allowed'}
       <!-- Snap Point -->
-      <div transition:fade|local class="flex items-end justify-start pt-3">
+      <div transition:fade class="flex items-end justify-start pt-3">
         <button
           bind:this={cameraEl}
           on:click={() => !loading && startRecording()}
@@ -458,7 +458,7 @@ onDestroy(async () => {
       {#if !recording && useCanvas}
         <button
           on:click={(e) => !loading && checkClickAndStartRecording(e)}
-          transition:fade|local
+          transition:fade
           bind:this={filtersEl}
           on:scroll={checkWhichEl}
           class="hide-scrollbar absolute bottom-4 -mt-20 flex w-full select-none snap-x snap-mandatory gap-6 overflow-x-auto">

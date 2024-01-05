@@ -1,10 +1,10 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import { authState } from '$stores/auth'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import HomeLayout from '@hnn/components/experiments/layout/HomeLayout.svelte'
+import { authState } from '$lib/stores/auth'
 import { onMount } from 'svelte'
 
 function checkIfInviteIsValid() {

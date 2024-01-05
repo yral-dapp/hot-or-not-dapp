@@ -1,22 +1,21 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import coinsStashImg from '$assets/coins-stash.webp'
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import { registerEvent } from '$components/analytics/GA.svelte'
-import DotTabs from '$components/tabs/DotTabs.svelte'
+import coinsStashImg from '$lib/assets/coins-stash.webp'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import LoginButton from '$lib/components/auth/LoginButton.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
+import DotTabs from '@hnn/components/tabs/DotTabs.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import goBack from '$lib/utils/goBack'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
-import { authState } from '$stores/auth'
-import { loadingAuthStatus } from '$stores/loading'
-import { navigateBack } from '$stores/navigation'
-import userProfile from '$stores/userProfile'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
+import { navigateBack } from '$lib/stores/navigation'
+import { userProfile } from '$lib/stores/app'
 import { onMount } from 'svelte'
 
 let selectedTab = 0
@@ -98,12 +97,12 @@ $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
 $: link = !loggedIn
   ? ''
   : $page.url.host.includes('ic0.app')
-  ? `https://${
-      import.meta.env.VITE_WEBCLIENT_CANISTER_ID
-    }.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${
-      $userProfile.principal_id
-    }&login=true`
-  : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
+    ? `https://${
+        import.meta.env.VITE_WEBCLIENT_CANISTER_ID
+      }.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${
+        $userProfile.principal_id
+      }&login=true`
+    : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
 </script>
 
 <svelte:head>
@@ -238,7 +237,9 @@ $: link = !loggedIn
         <div class="text-center text-sm opacity-70">
           Please login to see your referral history
         </div>
-        <LoginButton />
+        <LoginButton
+          loading={$loadingAuthStatus}
+          on:click={() => ($authState.showLogin = true)} />
       {/if}
     </div>
   </svelte:fragment>

@@ -1,22 +1,22 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import InputBox from '$components/input/InputBox.svelte'
-import UploadLayout from '$components/layout/UploadLayout.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import InputBox from '@hnn/components/input/InputBox.svelte'
+import UploadLayout from '@hnn/components/web-client/layout/UploadLayout.svelte'
+import UploadStep from '@hnn/components/upload/UploadStep.svelte'
+import type { UploadStatus } from '@hnn/components/upload/UploadTypes'
+import TagsInput from '@hnn/components/tags-input/TagsInput.svelte'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
+import Switch from '@hnn/components/switch/Switch.svelte'
 import { tweened } from 'svelte/motion'
 import { cubicInOut } from 'svelte/easing'
-import UploadStep from '$components/upload/UploadStep.svelte'
 import { onMount, onDestroy, tick } from 'svelte'
-import { fileToUpload } from '$stores/fileUpload'
+import { fileToUpload } from '$lib/stores/fileUpload'
 import { goto } from '$app/navigation'
-import { authState } from '$stores/auth'
-import type { UploadStatus } from '$components/upload/UploadTypes'
+import { authState } from '$lib/stores/auth'
 import { checkVideoStatus, uploadVideoToStream } from '$lib/helpers/stream'
 import Log from '$lib/utils/Log'
-import TagsInput from '$components/tags-input/TagsInput.svelte'
-import userProfile from '$stores/userProfile'
-import { registerEvent } from '$components/analytics/GA.svelte'
-import Switch from '$components/switch/Switch.svelte'
+import { userProfile } from '$lib/stores/app'
 import { individualUser } from '$lib/helpers/backend'
 import { debounce } from 'throttle-debounce'
 
@@ -43,6 +43,8 @@ let videoSrc = ''
 let previewMuted = true
 let uploadedVideoId = 0
 let enrollInHotOrNot = true
+let isNsfw = false
+let showNsfwPopup = false
 
 $: isInputLimitReached = videoHashtags.length >= MAX_HASHTAG_LENGTH
 
@@ -145,6 +147,7 @@ const handleSuccessfulUpload = debounce(
       })
       const postRes = await individualUser().add_post_v2({
         description: videoDescription,
+        is_nsfw: isNsfw,
         hashtags,
         video_uid: videoUid,
         creator_consent_for_inclusion_in_hot_or_not: enrollInHotOrNot,
@@ -261,9 +264,9 @@ onDestroy(() => {
       {/if}
       {#if previewPaused}
         <div
+          role="presentation"
           on:click={() => (previewPaused = false)}
-          class="absolute inset-0 flex items-center justify-center"
-          on:keyup>
+          class="absolute inset-0 flex items-center justify-center">
           <IconButton
             iconName="play"
             iconClass="h-4 w-4"
@@ -296,6 +299,17 @@ onDestroy(() => {
       {/if}
       <div class="flex w-full items-center justify-between space-x-8">
         <span class="text-sm text-white/60">
+          Is this video <button
+            on:click={() => (showNsfwPopup = true)}
+            class="text-primary underline">
+            NSFW
+          </button>
+          ?
+        </span>
+        <Switch bind:checked={isNsfw} />
+      </div>
+      <div class="flex w-full items-center justify-between space-x-8">
+        <span class="text-sm text-white/60">
           Do you want to include this video in hot or not?
         </span>
         <Switch bind:checked={enrollInHotOrNot} />
@@ -325,8 +339,8 @@ onDestroy(() => {
             status={uploadStep === 'uploading'
               ? 'queued'
               : uploadStep === 'processing'
-              ? 'active'
-              : 'finished'} />
+                ? 'active'
+                : 'finished'} />
           <div class="flex w-full flex-col space-y-2">
             <span class="text-lg">Processing Checks</span>
             {#if uploadStep === 'processing' || uploadStep == 'verified'}

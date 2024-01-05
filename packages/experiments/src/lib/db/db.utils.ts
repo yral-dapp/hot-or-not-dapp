@@ -1,4 +1,4 @@
-import { anonUser, authState } from '$stores/auth'
+import { anonUser, authState } from '$lib/stores/auth'
 import { get } from 'svelte/store'
 
 export function getHeaders(type: 'POST' | 'GET') {

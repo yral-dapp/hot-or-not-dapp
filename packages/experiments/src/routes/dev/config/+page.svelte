@@ -1,9 +1,9 @@
 <script lang="ts">
-import Button from '$components/button/Button.svelte'
+import Button from '@hnn/components/button/Button.svelte'
 import { getDb } from '$lib/db'
 import type { ViewChangeParameters } from '$lib/db/db.types'
 import { createNewConfig, isDev } from '$lib/db/dev'
-import { authState } from '$stores/auth'
+import { authState } from '$lib/stores/auth'
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore'
 import { onMount } from 'svelte'
 

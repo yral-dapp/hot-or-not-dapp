@@ -1,11 +1,11 @@
 <script lang="ts">
-import Avatar from '$components/avatar/Avatar.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import type { VoteRecordWithId } from '$components/up-down/UpDownVote.svelte'
+import Avatar from '@hnn/components/avatar/Avatar.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import type { VoteRecordWithId } from '$lib/components/vote/UpDownVote.svelte'
 import { getThumbnailUrl } from '$lib/utils/cloudflare'
-import { getMsLeftForResult, getVoteEndTime } from '$lib/utils/countdown'
+import { getMsLeftForResult } from '$lib/utils/countdown'
 import { pluralize } from '$lib/utils/pluralize'
-import userProfile from '$stores/userProfile'
+import userProfile from '$lib/stores/userProfile'
 
 export let vote: VoteRecordWithId
 

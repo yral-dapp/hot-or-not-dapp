@@ -1,46 +1,20 @@
 <script lang="ts">
-import '../css/app.css'
+import '@hnn/components/tailwind.css'
 import { onMount } from 'svelte'
-import { authState } from '$stores/auth'
-import LoginPopup from '$components/login/LoginPopup.svelte'
+import { authState } from '$lib/stores/auth'
+import LoginPopup from '$lib/components/auth/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
 import { beforeNavigate } from '$app/navigation'
-import { navigateBack, navigationHistory } from '$stores/navigation'
-import { registerEvent } from '$components/analytics/GA.svelte'
-import userProfile from '$stores/userProfile'
+import { navigateBack, navigationHistory } from '$lib/stores/navigation'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
+import { userProfile } from '$lib/stores/app'
 import { initializeAuthClient } from '$lib/helpers/auth'
 import { page } from '$app/stores'
-import { deferredPrompt } from '$stores/deferredPrompt'
-import NetworkStatus from '$components/network-status/NetworkStatus.svelte'
+import { deferredPrompt } from '$lib/stores/deferredPrompt'
+import NetworkStatus from '@hnn/components/network-status/NetworkStatus.svelte'
+import { removeSplashScreen } from '$lib/stores/popups'
 
 const ignoredPaths = ['edit', 'lovers', 'post', 'speculations']
-
-async function initSentry() {
-  const Sentry = await import('@sentry/svelte')
-
-  Sentry.init({
-    dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-    integrations: [new Sentry.Replay()],
-    environment: $page.url.host.includes('t:') ? 'localDev' : 'production',
-    replaysSessionSampleRate: 0.3,
-    replaysOnErrorSampleRate: 1,
-    ignoreErrors: [
-      /Adding invalid event/i, // Replay Error
-      /Error in compression worker/i, // Replay Error
-      /e.getLastBreadcrumb/i, // Sentry error
-      /chrome-extension/i, // Chrome extensions error
-      /. is not defined/i, //Unknown error
-    ],
-    beforeSend: $page.url.host.includes('t:')
-      ? (event) => {
-          console.log('[SENTRY LOG]', event)
-          return event
-        }
-      : undefined,
-  })
-  Sentry.makeMain(Sentry.getCurrentHub())
-  Log('info', 'Sentry initialized')
-}
 
 function registerServiceWorker() {
   if ($page.url.host.includes('t:')) return
@@ -53,7 +27,7 @@ function registerServiceWorker() {
 let GA: any
 async function initializeGA() {
   try {
-    GA = (await import('$components/analytics/GA.svelte')).default
+    GA = (await import('@hnn/components/analytics/GA.svelte')).default
   } catch (_) {
     Log('warn', 'Could not load GA')
   }
@@ -71,11 +45,13 @@ function listenForUnhandledRejections() {
 
 onMount(() => {
   $navigateBack = null
-  initSentry()
   listenForUnhandledRejections()
   initializeAuthClient()
   registerServiceWorker()
-  initializeGA()
+  setTimeout(() => {
+    initializeGA()
+  }, 6000)
+  removeSplashScreen()
 })
 
 beforeNavigate(({ from, to, type }) => {
@@ -106,11 +82,6 @@ beforeNavigate(({ from, to, type }) => {
 
 <NetworkStatus />
 
-<alpha-ribbon
-  class="pointer-events-none absolute -right-10 top-2 z-[50] flex w-28 rotate-45 items-center justify-center overflow-hidden bg-primary px-1 py-0.5 text-[0.5rem] font-bold uppercase text-white opacity-60">
-  Alpha
-</alpha-ribbon>
-
 {#if $authState.showLogin}
   <LoginPopup />
 {/if}
@@ -120,5 +91,5 @@ beforeNavigate(({ from, to, type }) => {
 </div>
 
 {#if GA}
-  <svelte:component this={GA} />
+  <svelte:component this={GA} tagId="G-S9P26021F9" pageUrl={$page?.url?.href} />
 {/if}

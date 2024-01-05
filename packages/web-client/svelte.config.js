@@ -1,17 +1,15 @@
 import staticAdapter from '@sveltejs/adapter-static'
-import cfAdapter from '@sveltejs/adapter-cloudflare'
+// import cfAdapter from '@sveltejs/adapter-cloudflare'
 import preprocess from 'svelte-preprocess'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import cspDirectives from './directives.js'
+import nodeAdapter from '@sveltejs/adapter-node'
+// import cspDirectives from './directives.js'
 
 const isSSR = process.env.BUILD_MODE != 'static'
 const isDev = process.env.NODE_ENV == 'dev'
 
 console.log(
-  'svelte in',
-  isSSR ? 'ssr' : 'static',
-  'build mode; csp enabled',
-  isDev,
+  '\x1b[36m%s\x1b[0m',
+  `🅾️ Svelte config: SSR: ${isSSR ? 'ssr' : 'static'}, CSP: ${isDev}\n`,
 )
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -21,6 +19,9 @@ const config = {
   }),
 
   kit: {
+    alias: {
+      '$routes/*': './src/routes/*',
+    },
     // csp: isDev
     //   ? undefined
     //   : {
@@ -37,7 +38,7 @@ const config = {
       },
     },
     adapter: isSSR
-      ? cfAdapter()
+      ? nodeAdapter()
       : staticAdapter({
           fallback: 'index.html',
         }),

@@ -1,8 +1,8 @@
-import type { PostDetailsForFrontend } from '$canisters/individual_user_template/individual_user_template.did'
+import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import type {
   PostScoreIndexItem,
   TopPostsFetchError,
-} from '$canisters/post_cache/post_cache.did'
+} from '@hnn/declarations/post_cache/post_cache.did'
 import type { IDB } from '$lib/idb'
 import Log from '$lib/utils/Log'
 import { Principal } from '@dfinity/principal'
@@ -10,11 +10,18 @@ import { individualUser, postCache } from './backend'
 import { setBetDetailToDb } from './profile'
 import sleep from '$lib/utils/sleep'
 import { chunk } from '$lib/utils/chunk'
+import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
+import { get } from 'svelte/store'
+import { appPrefs } from '$lib/stores/app'
 
 export interface PostPopulated
   extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
-    Omit<PostDetailsForFrontend, 'created_by_user_principal_id'> {
+    Omit<
+      PostDetailsForFrontend,
+      'created_by_user_principal_id' | 'created_by_profile_photo_url'
+    > {
   created_by_user_principal_id: string
+  created_by_profile_photo_url: string
   publisher_canister_id: string
 }
 
@@ -88,6 +95,11 @@ async function filterStuckCanisterPosts(posts: PostScoreIndexItem[]) {
       '4thmb-taaaa-aaaao-aavfq-cai',
       'du74r-syaaa-aaaao-aa47q-cai',
       'u6qff-cqaaa-aaaao-aczfa-cai',
+      'p7ngy-hyaaa-aaaao-aesjq-cai',
+      'ynvsv-3qaaa-aaaao-ae2gq-cai',
+      '4xvw2-giaaa-aaaao-aejwq-cai',
+      'nut4d-faaaa-aaaao-agaxa-cai',
+      'raidg-jaaaa-aaaao-afbxa-cai',
     ]
     return posts.filter(
       (o) => !stuckCanisters.includes(o.publisher_canister_id.toText()),
@@ -209,11 +221,11 @@ export async function getHotOrNotPosts(
         BigInt(from + numberOfPosts),
       )
     if ('Ok' in res) {
-      const notBetPosts = await filterBets(res.Ok)
-      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
+      // const notBetPosts = await filterBets(res.Ok)
+      const notStuckPosts = await filterStuckCanisterPosts(res.Ok)
       const notReportedPosts = await filterReportedPosts(notStuckPosts)
       // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
-      const populatedRes = await populatePosts(notReportedPosts, true)
+      const populatedRes = await populatePosts(notReportedPosts, false)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,
@@ -277,14 +289,15 @@ function hasUserBetOnPost(post: PostDetailsForFrontend) {
 
 async function fetchPostDetailById(
   post: PostScoreIndexItem,
-  filterBetPosts = false,
+  excludeIfBetClosed = false,
+  excludeIfNsfw = true,
 ) {
   try {
     const r = await individualUser(
       Principal.from(post.publisher_canister_id),
     ).get_individual_post_details_by_id(post.post_id)
-    if (filterBetPosts && (hasUserBetOnPost(r) || isBettingClosed(r))) {
-      Log('warn', 'Already bet on post', {
+    if (excludeIfBetClosed && (hasUserBetOnPost(r) || isBettingClosed(r))) {
+      Log('warn', "Already bet on post or bet's been closed", {
         post,
         from: 'feed.populatePosts.fetch',
       })
@@ -293,7 +306,13 @@ async function fetchPostDetailById(
         ...post,
         created_by_user_principal_id: r.created_by_user_principal_id.toText(),
         publisher_canister_id: post.publisher_canister_id.toText(),
+        created_by_profile_photo_url:
+          r.created_by_profile_photo_url[0] ||
+          getDefaultImageUrl(r.created_by_user_principal_id, 54),
       } satisfies PostPopulated)
+      return undefined
+    }
+    if (excludeIfNsfw && r.is_nsfw) {
       return undefined
     }
     return {
@@ -301,7 +320,10 @@ async function fetchPostDetailById(
       ...post,
       created_by_user_principal_id: r.created_by_user_principal_id.toText(),
       publisher_canister_id: post.publisher_canister_id.toText(),
-    } as PostPopulated
+      created_by_profile_photo_url:
+        r.created_by_profile_photo_url[0] ||
+        getDefaultImageUrl(r.created_by_user_principal_id, 54),
+    } satisfies PostPopulated
   } catch (e) {
     Log('warn', 'Error while populating post', {
       error: e,
@@ -321,6 +343,8 @@ async function populatePosts(
       return { posts: [], error: false }
     }
 
+    const appPrefsData = get(appPrefs)
+
     const populatedPosts: PostPopulated[] = []
 
     const chunkedPosts = chunk(posts, 10)
@@ -328,7 +352,13 @@ async function populatePosts(
       const batch = chunkedPosts.shift()
       if (batch) {
         const results = await Promise.all(
-          batch.map((post) => fetchPostDetailById(post, filterBetPosts)),
+          batch.map((post) =>
+            fetchPostDetailById(
+              post,
+              filterBetPosts,
+              !appPrefsData?.showNsfwVideos,
+            ),
+          ),
         )
         populatedPosts.push(...(results.filter((o) => !!o) as PostPopulated[]))
         await sleep(200)

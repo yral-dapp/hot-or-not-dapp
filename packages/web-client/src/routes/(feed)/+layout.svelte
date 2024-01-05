@@ -1,12 +1,13 @@
 <script lang="ts">
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
-import Selector from '$components/home/Selector.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
+import Selector from '@hnn/components/home/Selector.svelte'
 import { page } from '$app/stores'
-import { playerState } from '$stores/playerState'
+import { playerState } from '$lib/stores/app'
 import { onDestroy, onMount } from 'svelte'
-import { authState } from '$stores/auth'
-import Icon from '$components/icon/Icon.svelte'
+import { authState } from '$lib/stores/auth'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import { browser } from '$app/environment'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -17,11 +18,15 @@ function handleVisibilityChange() {
 }
 
 onMount(async () => {
-  document.addEventListener('visibilitychange', handleVisibilityChange)
+  if (browser) {
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 onDestroy(() => {
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  if (browser) {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
 })
 
 $: pathname = $page.url.pathname
@@ -31,14 +36,20 @@ $: pathname = $page.url.pathname
   <svelte:fragment slot="top">
     {#if pathname.includes('feed') || pathname.includes('hotornot')}
       <Selector
+        feedUrl={$playerState.currentFeedUrl == 'no-videos'
+          ? ''
+          : $playerState.currentFeedUrl}
+        hotOrNotUrl={$playerState.currentHotOrNotUrl == 'no-videos'
+          ? ''
+          : $playerState.currentFeedUrl}
         selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
-      <a
+
+      <IconButton
         href="/notifications"
-        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center">
-        <Icon
-          name={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
-          class="h-6 w-6" />
-      </a>
+        ariaLabel="Notifications"
+        iconName={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
+        iconClass="h-6 w-6"
+        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center" />
     {:else if pathname.includes('menu')}
       <div
         class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
@@ -51,7 +62,11 @@ $: pathname = $page.url.pathname
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
     {#if !pathname.includes('hotornot')}
-      <BottomNavigation />
+      <BottomNavigation
+        feedUrl={$playerState.currentFeedUrl == 'no-videos'
+          ? ''
+          : $playerState.currentFeedUrl}
+        pathName={$page.url.pathname} />
     {/if}
   </div>
 </HomeLayout>

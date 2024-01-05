@@ -1,19 +1,19 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import IconButton from '$components/button/IconButton.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
-import Hls from 'hls.js/dist/hls.min.js'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
 import type { PageData } from './$types'
-import Icon from '$components/icon/Icon.svelte'
+import { playerState } from '$lib/stores/app'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
+import { browser } from '$app/environment'
 
 export let data: PageData
 
 let { video, me } = data
-let unavailable = false
 </script>
 
 <svelte:head>
@@ -39,31 +39,38 @@ let unavailable = false
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
-      <PlayerLayout
-        bind:post={video}
-        index={0}
-        source="post"
-        watchHistoryDb="watch"
-        showReportButton
-        showLikeButton
-        showDescription
-        showReferAndEarnLink
-        showShareButton
-        showHotOrNotButton
-        {unavailable}
-        let:recordView>
-        <VideoPlayer
-          on:videoUnavailable={() => (unavailable = true)}
-          on:watchedPercentage={({ detail }) => recordView(detail)}
-          index={0}
-          playFormat="hls"
-          {Hls}
-          inView
-          uid={video.video_uid} />
-      </PlayerLayout>
+      {#if video}
+        <VideoSlide show single index={0} {browser}>
+          <PlayerLayout
+            bind:post={video}
+            index={0}
+            source="post"
+            watchHistoryDb="watch"
+            showReportButton
+            showLikeButton
+            showDescription
+            showReferAndEarnLink
+            showShareButton
+            showHotOrNotButton
+            let:unavailable
+            let:recordView>
+            <VideoPlayer
+              on:watchedPercentage={({ detail }) => recordView(detail)}
+              {unavailable}
+              index={0}
+              playFormat="hls"
+              inView
+              uid={video.video_uid} />
+          </PlayerLayout>
+        </VideoSlide>
+      {/if}
     </div>
   </svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
-    <BottomNavigation />
+    <BottomNavigation
+      feedUrl={$playerState.currentFeedUrl == 'no-videos'
+        ? ''
+        : $playerState.currentFeedUrl}
+      pathName={$page.url.pathname} />
   </div>
 </HomeLayout>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /// <reference types="@sveltejs/kit" />
 
 declare let Hls: typeof import('hls.js').default
@@ -6,13 +5,10 @@ declare let Hls: typeof import('hls.js').default
 // Info: https://kit.svelte.dev/docs/types#app
 declare namespace App {
   // interface Locals {}
-  // interface Platform {}
-  // interface Session {}
-  // interface Stuff {}
 }
 
 declare namespace svelteHTML {
-  interface HTMLAttributes<T> {
+  interface HTMLAttributes {
     'on:beforeinstallprompt'?: (event: BeforeInstallPromptEvent) => any
     'on:appinstalled'?: (event: Event) => any
     'disablePictureInPicture'?: boolean
@@ -21,10 +17,10 @@ declare namespace svelteHTML {
 }
 
 interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
   readonly platforms: string[]
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed'
     platform: string
   }>
-  prompt(): Promise<void>
 }

@@ -1,22 +1,24 @@
 <script lang="ts">
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
+import PlayerRenderer from '@hnn/components/video/PlayerRenderer.svelte'
+import Button from '@hnn/components/button/Button.svelte'
 import { beforeNavigate } from '$app/navigation'
-import Button from '$components/button/Button.svelte'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
 import { updateURL } from '$lib/utils/feedUrl'
 import { joinArrayUniquely } from '$lib/utils/video'
-import { playerState } from '$stores/playerState'
+import { playerState } from '$lib/stores/playerState'
 import { onMount } from 'svelte'
-import Icon from '$components/icon/Icon.svelte'
-import UpDownVote from '$components/up-down/UpDownVote.svelte'
-import UpDownVoteControls from '$components/up-down/UpDownVoteControls.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import UpDownVote from '$lib/components/vote/UpDownVote.svelte'
+import UpDownVoteControls from '$lib/components/vote/UpDownVoteControls.svelte'
 import type { UpDownPost } from '$lib/db/db.types'
 import { getVideos } from '$lib/db/feed'
 import type { QueryDocumentSnapshot } from 'firebase/firestore'
-import PlayerRenderer from '$components/layout/PlayerRenderer.svelte'
 import { debounce } from 'throttle-debounce'
-import { removeSplashScreen } from '$stores/popups'
+import { removeSplashScreen } from '$lib/stores/popups'
 import { page } from '$app/stores'
+import { browser } from '$app/environment'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
 
 const fetchWhenVideosLeft = 5
 const keepVideosLoadedCount: number = 4
@@ -89,9 +91,6 @@ beforeNavigate(() => {
   $playerState.visible = false
   $playerState.muted = true
 })
-
-// $: console.log({ videos })
-// $: console.log({ currentVideoIndex })
 </script>
 
 <svelte:head>
@@ -103,39 +102,49 @@ beforeNavigate(() => {
   class="hide-scrollbar relative flex w-full snap-y snap-mandatory flex-col overflow-hidden overflow-y-auto">
   {#each videos as post, index (post.id)}
     <PlayerRenderer
+      {browser}
       {keepVideosLoadedCount}
       {index}
       activeIndex={currentVideoIndex}
       let:show>
-      <PlayerLayout
-        bind:post
+      <VideoSlide
         {index}
         {show}
-        showLikeButton
-        showDislikeButton
-        showTimer
-        showShareButton
-        let:recordView
-        on:view={({ detail }) => handleChange(detail)}
-        let:updateStats>
-        <VideoPlayer
-          on:watchComplete={updateStats}
-          on:loaded={() => removeSplashScreen()}
-          on:watchedPercentage={({ detail }) => recordView(detail)}
-          on:videoUnavailable={() => handleUnavailableVideo(index)}
-          {index}
-          playFormat="hls"
-          inView={index == currentVideoIndex && $playerState.visible}
-          uid={post.video_uid} />
-        <svelte:fragment slot="controls">
-          <UpDownVote {post} />
-        </svelte:fragment>
-      </PlayerLayout>
+        {browser}
+        on:view={({ detail }) => handleChange(detail)}>
+        <PlayerLayout
+          bind:post
+          showLikeButton
+          showDislikeButton
+          showTimer
+          showShareButton
+          let:recordView
+          let:updateStats
+          let:unavailable
+          on:unavailable={() => handleUnavailableVideo(index)}>
+          <VideoPlayer
+            on:watchComplete={updateStats}
+            on:loaded={() => removeSplashScreen()}
+            on:watchedPercentage={({ detail }) => recordView(detail)}
+            on:videoUnavailable={() => handleUnavailableVideo(index)}
+            {index}
+            {unavailable}
+            playFormat="hls"
+            inView={index == currentVideoIndex && $playerState.visible}
+            uid={post.video_uid} />
+          <svelte:fragment slot="controls">
+            <UpDownVote {post} />
+          </svelte:fragment>
+        </PlayerLayout>
+      </VideoSlide>
     </PlayerRenderer>
   {/each}
   {#if showError}
-    <div
-      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+    <VideoSlide
+      index={videos.length}
+      show
+      {browser}
+      on:view={({ detail }) => handleChange(detail)}>
       <div class="text-center text-lg font-bold">
         Error loading posts. Please, refresh the page.
       </div>
@@ -145,17 +154,23 @@ beforeNavigate(() => {
         href="/up-down">
         Clear here to refresh
       </Button>
-    </div>
+    </VideoSlide>
   {/if}
   {#if loading}
-    <div
-      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+    <VideoSlide
+      index={videos.length}
+      show
+      {browser}
+      on:view={({ detail }) => handleChange(detail)}>
       <div class="text-center text-lg font-bold">Loading</div>
-    </div>
+    </VideoSlide>
   {/if}
   {#if noMoreVideos}
-    <div
-      class="relative flex h-screen w-full shrink-0 snap-center snap-always flex-col items-center justify-center space-y-8 px-8">
+    <VideoSlide
+      index={videos.length}
+      show
+      {browser}
+      on:view={({ detail }) => handleChange(detail)}>
       <Icon name="votes-graphics" class="w-56" />
       <div class="text-center text-lg font-bold">
         There are no more videos to vote on
@@ -163,6 +178,6 @@ beforeNavigate(() => {
       <div class="absolute inset-x-0 bottom-20 z-[-1] max-h-48">
         <UpDownVoteControls disabled score={100} />
       </div>
-    </div>
+    </VideoSlide>
   {/if}
 </div>

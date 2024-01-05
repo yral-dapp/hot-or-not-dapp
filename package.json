@@ -4,8 +4,10 @@
   "type": "module",
   "private": true,
   "workspaces": [
-    "./packages/web-client",
+    "./packages/components",
+    "./packages/declarations",
     "./packages/experiments",
+    "./packages/web-client",
     "./packages/workers"
   ],
   "scripts": {
@@ -13,19 +15,20 @@
     "backend": "cd ./packages/hot-or-not-backend-canister && dfx start",
     "backend:clean": "cd ./packages/hot-or-not-backend-canister && dfx start --clean",
     "backend:install": "cd ./packages/hot-or-not-backend-canister && ./scripts/canisters/local_deploy/install_all_canisters.sh -s",
-    "build": "npm run wc:build",
     "ex:check": "npm run check --w @hnn/experiments",
     "ex:build": "npm run build --w @hnn/experiments",
     "ex:preview": "npm run preview --w @hnn/experiments",
     "ex:dev": "npm run dev --w @hnn/experiments",
+    "serve:lhci": "npm run wc:preview",
     "wc:check": "npm run check --w @hnn/web-client",
     "wc:tsc": "npm run tsc --w @hnn/web-client",
     "wc:build": "npm run build --w @hnn/web-client",
+    "wc:start": "npm run start --w @hnn/web-client",
     "wc:build:prod": "PRODUCTION=true npm run build --w @hnn/web-client",
     "wc:build:static": "npm run build:static --w @hnn/web-client",
     "wc:build:static:prod": "PRODUCTION=true npm run build:static --w @hnn/web-client",
+    "wc:deploy": "fly deploy --config ./wc.fly.toml --dockerfile ./wc.Dockerfile --debug",
     "wc:preview": "npm run preview --w @hnn/web-client",
-    "serve:lhci": "npm run wc:preview",
     "wc:preview:static": "npm run preview:static --w @hnn/web-client",
     "wc:dev": "npm run dev --w @hnn/web-client",
     "wc:cypress": "npm run cypress --w @hnn/web-client",
@@ -38,13 +41,13 @@
   },
   "devDependencies": {
     "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
-    "@types/node": "^18.18.13",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
-    "eslint": "^8.54.0",
+    "@types/node": "^18.19.4",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-svelte3": "^4.0.0",
-    "prettier": "^3.1.0",
+    "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
-    "prettier-plugin-tailwindcss": "^0.5.7"
+    "prettier-plugin-tailwindcss": "^0.5.10"
   }
 }

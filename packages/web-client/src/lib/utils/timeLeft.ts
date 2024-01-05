@@ -1,4 +1,4 @@
-import type { SystemTime } from '$canisters/individual_user_template/individual_user_template.did'
+import type { SystemTime } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { readable } from 'svelte/store'
 
 const ONE_HOUR_MS = 36_00_000

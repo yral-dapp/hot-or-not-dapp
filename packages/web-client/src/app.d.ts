@@ -1,36 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /// <reference types="@sveltejs/kit" />
 
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
+declare let Hls: typeof import('hls.js').default
+
+// Info: https://kit.svelte.dev/docs/types#app
 declare namespace App {
   // interface Locals {}
-  // interface Platform {}
-  // interface Session {}
-  // interface Stuff {}
 }
 
-namespace svelte.JSX {
-  interface SvelteWindowProps {
-    onbeforeinstallprompt?:
-      | EventHandler<BeforeInstallPromptEvent, Window>
-      | undefined
-      | null
-    onappinstalled?: EventHandler<Event, Window> | undefined | null
-  }
-
-  interface HTMLProps<T> {
-    'disableremoteplayback'?: boolean
-    'disablepictureinpicture'?: boolean
-    'x-webkit-airplay'?: 'deny' | 'allow'
+declare namespace svelteHTML {
+  interface HTMLAttributes {
+    'on:beforeinstallprompt'?: (event: BeforeInstallPromptEvent) => any
+    'on:appinstalled'?: (event: Event) => any
+    'disablePictureInPicture'?: boolean
+    'disableRemotePlayback'?: boolean
   }
 }
 
 interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>
   readonly platforms: string[]
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed'
     platform: string
   }>
-  prompt(): Promise<void>
 }

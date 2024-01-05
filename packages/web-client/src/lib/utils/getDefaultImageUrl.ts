@@ -1,7 +1,6 @@
 import { Principal } from '@dfinity/principal'
 
-export const imageHost =
-  'https://hotornot.wtf/cdn-cgi/imagedelivery/abXI9nS4DYYtyR1yFFtziA'
+export const imageHost = 'https://imagedelivery.net/abXI9nS4DYYtyR1yFFtziA'
 
 const cfAvatarImageIds = [
   '01452301-3861-4b96-c9ee-b3e443a22300',
@@ -26,7 +25,7 @@ const cfAvatarImageIds = [
   '098ae9bb-be53-4128-5918-2b794250ae00',
 ]
 
-export default (principal?: Principal | string) => {
+export default (principal?: Principal | string, width: number = 100) => {
   let string = 'random'
   if (typeof principal === 'string') {
     string = principal
@@ -34,5 +33,5 @@ export default (principal?: Principal | string) => {
     string = Principal.from(principal).toText()
   }
   const sum = string.split('').reduce((acc, val) => val.charCodeAt(0) + acc, 0)
-  return `${imageHost}/${cfAvatarImageIds[sum % 20]}/public`
+  return `${imageHost}/${cfAvatarImageIds[sum % 20]}/w=${width}`
 }

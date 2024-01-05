@@ -8,23 +8,24 @@ import type {
   SystemTime,
   TokenEvent,
   UserProfileDetailsForFrontend,
-} from '$canisters/individual_user_template/individual_user_template.did'
-import { setUserProperties } from '$components/analytics/GA.svelte'
+} from '@hnn/declarations/individual_user_template/individual_user_template.did'
+import { setUserProperties } from '@hnn/components/analytics/GA.utils'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
 import Log from '$lib/utils/Log'
 import { generateRandomName } from '$lib/utils/randomUsername'
-import { authState } from '$stores/auth'
-import userProfile, {
+import { authState } from '$lib/stores/auth'
+import {
+  userProfile,
   emptyProfileValues,
   type UserProfile,
-} from '$stores/userProfile'
+} from '$lib/stores/app'
 import { Principal } from '@dfinity/principal'
 import { get } from 'svelte/store'
 import { individualUser } from './backend'
 import { getCanisterId } from './canisterId'
 import type { PostPopulated } from './feed'
-import { setUser } from './sentry'
 import { isPrincipal } from '$lib/utils/isPrincipal'
+import { setUser } from '@sentry/sveltekit'
 
 export interface UserProfileFollows extends UserProfile {
   i_follow: boolean
@@ -102,7 +103,13 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
     userProfile.set(emptyProfileValues)
   }
   updateUserProperties() // GA
-  setUser(authStateData.idString) //Sentry
+  setUser(
+    authStateData?.idString
+      ? {
+          id: authStateData.idString,
+        }
+      : null,
+  ) //Sentry
   Log('info', 'Updated user profile', {
     profile: get(userProfile),
     from: 'profile.updateProfile',
@@ -145,6 +152,20 @@ type ProfileSpeculationsResponse =
       posts: PostPopulatedWithBetDetails[]
       noMorePosts: boolean
     }
+
+export function serializeProfilePostsResponse(posts: PostDetailsForFrontend[]) {
+  return posts.map((post) => {
+    return {
+      ...post,
+      created_by_user_principal_id: post.created_by_user_principal_id.toText(),
+      home_feed_ranking_score: Number(post.home_feed_ranking_score),
+      hot_or_not_feed_ranking_score: Number(post.hot_or_not_feed_ranking_score),
+      like_count: Number(post.like_count),
+      total_view_count: Number(post.total_view_count),
+      id: Number(post.id),
+    }
+  })
+}
 
 export async function fetchPosts(
   id: string,
@@ -228,12 +249,16 @@ async function populatePosts(posts: PlacedBetDetail[]) {
           ).get_individual_post_details_by_id(post.post_id)
           return {
             ...r,
+            post_id: post.post_id,
             placed_bet_details: post,
             score: BigInt(0),
             created_by_user_principal_id:
               r.created_by_user_principal_id.toText(),
             publisher_canister_id: post.canister_id.toText(),
-          } as PostPopulatedWithBetDetails
+            created_by_profile_photo_url:
+              r.created_by_profile_photo_url[0] ||
+              getDefaultImageUrl(r.created_by_user_principal_id, 54),
+          } satisfies PostPopulatedWithBetDetails
         } catch (_) {
           return undefined
         }

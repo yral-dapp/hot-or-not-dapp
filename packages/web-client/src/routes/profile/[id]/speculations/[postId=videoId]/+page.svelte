@@ -1,19 +1,18 @@
 <script lang="ts">
 import { page } from '$app/stores'
-import IconButton from '$components/button/IconButton.svelte'
-import HotOrNotVote from '$components/hot-or-not/HotOrNotVote.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import HotOrNotVote from '$lib/components/voting/HotOrNotVote.svelte'
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import goBack from '$lib/utils/goBack'
-import Hls from 'hls.js/dist/hls.min.js'
 import type { PageData } from './$types'
-import Icon from '$components/icon/Icon.svelte'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
+import { browser } from '$app/environment'
 
 export let data: PageData
 
 let { post, me } = data
-let unavailable = false
 </script>
 
 <svelte:head>
@@ -40,33 +39,36 @@ let unavailable = false
   </svelte:fragment>
   <svelte:fragment slot="content">
     <div class="relative h-full w-full text-white">
-      <PlayerLayout
-        bind:post
-        index={0}
-        source="speculation"
-        watchHistoryDb="watch-hon"
-        showReferAndEarnLink
-        showShareButton
-        showDescription
-        {unavailable}
-        let:recordView>
-        <VideoPlayer
-          on:videoUnavailable={() => (unavailable = true)}
-          on:watchedPercentage={({ detail }) => recordView(detail)}
-          index={0}
-          playFormat="hls"
-          {Hls}
-          inView
-          uid={post.video_uid} />
-        <svelte:fragment slot="hotOrNot">
-          <HotOrNotVote
-            profileUserId={$page.params.id}
-            {post}
-            {me}
-            placedBetDetail={post.placed_bet_details}
-            inView />
-        </svelte:fragment>
-      </PlayerLayout>
+      {#if post}
+        <VideoSlide show single index={0} {browser}>
+          <PlayerLayout
+            bind:post
+            index={0}
+            source="speculation"
+            watchHistoryDb="watch-hon"
+            showReferAndEarnLink
+            showShareButton
+            showDescription
+            let:unavailable
+            let:recordView>
+            <VideoPlayer
+              {unavailable}
+              on:watchedPercentage={({ detail }) => recordView(detail)}
+              index={0}
+              playFormat="hls"
+              inView
+              uid={post.video_uid} />
+            <svelte:fragment slot="hotOrNot">
+              <HotOrNotVote
+                profileUserId={$page.params.id}
+                {post}
+                {me}
+                placedBetDetail={post.placed_bet_details}
+                inView />
+            </svelte:fragment>
+          </PlayerLayout>
+        </VideoSlide>
+      {/if}
     </div>
   </svelte:fragment>
 </HomeLayout>

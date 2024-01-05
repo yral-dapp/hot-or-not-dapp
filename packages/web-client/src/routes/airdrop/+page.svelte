@@ -1,15 +1,14 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import Button from '@hnn/components/button/Button.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import AirdropCompleteGraphics from '$lib/components/airdrop-form/AirdropCompleteGraphics.svelte'
+import AirdropEndGraphics from '$lib/components/airdrop-form/AirdropEndGraphics.svelte'
 import goBack from '$lib/utils/goBack'
-import { navigateBack } from '$stores/navigation'
-import { authState } from '$stores/auth'
-import { loadingAuthStatus } from '$stores/loading'
+import { navigateBack } from '$lib/stores/navigation'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { airdropEntryDetails, isNNSIdRegistered } from '$lib/helpers/airdrop'
-import Icon from '$components/icon/Icon.svelte'
-import AirdropCompleteGraphics from '$components/airdrop-form/AirdropCompleteGraphics.svelte'
-import Button from '$components/button/Button.svelte'
-import AirdropEndGraphics from '$components/airdrop-form/AirdropEndGraphics.svelte'
 
 let loading = true
 let participatedForNNS = false
@@ -79,7 +78,7 @@ $: !authorized && (loading = false)
       <div
         class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
         {#if participatedForNNS}
-          <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
+          <div class="mt-4 max-w-80 px-16 sm:mt-10 sm:!max-h-80">
             <AirdropEndGraphics class="h-full w-full" />
           </div>
           <div
@@ -128,7 +127,7 @@ $: !authorized && (loading = false)
             </a>
           </div>
         {:else}
-          <div class="max-w-80 mt-4 px-16 sm:mt-10 sm:!max-h-80">
+          <div class="mt-4 max-w-80 px-16 sm:mt-10 sm:!max-h-80">
             <AirdropCompleteGraphics class="h-full w-full" />
           </div>
           <div

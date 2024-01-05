@@ -1,9 +1,9 @@
 <script lang="ts">
 import { browser } from '$app/environment'
 import { page } from '$app/stores'
-import IconButton from '$components/button/IconButton.svelte'
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import { playerState } from '$stores/playerState'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import HomeLayout from '@hnn/components/experiments/layout/HomeLayout.svelte'
+import { playerState } from '$lib/stores/playerState'
 import { onDestroy, onMount } from 'svelte'
 import { fade } from 'svelte/transition'
 import c from 'clsx'

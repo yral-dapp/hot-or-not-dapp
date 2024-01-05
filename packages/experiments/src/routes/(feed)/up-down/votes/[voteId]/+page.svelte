@@ -1,16 +1,18 @@
 <script lang="ts">
 import { beforeNavigate } from '$app/navigation'
 import { page } from '$app/stores'
-import PlayerLayout from '$components/layout/PlayerLayout.svelte'
-import type { UpDownVoteDetails } from '$components/up-down/UpDownVote.svelte'
-import UpDownVoteOutcome from '$components/up-down/UpDownVoteOutcome.svelte'
-import VideoPlayer from '$components/video/VideoPlayer.svelte'
+import VideoSlide from '@hnn/components/video/VideoSlide.svelte'
+import PlayerLayout from '$lib/components/layout/PlayerLayout.svelte'
+import type { UpDownVoteDetails } from '$lib/components/vote/UpDownVote.svelte'
+import UpDownVoteOutcome from '$lib/components/vote/UpDownVoteOutcome.svelte'
+import VideoPlayer from '$lib/components/video/VideoPlayer.svelte'
 import { getDb } from '$lib/db'
 import type { CollectionName, UpDownPost, VoteRecord } from '$lib/db/db.types'
-import { playerState } from '$stores/playerState'
-import { removeSplashScreen } from '$stores/popups'
+import { playerState } from '$lib/stores/playerState'
+import { removeSplashScreen } from '$lib/stores/popups'
 import { doc, getDoc } from 'firebase/firestore'
 import { onMount } from 'svelte'
+import { browser } from '$app/environment'
 
 let loading = true
 let voteDetails: UpDownVoteDetails | undefined = undefined
@@ -70,18 +72,20 @@ beforeNavigate(() => {
       </div>
     </div>
   {:else}
-    <PlayerLayout show bind:post index={0} showShareButton>
-      <VideoPlayer
-        on:loaded={() => removeSplashScreen()}
-        index={0}
-        playFormat="hls"
-        inView
-        uid={post.video_uid} />
-      <svelte:fragment slot="controls">
-        {#if voteDetails}
-          <UpDownVoteOutcome voteDocId={voteId} {voteDetails} />
-        {/if}
-      </svelte:fragment>
-    </PlayerLayout>
+    <VideoSlide index={0} single show {browser}>
+      <PlayerLayout bind:post showShareButton>
+        <VideoPlayer
+          on:loaded={() => removeSplashScreen()}
+          index={0}
+          playFormat="hls"
+          inView
+          uid={post.video_uid} />
+        <svelte:fragment slot="controls">
+          {#if voteDetails}
+            <UpDownVoteOutcome voteDocId={voteId} {voteDetails} />
+          {/if}
+        </svelte:fragment>
+      </PlayerLayout>
+    </VideoSlide>
   {/if}
 </div>

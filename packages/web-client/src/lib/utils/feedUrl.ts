@@ -1,13 +1,15 @@
-import { registerPageView } from '$components/analytics/GA.svelte'
+import { browser } from '$app/environment'
+import { replaceState } from '$app/navigation'
+import { registerPageView } from '@hnn/components/analytics/GA.utils'
 import type { PostPopulated } from '$lib/helpers/feed'
-import { navigateBack } from '$stores/navigation'
-import { playerState } from '$stores/playerState'
+import { navigateBack } from '$lib/stores/navigation'
+import { playerState } from '$lib/stores/app'
 
 export function updateURL(post?: PostPopulated) {
-  if (!post) return
+  if (!post || !browser) return
   const url = post.publisher_canister_id + '@' + post.post_id
   navigateBack.set(url)
   playerState.update((o) => ({ ...o, currentFeedUrl: url }))
-  window.history.replaceState('', '', url)
+  replaceState(url, '')
   registerPageView(new URL(window.location.href))
 }

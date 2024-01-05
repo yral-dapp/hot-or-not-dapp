@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
 
 let profile: any
 </script>

@@ -1,13 +1,13 @@
 <script lang="ts">
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
-import IntersectionObserver from '$components/intersection-observer/IntersectionObserver.svelte'
-import ProfileLayout from '$components/layout/ProfileLayout.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import TransactionItem from '$components/wallet/TransactionItem.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import IntersectionObserver from '@hnn/components/intersection-observer/IntersectionObserver.svelte'
+import ProfileLayout from '@hnn/components/web-client/layout/ProfileLayout.svelte'
+import LoginButton from '$lib/components/auth/LoginButton.svelte'
+import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import { fetchHistory, type TransactionHistory } from '$lib/helpers/profile'
 import Log from '$lib/utils/Log'
-import { authState } from '$stores/auth'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { onMount } from 'svelte'
 
 let loading = true
@@ -66,7 +66,9 @@ onMount(loadTransactions)
         <div class="text-center text-sm opacity-70">
           Please login to access your wallet
         </div>
-        <LoginButton />
+        <LoginButton
+          loading={$loadingAuthStatus}
+          on:click={() => ($authState.showLogin = true)} />
       {:else}
         {#if transactions.length}
           {#each transactions as item}

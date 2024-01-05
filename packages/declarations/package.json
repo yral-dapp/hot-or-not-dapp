@@ -1,0 +1,11 @@
+{
+  "name": "@hnn/declarations",
+  "version": "0.2.1",
+  "description": "",
+  "scripts": {
+    "fetch": "sh ./fetch.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

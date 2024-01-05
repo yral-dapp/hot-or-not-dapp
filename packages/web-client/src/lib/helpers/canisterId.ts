@@ -3,21 +3,24 @@ import { Principal } from '@dfinity/principal'
 import { isPrincipal } from '$lib/utils/isPrincipal'
 import { userIndex } from './backend'
 import type { IDB } from '$lib/idb'
+import { browser } from '$app/environment'
 
 export async function getCanisterId(id: string): Promise<string | undefined> {
   try {
     let canId: string | undefined = undefined
     let idb: IDB | undefined = undefined
-    try {
-      idb = await (await import('$lib/idb')).idb
-      canId = await idb.get('canisters', id)
-    } catch (e) {
-      Log('warn', 'Error while accessing IDB', {
-        error: e,
-        from: 'canisterId.getCanisterId',
-        type: 'idb',
-      })
-      return
+    if (browser) {
+      try {
+        idb = await (await import('$lib/idb')).idb
+        canId = await idb.get('canisters', id)
+      } catch (e) {
+        Log('warn', 'Error while accessing IDB', {
+          error: e,
+          from: 'canisterId.getCanisterId',
+          type: 'idb',
+        })
+        return
+      }
     }
     if (canId) return canId
     else {

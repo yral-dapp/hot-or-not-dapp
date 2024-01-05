@@ -1,7 +1,7 @@
+import { registerPageView } from '@hnn/components/analytics/GA.utils'
 import { replaceState } from '$app/navigation'
-import { registerPageView } from '$components/analytics/GA.utils'
 import type { UpDownPost } from '$lib/db/db.types'
-import { playerState } from '$stores/playerState'
+import { playerState } from '$lib/stores/playerState'
 
 export function updateURL(post?: UpDownPost) {
   if (!post) return

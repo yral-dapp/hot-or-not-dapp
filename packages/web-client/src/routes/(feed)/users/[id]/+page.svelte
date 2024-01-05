@@ -1,8 +1,10 @@
 <script lang="ts">
-import HomeLayout from '$components/layout/HomeLayout.svelte'
-import BottomNavigation from '$components/navigation/BottomNavigation.svelte'
-import IconButton from '$components/button/IconButton.svelte'
-import Icon from '$components/icon/Icon.svelte'
+import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import BottomNavigation from '@hnn/components/web-client/navigation/BottomNavigation.svelte'
+import IconButton from '@hnn/components/button/IconButton.svelte'
+
+import { page } from '$app/stores'
+import { playerState } from '$lib/stores/app'
 </script>
 
 <svelte:head>
@@ -20,6 +22,10 @@ import Icon from '$components/icon/Icon.svelte'
   </svelte:fragment>
   <svelte:fragment slot="content">content</svelte:fragment>
   <div class="w-full" slot="bottom-navigation">
-    <BottomNavigation />
+    <BottomNavigation
+      feedUrl={$playerState.currentFeedUrl == 'no-videos'
+        ? ''
+        : $playerState.currentFeedUrl}
+      pathName={$page.url.pathname} />
   </div>
 </HomeLayout>

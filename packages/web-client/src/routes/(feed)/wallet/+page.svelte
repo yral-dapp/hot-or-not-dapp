@@ -1,15 +1,14 @@
 <script lang="ts">
-import Icon from '$components/icon/Icon.svelte'
-import LoginButton from '$components/login/LoginButton.svelte'
-import TransactionItem from '$components/wallet/TransactionItem.svelte'
+import Icon from '@hnn/components/icon/Icon.svelte'
+import LoginButton from '$lib/components/auth/LoginButton.svelte'
+import TransactionItem from '$lib/components/wallet/TransactionItem.svelte'
 import {
   fetchHistory,
   fetchTokenBalance,
   type TransactionHistory,
 } from '$lib/helpers/profile'
-import { authState } from '$stores/auth'
-import { loadingAuthStatus } from '$stores/loading'
-import userProfile from '$stores/userProfile'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
+import { userProfile } from '$lib/stores/app'
 
 let loadBalanced = true
 let loadList = true
@@ -74,7 +73,9 @@ $: loggedIn && init()
     <div class="text-center text-sm opacity-70">
       Please login to access your wallet
     </div>
-    <LoginButton />
+    <LoginButton
+      loading={$loadingAuthStatus}
+      on:click={() => ($authState.showLogin = true)} />
   </div>
 {:else}
   <div class="flex h-full w-full flex-col overflow-hidden overflow-y-auto">

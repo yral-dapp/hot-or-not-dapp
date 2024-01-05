@@ -1,0 +1,25 @@
+{
+  "name": "@hnn/components",
+  "version": "1.0.0",
+  "description": "Svelte Components",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build,tests --threshold warning --diagnostic-sources \"js,ts,svelte\""
+  },
+  "dependencies": {
+    "@hnn/components": "*",
+    "clsx": "2.1.0",
+    "throttle-debounce": "5.0.0"
+  },
+  "devDependencies": {
+    "@sentry/sveltekit": "7.91.0",
+    "@tailwindcss/forms": "0.5.7",
+    "svelte": "4.2.8",
+    "svelte-check": "3.6.2",
+    "tailwindcss": "3.4.0",
+    "typescript": "5.3.3"
+  }
+}
