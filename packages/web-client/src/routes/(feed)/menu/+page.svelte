@@ -28,20 +28,9 @@ $: links = [
   },
   {
     icon: 'help',
-    title: 'How to Earn',
+    title: 'Refer & Earn',
     class: 'w-5 h-5',
     href: '/refer-earn',
-  },
-  {
-    icon: 'text-align-middle',
-    title: 'About Us',
-    class: 'w-5 h-5',
-    href: '/about-us',
-  },
-  {
-    icon: 'chat-box',
-    title: 'FAQs',
-    href: '/faq',
   },
   {
     icon: 'whatsapp-logo',
@@ -87,7 +76,7 @@ onMount(() => {
 </script>
 
 <svelte:head>
-  <title>Menu | Hot or Not</title>
+  <title>Menu</title>
 </svelte:head>
 
 <LogoutPopup bind:show={showLogoutPopup} />

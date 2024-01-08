@@ -3,7 +3,7 @@ import ComingSoon from '@hnn/components/coming-soon/ComingSoon.svelte'
 </script>
 
 <svelte:head>
-  <title>Leaderboards | Hot or Not</title>
+  <title>Leaderboards</title>
 </svelte:head>
 
 <ComingSoon />

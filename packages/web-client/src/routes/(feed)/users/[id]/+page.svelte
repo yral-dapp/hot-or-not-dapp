@@ -8,7 +8,7 @@ import { playerState } from '$lib/stores/app'
 </script>
 
 <svelte:head>
-  <title>User's Videos | Hot or Not</title>
+  <title>User's Videos</title>
 </svelte:head>
 
 <HomeLayout>

@@ -8,7 +8,7 @@ import { navigateBack } from '$lib/stores/navigation'
 </script>
 
 <svelte:head>
-  <title>Airdrop Guide | Hot or Not</title>
+  <title>Airdrop Guide</title>
 </svelte:head>
 
 <HomeLayout>
@@ -30,9 +30,9 @@ import { navigateBack } from '$lib/stores/navigation'
       <div class="relative mx-auto block w-full max-w-2xl">
         <h4 class="text-lg font-bold">Guide</h4>
         <p>
-          Hot or Not is a social media platform for short videos, similar to
-          TikTok but on Web3. It integrates gamification with social media and
-          is built on a ground-breaking Level-1 blockchain called the
+          We are a social media platform for short videos, similar to TikTok but
+          on Web3. It integrates gamification with social media and is built on
+          a ground-breaking Level-1 blockchain called the
           <a
             class="underline"
             href="https://medium.com/dfinity/the-internet-computer-for-geeks-a-new-dfinity-white-paper-ecb075b2d525"
@@ -42,7 +42,7 @@ import { navigateBack } from '$lib/stores/navigation'
           .
         </p>
         <p>
-          Hot or Not is conducting a decentralization sale (
+          We are conducting a decentralization sale (
           <a
             class="underline"
             href="https://internetcomputer.org/docs/current/developer-docs/integrations/sns/"
@@ -55,8 +55,8 @@ import { navigateBack } from '$lib/stores/navigation'
           their participation.
         </p>
         <p>
-          To recognize the support of its users and early adopters, Hot or Not
-          is airdropping HOT tokens to the users who registered in our airdrop
+          To recognize the support of its users and early adopters, we are
+          airdropping HOT tokens to the users who registered in our airdrop
           before 15th July.
         </p>
         <p>

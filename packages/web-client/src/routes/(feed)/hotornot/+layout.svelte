@@ -9,7 +9,7 @@ let showExperimentsPopup = false
 <!-- <HotorNotOnboarding /> -->
 
 <svelte:head>
-  <title>Hot or Not Feed | Hot or Not</title>
+  <title>Play Feed</title>
 </svelte:head>
 
 <HotOrNotLayout>

@@ -14,7 +14,7 @@ function getNotificationMessage(item: NotificationHistory) {
       return `Congratulations! You've earned ${item.token} tokens from commissions on your video.`
     }
     case 'Referral': {
-      return `Congratulations! A user joined Hot or Not, you have received ${item.token} tokens for referring user.`
+      return `Congratulations! A user signed up, you have received ${item.token} tokens for referring user.`
     }
     case 'WinningsEarnedFromBet': {
       switch (item.eventOutcome) {

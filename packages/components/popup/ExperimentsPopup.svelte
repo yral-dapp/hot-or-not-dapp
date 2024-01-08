@@ -23,7 +23,7 @@ export let show = false
         Game
       </div>
       <div class="pb-2 text-center text-lg text-white">
-        Brought to you by Hot or Not
+        Brought to you by us
       </div>
     </div>
 

@@ -12,7 +12,7 @@ let loggedIn = false
     {#if loggedIn}
       <div class="text-3xl font-bold">Success!</div>
       <Icon name="checkmark" class="h-10 w-10"></Icon>
-      <div>You have succesfully migrated your hot or not profile.</div>
+      <div>You have succesfully migrated your profile.</div>
       <div class="text-sm">
         Please, also migrate all of your profiles (if you have any)
       </div>

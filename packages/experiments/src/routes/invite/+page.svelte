@@ -47,7 +47,7 @@ onMount(() => {
       {:else}
         <div class="pt-8 text-center text-3xl">Welcome</div>
         <div class="text-center text-sm opacity-70">
-          You have been invite to join Hot or Not experiments!
+          You have been invite to join our experiments app!
         </div>
         <div class="flex h-24 w-full items-center justify-center">
           <Button on:click={() => ($authState.showLogin = true)} class="w-full">

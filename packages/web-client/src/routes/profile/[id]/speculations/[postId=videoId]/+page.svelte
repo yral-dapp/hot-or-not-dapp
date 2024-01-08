@@ -16,7 +16,7 @@ let { post, me } = data
 </script>
 
 <svelte:head>
-  <title>{me ? 'Your' : "User's"} Participations | Hot or Not</title>
+  <title>{me ? 'Your' : "User's"} Participations</title>
 </svelte:head>
 
 <HomeLayout>

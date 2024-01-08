@@ -63,7 +63,7 @@ async function fetchThumbnail() {
 
 async function handleShare() {
   await shareBrowser({
-    title: 'Hot or Not',
+    title: 'Check out this post',
     text: `Check out this hot video by ${displayName}. \n${post.description}`,
     url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${Number(
       post.id,
@@ -323,10 +323,10 @@ onMount(() => fetchThumbnail())
       {/if}
       {#if showHotOrNotButton}
         <IconButton
-          title="Hot or Not"
+          title="Vote"
           iconName="fire"
           iconClass="h-5 w-5"
-          ariaLabel="Check out this post in Hot or Not"
+          ariaLabel="Check out this post"
           disabled={!bettingStatusValue}
           href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
           class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2" />

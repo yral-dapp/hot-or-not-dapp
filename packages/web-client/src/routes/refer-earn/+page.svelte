@@ -102,7 +102,7 @@ $: link = !loggedIn
 </script>
 
 <svelte:head>
-  <title>Refer & Earn | Hot or Not</title>
+  <title>Refer & Earn</title>
 </svelte:head>
 
 <HomeLayout>

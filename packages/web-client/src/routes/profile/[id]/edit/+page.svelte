@@ -190,7 +190,7 @@ $: userId = username_set
 </script>
 
 <svelte:head>
-  <title>Edit Profile | Hot or Not</title>
+  <title>Edit Profile</title>
 </svelte:head>
 {#if pageLoaded}
   <ProfileLayout>

@@ -15,8 +15,8 @@ export let showDot: 'videos' | 'hot-or-not' | null = null
       class={c(
         'absolute inset-x-0 z-[1] h-9 rounded-full bg-primary p-4 transition-all duration-200',
         selected === 'hot-or-not'
-          ? 'w-[6.5rem]  translate-x-2'
-          : 'w-[5.5rem] translate-x-[6.75rem]',
+          ? 'w-[7.25rem]  translate-x-2'
+          : 'w-[5.5rem] translate-x-[7.5rem]',
       )} />
     {#if showDot === 'hot-or-not'}
       <selector-dot
@@ -30,7 +30,7 @@ export let showDot: 'videos' | 'hot-or-not' | null = null
       href="/hotornot/{hotOrNotUrl}"
       on:click={() => (selected = 'hot-or-not')}
       class="z-[2]">
-      Hot or Not
+      Play to earn
     </a>
     <a
       href="/feed/{feedUrl}"

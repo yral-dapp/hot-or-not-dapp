@@ -4,7 +4,7 @@ import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 </script>
 
 <svelte:head>
-  <title>Privacy Policy | Hot or Not</title>
+  <title>Privacy Policy</title>
 </svelte:head>
 
 <HomeLayout>

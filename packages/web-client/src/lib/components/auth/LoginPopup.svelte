@@ -114,7 +114,7 @@ function handleError(type: LoginType, e?: string) {
   class="fade-in absolute z-[100] block h-full w-full bg-black/90 text-white">
   <div
     class="flex h-full w-full flex-col items-center justify-center space-y-32 overflow-y-auto">
-    <span class="text-3xl font-bold">Join Hot or Not</span>
+    <span class="text-3xl font-bold">Join us</span>
     <div class="flex w-full max-w-md flex-col items-center space-y-4 px-8">
       <div class="py-4">Create an account using</div>
       {#if !hideNfid}

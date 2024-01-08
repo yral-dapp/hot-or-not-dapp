@@ -9,7 +9,7 @@ onMount(() => {
 </script>
 
 <svelte:head>
-  <title>Waitlist | Hot or Not</title>
+  <title>Waitlist</title>
 </svelte:head>
 
 <div
