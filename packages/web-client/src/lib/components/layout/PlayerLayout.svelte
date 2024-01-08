@@ -15,6 +15,7 @@ import { userProfile } from '$lib/stores/app'
 import { debounce } from 'throttle-debounce'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { postReportPopup } from '$lib/stores/popups'
+import { shareBrowser } from '@hnn/components/utils/share'
 
 export let index: number
 export let post: PostPopulated
@@ -61,21 +62,14 @@ async function fetchThumbnail() {
 }
 
 async function handleShare() {
-  console.log('handle share called')
-  try {
-    await navigator.share({
-      title: 'Hot or Not',
-      text: `Check out this hot video by ${displayName}. \n${post.description}`,
-      url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${Number(
-        post.id,
-      )}`,
-    })
-  } catch (e) {
-    Log('warn', 'Could not share', {
-      from: 'PlayerLayout.handleShare',
-      e,
-    })
-  }
+  await shareBrowser({
+    title: 'Hot or Not',
+    text: `Check out this hot video by ${displayName}. \n${post.description}`,
+    url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${Number(
+      post.id,
+    )}`,
+  })
+
   registerEvent('share_video', {
     source,
     userId: $userProfile.principal_id,
@@ -83,6 +77,7 @@ async function handleShare() {
     video_publisher_canister_id: post.publisher_canister_id,
     video_id: post.id,
   })
+
   await individualUser(
     post.publisher_canister_id,
   ).update_post_increment_share_count(post.id)
