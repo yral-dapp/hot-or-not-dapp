@@ -61,6 +61,7 @@ async function fetchThumbnail() {
 }
 
 async function handleShare() {
+  console.log('handle share called')
   try {
     await navigator.share({
       title: 'Hot or Not',
@@ -69,7 +70,12 @@ async function handleShare() {
         post.id,
       )}`,
     })
-  } catch (_) {}
+  } catch (e) {
+    Log('warn', 'Could not share', {
+      from: 'PlayerLayout.handleShare',
+      e,
+    })
+  }
   registerEvent('share_video', {
     source,
     userId: $userProfile.principal_id,
