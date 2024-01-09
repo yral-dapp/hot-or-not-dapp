@@ -43,7 +43,7 @@
     "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v5.8.0",
     "@types/node": "^18.19.4",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
+    "@typescript-eslint/parser": "^6.18.1",
     "eslint": "^8.56.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^3.1.1",
