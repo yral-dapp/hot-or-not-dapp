@@ -5,6 +5,9 @@
   "scripts": {
     "fetch": "sh ./fetch.sh"
   },
+  "dependencies": {
+    "@dfinity/agent": "^0.21.4"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"
