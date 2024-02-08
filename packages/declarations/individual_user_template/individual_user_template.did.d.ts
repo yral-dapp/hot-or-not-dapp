@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export interface AggregateStats {
   'total_number_of_not_bets' : bigint,
@@ -90,6 +91,7 @@ export type HotOrNotOutcomePayoutEvent = {
   };
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
+  'version' : string,
   'url_to_send_canister_metrics_to' : [] | [string],
   'profile_owner' : [] | [Principal],
   'upgrade_version_number' : [] | [bigint],
@@ -102,6 +104,7 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdDataBackup' : null } |
   { 'CanisterIdPostCache' : null } |
   { 'CanisterIdSNSController' : null } |
+  { 'CanisterIdSnsGovernance' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
 export type MintEvent = {
     'NewUserSignup' : { 'new_user_principal_id' : Principal }
@@ -284,6 +287,10 @@ export interface _SERVICE {
     undefined
   >,
   'bet_on_currently_viewing_post' : ActorMethod<[PlaceBetArg], Result_1>,
+  'check_and_update_scores_and_share_with_post_cache_if_difference_beyond_threshold' : ActorMethod<
+    [BigUint64Array | bigint[]],
+    undefined
+  >,
   'do_i_follow_this_user' : ActorMethod<[FolloweeArg], Result_2>,
   'get_entire_individual_post_detail_by_id' : ActorMethod<[bigint], Result_3>,
   'get_hot_or_not_bet_details_for_this_post' : ActorMethod<
@@ -324,6 +331,7 @@ export interface _SERVICE {
     Result_5
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
+  'get_version' : ActorMethod<[], string>,
   'get_version_number' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
@@ -386,3 +394,5 @@ export interface _SERVICE {
     Result_2
   >,
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export interface ConfigurationInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
@@ -13,6 +14,7 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdDataBackup' : null } |
   { 'CanisterIdPostCache' : null } |
   { 'CanisterIdSNSController' : null } |
+  { 'CanisterIdSnsGovernance' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
 export type Result = { 'Ok' : null } |
   { 'Err' : string };
@@ -32,3 +34,5 @@ export interface _SERVICE {
     Result
   >,
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

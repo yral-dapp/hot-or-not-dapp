@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export type CanisterInstallMode = { 'reinstall' : null } |
   { 'upgrade' : null } |
@@ -29,6 +30,7 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdDataBackup' : null } |
   { 'CanisterIdPostCache' : null } |
   { 'CanisterIdSNSController' : null } |
+  { 'CanisterIdSnsGovernance' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
 export type RejectionCode = { 'NoError' : null } |
   { 'CanisterError' : null } |
@@ -39,7 +41,11 @@ export type RejectionCode = { 'NoError' : null } |
   { 'CanisterReject' : null };
 export type Result = { 'Ok' : [CanisterStatusResponse] } |
   { 'Err' : [RejectionCode, string] };
-export type Result_1 = { 'Ok' : null } |
+export type Result_1 = { 'Ok' : string } |
+  { 'Err' : string };
+export type Result_2 = { 'Ok' : null } |
+  { 'Err' : string };
+export type Result_3 = { 'Ok' : null } |
   { 'Err' : SetUniqueUsernameError };
 export type SetUniqueUsernameError = { 'UsernameAlreadyTaken' : null } |
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
@@ -50,6 +56,7 @@ export interface SystemTime {
 }
 export interface UpgradeStatus {
   'version_number' : bigint,
+  'version' : string,
   'last_run_on' : SystemTime,
   'failed_canister_ids' : Array<[Principal, Principal, string]>,
   'successful_upgrade_count' : number,
@@ -60,12 +67,19 @@ export type UserAccessRole = { 'CanisterController' : null } |
   { 'ProjectCanister' : null };
 export interface UserIndexInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
+  'version' : string,
   'access_control_map' : [] | [Array<[Principal, Array<UserAccessRole>]>],
 }
 export interface _SERVICE {
+  'are_signups_enabled' : ActorMethod<[], boolean>,
   'backup_all_individual_user_canisters' : ActorMethod<[], undefined>,
+  'get_current_list_of_all_well_known_principal_values' : ActorMethod<
+    [],
+    Array<[KnownPrincipalType, Principal]>
+  >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
+  'get_list_of_available_canisters' : ActorMethod<[], Array<Principal>>,
   'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
     [[] | [Principal]],
     Principal
@@ -89,17 +103,25 @@ export interface _SERVICE {
     [Principal, Principal, string],
     undefined
   >,
+  'reset_user_individual_canisters' : ActorMethod<[Array<Principal>], Result_1>,
   'set_permission_to_upgrade_individual_canisters' : ActorMethod<
     [boolean],
     string
   >,
   'start_upgrades_for_individual_canisters' : ActorMethod<[], string>,
+  'toggle_signups_enabled' : ActorMethod<[], Result_2>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
-    Result_1
+    Result_3
   >,
   'upgrade_specific_individual_user_canister_with_latest_wasm' : ActorMethod<
-    [Principal, Principal, [] | [CanisterInstallMode], boolean],
+    [Principal, Principal, [] | [CanisterInstallMode]],
     string
   >,
+  'validate_reset_user_individual_canisters' : ActorMethod<
+    [Array<Principal>],
+    Result_1
+  >,
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
