@@ -38,7 +38,7 @@ jobs:
           GA_TRACKING_ID: "G-PPE5XD2VKV"
 
       - name: Deploy production build
-        uses: cloudflare/wrangler-action@2.0.0
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/experiments/"
