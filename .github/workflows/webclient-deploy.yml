@@ -34,7 +34,7 @@ jobs:
           dfx identity use actions
       - run: dfx deploy webclient --network ic --no-wallet
 
-  web-client-deploy-pages:
+  web-client-deploy-fly:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,12 +45,5 @@ jobs:
       - run: npm run wc:build:prod
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
       - name: Deploy production build
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: "packages/web-client/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
-        env:
-          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+        run: fly deploy --config ./wc.fly.toml --dockerfile ./wc.Dockerfile -t ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
