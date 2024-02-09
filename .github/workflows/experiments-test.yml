@@ -1,6 +1,6 @@
 name: Deploy Experiment app
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
@@ -26,21 +26,29 @@ jobs:
         shell: bash
         run: npm install
 
-      - run: npm run ex:build
+      - run: npm run ex:build:static
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GA_TRACKING_ID: "G-PPE5XD2VKV"
 
-      - name: Deploy production build
+      - name: Deploy static build
+        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/experiments/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
+          command: pages publish build --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-      - name: Get preview deployment URL
-        id: preview-url
-        working-directory: "packages/experiments/"
-        run: |
-          echo "url=$(grep -o 'http[s]*://[^\\]*' url.txt)" >> $GITHUB_OUTPUT
+
+      - name: "Comment on PR"
+        if: github.actor != 'dependabot[bot]'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Experiments preview build: ${{ steps.deploy.outputs.previewUrl }}'
+            })

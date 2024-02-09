@@ -17,6 +17,7 @@
     "backend:install": "cd ./packages/hot-or-not-backend-canister && ./scripts/canisters/local_deploy/install_all_canisters.sh -s",
     "ex:check": "npm run check --w @hnn/experiments",
     "ex:build": "npm run build --w @hnn/experiments",
+    "ex:build:static": "npm run build:static --w @hnn/experiments",
     "ex:preview": "npm run preview --w @hnn/experiments",
     "ex:dev": "npm run dev --w @hnn/experiments",
     "serve:lhci": "npm run wc:preview",
