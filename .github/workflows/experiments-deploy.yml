@@ -36,7 +36,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
           workingDirectory: "packages/experiments/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
+          command: pages deploy ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
       - name: Get preview deployment URL
