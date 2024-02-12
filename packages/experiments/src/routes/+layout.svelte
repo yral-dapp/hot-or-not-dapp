@@ -2,7 +2,7 @@
 import '@hnn/components/tailwind.css'
 import NetworkStatus from '@hnn/components/network-status/NetworkStatus.svelte'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
-import { onMount } from 'svelte'
+import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import userProfile from '$lib/stores/userProfile'
 import { removeSplashScreen } from '$lib/stores/popups'
@@ -23,15 +23,15 @@ function registerServiceWorker() {
 }
 
 let GA: any
+let GATimeout: ReturnType<typeof setTimeout>
 function initializeGA() {
-  try {
-    import('@hnn/components/analytics/GA.svelte').then((d) => {
-      GA = d.default
-      console.info('loaded GA')
-    })
-  } catch (_) {
-    Log('warn', 'Could not load GA')
-  }
+  GATimeout = setTimeout(async () => {
+    try {
+      GA = (await import('@hnn/components/analytics/GA.svelte')).default
+    } catch (_) {
+      Log('warn', 'Could not load GA')
+    }
+  }, 6000)
 }
 
 function listenForUnhandledRejections() {
@@ -48,10 +48,12 @@ onMount(() => {
   initDb()
   listenForUnhandledRejections()
   registerServiceWorker()
-  setTimeout(() => {
-    initializeGA()
-  }, 6000)
+  initializeGA()
   removeSplashScreen()
+})
+
+onDestroy(() => {
+  clearTimeout(GATimeout)
 })
 </script>
 

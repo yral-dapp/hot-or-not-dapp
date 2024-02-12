@@ -1,6 +1,6 @@
 <script lang="ts">
 import '@hnn/components/tailwind.css'
-import { onMount } from 'svelte'
+import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import LoginPopup from '$lib/components/auth/LoginPopup.svelte'
 import Log from '$lib/utils/Log'
@@ -25,12 +25,15 @@ function registerServiceWorker() {
 }
 
 let GA: any
-async function initializeGA() {
-  try {
-    GA = (await import('@hnn/components/analytics/GA.svelte')).default
-  } catch (_) {
-    Log('warn', 'Could not load GA')
-  }
+let GATimeout: ReturnType<typeof setTimeout>
+function initializeGA() {
+  GATimeout = setTimeout(async () => {
+    try {
+      GA = (await import('@hnn/components/analytics/GA.svelte')).default
+    } catch (_) {
+      Log('warn', 'Could not load GA')
+    }
+  }, 6000)
 }
 
 function listenForUnhandledRejections() {
@@ -48,11 +51,11 @@ onMount(() => {
   listenForUnhandledRejections()
   initializeAuthClient()
   registerServiceWorker()
-  setTimeout(() => {
-    initializeGA()
-  }, 6000)
+  initializeGA()
   removeSplashScreen()
 })
+
+onDestroy(() => clearTimeout(GATimeout))
 
 beforeNavigate(({ from, to, type }) => {
   if (type === 'popstate') return

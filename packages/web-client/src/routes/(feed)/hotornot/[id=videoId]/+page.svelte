@@ -129,12 +129,7 @@ onMount(async () => {
     $hotOrNotFeedVideos = []
   }
   await tick()
-  setTimeout(
-    () => {
-      fetchNextVideos()
-    },
-    data.post ? 3000 : 0,
-  )
+  fetchNextVideos()
   handleParams()
 })
 
