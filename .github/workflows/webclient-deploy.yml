@@ -48,5 +48,8 @@ jobs:
       - run: npm run wc:build:prod
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy production build
-        run: fly deploy --config ./wc.fly.toml --dockerfile ./wc.Dockerfile -t ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
+        run: flyctl deploy --config ./wc.fly.toml --dockerfile ./wc.Dockerfile
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
