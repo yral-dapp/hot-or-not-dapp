@@ -1,4 +1,4 @@
-name: Deploy Experiment app
+name: Test experiments app
 on:
   pull_request:
     branches:
