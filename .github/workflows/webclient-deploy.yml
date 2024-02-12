@@ -25,6 +25,8 @@ jobs:
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build:static:prod
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - run: |
           set -euxo pipefail
           DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
@@ -35,7 +37,7 @@ jobs:
           dfx identity import --disable-encryption actions actions_identity.pem
           rm actions_identity.pem
           dfx identity use actions
-      - run: dfx deploy webclient --network ic --no-wallet
+      - run: dfx deploy webclient --network ic --no-wallet -y
 
   web-client-deploy-fly:
     runs-on: ubuntu-latest
