@@ -7,6 +7,9 @@ on:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-setup/action.yml"
+  pull_request:
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -25,7 +28,7 @@ jobs:
         # Build without sentry
       - run: |
           set -euxo pipefail
-          DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+          DFX_VERSION=0.13.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
       - run: dfx identity list
       - run: |
           touch actions_identity.pem
