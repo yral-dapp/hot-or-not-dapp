@@ -129,12 +129,7 @@ onMount(async () => {
     $homeFeedVideos = []
   }
   await tick()
-  setTimeout(
-    () => {
-      fetchNextVideos()
-    },
-    data.post ? 3000 : 0,
-  )
+  fetchNextVideos()
   handleParams()
 })
 
