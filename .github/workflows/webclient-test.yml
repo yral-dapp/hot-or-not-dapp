@@ -85,7 +85,6 @@ jobs:
 
       - name: Cache rust dependencies, build output and DFX build cache
         uses: actions/cache@v4
-        id: dfx-cache
         with:
           path: |
             ~/.cargo/bin/
