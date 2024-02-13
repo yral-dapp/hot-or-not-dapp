@@ -141,12 +141,15 @@ export async function getTopPosts(
   from: number,
   numberOfPosts: number = 10,
   filterViewed = false,
+  showNsfw = false,
 ): Promise<FeedResponse> {
   try {
     const res =
-      await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed(
+      await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed_cursor(
         BigInt(from),
-        BigInt(from + numberOfPosts),
+        BigInt(numberOfPosts),
+        [showNsfw],
+        [],
       )
     if ('Ok' in res) {
       const nonReportedPosts = await filterReportedPosts(res.Ok)
@@ -213,19 +216,22 @@ async function filterBets(
 export async function getHotOrNotPosts(
   from: number,
   numberOfPosts: number = 10,
+  showNsfw = false,
 ): Promise<FeedResponse> {
   try {
     const res =
-      await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed(
+      await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed_cursor(
         BigInt(from),
-        BigInt(from + numberOfPosts),
+        BigInt(numberOfPosts),
+        [showNsfw],
+        [],
       )
     if ('Ok' in res) {
-      // const notBetPosts = await filterBets(res.Ok)
-      const notStuckPosts = await filterStuckCanisterPosts(res.Ok)
+      const notBetPosts = await filterBets(res.Ok)
+      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
       const notReportedPosts = await filterReportedPosts(notStuckPosts)
-      // const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
-      const populatedRes = await populatePosts(notReportedPosts, false)
+      const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
+      const populatedRes = await populatePosts(notWatchedPosts, false)
       if (populatedRes.error) {
         throw new Error(
           `Error while populating, ${JSON.stringify(populatedRes)}`,

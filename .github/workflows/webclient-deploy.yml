@@ -13,25 +13,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  web-client-deploy-pages:
+  web-client-deploy-ic-production:
     runs-on: ubuntu-latest
     steps:
-      - name: Output of github.ref_name
-        run: echo ${{ github.ref_name }}
-      - uses: actions/checkout@v3
-        with:
-          submodules: "true"
+      - uses: actions/checkout@v4
+      - name: Set-up env
+        uses: ./.github/workflows/webclient-setup
+      - run: npm run wc:build:static:prod
+        # Build without sentry
+      - run: |
+          set -euxo pipefail
+          DFX_VERSION=0.13.1 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      - run: dfx identity list
+      - run: |
+          touch actions_identity.pem
+          echo "${{ secrets.CANISTER_CONTROLLER_SECRET_KEY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+      - run: dfx deploy webclient --network ic --no-wallet -y
+
+  web-client-deploy-fly-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build:prod
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy production build
-        uses: cloudflare/wrangler-action@2.0.0
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: "packages/web-client/"
-          command: pages publish ".svelte-kit/cloudflare" --branch=main --project-name=hot-or-not-web-client --commit-dirty=true
+        run: flyctl deploy --config ./wc.prod.fly.toml
         env:
-          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+          FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}

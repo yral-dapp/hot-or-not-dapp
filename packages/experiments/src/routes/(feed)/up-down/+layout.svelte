@@ -1,11 +1,12 @@
 <script lang="ts">
 import FeedLayout from '@hnn/components/experiments/layout/FeedLayout.svelte'
 import { showOnboardingPopup } from '$lib/stores/popups'
-import { onMount } from 'svelte'
+import { onDestroy, onMount } from 'svelte'
 
 let onboarding: any
+let onboardingTimeout: ReturnType<typeof setTimeout>
 function mountOnboarding() {
-  setTimeout(
+  onboardingTimeout = setTimeout(
     () =>
       import('$lib/components/popup/Onboarding.svelte').then(
         (d) => (onboarding = d.default),
@@ -15,6 +16,7 @@ function mountOnboarding() {
 }
 
 onMount(() => mountOnboarding())
+onDestroy(() => clearTimeout(onboardingTimeout))
 </script>
 
 <svelte:head>

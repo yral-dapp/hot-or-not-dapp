@@ -8,6 +8,7 @@ export const idlFactory = ({ IDL }) => {
     'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
+    'CanisterIdSnsGovernance' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const ConfigurationInitArgs = IDL.Record({
@@ -47,6 +48,7 @@ export const init = ({ IDL }) => {
     'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
+    'CanisterIdSnsGovernance' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const ConfigurationInitArgs = IDL.Record({

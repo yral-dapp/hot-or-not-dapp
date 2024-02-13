@@ -13,7 +13,7 @@ import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely } from '$lib/utils/video'
-import { hotOrNotFeedVideos, playerState } from '$lib/stores/app'
+import { appPrefs, hotOrNotFeedVideos, playerState } from '$lib/stores/app'
 import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 import type { PageData } from './$types'
@@ -52,7 +52,11 @@ async function fetchNextVideos(force = false) {
         source: 'hotOrNot.fetchNextVideos',
       })
       loading = true
-      const res = await getHotOrNotPosts(fetchedVideosCount, fetchCount)
+      const res = await getHotOrNotPosts(
+        fetchedVideosCount,
+        fetchCount,
+        $appPrefs.showNsfwVideos,
+      )
       if (res.error) {
         if (errorCount < 4) {
           loadTimeout = setTimeout(() => {
@@ -125,12 +129,7 @@ onMount(async () => {
     $hotOrNotFeedVideos = []
   }
   await tick()
-  setTimeout(
-    () => {
-      fetchNextVideos()
-    },
-    data.post ? 3000 : 0,
-  )
+  fetchNextVideos()
   handleParams()
 })
 

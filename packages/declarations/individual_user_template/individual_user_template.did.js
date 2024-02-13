@@ -8,12 +8,14 @@ export const idlFactory = ({ IDL }) => {
     'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
+    'CanisterIdSnsGovernance' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const IndividualUserTemplateInitArgs = IDL.Record({
     'known_principal_ids' : IDL.Opt(
       IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
+    'version' : IDL.Text,
     'url_to_send_canister_metrics_to' : IDL.Opt(IDL.Text),
     'profile_owner' : IDL.Opt(IDL.Principal),
     'upgrade_version_number' : IDL.Opt(IDL.Nat64),
@@ -302,6 +304,11 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'bet_on_currently_viewing_post' : IDL.Func([PlaceBetArg], [Result_1], []),
+    'check_and_update_scores_and_share_with_post_cache_if_difference_beyond_threshold' : IDL.Func(
+        [IDL.Vec(IDL.Nat64)],
+        [],
+        [],
+      ),
     'do_i_follow_this_user' : IDL.Func([FolloweeArg], [Result_2], ['query']),
     'get_entire_individual_post_detail_by_id' : IDL.Func(
         [IDL.Nat64],
@@ -362,6 +369,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_utility_token_balance' : IDL.Func([], [IDL.Nat64], ['query']),
+    'get_version' : IDL.Func([], [IDL.Text], ['query']),
     'get_version_number' : IDL.Func([], [IDL.Nat64], ['query']),
     'get_well_known_principal_value' : IDL.Func(
         [KnownPrincipalType],
@@ -461,12 +469,14 @@ export const init = ({ IDL }) => {
     'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
+    'CanisterIdSnsGovernance' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const IndividualUserTemplateInitArgs = IDL.Record({
     'known_principal_ids' : IDL.Opt(
       IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
+    'version' : IDL.Text,
     'url_to_send_canister_metrics_to' : IDL.Opt(IDL.Text),
     'profile_owner' : IDL.Opt(IDL.Principal),
     'upgrade_version_number' : IDL.Opt(IDL.Nat64),

@@ -15,9 +15,9 @@ import { userProfile } from '$lib/stores/app'
 import { Principal } from '@dfinity/principal'
 import { error, redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
-import type { PageServerLoad } from './$types'
+import type { PageLoad } from './$types'
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
   const id = params.id
 
   if (!id) {

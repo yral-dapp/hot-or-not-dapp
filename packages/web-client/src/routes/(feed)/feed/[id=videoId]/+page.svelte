@@ -15,7 +15,7 @@ import Log from '$lib/utils/Log'
 import { updateURL } from '$lib/utils/feedUrl'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely } from '$lib/utils/video'
-import { homeFeedVideos, playerState } from '$lib/stores/app'
+import { appPrefs, homeFeedVideos, playerState } from '$lib/stores/app'
 import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
@@ -54,7 +54,12 @@ async function fetchNextVideos(force = false) {
         source: 'feed.fetchNextVideos',
       })
       loading = true
-      const res = await getTopPosts(fetchedVideosCount, fetchCount, true)
+      const res = await getTopPosts(
+        fetchedVideosCount,
+        fetchCount,
+        true,
+        $appPrefs.showNsfwVideos,
+      )
       if (res.error) {
         if (errorCount < 4) {
           loadTimeout = setTimeout(() => {
@@ -124,12 +129,7 @@ onMount(async () => {
     $homeFeedVideos = []
   }
   await tick()
-  setTimeout(
-    () => {
-      fetchNextVideos()
-    },
-    data.post ? 3000 : 0,
-  )
+  fetchNextVideos()
   handleParams()
 })
 

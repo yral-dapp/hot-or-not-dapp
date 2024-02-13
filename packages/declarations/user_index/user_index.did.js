@@ -8,6 +8,7 @@ export const idlFactory = ({ IDL }) => {
     'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
+    'CanisterIdSnsGovernance' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const UserAccessRole = IDL.Variant({
@@ -20,6 +21,7 @@ export const idlFactory = ({ IDL }) => {
     'known_principal_ids' : IDL.Opt(
       IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
+    'version' : IDL.Text,
     'access_control_map' : IDL.Opt(
       IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(UserAccessRole)))
     ),
@@ -30,6 +32,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const UpgradeStatus = IDL.Record({
     'version_number' : IDL.Nat64,
+    'version' : IDL.Text,
     'last_run_on' : SystemTime,
     'failed_canister_ids' : IDL.Vec(
       IDL.Tuple(IDL.Principal, IDL.Principal, IDL.Text)
@@ -68,12 +71,14 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : IDL.Tuple(CanisterStatusResponse),
     'Err' : IDL.Tuple(RejectionCode, IDL.Text),
   });
+  const Result_1 = IDL.Variant({ 'Ok' : IDL.Text, 'Err' : IDL.Text });
+  const Result_2 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text });
   const SetUniqueUsernameError = IDL.Variant({
     'UsernameAlreadyTaken' : IDL.Null,
     'SendingCanisterDoesNotMatchUserCanisterId' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_1 = IDL.Variant({
+  const Result_3 = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : SetUniqueUsernameError,
   });
@@ -83,7 +88,13 @@ export const idlFactory = ({ IDL }) => {
     'install' : IDL.Null,
   });
   return IDL.Service({
+    'are_signups_enabled' : IDL.Func([], [IDL.Bool], ['query']),
     'backup_all_individual_user_canisters' : IDL.Func([], [], []),
+    'get_current_list_of_all_well_known_principal_values' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))],
+        ['query'],
+      ),
     'get_index_details_is_user_name_taken' : IDL.Func(
         [IDL.Text],
         [IDL.Bool],
@@ -92,6 +103,11 @@ export const idlFactory = ({ IDL }) => {
     'get_index_details_last_upgrade_status' : IDL.Func(
         [],
         [UpgradeStatus],
+        ['query'],
+      ),
+    'get_list_of_available_canisters' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Principal)],
         ['query'],
       ),
     'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : IDL.Func(
@@ -126,21 +142,32 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'reset_user_individual_canisters' : IDL.Func(
+        [IDL.Vec(IDL.Principal)],
+        [Result_1],
+        [],
+      ),
     'set_permission_to_upgrade_individual_canisters' : IDL.Func(
         [IDL.Bool],
         [IDL.Text],
         [],
       ),
     'start_upgrades_for_individual_canisters' : IDL.Func([], [IDL.Text], []),
+    'toggle_signups_enabled' : IDL.Func([], [Result_2], []),
     'update_index_with_unique_user_name_corresponding_to_user_principal_id' : IDL.Func(
         [IDL.Text, IDL.Principal],
-        [Result_1],
+        [Result_3],
         [],
       ),
     'upgrade_specific_individual_user_canister_with_latest_wasm' : IDL.Func(
-        [IDL.Principal, IDL.Principal, IDL.Opt(CanisterInstallMode), IDL.Bool],
+        [IDL.Principal, IDL.Principal, IDL.Opt(CanisterInstallMode)],
         [IDL.Text],
         [],
+      ),
+    'validate_reset_user_individual_canisters' : IDL.Func(
+        [IDL.Vec(IDL.Principal)],
+        [Result_1],
+        ['query'],
       ),
   });
 };
@@ -154,6 +181,7 @@ export const init = ({ IDL }) => {
     'CanisterIdDataBackup' : IDL.Null,
     'CanisterIdPostCache' : IDL.Null,
     'CanisterIdSNSController' : IDL.Null,
+    'CanisterIdSnsGovernance' : IDL.Null,
     'UserIdGlobalSuperAdmin' : IDL.Null,
   });
   const UserAccessRole = IDL.Variant({
@@ -166,6 +194,7 @@ export const init = ({ IDL }) => {
     'known_principal_ids' : IDL.Opt(
       IDL.Vec(IDL.Tuple(KnownPrincipalType, IDL.Principal))
     ),
+    'version' : IDL.Text,
     'access_control_map' : IDL.Opt(
       IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(UserAccessRole)))
     ),

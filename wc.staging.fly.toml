@@ -3,10 +3,12 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "hot-or-not-kit"
+app = "hot-or-not-kit-staging"
 primary_region = "bos"
 
 [build]
+  dockerfile = "wc.Dockerfile"
+  ignorefile = "wc.Dockerfile.dockerignore"
 
 [http_service]
   internal_port = 3000

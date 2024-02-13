@@ -10,9 +10,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version: 20
         cache: "npm"
 
     - name: Install dependencies
@@ -29,12 +29,5 @@ runs:
       working-directory: ${{ inputs.working-dir }}
       env:
         GA_TRACKING_ID: "G-S9P26021F9"
-        FIREBASE_API_KEY: "AIzaSyAeTkffJlMN3pnzU4sBzxwo6NCl4giaOTY"
-        FIREBASE_AUTH_DOMAIN: "hot-or-not-5d8ad.firebaseapp.com"
-        FIREBASE_PROJECT_ID: "hot-or-not-5d8ad"
-        FIREBASE_STORAGE_BUCKET: "hot-or-not-5d8ad.appspot.com"
-        FIREBASE_MESSAGING_SENDER_ID: "442139438721"
-        FIREBASE_APP_ID: "1:442139438721:web:b7e616f50feaa67ad12780"
-        FIREBASE_MEASUREMENT_ID: "G-LDBZXMYM4E"
         CLOUDFLARE_WORKERS_API_HOST: "https://hot-or-not-upload-api-main.go-bazzinga.workers.dev"
         WEBCLIENT_CANISTER_ID: "vyatz-hqaaa-aaaam-qauea-cai"
