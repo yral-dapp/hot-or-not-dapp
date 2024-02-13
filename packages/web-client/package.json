@@ -42,7 +42,7 @@
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.0",
     "@sveltejs/adapter-cloudflare": "^3.0.1",
-    "@sveltejs/adapter-node": "2.0.2",
+    "@sveltejs/adapter-node": "2.1.2",
     "@sveltejs/adapter-static": "^3.0.1",
     "@sveltejs/kit": "^2.0.6",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
