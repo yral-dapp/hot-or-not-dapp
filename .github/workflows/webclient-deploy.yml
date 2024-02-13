@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: "true"
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build:static:prod
@@ -39,8 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: "true"
       - name: Set-up env
         uses: ./.github/workflows/webclient-setup
       - run: npm run wc:build:prod
@@ -48,6 +44,6 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy production build
-        run: flyctl deploy --config ./wc.fly.toml --dockerfile ./wc.Dockerfile
+        run: flyctl deploy --config ./wc.prod.fly.toml --dockerfile ./wc.Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}

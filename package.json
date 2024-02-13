@@ -29,7 +29,7 @@
     "wc:build:prod": "PRODUCTION=true npm run build --w @hnn/web-client",
     "wc:build:static": "npm run build:static --w @hnn/web-client",
     "wc:build:static:prod": "PRODUCTION=true npm run build:static --w @hnn/web-client",
-    "wc:deploy": "fly deploy --config ./wc.fly.toml --dockerfile ./wc.Dockerfile --debug",
+    "wc:deploy": "fly deploy --config ./wc.prod.fly.toml --dockerfile ./wc.Dockerfile --debug",
     "wc:preview": "npm run preview --w @hnn/web-client",
     "wc:preview:static": "npm run preview:static --w @hnn/web-client",
     "wc:dev": "npm run dev --w @hnn/web-client",
