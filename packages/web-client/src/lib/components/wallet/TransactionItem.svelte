@@ -19,7 +19,13 @@ function getEventName() {
     case 'Won':
       return 'Won outcome'
     default:
-      return labels[item.subType]?.replace(/([A-Z])/g, ' $1').trim() || ''
+      console.log(labels[item.subType])
+      return (
+        labels[item.subType]
+          ?.replace(/([A-Z])/g, ' $1')
+          ?.replace('Hot Or Not', '')
+          .trim() || ''
+      )
   }
 }
 

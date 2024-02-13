@@ -15,6 +15,7 @@ import { userProfile } from '$lib/stores/app'
 import { debounce } from 'throttle-debounce'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { postReportPopup } from '$lib/stores/popups'
+import { shareBrowser } from '@hnn/components/utils/share'
 
 export let index: number
 export let post: PostPopulated
@@ -61,15 +62,14 @@ async function fetchThumbnail() {
 }
 
 async function handleShare() {
-  try {
-    await navigator.share({
-      title: 'Hot or Not',
-      text: `Check out this hot video by ${displayName}. \n${post.description}`,
-      url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${Number(
-        post.id,
-      )}`,
-    })
-  } catch (_) {}
+  await shareBrowser({
+    title: 'Check out this post',
+    text: `Check out this hot video by ${displayName}. \n${post.description}`,
+    url: `https://hotornot.wtf/feed/${post.publisher_canister_id}@${Number(
+      post.id,
+    )}`,
+  })
+
   registerEvent('share_video', {
     source,
     userId: $userProfile.principal_id,
@@ -77,6 +77,7 @@ async function handleShare() {
     video_publisher_canister_id: post.publisher_canister_id,
     video_id: post.id,
   })
+
   await individualUser(
     post.publisher_canister_id,
   ).update_post_increment_share_count(post.id)
@@ -322,10 +323,10 @@ onMount(() => fetchThumbnail())
       {/if}
       {#if showHotOrNotButton}
         <IconButton
-          title="Hot or Not"
+          title="Vote"
           iconName="fire"
           iconClass="h-5 w-5"
-          ariaLabel="Check out this post in Hot or Not"
+          ariaLabel="Check out this post"
           disabled={!bettingStatusValue}
           href={`/hotornot/${post.publisher_canister_id}@${post.id}`}
           class="rounded-full border-[0.15rem] border-[#FA9301] bg-gradient-to-b from-[#F63700] to-[#FFC848] p-2" />

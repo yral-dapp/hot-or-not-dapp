@@ -8,6 +8,9 @@ import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
+import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
+import { postReportPopup } from '$lib/stores/popups'
+import { reportPostOrUser } from '$lib/helpers/report'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -70,3 +73,15 @@ $: pathname = $page.url.pathname
     {/if}
   </div>
 </HomeLayout>
+
+{#if $postReportPopup.show && $postReportPopup.data}
+  <ReportPopup
+    type="post"
+    on:close={() =>
+      ($postReportPopup = {
+        show: false,
+      })}
+    show
+    on:report={({ detail }) => reportPostOrUser(detail)}
+    reportData={$postReportPopup.data} />
+{/if}

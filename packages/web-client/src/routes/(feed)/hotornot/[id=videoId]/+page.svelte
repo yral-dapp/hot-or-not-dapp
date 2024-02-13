@@ -141,7 +141,7 @@ beforeNavigate(() => {
 </script>
 
 <svelte:head>
-  <title>Hot or Not Videos | Hot or Not</title>
+  <title>Play Videos</title>
 </svelte:head>
 
 <div

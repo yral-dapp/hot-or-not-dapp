@@ -84,7 +84,7 @@ async function handleLove(userIndex: number, userId?: string) {
 </script>
 
 <svelte:head>
-  <title>{me ? 'Your' : "User's"} Loving | Hot or Not</title>
+  <title>{me ? 'Your' : "User's"} Loving</title>
 </svelte:head>
 
 <ProfileLayout>

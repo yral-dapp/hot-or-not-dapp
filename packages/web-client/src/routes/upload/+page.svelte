@@ -363,7 +363,7 @@ onDestroy(async () => {
 </script>
 
 <svelte:head>
-  <title>Create | Hot or Not</title>
+  <title>Create</title>
 </svelte:head>
 
 <CameraLayout>

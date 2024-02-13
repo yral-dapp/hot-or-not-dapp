@@ -52,7 +52,7 @@ $: !authorized && (loading = false)
 </script>
 
 <svelte:head>
-  <title>Airdrop | Hot or Not</title>
+  <title>Airdrop</title>
 </svelte:head>
 
 <HomeLayout>

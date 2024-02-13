@@ -143,7 +143,7 @@ beforeNavigate(() => {
 </script>
 
 <svelte:head>
-  <title>Home Feed | Hot or Not</title>
+  <title>Home Feed</title>
 </svelte:head>
 
 <div

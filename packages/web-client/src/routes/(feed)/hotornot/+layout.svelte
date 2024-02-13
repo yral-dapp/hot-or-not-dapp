@@ -2,9 +2,6 @@
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import HotOrNotLayout from '@hnn/components/web-client/layout/HotOrNotLayout.svelte'
 import ExperimentsPopup from '@hnn/components/popup/ExperimentsPopup.svelte'
-import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
-import { postReportPopup } from '$lib/stores/popups'
-import { reportPostOrUser } from '$lib/helpers/report'
 
 let showExperimentsPopup = false
 </script>
@@ -12,7 +9,7 @@ let showExperimentsPopup = false
 <!-- <HotorNotOnboarding /> -->
 
 <svelte:head>
-  <title>Hot or Not Feed | Hot or Not</title>
+  <title>Play Feed</title>
 </svelte:head>
 
 <HotOrNotLayout>
@@ -41,18 +38,6 @@ let showExperimentsPopup = false
     <slot />
   </svelte:fragment>
 </HotOrNotLayout>
-
-{#if $postReportPopup.show && $postReportPopup.data}
-  <ReportPopup
-    type="post"
-    on:close={() =>
-      ($postReportPopup = {
-        show: false,
-      })}
-    show
-    on:report={({ detail }) => reportPostOrUser(detail)}
-    reportData={$postReportPopup.data} />
-{/if}
 
 {#if showExperimentsPopup}
   <ExperimentsPopup bind:show={showExperimentsPopup} />

@@ -64,7 +64,7 @@ $: loggedIn && init()
 </script>
 
 <svelte:head>
-  <title>Wallet | Hot or Not</title>
+  <title>Wallet</title>
 </svelte:head>
 
 {#if !loggedIn}

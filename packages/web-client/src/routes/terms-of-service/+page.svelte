@@ -4,7 +4,7 @@ import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
 </script>
 
 <svelte:head>
-  <title>Terms of Service | Hot or Not</title>
+  <title>Terms of Service</title>
 </svelte:head>
 
 <HomeLayout>

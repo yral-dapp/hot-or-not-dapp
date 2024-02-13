@@ -17,7 +17,7 @@ let { video, me } = data
 </script>
 
 <svelte:head>
-  <title>{me ? 'Your' : "User's"} Videos | Hot or Not</title>
+  <title>{me ? 'Your' : "User's"} Videos</title>
 </svelte:head>
 
 <HomeLayout>

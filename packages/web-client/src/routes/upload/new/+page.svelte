@@ -19,6 +19,7 @@ import Log from '$lib/utils/Log'
 import { userProfile } from '$lib/stores/app'
 import { individualUser } from '$lib/helpers/backend'
 import { debounce } from 'throttle-debounce'
+import { shareBrowser } from '@hnn/components/utils/share'
 
 let uploadStatus: UploadStatus = 'to-upload'
 let previewPaused = true
@@ -191,8 +192,8 @@ const handleSuccessfulUpload = debounce(
 
 async function showShareDialog() {
   try {
-    await navigator.share({
-      title: 'Hot or Not',
+    await shareBrowser({
+      title: 'Check out this video',
       text: 'Check out this hot video I just uploaded on hotornot.wtf!',
       url: 'https://hotornot.wtf' + videoLink,
     })
@@ -223,7 +224,7 @@ onDestroy(() => {
 </script>
 
 <svelte:head>
-  <title>Upload | Hot or Not</title>
+  <title>Upload</title>
 </svelte:head>
 
 <UploadLayout>
@@ -310,7 +311,7 @@ onDestroy(() => {
       </div>
       <div class="flex w-full items-center justify-between space-x-8">
         <span class="text-sm text-white/60">
-          Do you want to include this video in hot or not?
+          Do you want to include this video in play to earn feed?
         </span>
         <Switch bind:checked={enrollInHotOrNot} />
       </div>
