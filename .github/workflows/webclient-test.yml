@@ -77,9 +77,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Echo expression
-        run: echo ${{ (github.actor != 'dependabot[bot]' && 'wc:test:record') || 'wc:test' }}
-
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
 
