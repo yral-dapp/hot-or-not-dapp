@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  experiments-test:
+  svelte-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,8 +35,8 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GA_TRACKING_ID: "G-PPE5XD2VKV"
 
-  web-client-deploy-fly-staging:
-    needs: ["experiments-test"]
+  deploy-fly-staging:
+    needs: ["svelte-check"]
     environment:
       name: pr-${{ github.event.number }}
       url: ${{ steps.deploy.outputs.url }}

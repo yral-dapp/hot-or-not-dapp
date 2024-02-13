@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  web-client-deploy-ic-production:
+  ic-production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           dfx identity use actions
       - run: dfx deploy webclient --network ic --no-wallet -y
 
-  web-client-deploy-fly-production:
+  fly-production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

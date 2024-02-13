@@ -33,7 +33,7 @@ jobs:
       - name: Run svelte-check
         run: npm run wc:check
 
-  web-client-deploy-fly-staging:
+  deploy-fly-staging:
     needs: ["svelte-check"]
     environment:
       name: pr-${{ github.event.number }}
@@ -58,7 +58,7 @@ jobs:
         with:
           config: "wc.staging.fly.toml"
 
-  tests-lighthouse-reports:
+  lighthouse-cypress-vitest:
     needs: ["svelte-check"]
     if: github.event.pull_request.draft == false
     timeout-minutes: 40
