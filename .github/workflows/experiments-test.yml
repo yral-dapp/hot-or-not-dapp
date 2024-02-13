@@ -38,7 +38,7 @@ jobs:
   deploy-fly-staging:
     needs: ["svelte-check"]
     environment:
-      name: pr-${{ github.event.number }}
+      name: pr-${{ github.event.number }}-experiments
       url: ${{ steps.deploy.outputs.url }}
     runs-on: ubuntu-latest
     steps:
@@ -58,4 +58,5 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
           FLY_ORG: gobazzinga-inc-584
         with:
+          name: pr-${{ github.event.number }}-experiments
           config: "ex.staging.fly.toml"
