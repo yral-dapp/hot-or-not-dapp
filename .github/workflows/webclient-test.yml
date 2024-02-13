@@ -37,9 +37,8 @@ jobs:
       - name: Run svelte-check
         run: npm run wc:check
 
-  deploy-preview:
+  web-client-deploy-cloudflare-staging:
     needs: ["svelte-check"]
-    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     outputs:
       previewUrl: ${{ steps.preview-url.outputs.url }}
@@ -61,8 +60,7 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
 
-      - name: "Comment on PR"
-        if: github.actor != 'dependabot[bot]'
+      - name: Comment on PR
         uses: actions/github-script@v7
         with:
           script: |
@@ -73,19 +71,14 @@ jobs:
               body: 'Webclient preview build: ${{ steps.deploy.outputs.previewUrl }}'
             })
 
-  google-chat-webhook:
-    name: Send URL to Google chat workspace
-    if: github.actor != 'dependabot[bot]'
-    needs: ["deploy-preview"]
-    runs-on: ubuntu-latest
-    steps:
       - name: Send deployment URL to Google Chat
+        if: github.actor != 'dependabot[bot]'
         uses: fjogeleit/http-request-action@v1.12.0
         with:
           url: "https://chat.googleapis.com/v1/spaces/AAAAAfsrp8U/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=_QvV-c8ZdTVTzGZxXW_PdR_o-0HI8VhO3I9dMAp6zls%3D"
           method: "POST"
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"text": "PR: \"${{ github.event.pull_request.title  }}\" deployed at: \n ${{ needs.deploy-preview.outputs.previewUrl }}"}'
+          data: '{"text": "web-client staging build for PR: \"${{ github.event.pull_request.title  }}\" deployed at: \n ${{ steps.deploy.outputs.previewUrl }}"}'
 
   tests-lighthouse-reports:
     needs: ["svelte-check"]
