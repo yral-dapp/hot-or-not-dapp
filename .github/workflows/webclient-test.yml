@@ -30,10 +30,7 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-      - name: Install dependencies & build
-        run: npm i
-      - name: Run sync
-        run: npm run wc:sync
+      - run: npm install
       - name: Run svelte-check
         run: npm run wc:check
 
@@ -56,6 +53,7 @@ jobs:
         uses: superfly/fly-pr-review-apps@1.2.0
         env:
           FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
+          FLY_ORG: gobazzinga-inc-584
         with:
           config: "wc.staging.fly.toml"
 
