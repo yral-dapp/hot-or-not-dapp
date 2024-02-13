@@ -6,6 +6,7 @@ on:
     paths:
       - "packages/experiments/**"
       - ".github/workflows/experiments-test.yml"
+      - "ex.staging.fly.toml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
