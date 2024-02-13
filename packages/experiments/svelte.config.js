@@ -1,16 +1,9 @@
-import staticAdapter from '@sveltejs/adapter-static'
-import cfAdapter from '@sveltejs/adapter-cloudflare'
+import adapter from '@sveltejs/adapter-node'
 import preprocess from 'svelte-preprocess'
 
-const staticMode = process.env.BUILD_MODE == 'static'
 const isDev = process.env.NODE_ENV == 'dev'
 
-console.log(
-  'Adapter: ',
-  staticMode ? 'static' : 'cloudflare',
-  'build mode; csp enabled',
-  isDev,
-)
+console.log('Adapter: node', 'build mode; csp enabled', isDev)
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -28,11 +21,7 @@ const config = {
         server: './hooks/server.hooks.ts',
       },
     },
-    adapter: staticMode
-      ? staticAdapter({
-          fallback: 'index.html',
-        })
-      : cfAdapter(),
+    adapter: adapter(),
   },
 }
 

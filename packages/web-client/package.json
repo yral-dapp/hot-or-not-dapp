@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "0.5.2",
-    "@sveltejs/adapter-cloudflare": "4.1.0",
     "@sveltejs/adapter-node": "4.0.1",
     "@sveltejs/adapter-static": "3.0.1",
     "@sveltejs/kit": "2.5.0",

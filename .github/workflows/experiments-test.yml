@@ -30,8 +30,8 @@ jobs:
       - name: Running svelte-check
         run: npm run ex:check
 
-      - name: Building static version
-        run: npm run ex:build:static
+      - name: Building app
+        run: npm run ex:build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GA_TRACKING_ID: "G-PPE5XD2VKV"
