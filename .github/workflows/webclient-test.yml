@@ -1,4 +1,4 @@
-name: wc:tests
+name: wc/tests
 on:
   pull_request:
     branches:
