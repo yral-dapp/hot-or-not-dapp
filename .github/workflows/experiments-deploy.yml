@@ -1,4 +1,4 @@
-name: Deploy Experiment app
+name: ex:deploy
 on:
   push:
     branches:
