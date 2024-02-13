@@ -8,6 +8,8 @@ on:
       - ".github/workflows/webclient-deploy.yml"
       - ".github/workflows/webclient-test.yml"
       - ".github/workflows/webclient-test-deploy.yml"
+      - "wc.staging.fly.toml"
+      - "wc.Dockerfile"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

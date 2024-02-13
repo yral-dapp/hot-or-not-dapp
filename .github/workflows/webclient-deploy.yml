@@ -6,6 +6,8 @@ on:
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
+      - "wc.prod.fly.toml"
+      - "wc.Dockerfile"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

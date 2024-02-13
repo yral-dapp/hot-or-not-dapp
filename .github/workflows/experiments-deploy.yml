@@ -6,6 +6,8 @@ on:
     paths:
       - "packages/experiments/**"
       - ".github/workflows/experiments-deploy.yml"
+      - "ex.prod.fly.toml"
+      - "ex.Dockerfile"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
