@@ -1,4 +1,4 @@
-name: ex/deploy
+name: ex:deploy
 on:
   push:
     branches:

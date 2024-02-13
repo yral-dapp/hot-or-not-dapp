@@ -1,4 +1,4 @@
-name: ex/tests
+name: ex:tests
 on:
   pull_request:
     branches:
