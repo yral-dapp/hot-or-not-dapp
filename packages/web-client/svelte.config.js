@@ -1,5 +1,4 @@
 import staticAdapter from '@sveltejs/adapter-static'
-// import cfAdapter from '@sveltejs/adapter-cloudflare'
 import preprocess from 'svelte-preprocess'
 import nodeAdapter from '@sveltejs/adapter-node'
 // import cspDirectives from './directives.js'
