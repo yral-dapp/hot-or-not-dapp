@@ -3,11 +3,11 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "hot-or-not-kit-staging"
+app = "experiments-kit-staging"
 primary_region = "bos"
 
 [build]
-  dockerfile = "wc.Dockerfile"
+  dockerfile = "ex.Dockerfile"
   ignorefile = "Dockerfile.dockerignore"
 
 [http_service]

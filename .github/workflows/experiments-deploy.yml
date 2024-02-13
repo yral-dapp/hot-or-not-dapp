@@ -1,4 +1,4 @@
-name: Deploy Experiment app
+name: ex:deploy
 on:
   push:
     branches:
@@ -12,30 +12,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  experiments-deploy-production:
+  fly-production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
 
-      - name: Install dependencies
-        shell: bash
-        run: npm install
+      - run: npm install
 
-      - run: npm run ex:build
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          GA_TRACKING_ID: "G-PPE5XD2VKV"
-
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy production build
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: "packages/experiments/"
-          command: pages deploy ".svelte-kit/cloudflare" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
+        run: flyctl deploy --config ./ex.prod.fly.toml
         env:
-          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
+          FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}

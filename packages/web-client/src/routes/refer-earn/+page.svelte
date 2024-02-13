@@ -17,6 +17,7 @@ import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { navigateBack } from '$lib/stores/navigation'
 import { userProfile } from '$lib/stores/app'
 import { onMount } from 'svelte'
+import { WEBCLIENT_CANISTER_ID } from '$lib/helpers/backend'
 
 let selectedTab = 0
 let endOfList = false
@@ -97,7 +98,7 @@ $: loggedIn = $authState.isLoggedIn && !$loadingAuthStatus
 $: link = !loggedIn
   ? ''
   : $page.url.host.includes('ic0.app')
-    ? `https://vyatz-hqaaa-aaaam-qauea-cai.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
+    ? `https://${WEBCLIENT_CANISTER_ID}.raw.ic0.app/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
     : `https://${$page.url.host}/profile/${$userProfile.principal_id}?refId=${$userProfile.principal_id}&login=true`
 </script>
 

@@ -1,4 +1,4 @@
-name: Web-client tests
+name: wc:tests
 on:
   pull_request:
     branches:
@@ -6,7 +6,6 @@ on:
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
       - ".github/workflows/webclient-test.yml"
       - ".github/workflows/webclient-test-deploy.yml"
 
@@ -34,19 +33,21 @@ jobs:
       - name: Run svelte-check
         run: npm run wc:check
 
-  web-client-deploy-fly-staging:
+  deploy-fly-staging:
     needs: ["svelte-check"]
     environment:
-      name: pr-${{ github.event.number }}
+      name: pr-${{ github.event.number }}-web-client
       url: ${{ steps.deploy.outputs.url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
 
-      - run: npm run wc:build:prod
+      - run: npm install
 
       - name: Deploy staging build
         id: deploy
@@ -55,9 +56,10 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
           FLY_ORG: gobazzinga-inc-584
         with:
+          name: pr-${{ github.event.number }}-web-client
           config: "wc.staging.fly.toml"
 
-  tests-lighthouse-reports:
+  lighthouse-cypress-vitest:
     needs: ["svelte-check"]
     if: github.event.pull_request.draft == false
     timeout-minutes: 40
@@ -73,10 +75,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm i
-
-      - name: Echo expression
-        run: echo ${{ (github.actor != 'dependabot[bot]' && 'wc:test:record') || 'wc:test' }}
+        run: npm install
 
       - name: Add Rust wasm target
         run: rustup target add wasm32-unknown-unknown
@@ -123,9 +122,6 @@ jobs:
       #   run: |
       #     set -euxo pipefail
       #     npm run wc:test:vi
-
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5

@@ -1,4 +1,4 @@
-name: Test experiments app
+name: ex:tests
 on:
   pull_request:
     branches:
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  experiments-test:
+  svelte-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,8 +35,11 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GA_TRACKING_ID: "G-PPE5XD2VKV"
 
-  experiments-deploy-staging:
-    needs: ["experiments-test"]
+  deploy-fly-staging:
+    needs: ["svelte-check"]
+    environment:
+      name: pr-${{ github.event.number }}-experiments
+      url: ${{ steps.deploy.outputs.url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,33 +49,14 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: Install dependencies
-        shell: bash
-        run: npm install
+      - run: npm install
 
-      - name: Creating static build
-        run: npm run ex:build:static
-        env:
-          GA_TRACKING_ID: "G-PPE5XD2VKV"
-
-      - name: Deploying build
+      - name: Deploy staging build
         id: deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
-          workingDirectory: "packages/experiments/"
-          command: pages deploy "./build" --branch=${{ github.head_ref }} --project-name=hot-or-not-experiments --commit-dirty=true
+        uses: superfly/fly-pr-review-apps@1.2.0
         env:
-          CLOUDFLARE_ACCOUNT_ID: "a209c523d2d9646cc56227dbe6ce3ede"
-
-      - name: Comment preview link on PR
-        if: github.actor != 'dependabot[bot]'
-        uses: actions/github-script@v7
+          FLY_API_TOKEN: ${{ secrets.FLYIO_KIT_DEPLOY_GH_ACTION }}
+          FLY_ORG: gobazzinga-inc-584
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Experiments preview build: ${{ steps.deploy.outputs.previewUrl }}'
-            })
+          name: pr-${{ github.event.number }}-experiments
+          config: "ex.staging.fly.toml"

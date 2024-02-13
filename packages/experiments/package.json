@@ -12,6 +12,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json --ignore .svelte-kit,build,tests --threshold warning --diagnostic-sources \"js,ts,svelte\"",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
     "tsc": "tsc -b",
+    "start": "node build",
     "sync": "svelte-kit sync",
     "lint": "prettier --check --plugin-search-dir=. . && eslint .",
     "format": "prettier --write --plugin-search-dir=. ."

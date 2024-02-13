@@ -9,6 +9,7 @@ import { handleParams } from '$lib/utils/params'
 import type { IconName } from '@hnn/components/icon/icon.type'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import Switch from '@hnn/components/switch/Switch.svelte'
+import { WEBCLIENT_CANISTER_ID } from '$lib/helpers/backend'
 
 let links: {
   icon: IconName
@@ -170,7 +171,7 @@ onMount(() => {
       </a>
       {#if !$page.url.host.includes('ic0.app')}
         <a
-          href="https://vyatz-hqaaa-aaaam-qauea-cai.raw.ic0.app"
+          href="https://{WEBCLIENT_CANISTER_ID}.raw.ic0.app"
           class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
           <Icon name="ic-app" class="h-5 w-5" />
         </a>

@@ -27,6 +27,8 @@ export const host =
     ? 'http://localhost:4943'
     : 'https://ic0.app'
 
+export const WEBCLIENT_CANISTER_ID = process.env.WEBCLIENT_CANISTER_ID
+
 export type UserIndexActor = ActorSubclass<_USER_INDEX_SERVICE>
 export type IndividualUserActor = ActorSubclass<_INDIVIDUAL_USER_SERVICE>
 export type PostCacheActor = ActorSubclass<_POST_CACHE_SERVICE>
