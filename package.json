@@ -21,6 +21,7 @@
     "ex:build:static": "npm run build:static --w @hnn/experiments",
     "ex:dev": "npm run dev --w @hnn/experiments",
     "ex:preview": "npm run preview --w @hnn/experiments",
+    "ex:start": "npm run start --w @hnn/experiments",
     "ex:sync": "npm run sync --w @hnn/experiments",
     "serve:lhci": "npm run wc:preview",
     "wc:check": "npm run wc:sync && npm run check --w @hnn/web-client",

@@ -8,7 +8,7 @@ primary_region = "bos"
 
 [build]
   dockerfile = "wc.Dockerfile"
-  ignorefile = "wc.Dockerfile.dockerignore"
+  ignorefile = "Dockerfile.dockerignore"
 
 [http_service]
   internal_port = 3000

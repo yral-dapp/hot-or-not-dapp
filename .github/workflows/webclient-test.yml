@@ -6,7 +6,6 @@ on:
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
       - ".github/workflows/webclient-test.yml"
       - ".github/workflows/webclient-test-deploy.yml"
 
@@ -43,10 +42,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
 
-      - run: npm run wc:build:prod
+      - run: npm install
 
       - name: Deploy staging build
         id: deploy
@@ -73,7 +74,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm i
+        run: npm install
 
       - name: Echo expression
         run: echo ${{ (github.actor != 'dependabot[bot]' && 'wc:test:record') || 'wc:test' }}
@@ -123,9 +124,6 @@ jobs:
       #   run: |
       #     set -euxo pipefail
       #     npm run wc:test:vi
-
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5

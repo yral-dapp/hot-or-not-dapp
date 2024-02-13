@@ -6,7 +6,6 @@ on:
     paths:
       - "packages/web-client/**"
       - ".github/workflows/webclient-deploy.yml"
-      - ".github/workflows/webclient-setup/action.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,8 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm install
       - run: npm run wc:build:static:prod
         # Build without sentry
       - run: |
@@ -37,11 +39,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set-up env
-        uses: ./.github/workflows/webclient-setup
-      - run: npm run wc:build:prod
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm install
+
+      - name: Touch .env
+        shell: bash
+        working-directory: "packages/web-client/"
+        run: |
+          touch .env
+          echo "SENTRY_AUTH_TOKEN=\"${{ secrets.SENTRY_AUTH_TOKEN }}\"" >> .env
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy production build
         run: flyctl deploy --config ./wc.prod.fly.toml
