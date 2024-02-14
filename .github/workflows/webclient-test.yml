@@ -36,6 +36,7 @@ jobs:
         run: npm run wc:check
 
   deploy-fly-staging:
+    if: github.actor != 'dependabot[bot]'
     needs: ["svelte-check"]
     environment:
       name: pr-${{ github.event.number }}-web-client

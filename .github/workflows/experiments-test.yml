@@ -37,6 +37,7 @@ jobs:
           GA_TRACKING_ID: "G-PPE5XD2VKV"
 
   deploy-fly-staging:
+    if: github.actor != 'dependabot[bot]'
     needs: ["svelte-check"]
     environment:
       name: pr-${{ github.event.number }}-experiments
