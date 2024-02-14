@@ -3,4 +3,31 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      dfinity-dependencies:
+        patterns:
+          - "@dfinity*"
+      typescript-eslint:
+        patterns:
+          - "@typescript-eslint*"
+      sentry:
+        patterns:
+          - "@sentry*"
+      svelte:
+        patterns:
+          - "@sveltejs*"
+          - "svelte*"
+      test-suite:
+        patterns:
+          - "c8"
+          - "cypress"
+          - "cypress-mochawesome-reporter"
+          - "isomorphic-fetch"
+          - "jsdom"
+          - "vitest"
+      vite:
+        patterns:
+          - "vite"
+          - "vite-plugin-node-polyfills"
+          - "vite-tsconfig-paths"
