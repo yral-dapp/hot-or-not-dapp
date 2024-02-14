@@ -31,7 +31,7 @@
     "@dfinity/principal": "0.21.4",
     "@hnn/declarations": "*",
     "@hnn/components": "*",
-    "@sentry/sveltekit": "7.100.1",
+    "@sentry/sveltekit": "7.101.0",
     "buffer": "6.0.3",
     "clsx": "2.1.0",
     "hls.js": "1.5.4",
