@@ -26,7 +26,6 @@ const userIds = [
   '7qlll-ortry-acdtx-7etvo-p5a5x-pz72w-oa3na-turoe-nxts3-foeg5-eae',
   'ep6fp-p65ca-5ojke-hry3p-lnai6-mrrxh-pgl2r-xnb77-mnrlb-6q6jf-2qe',
   'v7zas-drykq-aqsli-fvgl2-64sd5-upz66-5lgc7-sy64d-v3tqf-myyho-hae',
-  '2vxsx-fae',
 ]
 
 let timer: ReturnType<typeof setInterval>
