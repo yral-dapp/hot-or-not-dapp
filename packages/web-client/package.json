@@ -23,12 +23,12 @@
     "tsc": "tsc -b"
   },
   "dependencies": {
-    "@dfinity/agent": "1.0.0",
-    "@dfinity/auth-client": "1.0.0",
-    "@dfinity/candid": "1.0.0",
-    "@dfinity/identity": "1.0.0",
-    "@dfinity/identity-secp256k1": "1.0.0",
-    "@dfinity/principal": "1.0.0",
+    "@dfinity/agent": "1.0.1",
+    "@dfinity/auth-client": "1.0.1",
+    "@dfinity/candid": "1.0.1",
+    "@dfinity/identity": "1.0.1",
+    "@dfinity/identity-secp256k1": "1.0.1",
+    "@dfinity/principal": "1.0.1",
     "@hnn/declarations": "*",
     "@hnn/components": "*",
     "@sentry/sveltekit": "7.101.0",
