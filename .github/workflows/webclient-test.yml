@@ -60,7 +60,7 @@ jobs:
           FLY_ORG: go-bazzinga-staging
         with:
           name: pr-${{ github.event.number }}-web-client
-          config: "wc.staging.fly.toml"
+          config: wc.staging.fly.toml
 
   lighthouse-cypress-vitest:
     needs: ["svelte-check"]
