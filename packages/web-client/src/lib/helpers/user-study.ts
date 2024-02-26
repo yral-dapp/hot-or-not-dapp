@@ -1,4 +1,5 @@
-import { writable } from 'svelte/store'
+import { authState } from '$lib/stores/auth'
+import { get, writable } from 'svelte/store'
 
 const userIds = [
   'u57sz-naryw-yfcd3-wv3ia-ed7fy-jtrdc-sc3t4-6dvtj-xpjrd-7osjq-wae',
@@ -25,6 +26,7 @@ const userIds = [
   '7qlll-ortry-acdtx-7etvo-p5a5x-pz72w-oa3na-turoe-nxts3-foeg5-eae',
   'ep6fp-p65ca-5ojke-hry3p-lnai6-mrrxh-pgl2r-xnb77-mnrlb-6q6jf-2qe',
   'v7zas-drykq-aqsli-fvgl2-64sd5-upz66-5lgc7-sy64d-v3tqf-myyho-hae',
+  '2vxsx-fae',
 ]
 
 let timer: ReturnType<typeof setInterval>
@@ -32,18 +34,42 @@ let secsPassed = 0
 
 export const showUserStudyPopup = writable(false)
 
+export function submitUserStudyInfo(email: string, name: string) {
+  const state = get(authState)
+  return fetch('https://submituserstudystatus-5nps3y6y6a-uc.a.run.app', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, name, principalId: state.idString }),
+  })
+}
+
+async function toShowUserStudyPopup() {
+  try {
+    const state = get(authState)
+    const res = await fetch(
+      `https://getuserstudystatus-5nps3y6y6a-uc.a.run.app?principalId=${state.idString}`,
+    )
+    const body = await res.json()
+    return body.exists === false
+  } catch (e) {
+    console.error(e)
+    return false
+  }
+}
+
 export function monitorForUserStudy(userId: string, countTill: number) {
-  console.log('start:monitorForUserStudy')
   secsPassed = 0
   clearMonitoring()
   if (!userIds.includes(userId)) return
-  timer = setInterval(() => {
+  timer = setInterval(async () => {
     if (secsPassed > countTill) {
-      console.log('TRIGGER++')
       clearMonitoring()
-      showUserStudyPopup.set(true)
+      if (await toShowUserStudyPopup()) {
+        showUserStudyPopup.set(true)
+      }
     } else {
-      console.log('monitorForUserStudy++')
       secsPassed++
     }
   }, 1000)

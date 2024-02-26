@@ -120,7 +120,7 @@ const handleChange = debounce(250, (newIndex: number) => {
   // User study
   if (!userStudyInit && currentVideoIndex > 2) {
     userStudyInit = true
-    monitorForUserStudy($authState.idString || '', 20)
+    monitorForUserStudy($authState.idString || '', 300)
   }
 })
 
