@@ -19,6 +19,8 @@ import { onMount, tick } from 'svelte'
 import type { PageData } from './$types'
 import { debounce } from 'throttle-debounce'
 import { browser } from '$app/environment'
+import { monitorForUserStudy } from '$lib/helpers/user-study'
+import { authState } from '$lib/stores/auth'
 
 export let data: PageData
 
@@ -31,6 +33,7 @@ let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = true
 let fetchedVideosCount = 0
+let userStudyInit = false
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
@@ -112,6 +115,12 @@ const handleChange = debounce(250, (newIndex: number) => {
     currentVideoIndex = newIndex
     fetchNextVideos()
     updateURL(videos[currentVideoIndex])
+  }
+
+  // User study
+  if (!userStudyInit && currentVideoIndex > 2) {
+    userStudyInit = true
+    monitorForUserStudy($authState.idString || '', 20)
   }
 })
 

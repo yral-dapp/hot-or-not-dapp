@@ -17,10 +17,12 @@ import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely } from '$lib/utils/video'
 import { appPrefs, homeFeedVideos, playerState } from '$lib/stores/app'
 import { removeSplashScreen } from '$lib/stores/popups'
-import { onMount, tick } from 'svelte'
+import { onDestroy, onMount, tick } from 'svelte'
 import { debounce } from 'throttle-debounce'
 import type { PageData } from './$types'
 import { browser } from '$app/environment'
+import { clearMonitoring, monitorForUserStudy } from '$lib/helpers/user-study'
+import { authState } from '$lib/stores/auth'
 
 export let data: PageData
 
@@ -33,6 +35,7 @@ let currentVideoIndex = 0
 let noMoreVideos = false
 let loading = false
 let fetchedVideosCount = 0
+let userStudyInit = false
 
 let loadTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 let errorCount = 0
@@ -115,9 +118,17 @@ async function handleUnavailableVideo(index: number) {
 }
 
 const handleChange = debounce(250, (newIndex: number) => {
-  currentVideoIndex = newIndex
-  fetchNextVideos()
-  updateURL(videos[currentVideoIndex])
+  if (newIndex != currentVideoIndex) {
+    currentVideoIndex = newIndex
+    fetchNextVideos()
+    updateURL(videos[currentVideoIndex])
+  }
+
+  // User study
+  if (!userStudyInit && currentVideoIndex > 2) {
+    userStudyInit = true
+    monitorForUserStudy($authState.idString || '', 20)
+  }
 })
 
 onMount(async () => {
@@ -140,6 +151,8 @@ beforeNavigate(() => {
     clearTimeout(loadTimeout)
   }
 })
+
+onDestroy(() => clearMonitoring())
 </script>
 
 <svelte:head>
