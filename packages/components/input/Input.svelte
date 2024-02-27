@@ -5,6 +5,7 @@ import { onMount } from 'svelte'
 export let autocomplete: inputAutocomplete = 'off'
 export let disabled = false
 export let placeholder = ''
+export let required = false
 export let value: string | number = ''
 export let maxlength: number | undefined = undefined
 export let type: 'text' | 'password' | 'number' | 'email' = 'text'
@@ -22,6 +23,7 @@ onMount(() => {
   {autocomplete}
   {disabled}
   {placeholder}
+  {required}
   bind:value
   bind:this={inputEl}
   {maxlength}

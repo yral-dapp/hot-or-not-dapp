@@ -2,6 +2,7 @@
 import c from 'clsx'
 
 export let type: 'primary' | 'secondary' = 'primary'
+export let submit = false
 export let disabled = false
 export let href = ''
 export let preload = false
@@ -33,7 +34,11 @@ $: classes = c(
     <slot />
   </a>
 {:else}
-  <button on:click {disabled} class={classes}>
+  <button
+    type={submit ? 'submit' : 'button'}
+    on:click
+    {disabled}
+    class={classes}>
     <slot />
   </button>
 {/if}

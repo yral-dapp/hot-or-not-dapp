@@ -8,6 +8,8 @@ import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
+import { userStoryStore } from '$lib/helpers/user-study'
+import UserStudy from '$lib/components/popup/UserStudy.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -70,3 +72,7 @@ $: pathname = $page.url.pathname
     {/if}
   </div>
 </HomeLayout>
+
+{#if $userStoryStore.show}
+  <UserStudy bind:show={$userStoryStore.show} />
+{/if}
