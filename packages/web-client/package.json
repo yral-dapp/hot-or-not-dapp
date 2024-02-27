@@ -33,7 +33,7 @@
     "@hnn/components": "*",
     "@sentry/sveltekit": "7.102.1",
     "clsx": "2.1.0",
-    "hls.js": "1.5.6",
+    "hls.js": "1.5.7",
     "idb": "8.0.0",
     "svelte-local-storage-store": "0.6.4",
     "throttle-debounce": "5.0.0"
