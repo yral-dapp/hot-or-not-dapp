@@ -1,5 +1,8 @@
 <script lang="ts">
-import { submitUserStudyInfo } from '$lib/helpers/user-study'
+import { submitUserStudyInfo, userStoryStore } from '$lib/helpers/user-study'
+import { userProfile } from '$lib/stores/app'
+import { authState } from '$lib/stores/auth'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 import Button from '@hnn/components/button/Button.svelte'
 import Input from '@hnn/components/input/Input.svelte'
 import OverlayPopup from '@hnn/components/popup/OverlayPopup.svelte'
@@ -21,6 +24,14 @@ async function sendInfoToBackend() {
       return
     }
     await submitUserStudyInfo(email, name)
+    registerEvent('beta_tester_submit', {
+      user_id: $authState.idString,
+      display_name: $userProfile.display_name,
+      feed_type: $userStoryStore.feedType,
+      video_id: $userStoryStore.videoId,
+      video_publisher_id: $userStoryStore.videoCanisterId,
+      video_ref_id: `${$userStoryStore.videoCanisterId}@${$userStoryStore.videoId}`,
+    })
     finished = true
   } finally {
     loading = false
@@ -29,6 +40,14 @@ async function sendInfoToBackend() {
 
 async function doNotShowAgain() {
   if (!finished) {
+    registerEvent('beta_tester_reject', {
+      user_id: $authState.idString,
+      display_name: $userProfile.display_name,
+      feed_type: $userStoryStore.feedType,
+      video_id: $userStoryStore.videoId,
+      video_publisher_id: $userStoryStore.videoCanisterId,
+      video_ref_id: `${$userStoryStore.videoCanisterId}@${$userStoryStore.videoId}`,
+    })
     await submitUserStudyInfo('not-interested', 'not-interested')
   }
   show = false

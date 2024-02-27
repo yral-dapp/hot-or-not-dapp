@@ -31,7 +31,12 @@ const userIds = [
 let timer: ReturnType<typeof setInterval>
 let secsPassed = 0
 
-export const showUserStudyPopup = writable(false)
+export const userStoryStore = writable({
+  show: false,
+  videoId: '',
+  videoCanisterId: '',
+  feedType: '',
+})
 
 export function submitUserStudyInfo(email: string, name: string) {
   const state = get(authState)
@@ -58,7 +63,11 @@ async function toShowUserStudyPopup() {
   }
 }
 
-export function monitorForUserStudy(userId: string, countTill: number) {
+export function monitorForUserStudy(
+  userId: string,
+  countTill: number,
+  cb: Function,
+) {
   secsPassed = 0
   clearMonitoring()
   if (!userIds.includes(userId)) return
@@ -66,7 +75,7 @@ export function monitorForUserStudy(userId: string, countTill: number) {
     if (secsPassed > countTill) {
       clearMonitoring()
       if (await toShowUserStudyPopup()) {
-        showUserStudyPopup.set(true)
+        cb()
       }
     } else {
       secsPassed++

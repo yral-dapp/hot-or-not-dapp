@@ -13,14 +13,20 @@ import { updateURL } from '$lib/utils/feedUrl'
 import Log from '$lib/utils/Log'
 import { handleParams } from '$lib/utils/params'
 import { joinArrayUniquely } from '$lib/utils/video'
-import { appPrefs, hotOrNotFeedVideos, playerState } from '$lib/stores/app'
+import {
+  appPrefs,
+  hotOrNotFeedVideos,
+  playerState,
+  userProfile,
+} from '$lib/stores/app'
 import { removeSplashScreen } from '$lib/stores/popups'
 import { onMount, tick } from 'svelte'
 import type { PageData } from './$types'
 import { debounce } from 'throttle-debounce'
 import { browser } from '$app/environment'
-import { monitorForUserStudy } from '$lib/helpers/user-study'
+import { monitorForUserStudy, userStoryStore } from '$lib/helpers/user-study'
 import { authState } from '$lib/stores/auth'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 
 export let data: PageData
 
@@ -120,7 +126,23 @@ const handleChange = debounce(250, (newIndex: number) => {
   // User study
   if (!userStudyInit && currentVideoIndex > 2) {
     userStudyInit = true
-    monitorForUserStudy($authState.idString || '', 300)
+    monitorForUserStudy($authState.idString || '', 300, () => {
+      $userStoryStore = {
+        show: true,
+        feedType: 'hot_or_not_feed',
+        videoCanisterId:
+          videos[currentVideoIndex].publisher_canister_id.toString(),
+        videoId: videos[currentVideoIndex].id.toString(),
+      }
+      registerEvent('popup_viewed', {
+        user_id: $authState.idString,
+        display_name: $userProfile.display_name,
+        feed_type: $userStoryStore.feedType,
+        video_id: $userStoryStore.videoId,
+        video_publisher_id: $userStoryStore.videoCanisterId,
+        video_ref_id: `${$userStoryStore.videoCanisterId}@${$userStoryStore.videoId}`,
+      })
+    })
   }
 })
 
