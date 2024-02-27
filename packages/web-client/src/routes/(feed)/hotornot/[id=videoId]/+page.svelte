@@ -20,11 +20,15 @@ import {
   userProfile,
 } from '$lib/stores/app'
 import { removeSplashScreen } from '$lib/stores/popups'
-import { onMount, tick } from 'svelte'
+import { onDestroy, onMount, tick } from 'svelte'
 import type { PageData } from './$types'
 import { debounce } from 'throttle-debounce'
 import { browser } from '$app/environment'
-import { monitorForUserStudy, userStoryStore } from '$lib/helpers/user-study'
+import {
+  clearMonitoring,
+  monitorForUserStudy,
+  userStoryStore,
+} from '$lib/helpers/user-study'
 import { authState } from '$lib/stores/auth'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
 
@@ -169,6 +173,8 @@ beforeNavigate(() => {
   $playerState.muted = true
   videos.length > 2 && hotOrNotFeedVideos.set(videos.slice(currentVideoIndex))
 })
+
+onDestroy(() => clearMonitoring())
 </script>
 
 <svelte:head>
