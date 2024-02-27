@@ -4,7 +4,7 @@ const hlsScriptTag =
   '<script async="false" defer="false" src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.light.min.js"></script>'
 
 export const handle: Handle = async ({ event, resolve }) => {
-  const useHls = false
+  const useHls = true
   const response = await resolve(event, {
     transformPageChunk: ({ html }) =>
       html.replace('%js.deps%', useHls ? hlsScriptTag : ''),

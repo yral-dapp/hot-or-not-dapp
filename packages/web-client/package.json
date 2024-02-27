@@ -33,7 +33,7 @@
     "@hnn/components": "*",
     "@sentry/sveltekit": "7.102.1",
     "clsx": "2.1.0",
-    "hls.js": "1.5.6",
+    "hls.js": "1.5.7",
     "idb": "8.0.0",
     "svelte-local-storage-store": "0.6.4",
     "throttle-debounce": "5.0.0"
@@ -42,7 +42,7 @@
     "@flydotio/dockerfile": "0.5.2",
     "@sveltejs/adapter-node": "4.0.1",
     "@sveltejs/adapter-static": "3.0.1",
-    "@sveltejs/kit": "2.5.1",
+    "@sveltejs/kit": "2.5.2",
     "@sveltejs/vite-plugin-svelte": "3.0.2",
     "@tailwindcss/forms": "0.5.7",
     "@types/gtag.js": "0.0.19",
