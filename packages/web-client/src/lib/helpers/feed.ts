@@ -15,7 +15,7 @@ import { get } from 'svelte/store'
 import { appPrefs } from '$lib/stores/app'
 
 export interface PostPopulated
-  extends Omit<PostScoreIndexItemV1, 'publisher_canister_id'>,
+  extends Omit<PostScoreIndexItemV1, 'publisher_canister_id' | 'created_at'>,
     Omit<
       PostDetailsForFrontend,
       'created_by_user_principal_id' | 'created_by_profile_photo_url'
@@ -306,6 +306,7 @@ async function fetchPostDetailById(
       setBetDetailToDb({
         ...r,
         ...post,
+        created_at: r.created_at,
         created_by_user_principal_id: r.created_by_user_principal_id.toText(),
         publisher_canister_id: post.publisher_canister_id.toText(),
         created_by_profile_photo_url:
@@ -320,6 +321,7 @@ async function fetchPostDetailById(
     return {
       ...r,
       ...post,
+      created_at: r.created_at,
       created_by_user_principal_id: r.created_by_user_principal_id.toText(),
       publisher_canister_id: post.publisher_canister_id.toText(),
       created_by_profile_photo_url:
