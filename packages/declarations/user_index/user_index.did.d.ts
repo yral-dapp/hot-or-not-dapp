@@ -10,6 +10,7 @@ export interface CanisterStatusResponse {
   'memory_size' : bigint,
   'cycles' : bigint,
   'settings' : DefiniteCanisterSettings,
+  'query_stats' : QueryStats,
   'idle_cycles_burned_per_day' : bigint,
   'module_hash' : [] | [Uint8Array | number[]],
 }
@@ -22,7 +23,19 @@ export interface DefiniteCanisterSettings {
   'memory_allocation' : bigint,
   'compute_allocation' : bigint,
 }
+export interface HttpRequest {
+  'url' : string,
+  'method' : string,
+  'body' : Uint8Array | number[],
+  'headers' : Array<[string, string]>,
+}
+export interface HttpResponse {
+  'body' : Uint8Array | number[],
+  'headers' : Array<[string, string]>,
+  'status_code' : number,
+}
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdPlatformOrchestrator' : null } |
   { 'CanisterIdConfiguration' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
@@ -32,6 +45,12 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'CanisterIdSnsGovernance' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
+export interface QueryStats {
+  'response_payload_bytes_total' : bigint,
+  'num_instructions_total' : bigint,
+  'num_calls_total' : bigint,
+  'request_payload_bytes_total' : bigint,
+}
 export type RejectionCode = { 'NoError' : null } |
   { 'CanisterError' : null } |
   { 'SysTransient' : null } |
@@ -39,10 +58,10 @@ export type RejectionCode = { 'NoError' : null } |
   { 'Unknown' : null } |
   { 'SysFatal' : null } |
   { 'CanisterReject' : null };
-export type Result = { 'Ok' : [CanisterStatusResponse] } |
-  { 'Err' : [RejectionCode, string] };
-export type Result_1 = { 'Ok' : string } |
+export type Result = { 'Ok' : string } |
   { 'Err' : string };
+export type Result_1 = { 'Ok' : [CanisterStatusResponse] } |
+  { 'Err' : [RejectionCode, string] };
 export type Result_2 = { 'Ok' : null } |
   { 'Err' : string };
 export type Result_3 = { 'Ok' : null } |
@@ -73,6 +92,10 @@ export interface UserIndexInitArgs {
 export interface _SERVICE {
   'are_signups_enabled' : ActorMethod<[], boolean>,
   'backup_all_individual_user_canisters' : ActorMethod<[], undefined>,
+  'create_pool_of_individual_user_available_canisters' : ActorMethod<
+    [string, Uint8Array | number[]],
+    Result
+  >,
   'get_current_list_of_all_well_known_principal_values' : ActorMethod<
     [],
     Array<[KnownPrincipalType, Principal]>
@@ -84,6 +107,8 @@ export interface _SERVICE {
     [[] | [Principal]],
     Principal
   >,
+  'get_subnet_available_capacity' : ActorMethod<[], bigint>,
+  'get_subnet_backup_capacity' : ActorMethod<[], bigint>,
   'get_user_canister_id_from_unique_user_name' : ActorMethod<
     [string],
     [] | [Principal]
@@ -92,35 +117,44 @@ export interface _SERVICE {
     [Principal],
     [] | [Principal]
   >,
-  'get_user_canister_status' : ActorMethod<[Principal], Result>,
+  'get_user_canister_incl_avail_list' : ActorMethod<[], Array<Principal>>,
+  'get_user_canister_list' : ActorMethod<[], Array<Principal>>,
+  'get_user_canister_status' : ActorMethod<[Principal], Result_1>,
   'get_user_index_canister_count' : ActorMethod<[], bigint>,
   'get_user_index_canister_cycle_balance' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
     [] | [Principal]
   >,
+  'http_request' : ActorMethod<[HttpRequest], HttpResponse>,
   'receive_data_from_backup_canister_and_restore_data_to_heap' : ActorMethod<
     [Principal, Principal, string],
     undefined
   >,
-  'reset_user_individual_canisters' : ActorMethod<[Array<Principal>], Result_1>,
+  'reclaim_cycles_from_individual_canisters' : ActorMethod<[], undefined>,
+  'reset_user_individual_canisters' : ActorMethod<[Array<Principal>], Result>,
+  'return_cycles_to_platform_orchestrator_canister' : ActorMethod<[], Result>,
   'set_permission_to_upgrade_individual_canisters' : ActorMethod<
     [boolean],
     string
   >,
-  'start_upgrades_for_individual_canisters' : ActorMethod<[], string>,
+  'start_upgrades_for_individual_canisters' : ActorMethod<
+    [string, Uint8Array | number[]],
+    string
+  >,
   'toggle_signups_enabled' : ActorMethod<[], Result_2>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
     Result_3
   >,
+  'update_profile_owner_for_individual_canisters' : ActorMethod<[], undefined>,
   'upgrade_specific_individual_user_canister_with_latest_wasm' : ActorMethod<
-    [Principal, Principal, [] | [CanisterInstallMode]],
+    [Principal, [] | [Principal], [] | [CanisterInstallMode]],
     string
   >,
   'validate_reset_user_individual_canisters' : ActorMethod<
     [Array<Principal>],
-    Result_1
+    Result
   >,
 }
 export declare const idlFactory: IDL.InterfaceFactory;

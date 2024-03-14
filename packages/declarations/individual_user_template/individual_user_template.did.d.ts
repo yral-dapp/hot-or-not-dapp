@@ -89,6 +89,17 @@ export type HotOrNotOutcomePayoutEvent = {
       'post_canister_id' : Principal,
     }
   };
+export interface HttpRequest {
+  'url' : string,
+  'method' : string,
+  'body' : Uint8Array | number[],
+  'headers' : Array<[string, string]>,
+}
+export interface HttpResponse {
+  'body' : Uint8Array | number[],
+  'headers' : Array<[string, string]>,
+  'status_code' : number,
+}
 export interface IndividualUserTemplateInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'version' : string,
@@ -97,6 +108,7 @@ export interface IndividualUserTemplateInitArgs {
   'upgrade_version_number' : [] | [bigint],
 }
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdPlatformOrchestrator' : null } |
   { 'CanisterIdConfiguration' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
@@ -195,18 +207,26 @@ export type Result = { 'Ok' : bigint } |
   { 'Err' : string };
 export type Result_1 = { 'Ok' : BettingStatus } |
   { 'Err' : BetOnCurrentlyViewingPostError };
+export type Result_10 = { 'Ok' : null } |
+  { 'Err' : string };
+export type Result_11 = { 'Ok' : null } |
+  { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type Result_2 = { 'Ok' : boolean } |
   { 'Err' : FollowAnotherUserProfileError };
 export type Result_3 = { 'Ok' : Post } |
   { 'Err' : null };
-export type Result_4 = { 'Ok' : Array<PostDetailsForFrontend> } |
+export type Result_4 = { 'Ok' : SystemTime } |
+  { 'Err' : string };
+export type Result_5 = { 'Ok' : Array<PostDetailsForFrontend> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_5 = { 'Ok' : Array<[bigint, TokenEvent]> } |
+export type Result_6 = { 'Ok' : SessionType } |
+  { 'Err' : string };
+export type Result_7 = { 'Ok' : Array<[bigint, TokenEvent]> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_6 = { 'Ok' : UserProfileDetailsForFrontend } |
+export type Result_8 = { 'Ok' : string } |
+  { 'Err' : string };
+export type Result_9 = { 'Ok' : UserProfileDetailsForFrontend } |
   { 'Err' : UpdateProfileDetailsError };
-export type Result_7 = { 'Ok' : null } |
-  { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
   { 'BetOngoing' : null } |
   { 'Draw' : null } |
@@ -218,6 +238,8 @@ export interface RoomDetails {
   'room_bets_total_pot' : bigint,
   'bet_outcome' : RoomBetPossibleOutcomes,
 }
+export type SessionType = { 'AnonymousSession' : null } |
+  { 'RegisteredSession' : null };
 export interface SlotDetails { 'room_details' : Array<[bigint, RoomDetails]> }
 export type StakeEvent = { 'BetOnHotOrNotPost' : PlaceBetArg };
 export interface SystemTime {
@@ -291,7 +313,9 @@ export interface _SERVICE {
     [BigUint64Array | bigint[]],
     undefined
   >,
+  'clear_snapshot' : ActorMethod<[], undefined>,
   'do_i_follow_this_user' : ActorMethod<[FolloweeArg], Result_2>,
+  'download_snapshot' : ActorMethod<[bigint, bigint], Uint8Array | number[]>,
   'get_entire_individual_post_detail_by_id' : ActorMethod<[bigint], Result_3>,
   'get_hot_or_not_bet_details_for_this_post' : ActorMethod<
     [bigint],
@@ -309,9 +333,10 @@ export interface _SERVICE {
     [bigint],
     PostDetailsForFrontend
   >,
+  'get_last_access_time' : ActorMethod<[], Result_4>,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_4
+    Result_5
   >,
   'get_principals_that_follow_this_profile_paginated' : ActorMethod<
     [[] | [bigint]],
@@ -324,11 +349,12 @@ export interface _SERVICE {
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
+  'get_session_type' : ActorMethod<[], Result_6>,
   'get_stable_memory_size' : ActorMethod<[], number>,
   'get_user_caniser_cycle_balance' : ActorMethod<[], bigint>,
   'get_user_utility_token_transaction_history_with_pagination' : ActorMethod<
     [bigint, bigint],
-    Result_5
+    Result_7
   >,
   'get_utility_token_balance' : ActorMethod<[], bigint>,
   'get_version' : ActorMethod<[], string>,
@@ -336,6 +362,12 @@ export interface _SERVICE {
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
     [] | [Principal]
+  >,
+  'http_request' : ActorMethod<[HttpRequest], HttpResponse>,
+  'load_snapshot' : ActorMethod<[bigint], undefined>,
+  'receive_and_save_snaphot' : ActorMethod<
+    [bigint, Uint8Array | number[]],
+    undefined
   >,
   'receive_bet_from_bet_makers_canister' : ActorMethod<
     [PlaceBetArg, Principal],
@@ -373,6 +405,8 @@ export interface _SERVICE {
     [[] | [bigint]],
     undefined
   >,
+  'save_snapshot_json' : ActorMethod<[], number>,
+  'update_last_access_time' : ActorMethod<[], Result_8>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
     undefined
@@ -382,9 +416,10 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_6
+    Result_9
   >,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_7>,
+  'update_profile_owner' : ActorMethod<[[] | [Principal]], Result_10>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_11>,
   'update_profiles_i_follow_toggle_list_with_specified_profile' : ActorMethod<
     [FolloweeArg],
     Result_2
@@ -393,6 +428,7 @@ export interface _SERVICE {
     [FollowerArg],
     Result_2
   >,
+  'update_session_type' : ActorMethod<[[] | [SessionType]], string>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

@@ -2,7 +2,19 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
+export interface HttpRequest {
+  'url' : string,
+  'method' : string,
+  'body' : Uint8Array | number[],
+  'headers' : Array<[string, string]>,
+}
+export interface HttpResponse {
+  'body' : Uint8Array | number[],
+  'headers' : Array<[string, string]>,
+  'status_code' : number,
+}
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
+  { 'CanisterIdPlatformOrchestrator' : null } |
   { 'CanisterIdConfiguration' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
@@ -12,15 +24,13 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'CanisterIdSnsGovernance' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
+export type NsfwFilter = { 'IncludeNsfw' : null } |
+  { 'OnlyNsfw' : null } |
+  { 'ExcludeNsfw' : null };
 export interface PostCacheInitArgs {
   'known_principal_ids' : [] | [Array<[KnownPrincipalType, Principal]>],
   'version' : string,
   'upgrade_version_number' : [] | [bigint],
-}
-export interface PostScoreIndexItem {
-  'post_id' : bigint,
-  'score' : bigint,
-  'publisher_canister_id' : Principal,
 }
 export interface PostScoreIndexItemV1 {
   'is_nsfw' : boolean,
@@ -37,9 +47,7 @@ export type PostStatus = { 'BannedForExplicitness' : null } |
   { 'ReadyToView' : null } |
   { 'Transcoding' : null } |
   { 'Deleted' : null };
-export type Result = { 'Ok' : Array<PostScoreIndexItem> } |
-  { 'Err' : TopPostsFetchError };
-export type Result_1 = { 'Ok' : Array<PostScoreIndexItemV1> } |
+export type Result = { 'Ok' : Array<PostScoreIndexItemV1> } |
   { 'Err' : TopPostsFetchError };
 export interface SystemTime {
   'nanos_since_epoch' : number,
@@ -49,26 +57,20 @@ export type TopPostsFetchError = { 'ReachedEndOfItemsList' : null } |
   { 'InvalidBoundsPassed' : null } |
   { 'ExceededMaxNumberOfItemsAllowedInOneRequest' : null };
 export interface _SERVICE {
-  'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed' : ActorMethod<
-    [bigint, bigint],
-    Result
-  >,
+  'get_cycle_balance' : ActorMethod<[], bigint>,
   'get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed_cursor' : ActorMethod<
-    [bigint, bigint, [] | [boolean], [] | [PostStatus]],
-    Result_1
-  >,
-  'get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed' : ActorMethod<
-    [bigint, bigint],
+    [bigint, bigint, [] | [boolean], [] | [PostStatus], [] | [NsfwFilter]],
     Result
   >,
   'get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed_cursor' : ActorMethod<
-    [bigint, bigint, [] | [boolean], [] | [PostStatus]],
-    Result_1
+    [bigint, bigint, [] | [boolean], [] | [PostStatus], [] | [NsfwFilter]],
+    Result
   >,
   'get_well_known_principal_value' : ActorMethod<
     [KnownPrincipalType],
     [] | [Principal]
   >,
+  'http_request' : ActorMethod<[HttpRequest], HttpResponse>,
   'receive_top_home_feed_posts_from_publishing_canister' : ActorMethod<
     [Array<PostScoreIndexItemV1>],
     undefined

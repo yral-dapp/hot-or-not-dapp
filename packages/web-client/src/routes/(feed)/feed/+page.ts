@@ -23,8 +23,13 @@ export const load: PageLoad = async ({ url, fetch }) => {
   ).get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed_cursor(
     BigInt(0),
     BigInt(1),
-    [false],
     [],
+    [],
+    [
+      {
+        ExcludeNsfw: null,
+      },
+    ],
   )
 
   if ('Ok' in res && res.Ok[0]) {
