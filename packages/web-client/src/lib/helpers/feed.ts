@@ -1,6 +1,6 @@
 import type { PostDetailsForFrontend } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import type {
-  PostScoreIndexItem,
+  PostScoreIndexItemV1,
   TopPostsFetchError,
 } from '@hnn/declarations/post_cache/post_cache.did'
 import type { IDB } from '$lib/idb'
@@ -15,7 +15,7 @@ import { get } from 'svelte/store'
 import { appPrefs } from '$lib/stores/app'
 
 export interface PostPopulated
-  extends Omit<PostScoreIndexItem, 'publisher_canister_id'>,
+  extends Omit<PostScoreIndexItemV1, 'publisher_canister_id'>,
     Omit<
       PostDetailsForFrontend,
       'created_by_user_principal_id' | 'created_by_profile_photo_url'
@@ -43,9 +43,9 @@ export type FeedResponse =
     }
 
 async function filterPosts(
-  posts: PostScoreIndexItem[],
+  posts: PostScoreIndexItemV1[],
   dbStore: 'watch' | 'watch-hon',
-): Promise<PostScoreIndexItem[]> {
+): Promise<PostScoreIndexItemV1[]> {
   try {
     if (!idb) {
       idb = (await import('$lib/idb')).idb
@@ -66,7 +66,7 @@ async function filterPosts(
   }
 }
 
-async function filterReportedPosts(posts: PostScoreIndexItem[]) {
+async function filterReportedPosts(posts: PostScoreIndexItemV1[]) {
   try {
     if (!idb) {
       idb = (await import('$lib/idb')).idb
@@ -77,33 +77,6 @@ async function filterReportedPosts(posts: PostScoreIndexItem[]) {
       (o) => !keys.includes(o.publisher_canister_id.toText() + '@' + o.post_id),
     )
     return filtered
-  } catch (e) {
-    Log('warn', 'Error while accessing IDB', {
-      error: e,
-      from: 'feed.filterReportedPosts',
-      type: 'idb',
-    })
-    return posts
-  }
-}
-
-async function filterStuckCanisterPosts(posts: PostScoreIndexItem[]) {
-  try {
-    const stuckCanisters = [
-      '6l6jz-kaaaa-aaaao-actmq-cai',
-      'rw62l-xyaaa-aaaao-aayca-cai',
-      '4thmb-taaaa-aaaao-aavfq-cai',
-      'du74r-syaaa-aaaao-aa47q-cai',
-      'u6qff-cqaaa-aaaao-aczfa-cai',
-      'p7ngy-hyaaa-aaaao-aesjq-cai',
-      'ynvsv-3qaaa-aaaao-ae2gq-cai',
-      '4xvw2-giaaa-aaaao-aejwq-cai',
-      'nut4d-faaaa-aaaao-agaxa-cai',
-      'raidg-jaaaa-aaaao-afbxa-cai',
-    ]
-    return posts.filter(
-      (o) => !stuckCanisters.includes(o.publisher_canister_id.toText()),
-    )
   } catch (e) {
     Log('warn', 'Error while accessing IDB', {
       error: e,
@@ -148,15 +121,23 @@ export async function getTopPosts(
       await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_home_feed_cursor(
         BigInt(from),
         BigInt(numberOfPosts),
-        [showNsfw],
         [],
+        [],
+        [
+          showNsfw
+            ? {
+                IncludeNsfw: null,
+              }
+            : {
+                ExcludeNsfw: null,
+              },
+        ],
       )
     if ('Ok' in res) {
       const nonReportedPosts = await filterReportedPosts(res.Ok)
-      const notStuckPosts = await filterStuckCanisterPosts(nonReportedPosts)
-      const notWatchedPosts = await filterPosts(notStuckPosts, 'watch')
+      const notWatchedPosts = await filterPosts(nonReportedPosts, 'watch')
       const populatedRes = await populatePosts(
-        filterViewed ? notWatchedPosts : notStuckPosts,
+        filterViewed ? notWatchedPosts : nonReportedPosts,
       )
       if (populatedRes.error) {
         throw new Error(
@@ -191,8 +172,8 @@ export async function getTopPosts(
 }
 
 async function filterBets(
-  posts: PostScoreIndexItem[],
-): Promise<PostScoreIndexItem[]> {
+  posts: PostScoreIndexItemV1[],
+): Promise<PostScoreIndexItemV1[]> {
   try {
     if (!idb) {
       idb = (await import('$lib/idb')).idb
@@ -219,17 +200,32 @@ export async function getHotOrNotPosts(
   showNsfw = false,
 ): Promise<FeedResponse> {
   try {
+    postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed_cursor(
+      BigInt(1),
+      BigInt(2),
+      [],
+      [],
+      [],
+    )
     const res =
       await postCache().get_top_posts_aggregated_from_canisters_on_this_network_for_hot_or_not_feed_cursor(
         BigInt(from),
         BigInt(numberOfPosts),
-        [showNsfw],
         [],
+        [],
+        [
+          showNsfw
+            ? {
+                IncludeNsfw: null,
+              }
+            : {
+                ExcludeNsfw: null,
+              },
+        ],
       )
     if ('Ok' in res) {
       const notBetPosts = await filterBets(res.Ok)
-      const notStuckPosts = await filterStuckCanisterPosts(notBetPosts)
-      const notReportedPosts = await filterReportedPosts(notStuckPosts)
+      const notReportedPosts = await filterReportedPosts(notBetPosts)
       const notWatchedPosts = await filterPosts(notReportedPosts, 'watch-hon')
       const populatedRes = await populatePosts(notWatchedPosts, false)
       if (populatedRes.error) {
@@ -294,7 +290,7 @@ function hasUserBetOnPost(post: PostDetailsForFrontend) {
 }
 
 async function fetchPostDetailById(
-  post: PostScoreIndexItem,
+  post: PostScoreIndexItemV1,
   excludeIfBetClosed = false,
   excludeIfNsfw = true,
 ) {
@@ -341,7 +337,7 @@ async function fetchPostDetailById(
 }
 
 async function populatePosts(
-  posts: PostScoreIndexItem[],
+  posts: PostScoreIndexItemV1[],
   filterBetPosts = false,
 ) {
   try {
