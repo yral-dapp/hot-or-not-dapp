@@ -55,7 +55,7 @@ let { post, me } = data
               {unavailable}
               on:watchedPercentage={({ detail }) => recordView(detail)}
               index={0}
-              playFormat="hls"
+              playFormat="mp4"
               inView
               uid={post.video_uid} />
             <svelte:fragment slot="hotOrNot">
