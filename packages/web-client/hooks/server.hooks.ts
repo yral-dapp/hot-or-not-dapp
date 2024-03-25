@@ -1,7 +1,7 @@
 import type { Handle } from '@sveltejs/kit'
 
 const hlsScriptTag =
-  '<script async="false" defer="false" src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.light.min.js"></script>'
+  '<script async="false" defer="false" src="https://cdn.jsdelivr.net/npm/hls.js@1.5.5/dist/hls.light.min.js"></script>'
 
 export const handle: Handle = async ({ event, resolve }) => {
   const useHls = true
