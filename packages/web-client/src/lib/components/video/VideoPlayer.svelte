@@ -182,6 +182,7 @@ function init() {
       hls?.loadSource(src)
       hls?.attachMedia(videoEl)
       hls?.on(Hls.Events.ERROR, function (event, data) {
+        console.error('VideoError', { event, data })
         if (data?.response?.code == 404) {
           videoUnavailable = true
           dispatch('videoUnavailable')
