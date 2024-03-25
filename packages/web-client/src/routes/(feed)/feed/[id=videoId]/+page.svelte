@@ -222,7 +222,7 @@ onDestroy(() => clearMonitoring())
             on:watchedPercentage={({ detail }) => recordView(detail)}
             on:videoUnavailable={() => handleUnavailableVideo(index)}
             {index}
-            playFormat="hls"
+            playFormat="mp4"
             inView={index == currentVideoIndex && $playerState.visible}
             uid={post.video_uid} />
         </PlayerLayout>

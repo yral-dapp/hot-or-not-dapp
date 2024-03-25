@@ -58,7 +58,7 @@ let { video, me } = data
               on:watchedPercentage={({ detail }) => recordView(detail)}
               {unavailable}
               index={0}
-              playFormat="hls"
+              playFormat="mp4"
               inView
               uid={video.video_uid} />
           </PlayerLayout>
