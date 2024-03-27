@@ -1,7 +1,5 @@
 /// <reference types="@sveltejs/kit" />
 
-declare let Hls: typeof import('hls.js').default
-
 // Info: https://kit.svelte.dev/docs/types#app
 declare namespace App {
   // interface Locals {}

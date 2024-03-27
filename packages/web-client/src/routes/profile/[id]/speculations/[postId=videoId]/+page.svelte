@@ -16,7 +16,7 @@ let { post, me } = data
 </script>
 
 <svelte:head>
-  <title>{me ? 'Your' : "User's"} Participations | Hot or Not</title>
+  <title>{me ? 'Your' : "User's"} Participation | Hot or Not</title>
 </svelte:head>
 
 <HomeLayout>
@@ -55,7 +55,6 @@ let { post, me } = data
               {unavailable}
               on:watchedPercentage={({ detail }) => recordView(detail)}
               index={0}
-              playFormat="mp4"
               inView
               uid={post.video_uid} />
             <svelte:fragment slot="hotOrNot">

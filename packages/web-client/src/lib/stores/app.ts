@@ -9,6 +9,7 @@ export const playerState = writable<{
   currentFeedUrl: string
   currentHotOrNotUrl: string
   selectedCoins: number
+  playFormat: 'hls' | 'mp4'
 }>({
   initialized: false,
   muted: true,
@@ -16,6 +17,7 @@ export const playerState = writable<{
   currentFeedUrl: '',
   currentHotOrNotUrl: '',
   selectedCoins: 10,
+  playFormat: 'hls',
 })
 
 export const homeFeedVideos = writable<PostPopulated[]>([])

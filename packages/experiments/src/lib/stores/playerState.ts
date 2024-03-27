@@ -6,10 +6,12 @@ export const playerState = writable<{
   muted: boolean
   selectedCoins: number
   currentFeedUrl: string
+  playFormat: 'hls' | 'mp4'
 }>({
   initialized: false,
   muted: true,
   visible: true,
   selectedCoins: 50,
   currentFeedUrl: '',
+  playFormat: 'hls',
 })

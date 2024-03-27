@@ -7,12 +7,12 @@ import { playerState } from '$lib/stores/playerState'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { debounce, throttle } from 'throttle-debounce'
 import type { default as HLSType } from 'hls.js'
+import Hls from 'hls.js'
 
 export let uid: string
 export let index: number
 export let inView = false
 export let thumbnail = ''
-export let playFormat: 'hls' | 'mp4'
 export let unavailable = false
 
 let ios = false
@@ -66,7 +66,7 @@ export const stop = debounce(
         error: e,
         index,
         uid,
-        playFormat,
+        playFormat: $playerState.playFormat,
         inView,
         source: 'VideoPlayer.stop',
       })
@@ -130,7 +130,7 @@ async function handleClick() {
       error: e,
       index,
       uid,
-      playFormat,
+      playFormat: $playerState.playFormat,
       inView,
       source: 'VideoPlayer.handleClick',
     })
@@ -170,7 +170,7 @@ $: if (!inView) {
 
 function init() {
   ios = isiPhone()
-  if (playFormat === 'mp4') {
+  if ($playerState.playFormat === 'mp4') {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
   } else {
