@@ -6,7 +6,7 @@
     "fetch": "sh ./fetch.sh"
   },
   "dependencies": {
-    "@dfinity/agent": "1.1.1"
+    "@dfinity/agent": "1.2.0"
   },
   "keywords": [],
   "author": "",

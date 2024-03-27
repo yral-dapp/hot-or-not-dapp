@@ -22,7 +22,7 @@
     "hls.js": "1.5.7",
     "idb": "8.0.0",
     "json-2-csv": "5.5.1",
-    "firebase": "10.8.1",
+    "firebase": "10.9.0",
     "svelte-local-storage-store": "0.6.4",
     "throttle-debounce": "5.0.0"
   },
