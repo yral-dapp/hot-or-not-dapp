@@ -185,6 +185,8 @@ function init() {
         if (data?.response?.code == 404) {
           videoUnavailable = true
           dispatch('videoUnavailable')
+        } else {
+          console.error('VideoError', { event, data })
         }
       })
     } else {
