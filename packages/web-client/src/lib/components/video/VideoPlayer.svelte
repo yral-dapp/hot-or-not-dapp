@@ -178,14 +178,15 @@ function init() {
     if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
       videoEl.src = src + '#t=0.1'
     } else if (Hls.isSupported()) {
-      hls = new Hls({ maxBufferLength: 5, debug: true })
+      hls = new Hls({ maxBufferLength: 5 })
       hls?.loadSource(src)
       hls?.attachMedia(videoEl)
       hls?.on(Hls.Events.ERROR, function (event, data) {
-        console.error('VideoError', { event, data })
         if (data?.response?.code == 404) {
           videoUnavailable = true
           dispatch('videoUnavailable')
+        } else {
+          console.error('VideoError', { event, data })
         }
       })
     } else {
