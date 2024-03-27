@@ -7,13 +7,13 @@ import { playerState } from '$lib/stores/app'
 import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
 import { debounce, throttle } from 'throttle-debounce'
 import type { default as HLSType } from 'hls.js'
+import Hls from 'hls.js'
 
 export let uid: string
 export let index: number
 export let inView = false
 export let thumbnail = ''
 export let unavailable = false
-export let playFormat: 'hls' | 'mp4'
 
 let ios = isiPhone()
 
@@ -68,7 +68,7 @@ export const stop = debounce(
         error: e,
         index,
         uid,
-        playFormat,
+        playFormat: $playerState.playFormat,
         inView,
         source: 'VideoPlayer.stop',
       })
@@ -132,7 +132,7 @@ async function handleClick() {
       error: e,
       index,
       uid,
-      playFormat,
+      playFormat: $playerState.playFormat,
       inView,
       source: 'VideoPlayer.handleClick',
     })
@@ -170,7 +170,7 @@ $: if (!inView) {
 }
 
 function init() {
-  if (playFormat === 'mp4' || !(window as any).Hls) {
+  if ($playerState.playFormat === 'mp4') {
     //Force mp4 playback on iOS
     videoEl.src = `${getMp4Url(uid)}${ios ? '#t=0.1' : ''}`
   } else {
@@ -178,7 +178,7 @@ function init() {
     if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
       videoEl.src = src + '#t=0.1'
     } else if (Hls.isSupported()) {
-      hls = new Hls({ maxBufferLength: 5 })
+      hls = new Hls({ maxBufferLength: 5, debug: true })
       hls?.loadSource(src)
       hls?.attachMedia(videoEl)
       hls?.on(Hls.Events.ERROR, function (event, data) {

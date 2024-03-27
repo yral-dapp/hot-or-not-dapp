@@ -77,7 +77,6 @@ beforeNavigate(() => {
         <VideoPlayer
           on:loaded={() => removeSplashScreen()}
           index={0}
-          playFormat="mp4"
           inView
           uid={post.video_uid} />
         <svelte:fragment slot="controls">

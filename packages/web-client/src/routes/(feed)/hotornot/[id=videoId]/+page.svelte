@@ -214,7 +214,6 @@ onDestroy(() => clearMonitoring())
             on:videoUnavailable={() => handleUnavailableVideo(index)}
             {index}
             {unavailable}
-            playFormat="mp4"
             inView={index == currentVideoIndex && $playerState.visible}
             uid={post.video_uid} />
           <svelte:fragment slot="betRoomInfo">
