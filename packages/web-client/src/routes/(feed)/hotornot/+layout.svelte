@@ -5,11 +5,12 @@ import ExperimentsPopup from '@hnn/components/popup/ExperimentsPopup.svelte'
 import ReportPopup from '@hnn/components/popup/ReportPopup.svelte'
 import { postReportPopup } from '$lib/stores/popups'
 import { reportPostOrUser } from '$lib/helpers/report'
+import HotorNotOnboarding from '$lib/components/popup/HotorNotOnboarding.svelte'
 
 let showExperimentsPopup = false
 </script>
 
-<!-- <HotorNotOnboarding /> -->
+<HotorNotOnboarding />
 
 <svelte:head>
   <title>Hot or Not Feed | Hot or Not</title>
