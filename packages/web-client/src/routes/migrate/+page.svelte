@@ -4,11 +4,17 @@ import goBack from '$lib/utils/goBack'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import coinsBg from './coinsBg.webp'
 
-let loading = true
+let loading = false
 </script>
 
 <svelte:head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap"
+    rel="stylesheet" />
   <title>Migrate to Yral | Hot or Not</title>
 </svelte:head>
 
@@ -34,6 +40,18 @@ let loading = true
     {:else}
       <div
         class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
+        <div class="relative mt-28 flex w-full flex-col items-center gap-2">
+          <div class="absolute inset-0 z-0 flex items-center justify-center">
+            <img src={coinsBg} alt="bg" class="w-full max-w-56" />
+          </div>
+          <div class="text-lg font-semibold">Our new app</div>
+          <div class="z-[1]">
+            <span class="gloria-hallelujah-regular text-4xl text-[#E2017B]">
+              Yral
+            </span>
+            <span class="pl-1 text-2xl font-bold">is here</span>
+          </div>
+        </div>
         <div class="flex flex-col items-center justify-center space-y-4 px-8">
           <div class="flex items-center space-x-4">
             <a
@@ -63,3 +81,11 @@ let loading = true
     {/if}
   </div>
 </HomeLayout>
+
+<style>
+.gloria-hallelujah-regular {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+</style>
