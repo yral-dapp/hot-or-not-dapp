@@ -22,33 +22,10 @@ let links: {
 
 $: links = [
   {
-    icon: 'pouch',
-    title: 'Airdrop',
-    class: 'w-5 h-5',
-    href: '/airdrop',
-  },
-  {
-    icon: 'help',
-    title: 'How to Earn',
-    class: 'w-5 h-5',
-    href: '/refer-earn',
-  },
-  {
-    icon: 'text-align-middle',
-    title: 'About Us',
-    class: 'w-5 h-5',
-    href: '/about-us',
-  },
-  {
-    icon: 'chat-box',
-    title: 'FAQs',
-    href: '/faq',
-  },
-  {
-    icon: 'whatsapp-logo',
-    title: 'Talk to the team',
-    class: 'w-5 h-5 pl-0.5',
-    href: 'https://t.me/+c-LTX0Cp-ENmMzI1',
+    icon: 'yral',
+    title: 'Migrate to YRAL',
+    class: 'fill-white w-6 h-6',
+    href: '/migrate',
   },
 
   {
@@ -60,12 +37,6 @@ $: links = [
     icon: 'lock',
     title: 'Privacy Policy',
     href: '/privacy-policy',
-  },
-  {
-    icon: 'download',
-    title: 'Install App',
-    href: '/faq/install-app',
-    class: 'w-5 h-5 pl-1',
   },
   {
     icon: 'logout',
