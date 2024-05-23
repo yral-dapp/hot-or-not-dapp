@@ -170,6 +170,7 @@ export function serializeProfilePostsResponse(posts: PostDetailsForFrontend[]) {
 export async function fetchPosts(
   id: string,
   from: number,
+  count: number = 10,
 ): Promise<ProfilePostsResponse> {
   try {
     const canId = await getCanisterId(id)
@@ -178,7 +179,7 @@ export async function fetchPosts(
       Principal.from(canId),
     ).get_posts_of_this_user_profile_with_pagination(
       BigInt(from),
-      BigInt(from + 10),
+      BigInt(from + count),
     )
     if ('Ok' in res) {
       return {

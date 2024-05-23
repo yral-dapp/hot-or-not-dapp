@@ -4,7 +4,9 @@ import goBack from '$lib/utils/goBack'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
-import coinsBg from './coinsBg.webp'
+import coinsBg from './coins.webp'
+import Button from '@hnn/components/button/Button.svelte'
+import { authState } from '$lib/stores/auth'
 
 let loading = false
 </script>
@@ -39,53 +41,68 @@ let loading = false
       </div>
     {:else}
       <div
-        class="flex h-full w-full flex-col items-center gap-10 overflow-y-auto py-8">
+        class="flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8">
         <div class="relative mt-28 flex w-full flex-col items-center gap-2">
-          <div class="absolute inset-0 z-0 flex items-center justify-center">
-            <img src={coinsBg} alt="bg" class="w-full max-w-56" />
+          <div
+            class="absolute inset-0 z-0 -mt-10 flex items-center justify-center">
+            <img src={coinsBg} alt="bg" class="max-w-84 w-full" />
           </div>
-          <div class="text-lg font-semibold">Our new app</div>
-          <div class="z-[1]">
-            <span class="gloria-hallelujah-regular text-4xl text-[#E2017B]">
-              Yral
-            </span>
-            <span class="pl-1 text-2xl font-bold">is here</span>
+          <div class="z-[1] text-center text-xl font-bold">
+            Transfer your HotorNot Account and Wallet Balance to
           </div>
+          <a
+            target="_blank"
+            class="text-3xl font-bold uppercase text-[#E2017B]"
+            href="https://yral.com">
+            Yral.com
+          </a>
         </div>
-        <div class="flex flex-col items-center justify-center space-y-4 px-8">
-          <div class="flex items-center space-x-4">
+        <div class="h-1 w-10 border-t border-dashed border-white"></div>
+        <div class="flex flex-col items-start justify-center space-y-4">
+          <div class="text-sm font-bold">Reasons for change:</div>
+          <div class="text-sm text-white/70">
+            We're moving from HotorNot to
             <a
-              href="https://t.me/+c-LTX0Cp-ENmMzI1"
               target="_blank"
-              class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-              <Icon name="telegram-logo" class="h-5 w-5 -translate-x-[1px]" />
+              class="font-bold text-[#E2017B] underline"
+              href="https://yral.com">
+              Yral.com
             </a>
-            <a
-              href="https://discord.gg/GZ9QemnZuj"
-              target="_blank"
-              class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-              <Icon name="discord-logo" class="h-5 w-5" />
-            </a>
-            <a
-              href="https://twitter.com/hotornot_dapp"
-              target="_blank"
-              class="flex h-12 w-12 items-center justify-center rounded-full border-[1px] border-primary transition-colors duration-200 active:bg-primary">
-              <Icon name="twitter-logo" class="h-4 w-4" />
-            </a>
+            to start anew. We won't support HotorNot's technology anymore, and all
+            our team's future activities will be on Yral.com.
           </div>
-          <div class="text-center text-sm text-white/70">
-            For more queries, you can get in touch with us on our socials
+          <div class="text-sm font-bold">What's Being Transferred:</div>
+          <div class="text-sm text-white/70">
+            Your COYN tokens and videos from your old HotorNot account will be
+            moved to a new Yral account.
           </div>
+          <div class="text-sm font-bold">Steps to Follow:</div>
+          <ul class="text-sm text-white/70">
+            <li>1. Go to Yral.com.</li>
+            <li>2. Navigate to Menu > HotorNot Account Transfer</li>
+            <li>3. Login with Google.</li>
+            <li>4. Copy the Yral Principal ID.</li>
+            <li>5. Return and fill out the form.</li>
+          </ul>
         </div>
+        <div class="h-1 w-10 border-t border-dashed border-white"></div>
+        {#if $authState.isLoggedIn}
+          <div class="text-center text-sm font-medium">
+            Go to <a
+              target="_blank"
+              class="font-bold text-[#E2017B] underline"
+              href="https://yral.com">
+              Yral.com
+            </a>
+            and get your Yral Principal id before proceeding.
+          </div>
+          <Button class="w-full" href="/migrate/form">Proceed</Button>
+        {:else}
+          <Button class="w-full" on:click={() => ($authState.showLogin = true)}>
+            Login
+          </Button>
+        {/if}
       </div>
     {/if}
   </div>
 </HomeLayout>
-
-<style>
-.gloria-hallelujah-regular {
-  font-family: 'Gloria Hallelujah', cursive;
-  font-weight: 400;
-  font-style: normal;
-}
-</style>

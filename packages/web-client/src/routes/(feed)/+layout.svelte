@@ -8,8 +8,8 @@ import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
-import { userStoryStore } from '$lib/helpers/user-study'
-import UserStudy from '$lib/components/popup/UserStudy.svelte'
+import { showMigrationPopup } from '$lib/stores/popups'
+import MigrationPopup from '@hnn/components/popup/MigrationPopup.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -73,6 +73,6 @@ $: pathname = $page.url.pathname
   </div>
 </HomeLayout>
 
-{#if $userStoryStore.show}
-  <UserStudy bind:show={$userStoryStore.show} />
+{#if $showMigrationPopup}
+  <MigrationPopup on:click={() => showMigrationPopup.set(false)} />
 {/if}
