@@ -41,7 +41,7 @@ let loading = false
       </div>
     {:else}
       <div
-        class="flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8">
+        class="mx-auto flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8 lg:max-w-lg">
         <div class="relative mt-28 flex w-full flex-col items-center gap-2">
           <div
             class="absolute inset-0 z-0 -mt-10 flex items-center justify-center">

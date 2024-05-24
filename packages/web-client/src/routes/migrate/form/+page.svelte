@@ -20,6 +20,10 @@ let transferred = false
 $: loggedIn = $authState.isLoggedIn
 
 async function checkForm() {
+  step = 2
+}
+
+async function transfer() {
   transferred = true
 }
 
@@ -92,7 +96,7 @@ $: if (loggedIn) {
       </div>
     {:else if step == 2}
       <div
-        class="flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8">
+        class="mx-auto flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8 lg:max-w-lg">
         <div
           class="relative mt-20 flex w-full flex-col items-center gap-2 px-8">
           <img src={bigCoin} alt="yral" />
@@ -102,7 +106,7 @@ $: if (loggedIn) {
             Your account has been transferred to yral. Go ahead and explore the
             app <a
               target="_blank"
-              class="text-3xl font-bold uppercase text-[#E2017B]"
+              class="font-bold text-[#E2017B] underline"
               href="https://yral.com">
               Yral.com
             </a>
@@ -110,18 +114,18 @@ $: if (loggedIn) {
           <Button class="w-full" href="/migrate-faq">Support</Button>
         {:else}
           <div class="text-center">
-            Click confirm to complete the transfer.Once you complete the
+            Click confirm to complete the transfer. Once you complete the
             transfer, your Coyns will no longer show in hotornot wallet, and
             will be in Yral account submitted. Make sure you have logged in and
             connected google to the Yral account submitted to not lose your
             tokens.Transfer once done cannot be reversed.
           </div>
-          <Button class="w-full">Confirm</Button>
+          <Button on:click={transfer} class="w-full">Confirm</Button>
         {/if}
       </div>
     {:else}
       <div
-        class="flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8">
+        class="mx-auto flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8 lg:max-w-lg">
         <div class="relative mt-28 flex w-full flex-col items-center gap-2">
           <div
             class="absolute inset-0 z-0 -mt-10 flex items-center justify-center">
