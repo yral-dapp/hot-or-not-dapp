@@ -33,7 +33,7 @@ let loading = false
   </svelte:fragment>
   <div class="h-full w-full overflow-y-auto" slot="content">
     <div
-      class="mt-16 flex h-full w-full max-w-sm flex-col items-center gap-4 px-8 py-8">
+      class="mx-auto mb-8 mt-16 flex h-full w-full max-w-sm flex-col items-center gap-4 px-8 py-8">
       <div class="text-sm font-bold">
         Find all your answers about the Account transfer here:
       </div>

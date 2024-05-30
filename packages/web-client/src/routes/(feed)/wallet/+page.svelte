@@ -9,6 +9,8 @@ import {
 } from '$lib/helpers/profile'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import { userProfile } from '$lib/stores/app'
+import { onMount } from 'svelte'
+import { showMigrationPopup } from '$lib/stores/popups'
 
 let loadBalanced = true
 let loadList = true
@@ -61,6 +63,8 @@ function init() {
 }
 
 $: loggedIn && init()
+
+onMount(() => ($showMigrationPopup = true))
 </script>
 
 <svelte:head>

@@ -141,7 +141,7 @@ $: if (loggedIn) {
             Yral.com
           </a>
         </div>
-        <a href="/migrate" class="font-bold text-primary underline">
+        <a href="/migrate-faq" class="font-bold text-primary underline">
           Learn more about the transfer here
         </a>
         <div class="h-1 w-10 border-t border-dashed border-white"></div>
