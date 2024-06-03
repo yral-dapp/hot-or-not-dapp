@@ -179,13 +179,14 @@ export async function fetchPosts(
 ): Promise<ProfilePostsResponse> {
   try {
     const canId = await getCanisterId(id)
-
+    console.log({ canId }, BigInt(from), BigInt(from + count))
     const res = await individualUser(
       Principal.from(canId),
     ).get_posts_of_this_user_profile_with_pagination(
       BigInt(from),
       BigInt(from + count),
     )
+    console.log({ res })
     if ('Ok' in res) {
       return {
         error: false,
@@ -442,7 +443,7 @@ type UnionValueOf<U> = U extends U ? U[keyof U] : never
 
 const walletEventDetails = {} as WalletEvent
 type WalletEvent = UnionKeyOf<TokenEvent>
-type WalletEventType = typeof walletEventDetails
+export type WalletEventType = typeof walletEventDetails
 type WalletEventSubDetails = UnionValueOf<TokenEvent>
 type NotificationEventType = Omit<
   WalletEventType,

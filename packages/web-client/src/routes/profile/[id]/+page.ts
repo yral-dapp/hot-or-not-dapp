@@ -59,7 +59,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
     const fetchedProfile = await individualUser(
       Principal.from(canId),
       fetch,
-    ).get_profile_details()
+    ).get_profile_details_v2()
     const profile = sanitizeProfile(fetchedProfile, id)
     let posts: any[] = []
     try {

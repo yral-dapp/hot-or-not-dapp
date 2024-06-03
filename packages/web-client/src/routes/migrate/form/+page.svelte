@@ -10,21 +10,71 @@ import Button from '@hnn/components/button/Button.svelte'
 import { authState } from '$lib/stores/auth'
 import Input from '@hnn/components/input/Input.svelte'
 import { fetchPosts, fetchTokenBalance } from '$lib/helpers/profile'
+import { isPrincipal } from '$lib/utils/isPrincipal'
+import { individualUser } from '$lib/helpers/backend'
+import { Principal } from '@dfinity/principal'
 
 let loading = false
 let walletBalance = 0
 let videosUploadedCount = 0
 let step = 1
-let transferred = false
+let transferred = $authState.isMigrated || false
+let yralId = ''
+let canId = ''
+let error = ''
+let transferring = true
 
 $: loggedIn = $authState.isLoggedIn
 
 async function checkForm() {
-  step = 2
+  canId = ''
+  if (await isPrincipal(yralId)) {
+    const res = await fetchUserCanisterId()
+    if (res) {
+      canId = res
+      step = 2
+    }
+  } else {
+    error = 'Invalid principal Id'
+  }
+}
+
+async function fetchUserCanisterId() {
+  try {
+    const res = await fetch(`https://yral-metadata.fly.dev/metadata/${yralId}`)
+    const data = await res.json()
+    if (!('Ok' in data)) throw 'Error'
+    return data.Ok.user_canister_id as string
+  } catch (e) {
+    error =
+      'Could not fetch canister ID. Please double check the Yral Principal ID'
+  }
 }
 
 async function transfer() {
-  transferred = true
+  transferring = true
+  try {
+    if (!$authState.userCanisterId || !$authState.idString) {
+      error = 'Something went wrong'
+      transferring = false
+      step = 1
+    }
+    const res = await individualUser(
+      $authState.userCanisterId,
+    ).transfer_tokens_and_posts(
+      Principal.from($authState.idString),
+      Principal.from(canId),
+    )
+    if ('Ok' in res) {
+      transferred = true
+      $authState.isMigrated = true
+    } else {
+      error = Object.keys(res.Err)?.[0]
+      step = 1
+    }
+  } finally {
+    transferring = false
+  }
 }
 
 async function fetchWalletBalance() {
@@ -37,8 +87,9 @@ async function fetchWalletBalance() {
 }
 
 async function fetchVideosCount() {
-  if (!$authState.userCanisterId) return
-  const res = await fetchPosts($authState.userCanisterId, 100)
+  if (!$authState.idString) return
+  const res = await fetchPosts($authState.idString, 0, 99)
+
   if (res.error) {
     videosUploadedCount = -1
   } else {
@@ -120,6 +171,10 @@ $: if (loggedIn) {
             connected google to the Yral account submitted to not lose your
             tokens.Transfer once done cannot be reversed.
           </div>
+          <div class="flex flex-col items-center gap-1">
+            <div class="text-sm text-white/80">Transferring to Yral ID:</div>
+            <div class="font-mono font-medium">{yralId}</div>
+          </div>
           <Button on:click={transfer} class="w-full">Confirm</Button>
         {/if}
       </div>
@@ -169,7 +224,9 @@ $: if (loggedIn) {
             Visit Yral.com → Menu → HotorNot Account Transfer → Login with
             Google → Copy the Yral Principal ID
           </div>
-          <Input class="w-full rounded-md bg-white/10 py-4" />
+          <Input
+            bind:value={yralId}
+            class="w-full rounded-md bg-white/10 py-4" />
 
           <div class="flex gap-2">
             <input
@@ -183,7 +240,15 @@ $: if (loggedIn) {
             </div>
           </div>
 
-          <Button class="w-full" on:click={checkForm}>Transfer</Button>
+          {#if error}
+            <div class="text-sm font-medium text-red-500">
+              Error: {error}
+            </div>
+          {/if}
+
+          <Button disabled={transferring} class="w-full" on:click={checkForm}>
+            Transfer
+          </Button>
         </div>
       </div>
     {/if}
