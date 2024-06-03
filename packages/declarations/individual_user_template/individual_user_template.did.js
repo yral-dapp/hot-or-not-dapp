@@ -3,6 +3,7 @@ export const idlFactory = ({ IDL }) => {
     'CanisterIdUserIndex' : IDL.Null,
     'CanisterIdPlatformOrchestrator' : IDL.Null,
     'CanisterIdConfiguration' : IDL.Null,
+    'CanisterIdHotOrNotSubnetOrchestrator' : IDL.Null,
     'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,
@@ -202,6 +203,10 @@ export const idlFactory = ({ IDL }) => {
     'hot_bets_received' : IDL.Nat64,
     'not_bets_received' : IDL.Nat64,
   });
+  const UserCanisterDetails = IDL.Record({
+    'user_canister_id' : IDL.Principal,
+    'profile_owner' : IDL.Principal,
+  });
   const UserProfileDetailsForFrontend = IDL.Record({
     'unique_user_name' : IDL.Opt(IDL.Text),
     'lifetime_earnings' : IDL.Nat64,
@@ -211,6 +216,26 @@ export const idlFactory = ({ IDL }) => {
     'principal_id' : IDL.Principal,
     'profile_stats' : UserProfileGlobalStats,
     'followers_count' : IDL.Nat64,
+    'referrer_details' : IDL.Opt(UserCanisterDetails),
+  });
+  const MigrationInfo = IDL.Variant({
+    'MigratedFromHotOrNot' : IDL.Record({
+      'account_principal' : IDL.Principal,
+    }),
+    'NotMigrated' : IDL.Null,
+    'MigratedToYral' : IDL.Record({ 'account_principal' : IDL.Principal }),
+  });
+  const UserProfileDetailsForFrontendV2 = IDL.Record({
+    'unique_user_name' : IDL.Opt(IDL.Text),
+    'lifetime_earnings' : IDL.Nat64,
+    'migration_info' : MigrationInfo,
+    'following_count' : IDL.Nat64,
+    'profile_picture_url' : IDL.Opt(IDL.Text),
+    'display_name' : IDL.Opt(IDL.Text),
+    'principal_id' : IDL.Principal,
+    'profile_stats' : UserProfileGlobalStats,
+    'followers_count' : IDL.Nat64,
+    'referrer_details' : IDL.Opt(UserCanisterDetails),
   });
   const SessionType = IDL.Variant({
     'AnonymousSession' : IDL.Null,
@@ -254,10 +279,19 @@ export const idlFactory = ({ IDL }) => {
       'details' : MintEvent,
       'amount' : IDL.Nat64,
     }),
-    'Transfer' : IDL.Null,
+    'Transfer' : IDL.Record({
+      'to_account' : IDL.Principal,
+      'timestamp' : SystemTime,
+      'amount' : IDL.Nat64,
+    }),
     'HotOrNotOutcomePayout' : IDL.Record({
       'timestamp' : SystemTime,
       'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : IDL.Nat64,
+    }),
+    'Receive' : IDL.Record({
+      'from_account' : IDL.Principal,
+      'timestamp' : SystemTime,
       'amount' : IDL.Nat64,
     }),
   });
@@ -276,14 +310,28 @@ export const idlFactory = ({ IDL }) => {
     'headers' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
     'status_code' : IDL.Nat16,
   });
+  const MigrationErrors = IDL.Variant({
+    'InvalidToCanister' : IDL.Null,
+    'InvalidFromCanister' : IDL.Null,
+    'MigrationInfoNotFound' : IDL.Null,
+    'UserNotRegistered' : IDL.Null,
+    'Unauthorized' : IDL.Null,
+    'TransferToCanisterCallFailed' : IDL.Null,
+    'HotOrNotSubnetCanisterIdNotFound' : IDL.Null,
+    'AlreadyUsedForMigration' : IDL.Null,
+    'CanisterInfoFailed' : IDL.Null,
+    'AlreadyMigrated' : IDL.Null,
+  });
+  const Result_8 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : MigrationErrors });
   const UserProfile = IDL.Record({
     'unique_user_name' : IDL.Opt(IDL.Text),
     'profile_picture_url' : IDL.Opt(IDL.Text),
     'display_name' : IDL.Opt(IDL.Text),
     'principal_id' : IDL.Opt(IDL.Principal),
     'profile_stats' : UserProfileGlobalStats,
+    'referrer_details' : IDL.Opt(UserCanisterDetails),
   });
-  const Result_8 = IDL.Variant({ 'Ok' : IDL.Text, 'Err' : IDL.Text });
+  const Result_9 = IDL.Variant({ 'Ok' : IDL.Text, 'Err' : IDL.Text });
   const PostViewDetailsFromFrontend = IDL.Variant({
     'WatchedMultipleTimes' : IDL.Record({
       'percentage_watched' : IDL.Nat8,
@@ -296,11 +344,11 @@ export const idlFactory = ({ IDL }) => {
     'display_name' : IDL.Opt(IDL.Text),
   });
   const UpdateProfileDetailsError = IDL.Variant({ 'NotAuthorized' : IDL.Null });
-  const Result_9 = IDL.Variant({
+  const Result_10 = IDL.Variant({
     'Ok' : UserProfileDetailsForFrontend,
     'Err' : UpdateProfileDetailsError,
   });
-  const Result_10 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text });
+  const Result_11 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text });
   const UpdateProfileSetUniqueUsernameError = IDL.Variant({
     'UsernameAlreadyTaken' : IDL.Null,
     'UserIndexCrossCanisterCallFailed' : IDL.Null,
@@ -308,7 +356,7 @@ export const idlFactory = ({ IDL }) => {
     'NotAuthorized' : IDL.Null,
     'UserCanisterEntryDoesNotExist' : IDL.Null,
   });
-  const Result_11 = IDL.Variant({
+  const Result_12 = IDL.Variant({
     'Ok' : IDL.Null,
     'Err' : UpdateProfileSetUniqueUsernameError,
   });
@@ -362,7 +410,17 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'get_last_access_time' : IDL.Func([], [Result_4], ['query']),
+    'get_last_canister_functionality_access_time' : IDL.Func(
+        [],
+        [Result_4],
+        ['query'],
+      ),
     'get_posts_of_this_user_profile_with_pagination' : IDL.Func(
+        [IDL.Nat64, IDL.Nat64],
+        [Result_5],
+        ['query'],
+      ),
+    'get_posts_of_this_user_profile_with_pagination_cursor' : IDL.Func(
         [IDL.Nat64, IDL.Nat64],
         [Result_5],
         ['query'],
@@ -380,6 +438,11 @@ export const idlFactory = ({ IDL }) => {
     'get_profile_details' : IDL.Func(
         [],
         [UserProfileDetailsForFrontend],
+        ['query'],
+      ),
+    'get_profile_details_v2' : IDL.Func(
+        [],
+        [UserProfileDetailsForFrontendV2],
         ['query'],
       ),
     'get_rewarded_for_referral' : IDL.Func(
@@ -421,6 +484,11 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'receive_data_from_hotornot' : IDL.Func(
+        [IDL.Principal, IDL.Nat64, IDL.Vec(IDL.Tuple(IDL.Nat64, Post))],
+        [Result_8],
+        [],
+      ),
     'receive_my_created_posts_from_data_backup_canister' : IDL.Func(
         [IDL.Vec(Post)],
         [],
@@ -457,7 +525,13 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'save_snapshot_json' : IDL.Func([], [IDL.Nat32], []),
-    'update_last_access_time' : IDL.Func([], [Result_8], []),
+    'transfer_tokens_and_posts' : IDL.Func(
+        [IDL.Principal, IDL.Principal],
+        [Result_8],
+        [],
+      ),
+    'update_last_access_time' : IDL.Func([], [Result_9], []),
+    'update_last_canister_functionality_access_time' : IDL.Func([], [], []),
     'update_post_add_view_details' : IDL.Func(
         [IDL.Nat64, PostViewDetailsFromFrontend],
         [],
@@ -476,17 +550,17 @@ export const idlFactory = ({ IDL }) => {
       ),
     'update_profile_display_details' : IDL.Func(
         [UserProfileUpdateDetailsFromFrontend],
-        [Result_9],
+        [Result_10],
         [],
       ),
     'update_profile_owner' : IDL.Func(
         [IDL.Opt(IDL.Principal)],
-        [Result_10],
+        [Result_11],
         [],
       ),
     'update_profile_set_unique_username_once' : IDL.Func(
         [IDL.Text],
-        [Result_11],
+        [Result_12],
         [],
       ),
     'update_profiles_i_follow_toggle_list_with_specified_profile' : IDL.Func(
@@ -499,7 +573,13 @@ export const idlFactory = ({ IDL }) => {
         [Result_2],
         [],
       ),
-    'update_session_type' : IDL.Func([IDL.Opt(SessionType)], [IDL.Text], []),
+    'update_referrer_details' : IDL.Func([UserCanisterDetails], [Result_9], []),
+    'update_session_type' : IDL.Func([SessionType], [Result_9], []),
+    'update_well_known_principal' : IDL.Func(
+        [KnownPrincipalType, IDL.Principal],
+        [],
+        [],
+      ),
   });
 };
 export const init = ({ IDL }) => {
@@ -507,6 +587,7 @@ export const init = ({ IDL }) => {
     'CanisterIdUserIndex' : IDL.Null,
     'CanisterIdPlatformOrchestrator' : IDL.Null,
     'CanisterIdConfiguration' : IDL.Null,
+    'CanisterIdHotOrNotSubnetOrchestrator' : IDL.Null,
     'CanisterIdProjectMemberIndex' : IDL.Null,
     'CanisterIdTopicCacheIndex' : IDL.Null,
     'CanisterIdRootCanister' : IDL.Null,

@@ -43,14 +43,14 @@
     "workers:publish": "npm run publish --w @hnn/workers"
   },
   "devDependencies": {
-    "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v6.0.4",
-    "@types/node": "20.11.30",
-    "@typescript-eslint/eslint-plugin": "7.4.0",
-    "@typescript-eslint/parser": "7.4.0",
+    "@sveltejs/eslint-config": "github:sveltejs/eslint-config#v7.0.1",
+    "@types/node": "20.14.0",
+    "@typescript-eslint/eslint-plugin": "7.11.0",
+    "@typescript-eslint/parser": "7.11.0",
     "eslint": "8.57.0",
     "eslint-plugin-svelte3": "4.0.0",
-    "prettier": "3.2.5",
-    "prettier-plugin-svelte": "3.2.2",
-    "prettier-plugin-tailwindcss": "0.5.12"
+    "prettier": "3.3.0",
+    "prettier-plugin-svelte": "3.2.3",
+    "prettier-plugin-tailwindcss": "0.6.1"
   }
 }

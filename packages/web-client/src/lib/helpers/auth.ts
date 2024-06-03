@@ -57,13 +57,9 @@ async function updateUserIndexCanister(): Promise<{
         }
       } else {
         new_user = true
-        const referral: [] | [Principal] = referralStore.principalId
-          ? [Principal.from(referralStore.principalId)]
-          : []
+
         userCanisterPrincipal =
-          await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-            referral,
-          )
+          await userIndex().get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer()
       }
     }
 

@@ -16,6 +16,7 @@ export interface HttpResponse {
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdPlatformOrchestrator' : null } |
   { 'CanisterIdConfiguration' : null } |
+  { 'CanisterIdHotOrNotSubnetOrchestrator' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
@@ -87,4 +88,4 @@ export interface _SERVICE {
   >,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

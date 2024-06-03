@@ -45,13 +45,6 @@ $: pathname = $page.url.pathname
           ? ''
           : $playerState.currentFeedUrl}
         selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
-
-      <IconButton
-        href="/notifications"
-        ariaLabel="Notifications"
-        iconName={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
-        iconClass="h-6 w-6"
-        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center" />
     {:else if pathname.includes('menu')}
       <div
         class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
@@ -73,6 +66,6 @@ $: pathname = $page.url.pathname
   </div>
 </HomeLayout>
 
-{#if $showMigrationPopup}
+<!-- {#if $showMigrationPopup}
   <MigrationPopup on:click={() => showMigrationPopup.set(false)} />
-{/if}
+{/if} -->

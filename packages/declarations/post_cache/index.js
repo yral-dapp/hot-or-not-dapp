@@ -10,8 +10,7 @@ export { idlFactory } from "./post_cache.did.js";
  * beginning in dfx 0.15.0
  */
 export const canisterId =
-  process.env.CANISTER_ID_POST_CACHE ||
-  process.env.POST_CACHE_CANISTER_ID;
+  process.env.CANISTER_ID_POST_CACHE;
 
 export const createActor = (canisterId, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });

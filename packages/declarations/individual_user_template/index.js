@@ -10,8 +10,7 @@ export { idlFactory } from "./individual_user_template.did.js";
  * beginning in dfx 0.15.0
  */
 export const canisterId =
-  process.env.CANISTER_ID_INDIVIDUAL_USER_TEMPLATE ||
-  process.env.INDIVIDUAL_USER_TEMPLATE_CANISTER_ID;
+  process.env.CANISTER_ID_INDIVIDUAL_USER_TEMPLATE;
 
 export const createActor = (canisterId, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });

@@ -33,9 +33,7 @@ describe('e2e test suite', () => {
       agent,
     })
     const anonPrincipalId =
-      await userIndexActor.get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-        [],
-      )
+      await userIndexActor.get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer()
     expect(anonPrincipalId.toText()).toBeTruthy()
   })
   it('Setup initial data', async () => {
@@ -50,9 +48,7 @@ describe('e2e test suite', () => {
       agent,
     })
     const userCanisterPrincipal =
-      await userIndexActor.get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer(
-        [],
-      )
+      await userIndexActor.get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer()
     const userCansiterId = userCanisterPrincipal.toText()
     console.log('user canisterId', userCansiterId)
     const individualUserActor = createIndividualUserActor(

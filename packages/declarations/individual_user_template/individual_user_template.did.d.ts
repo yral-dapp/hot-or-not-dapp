@@ -110,6 +110,7 @@ export interface IndividualUserTemplateInitArgs {
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdPlatformOrchestrator' : null } |
   { 'CanisterIdConfiguration' : null } |
+  { 'CanisterIdHotOrNotSubnetOrchestrator' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
@@ -118,6 +119,21 @@ export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdSNSController' : null } |
   { 'CanisterIdSnsGovernance' : null } |
   { 'UserIdGlobalSuperAdmin' : null };
+export type MigrationErrors = { 'InvalidToCanister' : null } |
+  { 'InvalidFromCanister' : null } |
+  { 'MigrationInfoNotFound' : null } |
+  { 'UserNotRegistered' : null } |
+  { 'Unauthorized' : null } |
+  { 'TransferToCanisterCallFailed' : null } |
+  { 'HotOrNotSubnetCanisterIdNotFound' : null } |
+  { 'AlreadyUsedForMigration' : null } |
+  { 'CanisterInfoFailed' : null } |
+  { 'AlreadyMigrated' : null };
+export type MigrationInfo = {
+    'MigratedFromHotOrNot' : { 'account_principal' : Principal }
+  } |
+  { 'NotMigrated' : null } |
+  { 'MigratedToYral' : { 'account_principal' : Principal } };
 export type MintEvent = {
     'NewUserSignup' : { 'new_user_principal_id' : Principal }
   } |
@@ -207,9 +223,11 @@ export type Result = { 'Ok' : bigint } |
   { 'Err' : string };
 export type Result_1 = { 'Ok' : BettingStatus } |
   { 'Err' : BetOnCurrentlyViewingPostError };
-export type Result_10 = { 'Ok' : null } |
-  { 'Err' : string };
+export type Result_10 = { 'Ok' : UserProfileDetailsForFrontend } |
+  { 'Err' : UpdateProfileDetailsError };
 export type Result_11 = { 'Ok' : null } |
+  { 'Err' : string };
+export type Result_12 = { 'Ok' : null } |
   { 'Err' : UpdateProfileSetUniqueUsernameError };
 export type Result_2 = { 'Ok' : boolean } |
   { 'Err' : FollowAnotherUserProfileError };
@@ -223,10 +241,10 @@ export type Result_6 = { 'Ok' : SessionType } |
   { 'Err' : string };
 export type Result_7 = { 'Ok' : Array<[bigint, TokenEvent]> } |
   { 'Err' : GetPostsOfUserProfileError };
-export type Result_8 = { 'Ok' : string } |
+export type Result_8 = { 'Ok' : null } |
+  { 'Err' : MigrationErrors };
+export type Result_9 = { 'Ok' : string } |
   { 'Err' : string };
-export type Result_9 = { 'Ok' : UserProfileDetailsForFrontend } |
-  { 'Err' : UpdateProfileDetailsError };
 export type RoomBetPossibleOutcomes = { 'HotWon' : null } |
   { 'BetOngoing' : null } |
   { 'Draw' : null } |
@@ -261,11 +279,24 @@ export type TokenEvent = {
       'amount' : bigint,
     }
   } |
-  { 'Transfer' : null } |
+  {
+    'Transfer' : {
+      'to_account' : Principal,
+      'timestamp' : SystemTime,
+      'amount' : bigint,
+    }
+  } |
   {
     'HotOrNotOutcomePayout' : {
       'timestamp' : SystemTime,
       'details' : HotOrNotOutcomePayoutEvent,
+      'amount' : bigint,
+    }
+  } |
+  {
+    'Receive' : {
+      'from_account' : Principal,
+      'timestamp' : SystemTime,
       'amount' : bigint,
     }
   };
@@ -277,12 +308,17 @@ export type UpdateProfileSetUniqueUsernameError = {
   { 'SendingCanisterDoesNotMatchUserCanisterId' : null } |
   { 'NotAuthorized' : null } |
   { 'UserCanisterEntryDoesNotExist' : null };
+export interface UserCanisterDetails {
+  'user_canister_id' : Principal,
+  'profile_owner' : Principal,
+}
 export interface UserProfile {
   'unique_user_name' : [] | [string],
   'profile_picture_url' : [] | [string],
   'display_name' : [] | [string],
   'principal_id' : [] | [Principal],
   'profile_stats' : UserProfileGlobalStats,
+  'referrer_details' : [] | [UserCanisterDetails],
 }
 export interface UserProfileDetailsForFrontend {
   'unique_user_name' : [] | [string],
@@ -293,6 +329,19 @@ export interface UserProfileDetailsForFrontend {
   'principal_id' : Principal,
   'profile_stats' : UserProfileGlobalStats,
   'followers_count' : bigint,
+  'referrer_details' : [] | [UserCanisterDetails],
+}
+export interface UserProfileDetailsForFrontendV2 {
+  'unique_user_name' : [] | [string],
+  'lifetime_earnings' : bigint,
+  'migration_info' : MigrationInfo,
+  'following_count' : bigint,
+  'profile_picture_url' : [] | [string],
+  'display_name' : [] | [string],
+  'principal_id' : Principal,
+  'profile_stats' : UserProfileGlobalStats,
+  'followers_count' : bigint,
+  'referrer_details' : [] | [UserCanisterDetails],
 }
 export interface UserProfileGlobalStats {
   'hot_bets_received' : bigint,
@@ -334,7 +383,12 @@ export interface _SERVICE {
     PostDetailsForFrontend
   >,
   'get_last_access_time' : ActorMethod<[], Result_4>,
+  'get_last_canister_functionality_access_time' : ActorMethod<[], Result_4>,
   'get_posts_of_this_user_profile_with_pagination' : ActorMethod<
+    [bigint, bigint],
+    Result_5
+  >,
+  'get_posts_of_this_user_profile_with_pagination_cursor' : ActorMethod<
     [bigint, bigint],
     Result_5
   >,
@@ -347,6 +401,7 @@ export interface _SERVICE {
     Array<[bigint, FollowEntryDetail]>
   >,
   'get_profile_details' : ActorMethod<[], UserProfileDetailsForFrontend>,
+  'get_profile_details_v2' : ActorMethod<[], UserProfileDetailsForFrontendV2>,
   'get_rewarded_for_referral' : ActorMethod<[Principal, Principal], undefined>,
   'get_rewarded_for_signing_up' : ActorMethod<[], undefined>,
   'get_session_type' : ActorMethod<[], Result_6>,
@@ -377,6 +432,10 @@ export interface _SERVICE {
     [bigint, BetOutcomeForBetMaker],
     undefined
   >,
+  'receive_data_from_hotornot' : ActorMethod<
+    [Principal, bigint, Array<[bigint, Post]>],
+    Result_8
+  >,
   'receive_my_created_posts_from_data_backup_canister' : ActorMethod<
     [Array<Post>],
     undefined
@@ -406,7 +465,9 @@ export interface _SERVICE {
     undefined
   >,
   'save_snapshot_json' : ActorMethod<[], number>,
-  'update_last_access_time' : ActorMethod<[], Result_8>,
+  'transfer_tokens_and_posts' : ActorMethod<[Principal, Principal], Result_8>,
+  'update_last_access_time' : ActorMethod<[], Result_9>,
+  'update_last_canister_functionality_access_time' : ActorMethod<[], undefined>,
   'update_post_add_view_details' : ActorMethod<
     [bigint, PostViewDetailsFromFrontend],
     undefined
@@ -416,10 +477,10 @@ export interface _SERVICE {
   'update_post_toggle_like_status_by_caller' : ActorMethod<[bigint], boolean>,
   'update_profile_display_details' : ActorMethod<
     [UserProfileUpdateDetailsFromFrontend],
-    Result_9
+    Result_10
   >,
-  'update_profile_owner' : ActorMethod<[[] | [Principal]], Result_10>,
-  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_11>,
+  'update_profile_owner' : ActorMethod<[[] | [Principal]], Result_11>,
+  'update_profile_set_unique_username_once' : ActorMethod<[string], Result_12>,
   'update_profiles_i_follow_toggle_list_with_specified_profile' : ActorMethod<
     [FolloweeArg],
     Result_2
@@ -428,7 +489,12 @@ export interface _SERVICE {
     [FollowerArg],
     Result_2
   >,
-  'update_session_type' : ActorMethod<[[] | [SessionType]], string>,
+  'update_referrer_details' : ActorMethod<[UserCanisterDetails], Result_9>,
+  'update_session_type' : ActorMethod<[SessionType], Result_9>,
+  'update_well_known_principal' : ActorMethod<
+    [KnownPrincipalType, Principal],
+    undefined
+  >,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

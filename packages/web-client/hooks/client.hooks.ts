@@ -7,7 +7,7 @@ const prod = window.location.host === productionHost
 
 Sentry.init({
   dsn: 'https://7586a69b01314524b31c8f4f64b41988@o4504076385124352.ingest.sentry.io/4504076386238464',
-  integrations: [new Sentry.Replay()],
+  integrations: [],
   environment: prod ? 'production' : 'local',
   tracesSampleRate: 1,
   replaysSessionSampleRate: 0.3,
