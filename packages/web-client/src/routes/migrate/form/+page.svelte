@@ -4,8 +4,8 @@ import goBack from '$lib/utils/goBack'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
+import bigCoin from './bigcoin.webp'
 import coinsBg from '../coins.webp'
-import bigCoin from './bigCoin.webp'
 import Button from '@hnn/components/button/Button.svelte'
 import { authState } from '$lib/stores/auth'
 import Input from '@hnn/components/input/Input.svelte'
@@ -54,17 +54,14 @@ async function fetchUserCanisterId() {
 async function transfer() {
   transferring = true
   try {
-    if (!$authState.userCanisterId || !$authState.idString) {
-      error = 'Something went wrong'
+    if (!yralId || !canId) {
+      error = 'Please provide the Yral principal ID'
       transferring = false
       step = 1
     }
     const res = await individualUser(
       $authState.userCanisterId,
-    ).transfer_tokens_and_posts(
-      Principal.from($authState.idString),
-      Principal.from(canId),
-    )
+    ).transfer_tokens_and_posts(Principal.from(yralId), Principal.from(canId))
     if ('Ok' in res) {
       transferred = true
       $authState.isMigrated = true
