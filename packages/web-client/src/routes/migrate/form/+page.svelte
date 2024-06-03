@@ -147,7 +147,7 @@ $: if (loggedIn) {
         class="mx-auto flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8 lg:max-w-lg">
         <div
           class="relative mt-20 flex w-full flex-col items-center gap-2 px-8">
-          <img src={coinsBg} alt="yral" />
+          <img src={bigCoin} alt="yral" />
         </div>
         {#if transferred}
           <div class="text-center">
@@ -181,7 +181,7 @@ $: if (loggedIn) {
         <div class="relative mt-28 flex w-full flex-col items-center gap-2">
           <div
             class="absolute inset-0 z-0 -mt-10 flex items-center justify-center">
-            <img src={bigCoin} alt="bg" class="max-w-84 w-full" />
+            <img src={coinsBg} alt="bg" class="max-w-84 w-full" />
           </div>
           <div class="z-[1] text-center text-xl font-bold">
             Transfer your HotorNot Account and Wallet Balance to
