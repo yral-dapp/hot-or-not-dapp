@@ -4,7 +4,6 @@ import goBack from '$lib/utils/goBack'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
-import coinsBg from '../coins.webp'
 import bigCoin from './bigCoin.webp'
 import Button from '@hnn/components/button/Button.svelte'
 import { authState } from '$lib/stores/auth'
@@ -54,17 +53,14 @@ async function fetchUserCanisterId() {
 async function transfer() {
   transferring = true
   try {
-    if (!$authState.userCanisterId || !$authState.idString) {
-      error = 'Something went wrong'
+    if (!yralId || !canId) {
+      error = 'Please provide the Yral principal ID'
       transferring = false
       step = 1
     }
     const res = await individualUser(
       $authState.userCanisterId,
-    ).transfer_tokens_and_posts(
-      Principal.from($authState.idString),
-      Principal.from(canId),
-    )
+    ).transfer_tokens_and_posts(Principal.from(yralId), Principal.from(canId))
     if ('Ok' in res) {
       transferred = true
       $authState.isMigrated = true
@@ -184,7 +180,7 @@ $: if (loggedIn) {
         <div class="relative mt-28 flex w-full flex-col items-center gap-2">
           <div
             class="absolute inset-0 z-0 -mt-10 flex items-center justify-center">
-            <img src={coinsBg} alt="bg" class="max-w-84 w-full" />
+            <img src={bigCoin} alt="bg" class="max-w-84 w-full" />
           </div>
           <div class="z-[1] text-center text-xl font-bold">
             Transfer your HotorNot Account and Wallet Balance to
