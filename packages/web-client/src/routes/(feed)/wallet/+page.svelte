@@ -105,26 +105,12 @@ onMount(() => ($showMigrationPopup = true))
       {/if}
     </div>
 
-    <!-- <div class="px-6 py-4">
-			<div
-				class="flex w-full items-center justify-between divide-x-2 divide-white/10 rounded-full bg-white/10 py-4 px-2">
-				{#each Array(3) as _}
-					<button class="flex grow flex-col items-center space-y-1">
-						<div
-							class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-transparent">
-							<Icon name="arrow-up" class="h-6 w-6" />
-						</div>
-						<div class="text-xs">Send</div>
-					</button>
-				{/each}
-			</div>
-		</div> -->
     <div class="flex justify-between px-6 pb-1 pt-4">
       <div class="text-sm">Recent Transactions</div>
       <a href="/wallet/transactions" class="text-sm opacity-50">See all</a>
     </div>
     <div
-      class="flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pb-16 pt-4">
+      class="relative flex flex-col space-y-2 divide-y-2 divide-white/10 px-6 pb-16 pt-4">
       {#if errorList}
         <div class="text-sm font-bold opacity-50">
           Error fetching transactions
@@ -140,6 +126,18 @@ onMount(() => ($showMigrationPopup = true))
           </div>
           <div class="opacity-70 pt-4 text-center">No transactions yet</div>
         {/each}
+        {#if $authState.isMigrated}
+          <div
+            class="absolute top-[5.5rem] flex h-full w-full flex-col items-center justify-center !border-0 backdrop-blur-md">
+            Your account has been transferred to yral. Go ahead and explore the
+            app <a
+              target="_blank"
+              class="font-bold text-[#E2017B] underline"
+              href="https://yral.com">
+              yral.com
+            </a>
+          </div>
+        {/if}
       {/if}
     </div>
   </div>

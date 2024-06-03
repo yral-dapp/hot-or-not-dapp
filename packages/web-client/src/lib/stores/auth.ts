@@ -17,6 +17,7 @@ export const authState = persisted<{
   userCanisterId?: string
   showLogin: boolean
   t?: boolean
+  isMigrated?: boolean
 }>('auth-state', {
   isLoggedIn: false,
   showLogin: false,
