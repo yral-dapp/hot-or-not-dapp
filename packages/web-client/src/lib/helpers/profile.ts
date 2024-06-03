@@ -7,7 +7,7 @@ import type {
   PostDetailsForFrontend,
   SystemTime,
   TokenEvent,
-  UserProfileDetailsForFrontend,
+  UserProfileDetailsForFrontendV2,
 } from '@hnn/declarations/individual_user_template/individual_user_template.did'
 import { setUserProperties } from '@hnn/components/analytics/GA.utils'
 import getDefaultImageUrl from '$lib/utils/getDefaultImageUrl'
@@ -38,7 +38,7 @@ export interface PostPopulatedWithBetDetails extends PostPopulated {
 
 async function fetchProfile() {
   try {
-    return await individualUser().get_profile_details()
+    return await individualUser().get_profile_details_v2()
   } catch (e) {
     Log('warn', 'Could not fetch user profile', {
       error: e,
@@ -48,7 +48,7 @@ async function fetchProfile() {
 }
 
 export function sanitizeProfile(
-  profile: UserProfileDetailsForFrontend,
+  profile: UserProfileDetailsForFrontendV2,
   userId: string,
 ): UserProfile {
   return {
@@ -70,7 +70,7 @@ export function sanitizeProfile(
   }
 }
 
-export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
+export async function updateProfile(profile?: UserProfileDetailsForFrontendV2) {
   const authStateData = get(authState)
   if (authStateData.isLoggedIn) {
     const updateProfile = profile || (await fetchProfile())
@@ -78,6 +78,11 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontend) {
       userProfile.set({
         ...sanitizeProfile(updateProfile, authStateData.idString || 'random'),
       })
+      authState.update((o) => ({
+        ...o,
+        isMigrated:
+          Object.keys(updateProfile.migration_info)?.[0] !== 'NotMigrated',
+      }))
       if (updateProfile.unique_user_name[0]) {
         try {
           const { idb } = await import('$lib/idb')
@@ -170,16 +175,18 @@ export function serializeProfilePostsResponse(posts: PostDetailsForFrontend[]) {
 export async function fetchPosts(
   id: string,
   from: number,
+  count: number = 10,
 ): Promise<ProfilePostsResponse> {
   try {
     const canId = await getCanisterId(id)
-
+    console.log({ canId }, BigInt(from), BigInt(from + count))
     const res = await individualUser(
       Principal.from(canId),
     ).get_posts_of_this_user_profile_with_pagination(
       BigInt(from),
-      BigInt(from + 10),
+      BigInt(from + count),
     )
+    console.log({ res })
     if ('Ok' in res) {
       return {
         error: false,
@@ -356,7 +363,7 @@ async function populateProfiles(list: Array<[bigint, FollowEntryDetail]>) {
         ).get_profile_details()
 
         return {
-          ...sanitizeProfile(r, principalId),
+          ...sanitizeProfile(r as any, principalId),
           index_id: id,
           i_follow: authStateData.isLoggedIn
             ? await doIFollowThisUser(principalId)
@@ -434,13 +441,12 @@ export async function loveUser(principalId: string) {
 type UnionKeyOf<U> = U extends U ? keyof U : never
 type UnionValueOf<U> = U extends U ? U[keyof U] : never
 
-const walletEventDetails = ({} as WalletEvent)?.details
-type WalletEvent = UnionValueOf<TokenEvent>
-type WalletEventDetails = typeof walletEventDetails
-export type WalletEventSubType = UnionKeyOf<WalletEventDetails>
-type WalletEventSubDetails = UnionValueOf<WalletEventDetails>
+const walletEventDetails = {} as WalletEvent
+type WalletEvent = UnionKeyOf<TokenEvent>
+export type WalletEventType = typeof walletEventDetails
+type WalletEventSubDetails = UnionValueOf<TokenEvent>
 type NotificationEventType = Omit<
-  WalletEventSubType,
+  WalletEventType,
   'BetOnHotOrNotPost' | 'NewUserSignup'
 >
 type EventOutcome = UnionKeyOf<BetOutcomeForBetMaker>
@@ -450,7 +456,7 @@ export interface TransactionHistory {
   type: UnionKeyOf<TokenEvent>
   token: number
   timestamp: SystemTime
-  subType: WalletEventSubType
+  subType: WalletEventType
   details?: WalletEventSubDetails
   eventOutcome?: EventOutcome
 }
@@ -486,32 +492,30 @@ type NotificationResponse =
 
 async function transformHistoryRecords(
   res: Array<[bigint, TokenEvent]>,
-  filter?: UnionKeyOf<MintEvent>,
+  _filter?: UnionKeyOf<MintEvent>,
 ): Promise<TransactionHistory[]> {
   const history: TransactionHistory[] = []
 
   res.forEach((o) => {
     const event = o[1]
     const type = Object.keys(event)[0] as UnionKeyOf<TokenEvent>
-    const subType = Object.keys(event[type].details)[0] as WalletEventSubType
-    const details = (event[type] as WalletEvent)?.details?.[
+    const subType = Object.keys(event[type].details)[0] as WalletEventType
+    const details = (event[type] as WalletEvent)?.[
       subType
     ] as WalletEventSubDetails
     const eventOutcome = Object.keys(
       details?.['event_outcome'] || {},
     )[0] as EventOutcome
 
-    if (!filter || filter === subType) {
-      history.push({
-        id: o[0],
-        type,
-        subType,
-        token: Object.values(event)?.[0]?.amount || 0,
-        timestamp: event[type].timestamp as SystemTime,
-        details,
-        eventOutcome,
-      })
-    }
+    history.push({
+      id: o[0],
+      type,
+      subType,
+      token: Object.values(event)?.[0]?.amount || 0,
+      timestamp: event[type].timestamp as SystemTime,
+      details,
+      eventOutcome,
+    })
   })
 
   return history
@@ -580,24 +584,22 @@ async function transformNotificationRecords(res: Array<[bigint, TokenEvent]>) {
   res.forEach((o) => {
     const event = o[1]
     const type = Object.keys(event)[0] as UnionKeyOf<TokenEvent>
-    const subType = Object.keys(event[type].details)[0] as WalletEventSubType
-    const details = (event[type] as WalletEvent)?.details?.[
+    const subType = Object.keys(event[type].details)[0] as WalletEventType
+    const details = (event[type] as WalletEvent)?.[
       subType
     ] as WalletEventSubDetails
     const eventOutcome = Object.keys(
       details?.['event_outcome'] || {},
     )[0] as EventOutcome
 
-    if (subType !== 'BetOnHotOrNotPost' && subType !== 'NewUserSignup') {
-      notifications.push({
-        id: o[0],
-        type: subType,
-        token: Object.values(event)?.[0]?.amount || 0,
-        timestamp: event[type].timestamp as SystemTime,
-        details,
-        eventOutcome,
-      })
-    }
+    notifications.push({
+      id: o[0],
+      type: subType,
+      token: Object.values(event)?.[0]?.amount || 0,
+      timestamp: event[type].timestamp as SystemTime,
+      details,
+      eventOutcome,
+    })
   })
   return notifications
 }

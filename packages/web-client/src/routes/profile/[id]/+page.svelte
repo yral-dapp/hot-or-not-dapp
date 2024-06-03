@@ -30,6 +30,7 @@ import { slide } from 'svelte/transition'
 import type { Snapshot } from './$types'
 import { serializeBigIntHelper } from '$lib/utils/Log'
 import { reportPostOrUser } from '$lib/helpers/report'
+import { showMigrationPopup } from '$lib/stores/popups'
 
 export let data: PageData
 export const snapshot: Snapshot = {
@@ -139,6 +140,7 @@ onMount(() => {
     profile_username: profile.unique_user_name,
   })
   handleParams()
+  $showMigrationPopup = true
 })
 
 $: tab = $page.url.searchParams.get('tab')

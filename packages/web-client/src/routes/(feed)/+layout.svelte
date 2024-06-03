@@ -8,8 +8,8 @@ import { onDestroy, onMount } from 'svelte'
 import { authState } from '$lib/stores/auth'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
-import { userStoryStore } from '$lib/helpers/user-study'
-import UserStudy from '$lib/components/popup/UserStudy.svelte'
+import { showMigrationPopup } from '$lib/stores/popups'
+import MigrationPopup from '@hnn/components/popup/MigrationPopup.svelte'
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
@@ -45,13 +45,6 @@ $: pathname = $page.url.pathname
           ? ''
           : $playerState.currentFeedUrl}
         selected={pathname.includes('feed') ? 'videos' : 'hot-or-not'} />
-
-      <IconButton
-        href="/notifications"
-        ariaLabel="Notifications"
-        iconName={$authState.isLoggedIn ? 'bell-alert' : 'bell'}
-        iconClass="h-6 w-6"
-        class="absolute right-6 top-5 flex h-10 w-10 items-center justify-center" />
     {:else if pathname.includes('menu')}
       <div
         class="flex w-full items-center justify-center bg-black py-4 shadow-xl shadow-black/50">
@@ -73,6 +66,6 @@ $: pathname = $page.url.pathname
   </div>
 </HomeLayout>
 
-{#if $userStoryStore.show}
-  <UserStudy bind:show={$userStoryStore.show} />
-{/if}
+<!-- {#if $showMigrationPopup}
+  <MigrationPopup on:click={() => showMigrationPopup.set(false)} />
+{/if} -->

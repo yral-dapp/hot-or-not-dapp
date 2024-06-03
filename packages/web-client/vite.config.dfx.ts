@@ -11,7 +11,7 @@ const canisterIds = devMode ? devCanisterJson : prodCanisterIds
 const canisterDefinitions = Object.entries(canisterIds).reduce(
   (acc, [key, val]) => ({
     ...acc,
-    [`process.env.${key.toUpperCase()}_CANISTER_ID`]: devMode
+    [`process.env.CANISTER_ID_${key.toUpperCase()}`]: devMode
       ? JSON.stringify((val as any).local)
       : JSON.stringify((val as any).ic),
   }),

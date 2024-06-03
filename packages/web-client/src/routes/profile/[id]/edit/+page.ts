@@ -12,7 +12,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
     redirect(307, '/404')
   }
   try {
-    const profile = await individualUser(undefined, fetch).get_profile_details()
+    const profile = await individualUser(
+      undefined,
+      fetch,
+    ).get_profile_details_v2()
     const me =
       profile.unique_user_name[0] === id || profile.principal_id.toText() === id
     if (!me) {

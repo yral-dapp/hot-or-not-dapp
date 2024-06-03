@@ -8,7 +8,7 @@ export let selected: 'videos' | 'hot-or-not' = 'hot-or-not'
 export let showDot: 'videos' | 'hot-or-not' | null = null
 </script>
 
-<home-selector class="flex w-full items-center justify-center pt-4">
+<home-selector class="flex w-full items-center justify-center pt-2">
   <div
     class="relative flex items-center justify-center space-x-6 rounded-full bg-black/50 py-3 pr-5 text-white">
     <selector

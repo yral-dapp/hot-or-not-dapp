@@ -24,7 +24,6 @@ export default defineConfig(() => ({
   plugins: [
     sentrySvelteKit({
       sourceMapsUploadOptions: {
-        uploadSourceMaps: false,
         org: 'gobazzinga',
         project: 'hot-or-not',
         authToken: process.env.SENTRY_AUTH_TOKEN,

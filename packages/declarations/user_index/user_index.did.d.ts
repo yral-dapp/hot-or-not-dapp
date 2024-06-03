@@ -37,6 +37,7 @@ export interface HttpResponse {
 export type KnownPrincipalType = { 'CanisterIdUserIndex' : null } |
   { 'CanisterIdPlatformOrchestrator' : null } |
   { 'CanisterIdConfiguration' : null } |
+  { 'CanisterIdHotOrNotSubnetOrchestrator' : null } |
   { 'CanisterIdProjectMemberIndex' : null } |
   { 'CanisterIdTopicCacheIndex' : null } |
   { 'CanisterIdRootCanister' : null } |
@@ -50,6 +51,13 @@ export interface QueryStats {
   'num_instructions_total' : bigint,
   'num_calls_total' : bigint,
   'request_payload_bytes_total' : bigint,
+}
+export interface RecycleStatus {
+  'last_recycled_duration' : [] | [bigint],
+  'last_recycled_at' : [] | [SystemTime],
+  'num_last_recycled_canisters' : bigint,
+  'success_canisters' : Array<string>,
+  'failed_recycling' : Array<[Principal, string]>,
 }
 export type RejectionCode = { 'NoError' : null } |
   { 'CanisterError' : null } |
@@ -103,8 +111,9 @@ export interface _SERVICE {
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
   'get_list_of_available_canisters' : ActorMethod<[], Array<Principal>>,
+  'get_recycle_status' : ActorMethod<[], RecycleStatus>,
   'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
-    [[] | [Principal]],
+    [],
     Principal
   >,
   'get_subnet_available_capacity' : ActorMethod<[], bigint>,
@@ -120,6 +129,10 @@ export interface _SERVICE {
   'get_user_canister_incl_avail_list' : ActorMethod<[], Array<Principal>>,
   'get_user_canister_list' : ActorMethod<[], Array<Principal>>,
   'get_user_canister_status' : ActorMethod<[Principal], Result_1>,
+  'get_user_id_and_canister_list' : ActorMethod<
+    [],
+    Array<[Principal, Principal]>
+  >,
   'get_user_index_canister_count' : ActorMethod<[], bigint>,
   'get_user_index_canister_cycle_balance' : ActorMethod<[], bigint>,
   'get_well_known_principal_value' : ActorMethod<
@@ -127,6 +140,10 @@ export interface _SERVICE {
     [] | [Principal]
   >,
   'http_request' : ActorMethod<[HttpRequest], HttpResponse>,
+  'issue_rewards_for_referral' : ActorMethod<
+    [Principal, Principal, Principal],
+    Result
+  >,
   'receive_data_from_backup_canister_and_restore_data_to_heap' : ActorMethod<
     [Principal, Principal, string],
     undefined
@@ -143,11 +160,16 @@ export interface _SERVICE {
     string
   >,
   'toggle_signups_enabled' : ActorMethod<[], Result_2>,
+  'update_canisters_last_functionality_access_time' : ActorMethod<[], string>,
   'update_index_with_unique_user_name_corresponding_to_user_principal_id' : ActorMethod<
     [string, Principal],
     Result_3
   >,
   'update_profile_owner_for_individual_canisters' : ActorMethod<[], undefined>,
+  'update_well_known_principal' : ActorMethod<
+    [KnownPrincipalType, Principal],
+    undefined
+  >,
   'upgrade_specific_individual_user_canister_with_latest_wasm' : ActorMethod<
     [Principal, [] | [Principal], [] | [CanisterInstallMode]],
     string
@@ -158,4 +180,4 @@ export interface _SERVICE {
   >,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

@@ -205,8 +205,7 @@ $: link = !loggedIn
           {@const date = new Date(Number(item.timestamp.secs_since_epoch))
             .toDateString()
             .substring(4)}
-          {@const tokenCount =
-            item.subType === 'NewUserSignup' ? 1000 : { INVITE_WIN_TOKENS }}
+
           <div class="flex w-full items-center justify-between py-2 text-white">
             <div class="flex items-center space-x-8">
               <img
@@ -218,7 +217,7 @@ $: link = !loggedIn
                 <span class="text-sm text-white/50">{date}</span>
               </div>
             </div>
-            <span>{tokenCount} Coins</span>
+            <span>100 Coins</span>
           </div>
         {/each}
         {#if loading}

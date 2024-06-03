@@ -1,12 +1,12 @@
 {
   "name": "@hnn/declarations",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "",
   "scripts": {
     "fetch": "sh ./fetch.sh"
   },
   "dependencies": {
-    "@dfinity/agent": "1.2.0"
+    "@dfinity/agent": "1.3.0"
   },
   "keywords": [],
   "author": "",

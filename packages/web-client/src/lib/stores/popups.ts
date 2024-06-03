@@ -5,6 +5,8 @@ import type { PostReportData } from '@hnn/components/popup/ReportPopup.types'
 
 export const showOnboardingPopup = persisted('hot-or-not-ob', true)
 
+export const showMigrationPopup = writable<boolean>(true)
+
 export const splashScreenPopup = writable<{
   show: boolean
   shown: boolean

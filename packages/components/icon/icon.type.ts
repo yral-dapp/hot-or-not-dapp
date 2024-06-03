@@ -83,3 +83,4 @@ export type IconName =
   | 'heart-broken-fill'
   | 'coin-token'
   | 'nsfw'
+  | 'yral'
