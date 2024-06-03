@@ -25,7 +25,7 @@ $: deducted =
 $: eventName = getEventName()
 $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
 
-const labels: Record<WalletEventType, string> = {
+const labels: Record<any, string> = {
   BetOnHotOrNotPost: 'VotedOnHotOrNotPost',
   CommissionFromHotOrNotBet: 'CommissionFromPostVote',
   WinningsEarnedFromBet: 'WinningsEarnedFromVoting',
