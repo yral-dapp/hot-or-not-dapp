@@ -4,7 +4,8 @@ import goBack from '$lib/utils/goBack'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import Icon from '@hnn/components/icon/Icon.svelte'
 import HomeLayout from '@hnn/components/web-client/layout/HomeLayout.svelte'
-import bigCoin from './bigCoin.webp'
+import bigCoin from './bigcoin.webp'
+import coinsBg from '../coins.webp'
 import Button from '@hnn/components/button/Button.svelte'
 import { authState } from '$lib/stores/auth'
 import Input from '@hnn/components/input/Input.svelte'
@@ -146,7 +147,7 @@ $: if (loggedIn) {
         class="mx-auto flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8 lg:max-w-lg">
         <div
           class="relative mt-20 flex w-full flex-col items-center gap-2 px-8">
-          <img src={bigCoin} alt="yral" />
+          <img src={coinsBg} alt="yral" />
         </div>
         {#if transferred}
           <div class="text-center">
