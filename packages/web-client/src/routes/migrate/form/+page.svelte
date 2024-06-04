@@ -100,6 +100,8 @@ async function transfer() {
         yralCanisterId: canId,
       })
       error = Object.keys(res.Err)?.[0]
+        ?.split(/(?=[A-Z])/)
+        ?.join(' ')
       step = 1
     }
   } finally {
@@ -179,7 +181,7 @@ $: if (loggedIn) {
       <div
         class="mx-auto flex h-full w-full max-w-sm flex-col items-center gap-10 overflow-y-auto px-8 py-8 lg:max-w-lg">
         <div
-          class="relative mt-20 flex w-full flex-col items-center gap-2 px-8">
+          class="relative z-0 mt-20 flex w-full flex-col items-center gap-2 px-8">
           <img src={bigCoin} alt="yral" />
         </div>
         {#if transferred}
@@ -223,12 +225,12 @@ $: if (loggedIn) {
           </div>
           <a
             target="_blank"
-            class="text-3xl font-bold uppercase text-[#E2017B]"
+            class="z-[1] text-3xl font-bold uppercase text-[#E2017B]"
             href="https://yral.com">
             Yral.com
           </a>
         </div>
-        <a href="/migrate-faq" class="font-bold text-primary underline">
+        <a href="/migrate-faq" class="z-[1] font-bold text-primary underline">
           Learn more about the transfer here
         </a>
         <div class="h-1 w-10 border-t border-dashed border-white"></div>
@@ -260,16 +262,9 @@ $: if (loggedIn) {
             bind:value={yralId}
             class="w-full rounded-md bg-white/10 py-4" />
 
-          <div class="flex gap-2">
-            <input
-              checked
-              type="checkbox"
-              class="h-4 w-4 rounded border-2 border-white bg-transparent text-primary focus:ring-0" />
-
-            <div class="text-sm">
-              Do you want to transfer your tokens from HON wallet to “xxx” YRAL
-              wallet?
-            </div>
+          <div class="text-sm">
+            Note: Both the posts and the wallet balance will be transferred to
+            your yral account.
           </div>
 
           {#if error}

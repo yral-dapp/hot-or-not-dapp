@@ -9,7 +9,6 @@ import Button from '@hnn/components/button/Button.svelte'
 import { authState } from '$lib/stores/auth'
 
 let loading = false
-let selected: 'yes' | 'no' | undefined = undefined
 </script>
 
 <svelte:head>
@@ -88,39 +87,17 @@ let selected: 'yes' | 'no' | undefined = undefined
         </div>
         <div class="h-1 w-10 border-t border-dashed border-white"></div>
         {#if $authState.isLoggedIn}
-          <div class="text-sm font-medium">
-            Have you logged in to yral.com with your google ID? <span
-              class="text-red-500">
-              *
-            </span>
-            <div class="flex gap-2 pt-2">
-              <button
-                on:click={() => (selected = 'yes')}
-                class="rounded-md px-8 py-2
-                {selected === 'yes' ? 'bg-primary/90' : 'bg-white/10'}">
-                Yes
-              </button>
-              <button
-                on:click={() => (selected = 'no')}
-                class="rounded-md px-8 py-2
-                {selected === 'no' ? 'bg-primary/90' : 'bg-white/10'}">
-                No
-              </button>
-            </div>
+          <div class="text-center text-sm font-medium">
+            Go to <a
+              target="_blank"
+              class="font-bold text-[#E2017B] underline"
+              href="https://yral.com">
+              Yral.com
+            </a>
+            and get your Yral Principal id before proceeding.
           </div>
-          {#if selected === 'yes'}
-            <Button class="w-full" href="/migrate/form">Proceed</Button>
-          {:else if selected === 'no'}
-            <div class="text-center text-sm font-medium">
-              Go to <a
-                target="_blank"
-                class="font-bold text-[#E2017B] underline"
-                href="https://yral.com">
-                Yral.com
-              </a>
-              and get your Yral Principal id before proceeding.
-            </div>
-          {/if}
+
+          <Button class="w-full" href="/migrate/form">Proceed</Button>
         {:else}
           <Button class="w-full" on:click={() => ($authState.showLogin = true)}>
             Login
