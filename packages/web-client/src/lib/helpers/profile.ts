@@ -561,11 +561,8 @@ export async function fetchHistory(
         BigInt(from + 10),
       )
 
-    console.log('history', { res })
-
     if ('Ok' in res) {
       const history = await transformHistoryRecords(res.Ok, filter)
-      console.log('history', { history })
 
       return {
         error: false,
