@@ -100,6 +100,8 @@ async function transfer() {
         yralCanisterId: canId,
       })
       error = Object.keys(res.Err)?.[0]
+        ?.split(/(?=[A-Z])/)
+        ?.join(' ')
       step = 1
     }
   } finally {
