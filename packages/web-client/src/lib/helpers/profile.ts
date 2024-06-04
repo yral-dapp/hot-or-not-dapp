@@ -76,11 +76,11 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontendV2) {
   if (authStateData.isLoggedIn) {
     const updateProfile = profile || (await fetchProfile())
     if (updateProfile) {
-      updateProfile.migration_info = {
-        MigratedFromHotOrNot: {
-          account_principal: Principal.from('2vxsx-fae'),
-        },
-      }
+      // updateProfile.migration_info = {
+      //   MigratedFromHotOrNot: {
+      //     account_principal: Principal.from('2vxsx-fae'),
+      //   },
+      // }
 
       userProfile.set({
         ...sanitizeProfile(updateProfile, authStateData.idString || 'random'),
