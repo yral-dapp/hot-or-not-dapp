@@ -512,7 +512,7 @@ async function transformHistoryRecords(
     const eventOutcome = Object.keys(
       details?.['event_outcome'] || {},
     )[0] as EventOutcome
-
+    console.log({ o, type, event, subType, details, eventOutcome })
     history.push({
       id: o[0],
       type,
@@ -556,8 +556,12 @@ export async function fetchHistory(
         BigInt(from),
         BigInt(from + 10),
       )
+
+    console.log('history', { res })
+
     if ('Ok' in res) {
       const history = await transformHistoryRecords(res.Ok, filter)
+      console.log('history', { history })
 
       return {
         error: false,
