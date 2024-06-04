@@ -194,7 +194,9 @@ $: if (loggedIn) {
               Yral.com
             </a>
           </div>
-          <Button class="w-full" href="/migrate-faq">Support</Button>
+          <Button class="w-full" href="https://t.me/+c-LTX0Cp-ENmMzI1">
+            Support
+          </Button>
         {:else}
           <div class="text-center">
             Click confirm to complete the transfer. Once you complete the

@@ -91,7 +91,7 @@ let loading = false
             Go to <a
               target="_blank"
               class="font-bold text-[#E2017B] underline"
-              href="https://yral.com">
+              href="yral.com/account-transfer">
               Yral.com
             </a>
             and get your Yral Principal id before proceeding.
