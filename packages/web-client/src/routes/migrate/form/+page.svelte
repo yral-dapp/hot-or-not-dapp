@@ -23,7 +23,7 @@ let transferred = $authState.isMigrated || false
 let yralId = ''
 let canId = ''
 let error = ''
-let transferring = true
+let transferring = false
 
 $: loggedIn = $authState.isLoggedIn
 
@@ -205,7 +205,9 @@ $: if (loggedIn) {
             <div class="text-sm text-white/80">Transferring to Yral ID:</div>
             <div class="font-mono font-medium">{yralId}</div>
           </div>
-          <Button on:click={transfer} class="w-full">Confirm</Button>
+          <Button disabled={transferring} on:click={transfer} class="w-full">
+            Confirm
+          </Button>
         {/if}
       </div>
     {:else}
@@ -276,9 +278,7 @@ $: if (loggedIn) {
             </div>
           {/if}
 
-          <Button disabled={transferring} class="w-full" on:click={checkForm}>
-            Transfer
-          </Button>
+          <Button class="w-full" on:click={checkForm}>Transfer</Button>
         </div>
       </div>
     {/if}
