@@ -6,7 +6,6 @@ import { page } from '$app/stores'
 import { playerState } from '$lib/stores/app'
 import { onDestroy, onMount } from 'svelte'
 import { authState, loadingAuthStatus } from '$lib/stores/auth'
-import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
 import { showMigrationPopup } from '$lib/stores/popups'
 import MigrationPopup from '@hnn/components/popup/MigrationPopup.svelte'
@@ -68,7 +67,7 @@ $: showPopup =
     {/if}
   </div>
 </HomeLayout>
-<!-- 
+
 {#if showPopup}
   <MigrationPopup on:click={() => showMigrationPopup.set(false)} />
-{/if} -->
+{/if}
