@@ -26,6 +26,23 @@ let transferring = true
 
 $: loggedIn = $authState.isLoggedIn
 
+async function saveMigrationEntry() {
+  await fetch('https://submityralmigration-5nps3y6y6a-uc.a.run.app', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      yralUserId: yralId,
+      yralCanisterId: canId,
+      honUserId: $authState.idString,
+      honCanisterId: $authState.userCanisterId,
+      walletBalance,
+      videosUploadedCount,
+    }),
+  })
+}
+
 async function checkForm() {
   canId = ''
   if (await isPrincipal(yralId)) {
@@ -63,6 +80,7 @@ async function transfer() {
       $authState.userCanisterId,
     ).transfer_tokens_and_posts(Principal.from(yralId), Principal.from(canId))
     if ('Ok' in res) {
+      saveMigrationEntry()
       transferred = true
       $authState.isMigrated = true
     } else {
