@@ -22,7 +22,7 @@ function getEventName() {
 
 $: deducted =
   item.type === 'Burn' || item.type === 'Stake' || item.type === 'Transfer'
-$: eventName = getEventName()
+$: eventName = item.type === 'Transfer' ? 'Transfer' : getEventName()
 $: timeDiff = getTimeDifference(Number(item.timestamp.secs_since_epoch) * 1000)
 
 const labels: Record<any, string> = {
