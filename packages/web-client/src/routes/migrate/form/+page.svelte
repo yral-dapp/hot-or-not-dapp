@@ -13,6 +13,7 @@ import { fetchPosts, fetchTokenBalance } from '$lib/helpers/profile'
 import { isPrincipal } from '$lib/utils/isPrincipal'
 import { individualUser } from '$lib/helpers/backend'
 import { Principal } from '@dfinity/principal'
+import { registerEvent } from '@hnn/components/analytics/GA.utils'
 
 let loading = false
 let walletBalance = 0
@@ -80,10 +81,24 @@ async function transfer() {
       $authState.userCanisterId,
     ).transfer_tokens_and_posts(Principal.from(yralId), Principal.from(canId))
     if ('Ok' in res) {
+      registerEvent('migration', {
+        status: 'success',
+        userId: $authState.idString,
+        user_canister_id: $authState.userCanisterId,
+        yralUserId: yralId,
+        yralCanisterId: canId,
+      })
       saveMigrationEntry()
       transferred = true
       $authState.isMigrated = true
     } else {
+      registerEvent('migration', {
+        status: 'error',
+        userId: $authState.idString,
+        user_canister_id: $authState.userCanisterId,
+        yralUserId: yralId,
+        yralCanisterId: canId,
+      })
       error = Object.keys(res.Err)?.[0]
       step = 1
     }
