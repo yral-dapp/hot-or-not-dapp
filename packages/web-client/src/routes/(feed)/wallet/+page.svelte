@@ -128,7 +128,7 @@ onMount(() => ($showMigrationPopup = true))
         {/each}
         {#if $authState.isMigrated}
           <div
-            class="absolute top-[5.5rem] flex h-full w-full flex-col items-center justify-center !border-0 backdrop-blur-md">
+            class="absolute inset-0 top-[5.5rem] flex w-full flex-col items-center justify-start !border-0 py-20 backdrop-blur-md">
             Your account has been transferred to yral. Go ahead and explore the
             app <a
               target="_blank"

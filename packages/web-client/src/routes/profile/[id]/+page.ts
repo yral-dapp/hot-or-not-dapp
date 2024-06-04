@@ -17,7 +17,7 @@ import { error, redirect } from '@sveltejs/kit'
 import { get } from 'svelte/store'
 import type { PageLoad } from './$types'
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageLoad = async ({ params }) => {
   const id = params.id
 
   if (!id) {
@@ -58,7 +58,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
     Log('info', 'Found canister ID', { from: 'loadProfile', canId })
     const fetchedProfile = await individualUser(
       Principal.from(canId),
-      fetch,
     ).get_profile_details_v2()
     const profile = sanitizeProfile(fetchedProfile, id)
     let posts: any[] = []
