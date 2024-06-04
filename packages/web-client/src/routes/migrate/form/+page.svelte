@@ -260,16 +260,9 @@ $: if (loggedIn) {
             bind:value={yralId}
             class="w-full rounded-md bg-white/10 py-4" />
 
-          <div class="flex gap-2">
-            <input
-              checked
-              type="checkbox"
-              class="h-4 w-4 rounded border-2 border-white bg-transparent text-primary focus:ring-0" />
-
-            <div class="text-sm">
-              Do you want to transfer your tokens from HON wallet to “xxx” YRAL
-              wallet?
-            </div>
+          <div class="text-sm">
+            Note: Both the posts and the wallet balance will be transferred to
+            your yral account.
           </div>
 
           {#if error}
