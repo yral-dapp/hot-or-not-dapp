@@ -249,7 +249,7 @@ $: if (loggedIn) {
           </div>
           <div class="text-sm font-bold text-primary">Videos Uploaded:</div>
           <div class="text-sm">
-            {videosUploadedCount > 99 ? '99+' : videosUploadedCount}
+            {videosUploadedCount > 98 ? '99+' : videosUploadedCount}
           </div>
           <div class="text font-medium">
             Please submit your yral.com Principal ID*:
