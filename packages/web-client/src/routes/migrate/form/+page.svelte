@@ -15,11 +15,16 @@ import { individualUser } from '$lib/helpers/backend'
 import { Principal } from '@dfinity/principal'
 import { registerEvent } from '@hnn/components/analytics/GA.utils'
 
+$: if ($authState.isMigrated) {
+  transferred = true
+  step = 2
+}
+
 let loading = false
 let walletBalance = 0
 let videosUploadedCount = 0
 let step = 1
-let transferred = $authState.isMigrated || false
+let transferred = false
 let yralId = ''
 let canId = ''
 let error = ''
