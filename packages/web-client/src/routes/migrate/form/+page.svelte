@@ -210,7 +210,7 @@ $: if (loggedIn) {
             <div class="font-mono font-medium">{yralId}</div>
           </div>
           <Button disabled={transferring} on:click={transfer} class="w-full">
-            Confirm
+            {transferring ? 'Transferring...' : 'Confirm'}
           </Button>
         {/if}
       </div>
@@ -264,7 +264,7 @@ $: if (loggedIn) {
             bind:value={yralId}
             class="w-full rounded-md bg-white/10 py-4" />
 
-          <div class="text-sm">
+          <div class="text-xs">
             Note: Both the posts and the wallet balance will be transferred to
             your yral account.
           </div>

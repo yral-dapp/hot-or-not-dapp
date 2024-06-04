@@ -78,8 +78,11 @@ let loading = false
           </div>
           <div class="text-sm font-bold">Steps to Follow:</div>
           <ul class="text-sm text-white/70">
-            <li>1. Go to Yral.com.</li>
-            <li>2. Navigate to Menu > HotorNot Account Transfer</li>
+            <li>
+              <a class="underline" href="https://yral.com/account-transfer">
+                1. Go to Yral.com > Menu > HotorNot Account Transfer
+              </a>
+            </li>
             <li>3. Login with Google.</li>
             <li>4. Copy the Yral Principal ID.</li>
             <li>5. Return and fill out the form.</li>
@@ -91,7 +94,7 @@ let loading = false
             Go to <a
               target="_blank"
               class="font-bold text-[#E2017B] underline"
-              href="yral.com/account-transfer">
+              href="https://yral.com/account-transfer">
               Yral.com
             </a>
             and get your Yral Principal id before proceeding.
