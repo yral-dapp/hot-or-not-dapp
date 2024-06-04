@@ -496,23 +496,28 @@ type NotificationResponse =
       endOfList: boolean
     }
 
-async function transformHistoryRecords(
+function transformHistoryRecords(
   res: Array<[bigint, TokenEvent]>,
   _filter?: UnionKeyOf<MintEvent>,
-): Promise<TransactionHistory[]> {
+): TransactionHistory[] {
   const history: TransactionHistory[] = []
 
   res.forEach((o) => {
+    console.log({ o })
     const event = o[1]
+    console.log({ event })
     const type = Object.keys(event)[0] as UnionKeyOf<TokenEvent>
+    console.log({ type })
     const subType = Object.keys(event[type].details)[0] as WalletEventType
-    const details = (event[type] as WalletEvent)?.[
-      subType
-    ] as WalletEventSubDetails
-    const eventOutcome = Object.keys(
-      details?.['event_outcome'] || {},
-    )[0] as EventOutcome
-    console.log({ o, type, event, subType, details, eventOutcome })
+    console.log({ subType })
+    const details = (event[type] as WalletEvent)?.[subType] as
+      | WalletEventSubDetails
+      | undefined
+    console.log({ details })
+    const eventOutcome = Object.keys(details?.['event_outcome'] || {})[0] as
+      | EventOutcome
+      | undefined
+    console.log({ eventOutcome })
     history.push({
       id: o[0],
       type,
