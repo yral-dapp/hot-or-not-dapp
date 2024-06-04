@@ -77,11 +77,14 @@ let loading = false
         <div class="pb-2 text-sm text-white/70">
           Follow these steps to ensure secure transfer:
           <ul>
-            <li>1. Go to Yral.com.</li>
-            <li>2. Navigate to Menu → HotorNot Account Transfer.</li>
-            <li>3. Login with Google.</li>
-            <li>4. Copy the Yral Principal ID.</li>
-            <li>5. Return and fill out the form.</li>
+            <li>
+              <a class="underline" href="https://yral.com/account-transfer">
+                1. Go to Yral.com > Menu > HotorNot Account Transfer
+              </a>
+            </li>
+            <li>2. Login with Google.</li>
+            <li>3. Copy the Yral Principal ID.</li>
+            <li>4. Return and fill out the form.</li>
           </ul>
         </div>
         <Button href="/migrate">Transfer</Button>

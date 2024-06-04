@@ -83,9 +83,9 @@ let loading = false
                 1. Go to Yral.com > Menu > HotorNot Account Transfer
               </a>
             </li>
-            <li>3. Login with Google.</li>
-            <li>4. Copy the Yral Principal ID.</li>
-            <li>5. Return and fill out the form.</li>
+            <li>2. Login with Google.</li>
+            <li>3. Copy the Yral Principal ID.</li>
+            <li>4. Return and fill out the form.</li>
           </ul>
         </div>
         <div class="h-1 w-10 border-t border-dashed border-white"></div>
