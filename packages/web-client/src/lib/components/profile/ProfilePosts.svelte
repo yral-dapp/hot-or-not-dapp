@@ -34,12 +34,13 @@ async function loadPosts() {
       return
     }
 
-    posts.push(...res.posts)
-    posts = posts
-    noMorePosts = res.noMorePosts
-    fetchedCount = posts.length
+    if (res.posts.length) {
+      posts.push(...res.posts)
+      posts = posts
+      noMorePosts = res.noMorePosts
+      fetchedCount = posts.length
+    }
     loading = false
-    posts = posts
   } catch (e) {
     error = true
     loading = false

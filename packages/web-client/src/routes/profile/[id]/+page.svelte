@@ -215,10 +215,12 @@ function handleScroll() {
           <span class="text-white">
             {`@${profile.unique_user_name}`}
           </span>
-          <div class="h-1 w-1 rounded-full bg-white" />
-          <span class="text-primary">
-            {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
-          </span>
+          {#if !profile.is_migrated}
+            <div class="h-1 w-1 rounded-full bg-white" />
+            <span class="text-primary">
+              {getShortNumber(profile.profile_stats.lifetime_earnings)} Earnings
+            </span>
+          {/if}
           {#if me}
             <ShowMoreButton bind:show={showMoreInfo} class="hidden md:block" />
           {/if}
@@ -253,76 +255,91 @@ function handleScroll() {
           {/if}
         {/if}
       </div>
-      <div
-        class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
-        <a
-          href={`/profile/${userId}/lovers`}
-          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.followers_count)}
-          </span>
-          <span class="text-sm">Lovers</span>
-        </a>
-        <a
-          href={`/profile/${userId}/loving`}
-          class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.following_count)}
-          </span>
-          <span class="text-sm">Loving</span>
-        </a>
-        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.profile_stats.hots_earned_count)}
-          </span>
-          <span class="text-sm">Hots</span>
-        </div>
-        <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
-          <span class="whitespace-nowrap text-xl font-bold">
-            {getShortNumber(profile.profile_stats.nots_earned_count)}
-          </span>
-          <span class="text-sm">Nots</span>
-        </div>
-      </div>
-      {#if !me}
+      {#if !profile.is_migrated}
         <div
-          class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
-          <Button
-            type={follow.doIFollow ? 'secondary' : 'primary'}
-            disabled={follow.loading}
-            on:click={handleLove}
-            class="mx-auto w-[10rem]">
-            {#if follow.loading}
-              <Icon
-                name="loading"
-                class="h-6 w-6 animate-spin-slow text-white" />
-            {:else}
-              {follow.doIFollow ? 'Loving' : 'Love'}
-            {/if}
-          </Button>
-          <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
+          class="mx-4 flex items-center justify-center divide-x-2 divide-white/20 rounded-full bg-white/10 p-4">
+          <a
+            href={`/profile/${userId}/lovers`}
+            class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+            <span class="whitespace-nowrap text-xl font-bold">
+              {getShortNumber(profile.followers_count)}
+            </span>
+            <span class="text-sm">Lovers</span>
+          </a>
+          <a
+            href={`/profile/${userId}/loving`}
+            class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+            <span class="whitespace-nowrap text-xl font-bold">
+              {getShortNumber(profile.following_count)}
+            </span>
+            <span class="text-sm">Loving</span>
+          </a>
+          <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+            <span class="whitespace-nowrap text-xl font-bold">
+              {getShortNumber(profile.profile_stats.hots_earned_count)}
+            </span>
+            <span class="text-sm">Hots</span>
+          </div>
+          <div class="flex flex-1 flex-col items-center space-y-0.5 px-2">
+            <span class="whitespace-nowrap text-xl font-bold">
+              {getShortNumber(profile.profile_stats.nots_earned_count)}
+            </span>
+            <span class="text-sm">Nots</span>
+          </div>
+        </div>
+        {#if !me}
+          <div
+            class="flex w-full items-center justify-between space-x-2 px-6 pt-6">
+            <Button
+              type={follow.doIFollow ? 'secondary' : 'primary'}
+              disabled={follow.loading}
+              on:click={handleLove}
+              class="mx-auto w-[10rem]">
+              {#if follow.loading}
+                <Icon
+                  name="loading"
+                  class="h-6 w-6 animate-spin-slow text-white" />
+              {:else}
+                {follow.doIFollow ? 'Loving' : 'Love'}
+              {/if}
+            </Button>
+            <!-- <Button type="secondary" class="w-full">Send tokens</Button> -->
+          </div>
+        {/if}
+        <div class="px-6 pt-2">
+          <ProfileTabs bind:selectedTab />
+        </div>
+        <div class="flex h-full flex-col px-6 py-6">
+          {#if selectedTab === 'posts'}
+            <ProfilePosts
+              bind:posts={posts.profile.posts}
+              bind:noMorePosts={posts.profile.noMorePosts}
+              bind:fetchedCount={posts.profile.fetchedCount}
+              {me}
+              userId={$page.params.id} />
+          {:else if selectedTab === 'speculations'}
+            <SpeculationPosts
+              bind:posts={posts.speculation.posts}
+              bind:noMorePosts={posts.speculation.noMorePosts}
+              bind:fetchedCount={posts.speculation.fetchedCount}
+              {me}
+              userId={$page.params.id} />
+          {/if}
+        </div>
+      {:else}
+        <div
+          class="flex h-full w-full flex-col items-center justify-center !border-0 text-center">
+          Your account has been transferred to yral.
+          <br />
+          Go ahead and explore the app
+          <a
+            target="_blank"
+            class="font-bold text-[#E2017B] underline"
+            href="https://yral.com">
+            yral.com
+          </a>
         </div>
       {/if}
-      <div class="px-6 pt-2">
-        <ProfileTabs bind:selectedTab />
-      </div>
-      <div class="flex h-full flex-col px-6 py-6">
-        {#if selectedTab === 'posts'}
-          <ProfilePosts
-            bind:posts={posts.profile.posts}
-            bind:noMorePosts={posts.profile.noMorePosts}
-            bind:fetchedCount={posts.profile.fetchedCount}
-            {me}
-            userId={$page.params.id} />
-        {:else if selectedTab === 'speculations'}
-          <SpeculationPosts
-            bind:posts={posts.speculation.posts}
-            bind:noMorePosts={posts.speculation.noMorePosts}
-            bind:fetchedCount={posts.speculation.fetchedCount}
-            {me}
-            userId={$page.params.id} />
-        {/if}
-      </div>
     </div>
   </div>
 </ProfileLayout>

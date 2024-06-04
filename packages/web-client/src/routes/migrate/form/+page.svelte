@@ -194,7 +194,9 @@ $: if (loggedIn) {
               Yral.com
             </a>
           </div>
-          <Button class="w-full" href="/migrate-faq">Support</Button>
+          <Button class="w-full" href="https://t.me/+c-LTX0Cp-ENmMzI1">
+            Support
+          </Button>
         {:else}
           <div class="text-center">
             Click confirm to complete the transfer. Once you complete the
@@ -208,7 +210,7 @@ $: if (loggedIn) {
             <div class="font-mono font-medium">{yralId}</div>
           </div>
           <Button disabled={transferring} on:click={transfer} class="w-full">
-            Confirm
+            {transferring ? 'Transferring...' : 'Confirm'}
           </Button>
         {/if}
       </div>
@@ -249,7 +251,7 @@ $: if (loggedIn) {
           </div>
           <div class="text-sm font-bold text-primary">Videos Uploaded:</div>
           <div class="text-sm">
-            {videosUploadedCount > 99 ? '99+' : videosUploadedCount}
+            {videosUploadedCount > 98 ? '99+' : videosUploadedCount}
           </div>
           <div class="text font-medium">
             Please submit your yral.com Principal ID*:
@@ -262,7 +264,7 @@ $: if (loggedIn) {
             bind:value={yralId}
             class="w-full rounded-md bg-white/10 py-4" />
 
-          <div class="text-sm">
+          <div class="text-xs">
             Note: Both the posts and the wallet balance will be transferred to
             your yral account.
           </div>

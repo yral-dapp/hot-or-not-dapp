@@ -36,6 +36,7 @@ export type UserProfile = {
     hots_earned_count: number
     nots_earned_count: number
   }
+  is_migrated: boolean
   updated_at: number
 }
 
@@ -51,6 +52,7 @@ export const emptyProfileValues = {
     hots_earned_count: 0,
     nots_earned_count: 0,
   },
+  is_migrated: false,
   updated_at: Date.now(),
 }
 

@@ -66,6 +66,7 @@ export function sanitizeProfile(
       nots_earned_count: Number(profile.profile_stats.not_bets_received) || 0,
       lifetime_earnings: Number(profile.lifetime_earnings) || 0,
     },
+    is_migrated: Boolean(Object.values(profile.migration_info || {})?.[0]),
     updated_at: Date.now(),
   }
 }
@@ -75,13 +76,20 @@ export async function updateProfile(profile?: UserProfileDetailsForFrontendV2) {
   if (authStateData.isLoggedIn) {
     const updateProfile = profile || (await fetchProfile())
     if (updateProfile) {
+      // updateProfile.migration_info = {
+      //   MigratedFromHotOrNot: {
+      //     account_principal: Principal.from('2vxsx-fae'),
+      //   },
+      // }
+
       userProfile.set({
         ...sanitizeProfile(updateProfile, authStateData.idString || 'random'),
       })
       authState.update((o) => ({
         ...o,
-        isMigrated:
-          Object.keys(updateProfile.migration_info)?.[0] !== 'NotMigrated',
+        isMigrated: Boolean(
+          Object.values(updateProfile.migration_info || {})?.[0],
+        ),
       }))
       if (updateProfile.unique_user_name[0]) {
         try {
@@ -179,14 +187,12 @@ export async function fetchPosts(
 ): Promise<ProfilePostsResponse> {
   try {
     const canId = await getCanisterId(id)
-    console.log({ canId }, BigInt(from), BigInt(from + count))
     const res = await individualUser(
       Principal.from(canId),
     ).get_posts_of_this_user_profile_with_pagination(
       BigInt(from),
       BigInt(from + count),
     )
-    console.log({ res })
     if ('Ok' in res) {
       return {
         error: false,
@@ -506,7 +512,7 @@ async function transformHistoryRecords(
     const eventOutcome = Object.keys(
       details?.['event_outcome'] || {},
     )[0] as EventOutcome
-
+    console.log({ o, type, event, subType, details, eventOutcome })
     history.push({
       id: o[0],
       type,
@@ -550,8 +556,12 @@ export async function fetchHistory(
         BigInt(from),
         BigInt(from + 10),
       )
+
+    console.log('history', { res })
+
     if ('Ok' in res) {
       const history = await transformHistoryRecords(res.Ok, filter)
+      console.log('history', { history })
 
       return {
         error: false,
