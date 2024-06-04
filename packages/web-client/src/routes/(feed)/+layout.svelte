@@ -5,7 +5,7 @@ import Selector from '@hnn/components/home/Selector.svelte'
 import { page } from '$app/stores'
 import { playerState } from '$lib/stores/app'
 import { onDestroy, onMount } from 'svelte'
-import { authState } from '$lib/stores/auth'
+import { authState, loadingAuthStatus } from '$lib/stores/auth'
 import IconButton from '@hnn/components/button/IconButton.svelte'
 import { browser } from '$app/environment'
 import { showMigrationPopup } from '$lib/stores/popups'
@@ -32,6 +32,9 @@ onDestroy(() => {
 })
 
 $: pathname = $page.url.pathname
+
+$: showPopup =
+  $showMigrationPopup && !$loadingAuthStatus && !$authState.isMigrated
 </script>
 
 <HomeLayout>
@@ -65,7 +68,7 @@ $: pathname = $page.url.pathname
     {/if}
   </div>
 </HomeLayout>
-
-<!-- {#if $showMigrationPopup}
+<!-- 
+{#if showPopup}
   <MigrationPopup on:click={() => showMigrationPopup.set(false)} />
 {/if} -->
