@@ -21,18 +21,18 @@ let links: {
 }[] = []
 
 $: links = [
-  // {
-  //   icon: 'yral',
-  //   title: 'Migrate to YRAL',
-  //   class: 'fill-white w-6 h-6',
-  //   href: '/migrate',
-  // },
-  // {
-  //   icon: 'help',
-  //   title: 'Account migration FAQ',
-  //   class: 'fill-white w-6 h-6',
-  //   href: '/migrate-faq',
-  // },
+  {
+    icon: 'yral',
+    title: 'Migrate to YRAL',
+    class: 'fill-white w-6 h-6',
+    href: '/migrate',
+  },
+  {
+    icon: 'help',
+    title: 'Account migration FAQ',
+    class: 'fill-white w-6 h-6',
+    href: '/migrate-faq',
+  },
   {
     icon: 'notebook',
     title: 'Terms of Service',
