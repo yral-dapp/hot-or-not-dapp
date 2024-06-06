@@ -95,7 +95,7 @@ onMount(() => ($showMigrationPopup = true))
     </div>
     <div
       class="flex w-full flex-col items-center justify-center space-y-1 py-4">
-      <div class="text-sm uppercase">Your coins balance</div>
+      <div class="text-sm uppercase">Your coyns balance</div>
       {#if errorBalance}
         <div class="text-sm font-bold opacity-50">Error loading balance</div>
       {:else if loadBalanced}

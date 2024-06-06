@@ -207,7 +207,6 @@ onDestroy(() => clearMonitoring())
           watchHistoryDb="watch"
           showReportButton
           showLikeButton
-          showReferAndEarnLink
           showShareButton
           showDescription
           showHotOrNotButton
