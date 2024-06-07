@@ -42,6 +42,15 @@ export const idlFactory = ({ IDL }) => {
     ),
     'successful_upgrade_count' : IDL.Nat32,
   });
+  const BroadcastCallStatus = IDL.Record({
+    'successful_canister_ids' : IDL.Vec(IDL.Principal),
+    'failed_canisters_count' : IDL.Nat64,
+    'successful_canisters_count' : IDL.Nat64,
+    'method_name' : IDL.Text,
+    'failed_canister_ids' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Text)),
+    'timestamp' : SystemTime,
+    'total_canisters' : IDL.Nat64,
+  });
   const RecycleStatus = IDL.Record({
     'last_recycled_duration' : IDL.Opt(IDL.Nat64),
     'last_recycled_at' : IDL.Opt(SystemTime),
@@ -135,6 +144,11 @@ export const idlFactory = ({ IDL }) => {
     'get_index_details_last_upgrade_status' : IDL.Func(
         [],
         [UpgradeStatus],
+        ['query'],
+      ),
+    'get_last_broadcast_call_status' : IDL.Func(
+        [],
+        [BroadcastCallStatus],
         ['query'],
       ),
     'get_list_of_available_canisters' : IDL.Func(

@@ -316,7 +316,7 @@ export const idlFactory = ({ IDL }) => {
     'MigrationInfoNotFound' : IDL.Null,
     'UserNotRegistered' : IDL.Null,
     'Unauthorized' : IDL.Null,
-    'TransferToCanisterCallFailed' : IDL.Null,
+    'TransferToCanisterCallFailed' : IDL.Text,
     'HotOrNotSubnetCanisterIdNotFound' : IDL.Null,
     'AlreadyUsedForMigration' : IDL.Null,
     'CanisterInfoFailed' : IDL.Null,
