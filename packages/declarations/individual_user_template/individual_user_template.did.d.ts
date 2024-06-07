@@ -124,7 +124,7 @@ export type MigrationErrors = { 'InvalidToCanister' : null } |
   { 'MigrationInfoNotFound' : null } |
   { 'UserNotRegistered' : null } |
   { 'Unauthorized' : null } |
-  { 'TransferToCanisterCallFailed' : null } |
+  { 'TransferToCanisterCallFailed' : string } |
   { 'HotOrNotSubnetCanisterIdNotFound' : null } |
   { 'AlreadyUsedForMigration' : null } |
   { 'CanisterInfoFailed' : null } |

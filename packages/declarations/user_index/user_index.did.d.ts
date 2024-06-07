@@ -2,6 +2,15 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
+export interface BroadcastCallStatus {
+  'successful_canister_ids' : Array<Principal>,
+  'failed_canisters_count' : bigint,
+  'successful_canisters_count' : bigint,
+  'method_name' : string,
+  'failed_canister_ids' : Array<[Principal, string]>,
+  'timestamp' : SystemTime,
+  'total_canisters' : bigint,
+}
 export type CanisterInstallMode = { 'reinstall' : null } |
   { 'upgrade' : null } |
   { 'install' : null };
@@ -110,6 +119,7 @@ export interface _SERVICE {
   >,
   'get_index_details_is_user_name_taken' : ActorMethod<[string], boolean>,
   'get_index_details_last_upgrade_status' : ActorMethod<[], UpgradeStatus>,
+  'get_last_broadcast_call_status' : ActorMethod<[], BroadcastCallStatus>,
   'get_list_of_available_canisters' : ActorMethod<[], Array<Principal>>,
   'get_recycle_status' : ActorMethod<[], RecycleStatus>,
   'get_requester_principals_canister_id_create_if_not_exists_and_optionally_allow_referrer' : ActorMethod<
