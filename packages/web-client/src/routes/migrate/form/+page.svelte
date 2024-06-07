@@ -104,9 +104,11 @@ async function transfer() {
         yralUserId: yralId,
         yralCanisterId: canId,
       })
-      error = Object.keys(res.Err)?.[0]
-        ?.split(/(?=[A-Z])/)
-        ?.join(' ')
+      error =
+        Object.keys(res.Err)?.[0]
+          ?.split(/(?=[A-Z])/)
+          ?.join(' ') +
+        (Object.values(res.Err)?.[0] ? Object.values(res.Err)[0] : '')
       step = 1
     }
   } finally {
