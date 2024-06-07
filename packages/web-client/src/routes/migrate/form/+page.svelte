@@ -97,18 +97,19 @@ async function transfer() {
       transferred = true
       $authState.isMigrated = true
     } else {
-      registerEvent('migration', {
-        status: 'error',
-        userId: $authState.idString,
-        user_canister_id: $authState.userCanisterId,
-        yralUserId: yralId,
-        yralCanisterId: canId,
-      })
       error =
         Object.keys(res.Err)?.[0]
           ?.split(/(?=[A-Z])/)
           ?.join(' ') +
         (Object.values(res.Err)?.[0] ? Object.values(res.Err)[0] : '')
+      registerEvent('migration', {
+        status: 'error',
+        error,
+        userId: $authState.idString,
+        user_canister_id: $authState.userCanisterId,
+        yralUserId: yralId,
+        yralCanisterId: canId,
+      })
       step = 1
     }
   } finally {
