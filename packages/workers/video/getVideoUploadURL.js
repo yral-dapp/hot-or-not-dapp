@@ -27,7 +27,7 @@ const handler = async (request) => {
           body: JSON.stringify({
             maxDurationSeconds: 60,
             watermark: {
-              uid: watermarks.yral,
+              uid: watermarks.upperLeft_P05_O40_S08,
             },
             meta: {
               creator: requestBody.principalId,
