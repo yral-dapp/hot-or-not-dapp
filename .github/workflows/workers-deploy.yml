@@ -27,4 +27,4 @@ jobs:
           environment: "main"
           workingDirectory: "packages/workers/"
           postCommands: |
-            echo "${{ secrets.CLOUDFLARE_STREAM_IMAGES_API_TOKEN }}" | wrangler secret put CLOUDFLARE_API_TOKEN
+            echo "${{ secrets.CLOUDFLARE_STREAM_IMAGES_API_TOKEN }}" | npx wrangler secret put CLOUDFLARE_API_TOKEN
