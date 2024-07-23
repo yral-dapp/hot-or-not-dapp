@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - deploy-wran
     paths:
       - "packages/workers/**"
       - ".github/workflows/workers-deploy.yml"
@@ -24,7 +25,9 @@ jobs:
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_DEPLOY_API_TOKEN }}
+          secrets: |
+            CLOUDFLARE_API_TOKEN
           environment: "main"
           workingDirectory: "packages/workers/"
-          postCommands: |
-            echo "${{ secrets.CLOUDFLARE_STREAM_IMAGES_API_TOKEN }}" | wrangler secret put CLOUDFLARE_API_TOKEN
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_STREAM_IMAGES_API_TOKEN }}
