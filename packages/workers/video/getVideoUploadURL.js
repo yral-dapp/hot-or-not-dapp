@@ -8,6 +8,7 @@ const handler = async (request) => {
     const requestBody = await request.json()
 
     if (!requestBody.principalId || !requestBody.fileName) {
+      console.log('no principalId or no fileName')
       return new Response('Bad Request', {
         status: 400,
         headers: { ...request.corsHeaders },
@@ -47,6 +48,7 @@ const handler = async (request) => {
       },
     })
   } catch (error) {
+    console.log('Some error')
     console.error(error)
     return new Response(JSON.stringify({ error }), {
       status: 403,
