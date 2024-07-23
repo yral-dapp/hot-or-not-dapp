@@ -5,15 +5,21 @@ const watermarks = {
 
 const handler = async (request) => {
   try {
+    console.log('request received')
     const requestBody = await request.json()
 
     if (!requestBody.principalId || !requestBody.fileName) {
-      console.log('no principalId or no fileName')
+      console.error('no principalId or no fileName')
       return new Response('Bad Request', {
         status: 400,
         headers: { ...request.corsHeaders },
       })
     }
+
+    console.error('requestbody', requestBody.principalId, requestBody.fileName)
+
+    // eslint-disable-next-line no-undef
+    console.error('Cloudflare account ID', CLOUDFLARE_ACCOUNT_ID)
 
     const cloudflareGenerateUploadURLResponse = await (
       await fetch(
@@ -28,7 +34,7 @@ const handler = async (request) => {
           body: JSON.stringify({
             maxDurationSeconds: 60,
             watermark: {
-              uid: watermarks.upperLeft_P05_O40_S08,
+              uid: watermarks.yral,
             },
             meta: {
               creator: requestBody.principalId,
@@ -39,6 +45,8 @@ const handler = async (request) => {
         },
       )
     ).json()
+
+    console.log('response', JSON.stringify(cloudflareGenerateUploadURLResponse))
 
     return new Response(JSON.stringify(cloudflareGenerateUploadURLResponse), {
       status: 200,
